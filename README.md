@@ -1,5 +1,7 @@
 # pgexplain
 
+A VueJS app to show a graphical vizualization of a PostgreSQL execution plan.
+
 ## Project setup
 ```
 npm install
