@@ -1,0 +1,78 @@
+$connector-height: 12px;
+$connector-line: 2px solid darken($line-color, 10%);
+
+.plan {
+  padding-bottom: $padding-lg * 3;
+  margin-left: 100px;
+
+  ul {
+    display: flex;
+    padding-top: $connector-height;
+    position: relative;
+    margin: auto;
+    transition: all 0.5s;
+    margin-top: -5px;
+
+    // vertical connector
+    ul::before {
+      content: '';
+      position: absolute; top: 0; left: 50%;
+      border-left: $connector-line;
+      height: $connector-height;
+      width: 0;
+    }
+
+    li {
+      //float: left;
+      text-align: center;
+      list-style-type: none;
+      position: relative;
+      padding: $connector-height $padding-sm 0 $padding-sm;
+      transition: all 0.5s;
+
+      // connectors
+      &:before, &:after {
+        content: '';
+        position: absolute; top: 0; right: 50%;
+        border-top: $connector-line;
+        width: 50%; height: $connector-height;
+      }
+
+      &:after {
+        right: auto; left: 50%;
+        border-left: $connector-line;
+      }
+
+      &:only-child {
+        padding-top: 0;
+        &:after, &:before {
+          display: none;
+        }
+      }
+
+      &:first-child::before, &:last-child::after {
+        border: 0 none;
+      }
+
+      &:last-child::before {
+        border-right: $connector-line;
+        border-radius: 0 $border-radius-lg 0 0;
+      }
+
+      &:first-child::after {
+        border-radius: $border-radius-lg 0 0 0;
+      }
+
+      //hovers
+      .plan-node:hover+ul::before {
+        border-color: $highlight-color;
+      }
+
+      .plan-node:hover+ul li::after,
+      .plan-node:hover+ul li::before,
+      .plan-node:hover+ul ul::before{
+        border-color:  $highlight-color-dark;
+      }
+    }
+  }
+}

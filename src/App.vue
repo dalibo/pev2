@@ -1,23 +1,34 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <div class="plan compact">
+      <ul>
+        <li>
+          <PlanNode v-bind:node="node" msg="msg" />
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
+import PlanNode from './components/PlanNode.vue';
+const SAMPLE_JSON = require('./plan.json')
 
 @Component({
   components: {
-    HelloWorld,
-  },
+    PlanNode,
+  }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  node = SAMPLE_JSON[0]['Plan']
+}
 </script>
 
 <style lang="scss">
+@import 'assets/scss/variables';
+@import 'assets/scss/reset';
+@import 'assets/scss/plan';
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
