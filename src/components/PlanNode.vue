@@ -17,6 +17,28 @@
         <i class="fa fa-database"></i>
       </button>
 
+      <div v-if="viewOptions.viewMode === viewModes.FULL">
+        <div class="relation-name" v-if="node[planService.RELATION_NAME_PROP]">
+          <span class="text-muted">on </span>
+          <span v-if="node[planService.SCHEMA_PROP]">{{node[planService.SCHEMA_PROP]}}.</span>{{node[planService.RELATION_NAME_PROP]}}
+          <span v-if="node[planService.ALIAS_PROP]"> ({{node[planService.ALIAS_PROP]}})</span>
+        </div>
+
+        <div class="relation-name" v-if="node[planService.GROUP_KEY_PROP]">
+          <span class="text-muted">by</span> {{node[planService.GROUP_KEY_PROP]}}</div>
+        <div class="relation-name" v-if="node[planService.SORT_KEY_PROP]">
+          <span class="text-muted">by</span> {{node[planService.SORT_KEY_PROP]}}</div>
+        <div class="relation-name" v-if="node[planService.JOIN_TYPE_PROP]">{{node[planService.JOIN_TYPE_PROP]}}
+          <span class="text-muted">join</span></div>
+        <div class="relation-name" v-if="node[planService.INDEX_NAME_PROP]"><span class="text-muted">
+            using</span> {{node[planService.INDEX_NAME_PROP]}}</div>
+        <div class="relation-name" v-if="node[planService.HASH_CONDITION_PROP]"><span class="text-muted">
+            on</span> {{node[planService.HASH_CONDITION_PROP]}}</div>
+        <div class="relation-name" v-if="node[planService.CTE_NAME_PROP]">
+          <span class="text-muted">CTE</span> {{node[planService.CTE_NAME_PROP]}}
+        </div>
+      </div>
+
       <div v-if="showDetails">
         <div v-if="getNodeTypeDescription()" class="node-description">
           <span class="node-type">{{node[planService.NODE_TYPE_PROP]}} Node</span>&nbsp;<span v-html="getNodeTypeDescription()"></span>
