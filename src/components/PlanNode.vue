@@ -19,7 +19,7 @@
 
       <div v-if="showDetails">
         <div v-if="getNodeTypeDescription()" class="node-description">
-          <span class="node-type">{{node[planService.NODE_TYPE_PROP]}} Node</span>&nbsp;<span>{{ getNodeTypeDescription() }}</span>
+          <span class="node-type">{{node[planService.NODE_TYPE_PROP]}} Node</span>&nbsp;<span v-html="getNodeTypeDescription()"></span>
         </div>
         <table class="table table-sm prop-list">
           <tr v-for="prop in props">
