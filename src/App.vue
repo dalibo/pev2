@@ -3,7 +3,7 @@
     <div class="plan">
       <ul>
         <li>
-          <PlanNode :node="node" :plan="plan" />
+          <PlanNode :node="node" :plan="plan" :viewOptions="viewOptions"/>
         </li>
       </ul>
     </div>
@@ -14,7 +14,23 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { PlanService } from './plan-service';
 import PlanNode from './components/PlanNode.vue';
+import { HighlightType, ViewMode } from './enums';
+
 const SAMPLE_JSON = require('./plan.json')
+const SAMPLE_QUERY = `
+SELECT c.state,
+  cat.categoryname,
+  sum(o.netamount),
+  sum(o.totalamount)
+FROM customers c
+  INNER JOIN cust_hist ch ON c.customerid = ch.customerid
+  INNER JOIN orders o ON ch.orderid = o.orderid
+  INNER JOIN orderlines ol ON ol.orderid = o.orderid
+  INNER JOIN products p ON ol.prod_id = p.prod_id
+  INNER JOIN categories cat ON p.category = cat.category
+GROUP BY c.state, cat.categoryname
+ORDER BY c.state, sum(o.totalamount) DESC
+LIMIT 10 OFFSET 1`
 
 @Component({
   components: {
@@ -25,6 +41,18 @@ export default class App extends Vue {
   plan: any
   node = SAMPLE_JSON[0]['Plan']
 
+  viewOptions: any = {
+    showPlanStats: true,
+    showHighlightBar: true,
+    showPlannerEstimate: false,
+    showTags: true,
+    highlightType: HighlightType.NONE,
+    viewMode: ViewMode.FULL
+  };
+
+  highlightTypes = HighlightType;
+  viewModes = ViewMode
+
   planService = new PlanService()
 
   created(): void {
@@ -32,7 +60,7 @@ export default class App extends Vue {
   }
 
   getPlan(): any {
-    this.plan = this.planService.createPlan(null, SAMPLE_JSON, '')
+    this.plan = this.planService.createPlan(null, SAMPLE_JSON, SAMPLE_QUERY)
     this.rootContainer = this.plan.content;
     this.plan.planStats = {
       executionTime: this.rootContainer['Execution Time'] || this.rootContainer['Total Runtime'],
