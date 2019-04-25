@@ -1,22 +1,22 @@
-import * as _ from 'lodash'
+import * as _ from 'lodash';
 
 export function duration(value: number): string {
-  var duration: string = '';
+  let dur: string = '';
 
   if (value < 1) {
-    duration = '<1';
+    dur = '<1';
   } else if (value > 1 && value < 1000) {
-    duration = _.round(value, 2).toString();
+    dur = _.round(value, 2).toString();
   } else if (value >= 1000 && value < 60000) {
-    duration = _.round(value / 1000, 2).toString();
+    dur = _.round(value / 1000, 2).toString();
   } else if (value >= 60000) {
-    duration = _.round(value / 60000, 2).toString();
+    dur = _.round(value / 60000, 2).toString();
   }
-  return duration;
+  return dur;
 }
 
 export function durationUnit(value: number): string {
-  var unit: string = '';
+  let unit: string = '';
 
   if (value < 1) {
     unit = 'ms';
