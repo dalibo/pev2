@@ -47,7 +47,7 @@ export default class App extends Vue {
     showHighlightBar: true,
     showPlannerEstimate: true,
     showTags: true,
-    highlightType: HighlightType.NONE,
+    highlightType: HighlightType.DURATION,
     viewMode: ViewMode.FULL,
   };
 
