@@ -40,6 +40,7 @@ LIMIT 10 OFFSET 1`
 export default class App extends Vue {
   plan: any
   node = SAMPLE_JSON[0]['Plan']
+  rootContainer: any
 
   viewOptions: any = {
     showPlanStats: true,
@@ -60,7 +61,7 @@ export default class App extends Vue {
   }
 
   getPlan(): any {
-    this.plan = this.planService.createPlan(null, SAMPLE_JSON, SAMPLE_QUERY)
+    this.plan = this.planService.createPlan('', SAMPLE_JSON, SAMPLE_QUERY)
     this.rootContainer = this.plan.content;
     this.plan.planStats = {
       executionTime: this.rootContainer['Execution Time'] || this.rootContainer['Total Runtime'],
@@ -83,6 +84,5 @@ export default class App extends Vue {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
