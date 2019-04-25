@@ -82,63 +82,64 @@ import * as _ from 'lodash';
 
 @Component({
   filters: {
-    duration: duration,
-    durationUnit: durationUnit,
-  }
+    duration,
+    durationUnit,
+  },
 })
 export default class PlanNode extends Vue {
   @Prop(Object) private node!: any;
   @Prop(Object) private plan!: any;
   @Prop(Object) private viewOptions!: any;
 
-  MIN_ESTIMATE_MISS: number = 100;
-  COSTLY_TAG: string = 'costliest';
-  SLOW_TAG: string = 'slowest';
-  LARGE_TAG: string = 'largest';
-  ESTIMATE_TAG: string = 'bad estimate';
+  private MIN_ESTIMATE_MISS: number = 100;
+  private COSTLY_TAG: string = 'costliest';
+  private SLOW_TAG: string = 'slowest';
+  private LARGE_TAG: string = 'largest';
+  private ESTIMATE_TAG: string = 'bad estimate';
 
   // UI flags
-  showDetails: boolean = false;
+  private showDetails: boolean = false;
 
   // calculated properties
-  executionTimePercent: number = NaN;
-  props: Array<any> = [];
-  tags: Array<string> = [];
-  plannerRowEstimateValue?: number;
-  plannerRowEstimateDirection?: EstimateDirection;
+  private executionTimePercent: number = NaN;
+  private props: any[] = [];
+  private tags: string[] = [];
+  private plannerRowEstimateValue?: number;
+  private plannerRowEstimateDirection?: EstimateDirection;
 
   // expose enum to view
-  estimateDirections = EstimateDirection;
-  highlightTypes = HighlightType;
-  viewModes = ViewMode;
+  private estimateDirections = EstimateDirection;
+  private highlightTypes = HighlightType;
+  private viewModes = ViewMode;
 
-  planService = new PlanService()
-  helpService = new HelpService()
+  private planService = new PlanService();
+  private helpService = new HelpService();
 
-  created(): void {
-    this.calculateProps()
-    this.calculateDuration()
-    this.calculateTags()
+  private created(): void {
+    this.calculateProps();
+    this.calculateDuration();
+    this.calculateTags();
 
-    this.plannerRowEstimateDirection = this.node[this.planService.PLANNER_ESIMATE_DIRECTION]
-    this.plannerRowEstimateValue = _.round(this.node[this.planService.PLANNER_ESTIMATE_FACTOR])
+    this.plannerRowEstimateDirection = this.node[this.planService.PLANNER_ESIMATE_DIRECTION];
+    this.plannerRowEstimateValue = _.round(this.node[this.planService.PLANNER_ESTIMATE_FACTOR]);
   }
 
-  calculateDuration() {
-    this.executionTimePercent = _.round((this.node[this.planService.ACTUAL_DURATION_PROP] / this.plan.planStats.executionTime) * 100)
+  private calculateDuration() {
+    this.executionTimePercent = _.round(
+      (this.node[this.planService.ACTUAL_DURATION_PROP] / this.plan.planStats.executionTime) * 100);
   }
 
   // create an array of node propeties so that they can be displayed in the view
-  calculateProps() {
+  private calculateProps() {
     this.props = _.chain(this.node)
       .omit(this.planService.PLANS_PROP)
       .map((value, key) => {
-        return { key: key, value: value };
+        return { key, value };
       })
       .value();
   }
 
-  calculateTags() {
+  private calculateTags() {
     if (this.node[this.planService.SLOWEST_NODE_PROP]) {
       this.tags.push(this.SLOW_TAG);
     }
@@ -153,22 +154,22 @@ export default class PlanNode extends Vue {
     }
   }
 
-  getNodeTypeDescription() {
-    return this.helpService.getNodeTypeDescription(this.node[this.planService.NODE_TYPE_PROP])
+  private getNodeTypeDescription() {
+    return this.helpService.getNodeTypeDescription(this.node[this.planService.NODE_TYPE_PROP]);
   }
 
-  getNodeName (): string {
-    return (this.node['Node Type']).toUpperCase()
+  private getNodeName(): string {
+    return (this.node['Node Type']).toUpperCase();
   }
 
-  getTagName(tagName: string) {
+  private getTagName(tagName: string) {
     if (this.viewOptions.viewMode === ViewMode.DOT && !this.showDetails) {
       return tagName.charAt(0);
     }
     return tagName;
   }
 
-  shouldShowPlannerEstimate() {
+  private shouldShowPlannerEstimate() {
     if (this.viewOptions.showPlannerEstimate && this.showDetails) {
       return true;
     }

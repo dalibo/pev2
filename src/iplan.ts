@@ -4,6 +4,6 @@ export interface IPlan {
   content: any;
   query: string;
   createdOn: Date;
-  planStats: any;
-  formattedQuery: string;
+  planStats?: any;
+  formattedQuery?: string;
 }

@@ -1,9 +1,12 @@
 import * as _ from 'lodash';
 import {EstimateDirection} from './enums';
 import { IPlan } from './iplan';
-import * as moment from 'moment';
+import moment from 'moment';
 
 export class PlanService {
+
+  private static instance: PlanService;
+
   // plan property keys
   public NODE_TYPE_PROP: string = 'Node Type';
   public ACTUAL_ROWS_PROP: string = 'Actual Rows';
@@ -47,15 +50,13 @@ export class PlanService {
   private maxCost: number = 0;
   private maxDuration: number = 0;
 
-  private static instance: PlanService;
-
   // Make this class a singleton
   constructor() {
     if (PlanService.instance) {
-      return PlanService.instance
+      return PlanService.instance;
     }
 
-    PlanService.instance = this
+    PlanService.instance = this;
   }
 
   /*
@@ -80,12 +81,12 @@ export class PlanService {
   */
 
   public createPlan(planName: string, planContent: any, planQuery: string): IPlan {
-    let plan: IPlan = {
+    const plan: IPlan = {
       id: this.PEV_PLAN_TAG + new Date().getTime().toString(),
       name: planName || 'plan created on ' + moment().format('LLL'),
       createdOn: new Date(),
       content: planContent[0],
-      query: planQuery
+      query: planQuery,
     };
 
     this.analyzePlan(plan);

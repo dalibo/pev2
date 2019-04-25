@@ -16,7 +16,7 @@ import { PlanService } from './plan-service';
 import PlanNode from './components/PlanNode.vue';
 import { HighlightType, ViewMode } from './enums';
 
-const SAMPLE_JSON = require('./plan.json')
+import SAMPLE_JSON from './plan.json';
 const SAMPLE_QUERY = `
 SELECT c.state,
   cat.categoryname,
@@ -30,7 +30,7 @@ FROM customers c
   INNER JOIN categories cat ON p.category = cat.category
 GROUP BY c.state, cat.categoryname
 ORDER BY c.state, sum(o.totalamount) DESC
-LIMIT 10 OFFSET 1`
+LIMIT 10 OFFSET 1`;
 
 @Component({
   components: {
@@ -38,37 +38,37 @@ LIMIT 10 OFFSET 1`
   },
 })
 export default class App extends Vue {
-  plan: any
-  node = SAMPLE_JSON[0]['Plan']
-  rootContainer: any
+  private plan: any;
+  private node = SAMPLE_JSON[0].Plan;
+  private rootContainer: any;
 
-  viewOptions: any = {
+  private viewOptions: any = {
     showPlanStats: true,
     showHighlightBar: true,
     showPlannerEstimate: true,
     showTags: true,
     highlightType: HighlightType.NONE,
-    viewMode: ViewMode.FULL
+    viewMode: ViewMode.FULL,
   };
 
-  highlightTypes = HighlightType;
-  viewModes = ViewMode
+  private highlightTypes = HighlightType;
+  private viewModes = ViewMode;
 
-  planService = new PlanService()
+  private planService = new PlanService();
 
-  created(): void {
-    this.getPlan()
+  private created(): void {
+    this.getPlan();
   }
 
-  getPlan(): any {
-    this.plan = this.planService.createPlan('', SAMPLE_JSON, SAMPLE_QUERY)
+  private getPlan(): any {
+    this.plan = this.planService.createPlan('', SAMPLE_JSON, SAMPLE_QUERY);
     this.rootContainer = this.plan.content;
     this.plan.planStats = {
       executionTime: this.rootContainer['Execution Time'] || this.rootContainer['Total Runtime'],
       planningTime: this.rootContainer['Planning Time'] || 0,
       maxRows: this.rootContainer[this.planService.MAXIMUM_ROWS_PROP] || 0,
       maxCost: this.rootContainer[this.planService.MAXIMUM_COSTS_PROP] || 0,
-      maxDuration: this.rootContainer[this.planService.MAXIMUM_DURATION_PROP] || 0
+      maxDuration: this.rootContainer[this.planService.MAXIMUM_DURATION_PROP] || 0,
     };
   }
 }
