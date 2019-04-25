@@ -39,6 +39,16 @@
         </div>
       </div>
 
+      <div class="tags" v-if="viewOptions.showTags && tags.length > 0">
+        <span v-for="tag in tags">{{getTagName(tag)}}</span>
+      </div>
+
+      <div class="planner-estimate" v-if="shouldShowPlannerEstimate()">
+        <span v-if="plannerRowEstimateDirection === estimateDirections.over"><strong>over</strong> estimated rows</span>
+        <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong>under</strong> estimated rows</span>
+        <span> by <strong>{{plannerRowEstimateValue}}</strong>x</span>
+      </div>
+
       <div v-if="showDetails">
         <div v-if="getNodeTypeDescription()" class="node-description">
           <span class="node-type">{{node[planService.NODE_TYPE_PROP]}} Node</span>&nbsp;<span v-html="getNodeTypeDescription()"></span>
@@ -81,12 +91,21 @@ export default class PlanNode extends Vue {
   @Prop(Object) private plan!: any;
   @Prop(Object) private viewOptions!: any;
 
+  MIN_ESTIMATE_MISS: number = 100;
+  COSTLY_TAG: string = 'costliest';
+  SLOW_TAG: string = 'slowest';
+  LARGE_TAG: string = 'largest';
+  ESTIMATE_TAG: string = 'bad estimate';
+
   // UI flags
   showDetails: boolean = false;
 
   // calculated properties
   executionTimePercent: number = NaN;
-  props: Array<any>;
+  props: Array<any> = [];
+  tags: Array<string> = [];
+  plannerRowEstimateValue?: number;
+  plannerRowEstimateDirection?: EstimateDirection;
 
   // expose enum to view
   estimateDirections = EstimateDirection;
@@ -97,16 +116,12 @@ export default class PlanNode extends Vue {
   helpService = new HelpService()
 
   created(): void {
-    this.calculateProps();
+    this.calculateProps()
     this.calculateDuration()
-  }
+    this.calculateTags()
 
-  getNodeTypeDescription() {
-    return this.helpService.getNodeTypeDescription(this.node[this.planService.NODE_TYPE_PROP])
-  }
-
-  getNodeName (): string {
-    return (this.node['Node Type']).toUpperCase()
+    this.plannerRowEstimateDirection = this.node[this.planService.PLANNER_ESIMATE_DIRECTION]
+    this.plannerRowEstimateValue = _.round(this.node[this.planService.PLANNER_ESTIMATE_FACTOR])
   }
 
   calculateDuration() {
@@ -121,6 +136,48 @@ export default class PlanNode extends Vue {
         return { key: key, value: value };
       })
       .value();
+  }
+
+  calculateTags() {
+    if (this.node[this.planService.SLOWEST_NODE_PROP]) {
+      this.tags.push(this.SLOW_TAG);
+    }
+    if (this.node[this.planService.COSTLIEST_NODE_PROP]) {
+      this.tags.push(this.COSTLY_TAG);
+    }
+    if (this.node[this.planService.LARGEST_NODE_PROP]) {
+      this.tags.push(this.LARGE_TAG);
+    }
+    if (this.node[this.planService.PLANNER_ESTIMATE_FACTOR] >= this.MIN_ESTIMATE_MISS) {
+      this.tags.push(this.ESTIMATE_TAG);
+    }
+  }
+
+  getNodeTypeDescription() {
+    return this.helpService.getNodeTypeDescription(this.node[this.planService.NODE_TYPE_PROP])
+  }
+
+  getNodeName (): string {
+    return (this.node['Node Type']).toUpperCase()
+  }
+
+  getTagName(tagName: string) {
+    if (this.viewOptions.viewMode === ViewMode.DOT && !this.showDetails) {
+      return tagName.charAt(0);
+    }
+    return tagName;
+  }
+
+  shouldShowPlannerEstimate() {
+    if (this.viewOptions.showPlannerEstimate && this.showDetails) {
+      return true;
+    }
+
+    if (this.viewOptions.viewMode === ViewMode.DOT) {
+      return false;
+    }
+
+    return this.viewOptions.showPlannerEstimate;
   }
 }
 </script>

@@ -45,7 +45,7 @@ export default class App extends Vue {
   viewOptions: any = {
     showPlanStats: true,
     showHighlightBar: true,
-    showPlannerEstimate: false,
+    showPlannerEstimate: true,
     showTags: true,
     highlightType: HighlightType.NONE,
     viewMode: ViewMode.FULL
