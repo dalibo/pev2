@@ -39,12 +39,22 @@
         </div>
       </div>
 
+      <div class="clearfix"></div>
+
+      <div v-if="showQuery" class="plan-query-container">
+        <button class="btn btn-close pull-right" v-on:click="showQuery = false">
+          <i class="fa fa-close"></i>
+        </button>
+        <h3>query</h3>
+        <pre class="plan-query-text"><code v-html="getFormattedQuery()"></code></pre>
+      </div>
+
       <div class="tags" v-if="viewOptions.showTags && tags.length > 0">
         <span v-for="tag in tags">{{getTagName(tag)}}</span>
       </div>
 
       <div v-if="currentHighlightType !== highlightTypes.NONE">
-        <div class="progress" style="height: 5px;">
+        <div class="progress node-bar-container" style="height: 5px;">
           <div class="progress-bar" role="progressbar" v-bind:style="{ width: barWidth + '%', 'background-color': getBarColor(barWidth)}" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         <span class="node-bar-label" v-if="shouldShowNodeBarLabel()">
@@ -86,6 +96,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { PlanService } from '../plan-service';
 import { HelpService } from '../help-service';
 import { ColorService } from '../color-service';
+import { SyntaxHighlightService } from '../syntax-highlight-service';
 import { duration, durationUnit } from '../filters';
 import { EstimateDirection, HighlightType, ViewMode } from '../enums';
 import * as _ from 'lodash';
@@ -110,6 +121,7 @@ export default class PlanNode extends Vue {
 
   // UI flags
   private showDetails: boolean = false;
+  private showQuery: boolean = false;
 
   // calculated properties
   private executionTimePercent: number = NaN;
@@ -133,6 +145,7 @@ export default class PlanNode extends Vue {
   private planService = new PlanService();
   private helpService = new HelpService();
   private colorService = new ColorService();
+  private syntaxHighlightService = new SyntaxHighlightService();
 
   private created(): void {
     this.currentHighlightType = this.viewOptions.highlightType;
@@ -238,10 +251,40 @@ export default class PlanNode extends Vue {
   private getBarColor(percent: number) {
     return this.colorService.numberToColorHsl(percent);
   }
+
+  private getFormattedQuery(): string {
+    const keyItems: string[] = [];
+
+    // relation name will be highlighted for SCAN nodes
+    const relationName: string = this.node[this.planService.RELATION_NAME_PROP];
+    if (relationName) {
+      keyItems.push(this.node[this.planService.SCHEMA_PROP] + '.' + relationName);
+      keyItems.push(' ' + relationName);
+      keyItems.push(' ' + this.node[this.planService.ALIAS_PROP] + ' ');
+    }
+
+    // group key will be highlighted for AGGREGATE nodes
+    const groupKey: string[] = this.node[this.planService.GROUP_KEY_PROP];
+    if (groupKey) {
+      keyItems.push('GROUP BY ' + groupKey.join(','));
+    }
+
+    // hash condition will be highlighted for HASH JOIN nodes
+    const hashCondition: string = this.node[this.planService.HASH_CONDITION_PROP];
+    if (hashCondition) {
+      keyItems.push(hashCondition.replace('(', '').replace(')', ''));
+    }
+
+    if (this.node[this.planService.NODE_TYPE_PROP].toUpperCase() === 'LIMIT') {
+      keyItems.push('LIMIT');
+    }
+    return this.syntaxHighlightService.highlight(this.plan.query, keyItems);
+  }
 }
 </script>
 
 <style lang="scss">
 @import '../assets/scss/variables';
 @import '../assets/scss/plan-node';
+@import '../assets/scss/highlight';
 </style>

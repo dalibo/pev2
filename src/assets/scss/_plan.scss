@@ -2,7 +2,9 @@ $connector-height: 12px;
 $connector-line: 2px solid darken($line-color, 10%);
 
 .plan {
+  font-family: $font-family-sans-serif;
   padding-bottom: $padding-lg * 3;
+  line-height: $line-height-base;
 
   ul {
     display: flex;
@@ -73,5 +75,19 @@ $connector-line: 2px solid darken($line-color, 10%);
         border-color:  $highlight-color-dark;
       }
     }
+  }
+
+  .btn-slim {
+    .fa { margin: 0 };
+  }
+
+  .btn-close {
+    @extend .btn-slim;
+    border-radius: 50%;
+    box-shadow: 0;
+    line-height: 1.5;
+    border: 1px solid $line-color;
+    background-color: #fff;
+    font-size: $font-size-sm;
   }
 }

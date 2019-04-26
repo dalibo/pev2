@@ -1,0 +1,68 @@
+.hljs, .hljs-subst {
+  color: $text-color;
+}
+
+.hljs-keyword,
+.hljs-attribute,
+.hljs-selector-tag,
+.hljs-meta-keyword,
+.hljs-doctag,
+.hljs-name {
+  color: $dark-blue;
+  font-weight: bold;
+}
+
+.hljs-built_in,
+.hljs-literal,
+.hljs-bullet,
+.hljs-code,
+.hljs-addition {
+  color: $dark-blue;
+  font-weight: bold;
+}
+
+.hljs-regexp,
+.hljs-symbol,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-link,
+.hljs-selector-attr,
+.hljs-selector-pseudo {
+  color: $dark-blue;
+  font-weight: bold;
+}
+
+.hljs-type,
+.hljs-string,
+.hljs-number,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-quote,
+.hljs-template-tag,
+.hljs-deletion {
+  color: $green;
+  font-weight: 600;
+}
+
+.hljs-title,
+.hljs-section {
+  color: $dark-blue;
+  font-weight: bold;
+}
+
+.hljs-comment {
+  color: $text-color-light;
+  font-style: italic;
+}
+
+.hljs-meta {
+  color: $text-color-light;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 600;
+}

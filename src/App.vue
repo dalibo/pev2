@@ -17,8 +17,7 @@ import PlanNode from './components/PlanNode.vue';
 import { HighlightType, ViewMode } from './enums';
 
 import SAMPLE_JSON from './plan.json';
-const SAMPLE_QUERY = `
-SELECT c.state,
+const SAMPLE_QUERY = `SELECT c.state,
   cat.categoryname,
   sum(o.netamount),
   sum(o.totalamount)
@@ -29,8 +28,7 @@ FROM customers c
   INNER JOIN products p ON ol.prod_id = p.prod_id
   INNER JOIN categories cat ON p.category = cat.category
 GROUP BY c.state, cat.categoryname
-ORDER BY c.state, sum(o.totalamount) DESC
-LIMIT 10 OFFSET 1`;
+ORDER BY c.state, sum(o.totalamount) DESC LIMIT 10 OFFSET 1`;
 
 @Component({
   components: {
@@ -78,6 +76,7 @@ export default class App extends Vue {
 @import 'assets/scss/variables';
 @import 'assets/scss/reset';
 @import 'assets/scss/plan';
+@import 'assets/scss/fonts';
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

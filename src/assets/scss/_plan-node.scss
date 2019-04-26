@@ -101,6 +101,105 @@
   .btn-default {
     border: 0;
   }
+
+  .text-muted {
+    color: $text-color-light;
+  }
+
+  .plan-query-container {
+    border: 1px solid $line-color;
+    padding: $padding-xl;
+    background-color: #fff;
+    position: absolute;
+    box-shadow: 0px 0px 10px 2px rgba(0,0,0,0.3);
+    border-radius: $border-radius-base;
+    margin-bottom: $padding-xl;
+    z-index: 6;
+    left: 0;
+
+    pre {
+      overflow: initial;
+    }
+
+    code {
+      font-weight: 300;
+      font-family: $font-family-mono;
+    }
+
+    .plan-query-text {
+      background-color: #fff;
+      font-family: $font-family-mono;
+      text-align: left;
+
+      .code-key-item {
+        background-color: $yellow;
+        font-weight: 600;
+        padding: 1px;
+      }
+    }
+
+    h3 {
+      font-size: $font-size-lg;
+      width: 93%;
+      text-align: left;
+      border-bottom: 1px solid $line-color;
+      padding-bottom: $padding-base;
+      margin-bottom: $padding-lg;
+    }
+  }
+
+  .plan-stats {
+    display: flex;
+    font-size: $font-size-base;
+    margin: $padding-lg auto $padding-lg auto;
+    padding-bottom: $padding-lg;
+    border-bottom: 1px solid $line-color;
+    border-radius: $border-radius-lg*2;
+    width: 650px;
+    position: relative;
+
+    div {
+      padding-right: $padding-lg;
+      flex-grow: 1;
+    }
+
+    .stat-value {
+      display: block;
+      text-align: center;
+      font-size: $font-size-lg;
+    }
+
+    .stat-label {
+      display: block;
+      text-align: center;
+      font-size: $font-size-sm;
+    }
+
+    $triangle-size: 9px;
+    &:after {
+      content:'';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: $triangle-size*-1;
+      width: 0;
+      height: 0;
+      border-top: solid $triangle-size $line-color;
+      border-left: solid $triangle-size transparent;
+      border-right: solid $triangle-size transparent;
+    }
+
+    .btn-close {
+      padding: $padding-base;
+      background-color: transparent;
+      font-size: $font-size-lg;
+      text-align: center;
+      //@extend .text-muted;
+      margin-left: $padding-base;
+      cursor: pointer;
+      border: 0;
+    }
+  }
 }
 
 .node-bar-container {
