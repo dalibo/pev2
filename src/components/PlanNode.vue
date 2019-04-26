@@ -53,7 +53,7 @@
         <span v-for="tag in tags">{{getTagName(tag)}}</span>
       </div>
 
-      <div v-if="currentHighlightType !== highlightTypes.NONE">
+      <div v-if="viewOptions.highlightType !== highlightTypes.NONE">
         <div class="progress node-bar-container" style="height: 5px;">
           <div class="progress-bar" role="progressbar" v-bind:style="{ width: barWidth + '%', 'background-color': getBarColor(barWidth)}" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { PlanService } from '../plan-service';
 import { HelpService } from '../help-service';
 import { ColorService } from '../color-service';
@@ -133,7 +133,6 @@ export default class PlanNode extends Vue {
   private plannerRowEstimateDirection?: EstimateDirection;
 
   // required for custom change detection
-  private currentHighlightType?: string;
   private currentCompactView?: boolean;
   private currentExpandedView?: boolean;
 
@@ -148,7 +147,6 @@ export default class PlanNode extends Vue {
   private syntaxHighlightService = new SyntaxHighlightService();
 
   private created(): void {
-    this.currentHighlightType = this.viewOptions.highlightType;
     this.calculateBar();
     this.calculateProps();
     this.calculateDuration();
@@ -227,9 +225,10 @@ export default class PlanNode extends Vue {
     return true;
   }
 
+  @Watch('viewOptions.highlightType')
   private calculateBar() {
     let value: number;
-    switch (this.currentHighlightType) {
+    switch (this.viewOptions.highlightType) {
       case HighlightType.DURATION:
         value = (this.node[this.planService.ACTUAL_DURATION_PROP]);
         this.barWidth = Math.round(value / this.plan.planStats.maxDuration * 100);

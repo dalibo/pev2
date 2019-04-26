@@ -1,5 +1,42 @@
 <template>
   <div id="app">
+
+    <div class="menu small p-2 bg-light border rounded" :class="{'menu-hidden': hideMenu}">
+      <header>
+        <button v-on:click="hideMenu = !hideMenu" class="btn p-0">
+          <i class="fa fa-cogs"></i>
+        </button>
+      </header>
+      <ul>
+        <li>
+          <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate">
+          <label class="clickable" for="showPlannerEstimate"> show planner estimate</label>
+        </li>
+        <li>
+          <input id="showTags" type="checkbox" v-model="viewOptions.showTags">
+          <label class="clickable" for="showTags"> show analysis tags</label>
+        </li>
+        <li>
+          <label>view mode: </label>
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.FULL}" v-on:click="viewOptions.viewMode = viewModes.FULL">full</button>
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.COMPACT}" v-on:click="viewOptions.viewMode = viewModes.COMPACT">compact</button>
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.DOT}" v-on:click="viewOptions.viewMode = viewModes.DOT">dot</button>
+          </div>
+        </li>
+
+        <li>
+          <label>graph metric: </label>
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION">duration</button>
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS">rows</button>
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
     <div class="plan">
       <ul>
         <li>
@@ -39,9 +76,9 @@ export default class App extends Vue {
   private plan: any;
   private node = SAMPLE_JSON[0].Plan;
   private rootContainer: any;
+  private hideMenu: boolean = true;
 
   private viewOptions: any = {
-    showPlanStats: true,
     showHighlightBar: true,
     showPlannerEstimate: true,
     showTags: true,
@@ -77,12 +114,22 @@ export default class App extends Vue {
 @import 'assets/scss/reset';
 @import 'assets/scss/plan';
 @import 'assets/scss/fonts';
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  background-color: #f7f7f7;
+
+  .menu {
+    position: absolute;
+    z-index: 1;
+
+    &-hidden {
+
+      ul, h3 {
+        display: none;
+      }
+    }
+  }
 }
 </style>
