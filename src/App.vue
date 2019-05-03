@@ -1,40 +1,41 @@
 <template>
   <div id="app">
-    <div class="container">
+    <div class="navbar container">
+      <button v-on:click="planJson = null" class="btn btn-primary ml-auto">
+        New Plan
+      </button>
+    </div>
+    <div class="container" v-if="!planJson">
+      <ul class="list-inline">
+        <li v-for="(sample, index) in samples" class="list-inline-item">
+          <a v-on:click.prevent="loadSample(sample)" href>
+            Example {{ index }}
+          </a>
+        </li>
+      </ul>
       <form v-on:submit.prevent="submitPlan">
         <div class="form-group">
           <label for="planInput">Plan</label>
-          <textarea class="form-control" id="planInput" rows="3" v-model="planInput"></textarea>
+          <textarea class="form-control" id="planInput" rows="8" v-model="planInput"></textarea>
         </div>
         <div class="form-group">
           <label for="queryInput">Query</label>
-          <textarea class="form-control" id="queryInput" rows="3" v-model="queryInput"></textarea>
+          <textarea class="form-control" id="queryInput" rows="8" v-model="queryInput"></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+      <p v-if="validationMessage" class="alert alert-danger">{{validationMessage}}</p>
     </div>
-    <p v-if="validationMessage" class="alert alert-danger">{{validationMessage}}</p>
-    <Plan :plan-json="planJson" :plan-query="planQuery" v-if="planJson"/>
+    <template v-else>
+      <Plan :plan-json="planJson" :plan-query="planQuery" />
+    </template>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Plan from './components/Plan.vue';
-
-import SAMPLE_JSON from './plan.json';
-const SAMPLE_QUERY = `SELECT c.state,
-  cat.categoryname,
-  sum(o.netamount),
-  sum(o.totalamount)
-FROM customers c
-  INNER JOIN cust_hist ch ON c.customerid = ch.customerid
-  INNER JOIN orders o ON ch.orderid = o.orderid
-  INNER JOIN orderlines ol ON ol.orderid = o.orderid
-  INNER JOIN products p ON ol.prod_id = p.prod_id
-  INNER JOIN categories cat ON p.category = cat.category
-GROUP BY c.state, cat.categoryname
-ORDER BY c.state, sum(o.totalamount) DESC LIMIT 10 OFFSET 1`;
+import {SAMPLES} from './samples';
 
 @Component({
   components: {
@@ -44,9 +45,14 @@ ORDER BY c.state, sum(o.totalamount) DESC LIMIT 10 OFFSET 1`;
 export default class App extends Vue {
   private planJson: any = null;
   private planQuery: string = '';
-  private planInput: string = JSON.stringify(SAMPLE_JSON, null, '  ');
-  private queryInput: string = SAMPLE_QUERY;
+  private samples: any[] = SAMPLES;
+  private planInput: string = '';
+  private queryInput: string = '';
   private validationMessage: string = '';
+
+  private created(): void {
+    this.loadSample(this.samples[0]);
+  }
 
   private submitPlan(): void {
     try {
@@ -58,6 +64,11 @@ export default class App extends Vue {
     }
 
     this.planQuery = this.queryInput;
+  }
+
+  private loadSample(sample: any[]): void {
+    this.planInput = JSON.stringify(sample[0], null, '  ');
+    this.queryInput = sample[1];
   }
 }
 </script>

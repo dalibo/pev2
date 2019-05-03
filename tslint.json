@@ -6,7 +6,9 @@
   "linterOptions": {
     "exclude": [
       "node_modules/**",
-      "src/plan.json"
+      "src/plan.json",
+      "src/plan2.json",
+      "src/plan3.json"
     ]
   },
   "rules": {

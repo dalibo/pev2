@@ -66,10 +66,10 @@ export default class Plan extends Vue {
   private hideMenu: boolean = true;
 
   private viewOptions: any = {
-    showHighlightBar: true,
-    showPlannerEstimate: true,
+    showHighlightBar: false,
+    showPlannerEstimate: false,
     showTags: true,
-    highlightType: HighlightType.DURATION,
+    highlightType: HighlightType.NONE,
     viewMode: ViewMode.FULL,
   };
 
