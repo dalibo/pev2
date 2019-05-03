@@ -1,5 +1,26 @@
+@import 'variables';
+@import 'reset';
+@import 'fonts';
 $connector-height: 12px;
 $connector-line: 2px solid darken($line-color, 10%);
+
+.plan-container {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  .menu {
+    position: absolute;
+    z-index: 1;
+
+    &-hidden {
+
+      ul, h3 {
+        display: none;
+      }
+    }
+  }
+}
 
 .plan {
   font-family: $font-family-sans-serif;
