@@ -25,15 +25,15 @@
         </div>
 
         <div class="relation-name" v-if="node[planService.GROUP_KEY_PROP]">
-          <span class="text-muted">by</span> {{node[planService.GROUP_KEY_PROP]}}</div>
+          <span class="text-muted">by</span> {{node[planService.GROUP_KEY_PROP] | keysToString }}</div>
         <div class="relation-name" v-if="node[planService.SORT_KEY_PROP]">
-          <span class="text-muted">by</span> {{node[planService.SORT_KEY_PROP]}}</div>
-        <div class="relation-name" v-if="node[planService.JOIN_TYPE_PROP]">{{node[planService.JOIN_TYPE_PROP]}}
+          <span class="text-muted">by</span> {{node[planService.SORT_KEY_PROP] | keysToString }}</div>
+        <div class="relation-name" v-if="node[planService.JOIN_TYPE_PROP]">{{node[planService.JOIN_TYPE_PROP] | keysToString }}
           <span class="text-muted">join</span></div>
         <div class="relation-name" v-if="node[planService.INDEX_NAME_PROP]"><span class="text-muted">
-            using</span> {{node[planService.INDEX_NAME_PROP]}}</div>
+            using</span> {{node[planService.INDEX_NAME_PROP] | keysToString }}</div>
         <div class="relation-name" v-if="node[planService.HASH_CONDITION_PROP]"><span class="text-muted">
-            on</span> {{node[planService.HASH_CONDITION_PROP]}}</div>
+            on</span> {{node[planService.HASH_CONDITION_PROP] | keysToString }}</div>
         <div class="relation-name" v-if="node[planService.CTE_NAME_PROP]">
           <span class="text-muted">CTE</span> {{node[planService.CTE_NAME_PROP]}}
         </div>
@@ -97,7 +97,7 @@ import { PlanService } from '../plan-service';
 import { HelpService } from '../help-service';
 import { ColorService } from '../color-service';
 import { SyntaxHighlightService } from '../syntax-highlight-service';
-import { duration, durationUnit } from '../filters';
+import { duration, durationUnit, keysToString } from '../filters';
 import { EstimateDirection, HighlightType, ViewMode } from '../enums';
 import * as _ from 'lodash';
 import numeral from 'numeral';
@@ -106,6 +106,7 @@ import numeral from 'numeral';
   filters: {
     duration,
     durationUnit,
+    keysToString,
   },
 })
 export default class PlanNode extends Vue {

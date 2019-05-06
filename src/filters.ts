@@ -29,3 +29,11 @@ export function durationUnit(value: number): string {
   }
   return unit;
 }
+
+export function keysToString(value: any): string {
+  if (!(value instanceof Array)) {
+    value = [value];
+  }
+  value = _.map(value, (v) => v.replace(/(^\(|\)$)/g, ''));
+  return value.join(', ');
+}
