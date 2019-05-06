@@ -269,9 +269,13 @@ export default class PlanNode extends Vue {
     }
 
     // hash condition will be highlighted for HASH JOIN nodes
-    const hashCondition: string = this.node[this.planService.HASH_CONDITION_PROP];
+    let hashCondition: string = this.node[this.planService.HASH_CONDITION_PROP];
     if (hashCondition) {
-      keyItems.push(hashCondition.replace('(', '').replace(')', ''));
+      hashCondition = hashCondition.replace('(', '').replace(')', '');
+      keyItems.push(hashCondition);
+
+      // also use reversed condition
+      keyItems.push(_.reverse(hashCondition.split(' ')).join(' '));
     }
 
     if (this.node[this.planService.NODE_TYPE_PROP].toUpperCase() === 'LIMIT') {
