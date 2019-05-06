@@ -278,9 +278,10 @@ export default class PlanNode extends Vue {
       keyItems.push(_.reverse(hashCondition.split(' ')).join(' '));
     }
 
-    const sortKey: string[] = this.node[this.planService.SORT_KEY_PROP];
+    let sortKey: string[] = this.node[this.planService.SORT_KEY_PROP];
     if (sortKey) {
-      keyItems.push('ORDER BY ' + sortKey.join(','));
+      sortKey = _.map(sortKey, (k) => k.replace('(', '').replace(')', ''));
+      keyItems.push('ORDER BY ' + sortKey.join(', '));
     }
 
     if (this.node[this.planService.NODE_TYPE_PROP].toUpperCase() === 'LIMIT') {
