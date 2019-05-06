@@ -265,7 +265,7 @@ export default class PlanNode extends Vue {
     // group key will be highlighted for AGGREGATE nodes
     const groupKey: string[] = this.node[this.planService.GROUP_KEY_PROP];
     if (groupKey) {
-      keyItems.push('GROUP BY ' + groupKey.join(','));
+      keyItems.push('GROUP BY ' + groupKey.join(', '));
     }
 
     // hash condition will be highlighted for HASH JOIN nodes
@@ -276,6 +276,11 @@ export default class PlanNode extends Vue {
 
       // also use reversed condition
       keyItems.push(_.reverse(hashCondition.split(' ')).join(' '));
+    }
+
+    const sortKey: string[] = this.node[this.planService.SORT_KEY_PROP];
+    if (sortKey) {
+      keyItems.push('ORDER BY ' + sortKey.join(','));
     }
 
     if (this.node[this.planService.NODE_TYPE_PROP].toUpperCase() === 'LIMIT') {
