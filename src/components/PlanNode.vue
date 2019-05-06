@@ -5,7 +5,7 @@
         <h4>
           {{ getNodeName() }}
         </h4>
-        <span>
+        <span v-if="viewOptions.viewMode === viewModes.FULL">
           <span class="node-duration">{{node[planService.ACTUAL_DURATION_PROP] | duration}}<span class="text-muted">{{node[planService.ACTUAL_DURATION_PROP] | durationUnit}} | </span>
           <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
           </span>
@@ -192,7 +192,11 @@ export default class PlanNode extends Vue {
   }
 
   private getNodeName(): string {
-    return (this.node['Node Type']).toUpperCase();
+    const nodeName = this.node[this.planService.NODE_TYPE_PROP];
+    if (this.viewOptions.viewMode === ViewMode.DOT && !this.showDetails) {
+      return nodeName.replace(/[^A-Z]/g, '').toUpperCase();
+    }
+    return nodeName.toUpperCase();
   }
 
   private getTagName(tagName: string) {

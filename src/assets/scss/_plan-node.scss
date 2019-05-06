@@ -12,9 +12,15 @@
   border-radius: $border-radius-base;
   overflow-wrap: break-word;
   word-wrap: break-word;
-  word-break: break-all;
-  width: 240px;
   box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
+
+  width: 240px;
+  .plan-container.compact & {
+    width: 140px;
+  }
+  .plan-container.dot & {
+    width: 50px;
+  }
 
   header {
     margin-bottom: $padding-base;
@@ -231,23 +237,5 @@
   padding: $padding-base $padding-lg !important;
   .tags span {
     margin-right: $padding-sm !important;
-  }
-}
-
-.compact .plan-node {
-  width: 140px;
-}
-
-.dot {
-  width: 30px;
-  overflow: hidden;
-  padding: $padding-sm;
-
-  .tags span {
-    margin-right: 1px;
-  }
-
-  .node-bar-container {
-    margin-top: $padding-sm;
   }
 }

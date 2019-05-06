@@ -1,5 +1,5 @@
 <template>
-  <div class="plan-container">
+  <div :class="['plan-container', viewOptions.viewMode]">
     <div class="menu p-2 bg-light border rounded-right border-left-0" :class="{'menu-hidden': menuHidden}">
       <header>
         <button v-on:click="menuHidden = !menuHidden" class="btn">
