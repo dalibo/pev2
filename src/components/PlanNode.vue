@@ -13,8 +13,10 @@
       </header>
 
       <button v-if="plan.query && viewOptions.viewMode === viewModes.FULL" title="view corresponding query"
-        class="btn btn-sm btn-default btn-slim pull-right" v-on:click="showQuery = !showQuery">
-        <i class="fa fa-database"></i>
+        class="btn btn-sm pull-right py-0 btn-link" v-on:click="showQuery = !showQuery">
+        <small>
+          <i class="fa fa-database"></i>
+        </small>
       </button>
 
       <div v-if="viewOptions.viewMode === viewModes.FULL">

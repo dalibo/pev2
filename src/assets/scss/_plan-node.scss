@@ -35,6 +35,8 @@
       font-size: $font-size-base;
       float: left;
       font-weight: 600;
+      margin: 0;
+      line-height: inherit;
     }
 
     .node-duration {
