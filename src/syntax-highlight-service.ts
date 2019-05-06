@@ -13,7 +13,7 @@ export class SyntaxHighlightService {
     // prior to syntax highlighting, we want to tag key items in the raw code. making the
     // query upper case and ensuring that all comma separated values have a space
     // makes it simpler to find the items we're looing for
-    let result: string = code.toUpperCase().replace(', ', ',');
+    let result: string = code.toUpperCase().replace(/,(?!$)\s{1,}/gm, ', ');
     _.each(keyItems, (keyItem: string) => {
       result = result.replace(keyItem.toUpperCase(), `${this.OPEN_TAG}${keyItem}${this.CLOSE_TAG}`);
     });
