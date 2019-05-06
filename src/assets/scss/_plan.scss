@@ -1,5 +1,4 @@
 @import 'variables';
-@import 'reset';
 @import 'fonts';
 $connector-height: 12px;
 $connector-line: 2px solid darken($line-color, 10%);
@@ -25,7 +24,12 @@ $connector-line: 2px solid darken($line-color, 10%);
 .plan {
   font-family: $font-family-sans-serif;
   padding-bottom: $padding-lg * 3;
-  line-height: $line-height-base;
+
+  ol, ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 
   ul {
     display: flex;

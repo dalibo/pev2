@@ -1,39 +1,43 @@
 <template>
   <div class="plan-container">
-    <div class="menu small p-2 bg-light border rounded" :class="{'menu-hidden': hideMenu}">
+    <div class="menu p-2 bg-light border rounded-right border-left-0" :class="{'menu-hidden': menuHidden}">
       <header>
-        <button v-on:click="hideMenu = !hideMenu" class="btn p-0">
-          <i class="fa fa-cogs"></i>
+        <button v-on:click="menuHidden = !menuHidden" class="btn">
+          <i class="fa fa-cogs p-0"></i>
         </button>
+        <strong v-if="!menuHidden">
+          Display Options
+        </strong>
       </header>
-      <ul>
-        <li>
-          <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate">
-          <label class="clickable" for="showPlannerEstimate"> show planner estimate</label>
-        </li>
-        <li>
-          <input id="showTags" type="checkbox" v-model="viewOptions.showTags">
-          <label class="clickable" for="showTags"> show analysis tags</label>
-        </li>
-        <li>
-          <label>view mode: </label>
+      <div v-if="!menuHidden">
+        <div class="form-group">
+          <div>
+            View
+          </div>
           <div class="btn-group btn-group-sm">
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.FULL}" v-on:click="viewOptions.viewMode = viewModes.FULL">full</button>
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.COMPACT}" v-on:click="viewOptions.viewMode = viewModes.COMPACT">compact</button>
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.DOT}" v-on:click="viewOptions.viewMode = viewModes.DOT">dot</button>
           </div>
-        </li>
-
-        <li>
-          <label>graph metric: </label>
+        </div>
+        <div class="form-group">
+          <div>Graph metric</div>
           <div class="btn-group btn-group-sm">
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION">duration</button>
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS">rows</button>
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
           </div>
-        </li>
-      </ul>
+        </div>
+        <div class="form-check">
+          <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate" class="form-check-input">
+          <label for="showPlannerEstimate" class="form-check-label">Estimations</label>
+        </div>
+        <div class="form-check">
+          <input id="showTags" type="checkbox" v-model="viewOptions.showTags" class="form-check-input">
+          <label class="clickable" for="showTags"> Tags</label>
+        </div>
+      </div>
     </div>
 
     <div class="plan">
@@ -63,7 +67,7 @@ export default class Plan extends Vue {
   private plan: any;
   private node!: any;
   private rootContainer: any;
-  private hideMenu: boolean = true;
+  private menuHidden: boolean = true;
 
   private viewOptions: any = {
     showHighlightBar: false,
