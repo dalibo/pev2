@@ -50,15 +50,6 @@ export class PlanService {
   private maxCost: number = 0;
   private maxDuration: number = 0;
 
-  // Make this class a singleton
-  constructor() {
-    if (PlanService.instance) {
-      return PlanService.instance;
-    }
-
-    PlanService.instance = this;
-  }
-
   /*
   getPlans(): Array<IPlan> {
     var plans: Array<IPlan> = [];
