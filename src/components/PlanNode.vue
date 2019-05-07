@@ -85,9 +85,9 @@
       </div>
 
     </div>
-    <ul v-if="node.Plans">
-      <li v-for="subnode in node.Plans">
-        <PlanNode :node="subnode" :plan="plan" :viewOptions="viewOptions"/>
+    <ul v-if="plans">
+      <li v-for="subnode in plans">
+        <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions"/>
       </li>
     </ul>
   </div>
@@ -105,6 +105,7 @@ import * as _ from 'lodash';
 import numeral from 'numeral';
 
 @Component({
+  name: 'plan-node',
   filters: {
     duration,
     durationUnit,
@@ -131,6 +132,7 @@ export default class PlanNode extends Vue {
   private barWidth: number = 0;
   private highlightValue?: string;
   private props: any[] = [];
+  private plans: any[] = [];
   private tags: string[] = [];
   private plannerRowEstimateValue?: number;
   private plannerRowEstimateDirection?: EstimateDirection;
@@ -154,6 +156,8 @@ export default class PlanNode extends Vue {
     this.calculateProps();
     this.calculateDuration();
     this.calculateTags();
+
+    this.plans = this.node[this.planService.PLANS_PROP];
 
     this.plannerRowEstimateDirection = this.node[this.planService.PLANNER_ESIMATE_DIRECTION];
     this.plannerRowEstimateValue = _.round(this.node[this.planService.PLANNER_ESTIMATE_FACTOR]);

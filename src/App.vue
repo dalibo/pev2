@@ -27,7 +27,7 @@
       <p v-if="validationMessage" class="alert alert-danger">{{validationMessage}}</p>
     </div>
     <template v-else>
-      <Plan :plan-json="planJson" :plan-query="planQuery" />
+      <plan :plan-json="planJson" :plan-query="planQuery" />
     </template>
   </div>
 </template>

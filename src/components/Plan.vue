@@ -43,7 +43,7 @@
     <div class="plan grab-bing h-100 w-100">
       <ul>
         <li>
-          <PlanNode :node="node" :plan="plan" :viewOptions="viewOptions"/>
+          <plan-node :node="node" :plan="plan" :viewOptions="viewOptions"/>
         </li>
       </ul>
     </div>
@@ -62,6 +62,7 @@ Vue.use(VueDragscroll);
 import { dragscroll } from 'vue-dragscroll';
 
 @Component({
+  name: 'plan',
   components: {
     PlanNode,
   },
