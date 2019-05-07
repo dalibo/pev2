@@ -50,27 +50,6 @@ export class PlanService {
   private maxCost: number = 0;
   private maxDuration: number = 0;
 
-  /*
-  getPlans(): Array<IPlan> {
-    var plans: Array<IPlan> = [];
-
-    for (var i in localStorage) {
-      if (startsWith(i, this.PEV_PLAN_TAG)) {
-        plans.push(JSON.parse(localStorage[i]));
-      }
-    }
-
-    return chain(plans)
-    .sortBy('createdOn')
-    .reverse()
-    .value();
-  }
-
-  getPlan(id: string): IPlan {
-    return JSON.parse(localStorage.getItem(id));
-  }
-  */
-
   public createPlan(planName: string, planContent: any, planQuery: string): IPlan {
     // remove any extra white spaces in the middle of query
     // (?<=\S) start match after any non-whitespace character
@@ -90,17 +69,6 @@ export class PlanService {
     return plan;
   }
 
-  /*
-  isJsonString(str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-  */
-
   public analyzePlan(plan: IPlan) {
     this.processNode(plan.content.Plan);
     plan.content[this.MAXIMUM_ROWS_PROP] = this.maxRows;
@@ -108,19 +76,7 @@ export class PlanService {
     plan.content[this.MAXIMUM_DURATION_PROP] = this.maxDuration;
 
     this.findOutlierNodes(plan.content.Plan);
-
-    // localStorage.setItem(plan.id, JSON.stringify(plan));
   }
-
-  /*
-  deletePlan(plan: IPlan) {
-    localStorage.removeItem(plan.id);
-  }
-
-  deleteAllPlans() {
-    localStorage.clear();
-  }
-  */
 
   // recursively walk down the plan to compute various metrics
   public processNode(node: any) {
