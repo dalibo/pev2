@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="d-flex flex-column vh-100">
     <div class="navbar container">
       <button v-on:click="planJson = null" class="btn btn-primary ml-auto">
         New Plan
