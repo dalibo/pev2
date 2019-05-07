@@ -52,8 +52,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import PlanNode from './PlanNode.vue';
-import { PlanService } from '../plan-service';
+import PlanNode from '@/components/PlanNode.vue';
+import { PlanService } from '@/services/plan-service';
 import { HighlightType, ViewMode } from '../enums';
 
 @Component({

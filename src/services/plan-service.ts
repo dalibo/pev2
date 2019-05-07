@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
-import {EstimateDirection} from './enums';
-import { IPlan } from './iplan';
+import {EstimateDirection} from '@/enums';
+import { IPlan } from '@/iplan';
 import moment from 'moment';
 
 export class PlanService {

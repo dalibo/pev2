@@ -95,12 +95,12 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { PlanService } from '../plan-service';
-import { HelpService } from '../help-service';
-import { ColorService } from '../color-service';
-import { SyntaxHighlightService } from '../syntax-highlight-service';
-import { duration, durationUnit, keysToString } from '../filters';
-import { EstimateDirection, HighlightType, ViewMode } from '../enums';
+import { PlanService } from '@/services/plan-service';
+import { HelpService } from '@/services/help-service';
+import { ColorService } from '@/services/color-service';
+import { SyntaxHighlightService } from '@/services/syntax-highlight-service';
+import { duration, durationUnit, keysToString } from '@/filters';
+import { EstimateDirection, HighlightType, ViewMode } from '@/enums';
 import * as _ from 'lodash';
 import numeral from 'numeral';
 
