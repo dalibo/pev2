@@ -1,6 +1,7 @@
 import SAMPLE_JSON from './plan.json';
 import SAMPLE2_JSON from './plan2.json';
 import SAMPLE3_JSON from './plan3.json';
+import SAMPLE4_JSON from './plan4.json';
 
 const SAMPLE_QUERY = `SELECT c.state,
   cat.categoryname,
@@ -59,4 +60,5 @@ export const SAMPLES = [
   [SAMPLE_JSON, SAMPLE_QUERY],
   [SAMPLE2_JSON, SAMPLE2_QUERY],
   [SAMPLE3_JSON, SAMPLE3_QUERY],
+  [SAMPLE4_JSON, ''],
 ];
