@@ -18,6 +18,7 @@
     "numeral": "^2.0.6",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
+    "vue-dragscroll": "^1.8.3",
     "vue-property-decorator": "^8.1.0"
   },
   "devDependencies": {

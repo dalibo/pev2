@@ -20,12 +20,23 @@ $connector-line: 2px solid darken($line-color, 10%);
     }
   }
 
-  overflow: auto;
+  .grab-bing {
+    cursor : -webkit-grab;
+    cursor : -moz-grab;
+    cursor : -o-grab;
+    cursor : grab;
+  }
+
+  .grab-bing:active {
+    cursor : -webkit-grabbing;
+    cursor : -moz-grabbing;
+    cursor : -o-grabbing;
+    cursor : grabbing;
+  }
 }
 
 .plan {
   font-family: $font-family-sans-serif;
-  padding-bottom: $padding-lg * 3;
 
   ol, ul {
     list-style: none;

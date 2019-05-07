@@ -1,6 +1,6 @@
 <template>
-  <div :class="['plan-container', viewOptions.viewMode]">
-    <div class="menu p-2 bg-light border rounded-right border-left-0" :class="{'menu-hidden': menuHidden}">
+  <div :class="['plan-container overflow-auto flex-grow-1 bg-light', viewOptions.viewMode]" v-dragscroll>
+    <div class="menu p-2 bg-white border rounded-right border-left-0" :class="{'menu-hidden': menuHidden}">
       <header>
         <button v-on:click="menuHidden = !menuHidden" class="btn">
           <i class="fa fa-cogs p-0"></i>
@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <div class="plan">
+    <div class="plan grab-bing h-100 w-100">
       <ul>
         <li>
           <PlanNode :node="node" :plan="plan" :viewOptions="viewOptions"/>
@@ -56,9 +56,17 @@ import PlanNode from '@/components/PlanNode.vue';
 import { PlanService } from '@/services/plan-service';
 import { HighlightType, ViewMode } from '../enums';
 
+import VueDragscroll from 'vue-dragscroll';
+Vue.use(VueDragscroll);
+
+import { dragscroll } from 'vue-dragscroll';
+
 @Component({
   components: {
     PlanNode,
+  },
+  directives: {
+    dragscroll,
   },
 })
 export default class Plan extends Vue {
