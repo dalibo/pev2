@@ -16,6 +16,7 @@
       <form v-on:submit.prevent="submitPlan">
         <div class="form-group">
           <label for="planInput">Plan</label>
+          <p v-if="validationMessage" class="alert alert-danger">{{validationMessage}}</p>
           <textarea class="form-control" id="planInput" rows="8" v-model="planInput"></textarea>
         </div>
         <div class="form-group">
@@ -24,7 +25,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
-      <p v-if="validationMessage" class="alert alert-danger">{{validationMessage}}</p>
     </div>
     <template v-else>
       <plan :plan-json="planJson" :plan-query="planQuery" />
