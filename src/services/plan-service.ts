@@ -52,10 +52,11 @@ export class PlanService {
 
   public createPlan(planName: string, planContent: any, planQuery: string): IPlan {
     // remove any extra white spaces in the middle of query
-    // (?<=\S) start match after any non-whitespace character
+    // (\S) start match after any non-whitespace character => group 1
     // (?!$) don't start match after end of line
-    // \s{2,} replaces 2 or more consecutive white spaces
-    planQuery = planQuery.replace(/(?<=\S)(?!$)\s{2,}/gm, ' ');
+    // (\s{2,}) group of 2 or more white spaces
+    // '$1 ' reuse group 1 and and a single space
+    planQuery = planQuery.replace(/(\S)(?!$)(\s{2,})/gm, '$1 ');
 
     const plan: IPlan = {
       id: this.PEV_PLAN_TAG + new Date().getTime().toString(),
