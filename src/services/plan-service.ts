@@ -61,7 +61,7 @@ export class PlanService {
       id: this.PEV_PLAN_TAG + new Date().getTime().toString(),
       name: planName || 'plan created on ' + moment().format('LLL'),
       createdOn: new Date(),
-      content: planContent[0],
+      content: planContent,
       query: planQuery,
     };
 

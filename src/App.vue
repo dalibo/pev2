@@ -43,7 +43,7 @@ import {SAMPLES} from './samples';
   },
 })
 export default class App extends Vue {
-  private planJson: any = null;
+  private planJson: any | any[] = null;
   private planQuery: string = '';
   private samples: any[] = SAMPLES;
   private planInput: string = '';

@@ -71,7 +71,7 @@ import { dragscroll } from 'vue-dragscroll';
   },
 })
 export default class Plan extends Vue {
-  @Prop(Array) private planJson!: any[];
+  @Prop([Object, Array]) private planJson!: any | any[];
   @Prop(String) private planQuery!: string;
   private plan: any;
   private node!: any;
@@ -96,8 +96,12 @@ export default class Plan extends Vue {
   }
 
   private loadPlan(): void {
-    this.node = this.planJson[0].Plan;
-    this.plan = this.planService.createPlan('', this.planJson, this.planQuery);
+    let planJson = this.planJson;
+    if (planJson instanceof Array) {
+      planJson = planJson[0];
+    }
+    this.node = planJson.Plan;
+    this.plan = this.planService.createPlan('', planJson, this.planQuery);
     this.rootContainer = this.plan.content;
     this.plan.planStats = {
       executionTime: this.rootContainer['Execution Time'] || this.rootContainer['Total Runtime'],
