@@ -248,7 +248,7 @@ export default class PlanNode extends Vue {
       case HighlightType.ROWS:
         value = (this.node[this.planService.ACTUAL_ROWS_PROP]);
         this.barWidth = Math.round(value / this.plan.planStats.maxRows * 100);
-        this.highlightValue = numeral(value).format('0.00');
+        this.highlightValue = numeral(value).format('0');
         break;
       case HighlightType.COST:
         value = (this.node[this.planService.ACTUAL_COST_PROP]);
