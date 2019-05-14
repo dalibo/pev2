@@ -6,7 +6,8 @@
           {{ getNodeName() }}
         </h4>
         <span v-if="viewOptions.viewMode === viewModes.FULL">
-          <span class="node-duration">{{node[planService.ACTUAL_DURATION_PROP] | duration}}<span class="text-muted">{{node[planService.ACTUAL_DURATION_PROP] | durationUnit}} | </span>
+          <span class="node-duration" v-if="node[planService.ACTUAL_DURATION_PROP]">
+            {{node[planService.ACTUAL_DURATION_PROP] | duration}}<span class="text-muted">{{node[planService.ACTUAL_DURATION_PROP] | durationUnit}} | </span>
           <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
           </span>
         </span>
