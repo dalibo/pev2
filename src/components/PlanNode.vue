@@ -68,7 +68,7 @@
       <div class="planner-estimate" v-if="shouldShowPlannerEstimate()">
         <span v-if="plannerRowEstimateDirection === estimateDirections.over"><strong>over</strong> estimated rows</span>
         <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong>under</strong> estimated rows</span>
-        <span> by <strong>{{plannerRowEstimateValue}}</strong>x</span>
+        <span v-if="plannerRowEstimateValue != Infinity"> by <strong>{{plannerRowEstimateValue}}</strong>x</span>
       </div>
 
       <div v-if="showDetails">
