@@ -21,7 +21,8 @@
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-dragscroll": "^1.8.3",
-    "vue-property-decorator": "^8.1.0"
+    "vue-property-decorator": "^8.1.0",
+    "vue-router": "^3.0.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.6.0",
