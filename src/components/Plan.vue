@@ -43,8 +43,8 @@
     <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
       <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
     </div>
-    <div class="plan grab-bing h-100 w-100" v-else>
-      <ul>
+    <div class="plan grab-bing h-100 w-100 d-flex" v-else>
+      <ul class="align-self-center">
         <li>
           <plan-node :node="node" :plan="plan" :viewOptions="viewOptions"/>
         </li>
