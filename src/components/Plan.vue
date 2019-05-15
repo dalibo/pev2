@@ -40,7 +40,10 @@
       </div>
     </div>
 
-    <div class="plan grab-bing h-100 w-100">
+    <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
+      <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
+    </div>
+    <div class="plan grab-bing h-100 w-100" v-else>
       <ul>
         <li>
           <plan-node :node="node" :plan="plan" :viewOptions="viewOptions"/>
@@ -71,12 +74,12 @@ import { dragscroll } from 'vue-dragscroll';
   },
 })
 export default class Plan extends Vue {
-  @Prop([Object, Array]) private planJson!: any | any[];
+  @Prop(String) private planRaw!: string;
   @Prop(String) private planQuery!: string;
   private plan: any;
   private node!: any;
-  private rootContainer: any;
   private menuHidden: boolean = true;
+  private validationMessage: string = '';
 
   private viewOptions: any = {
     showHighlightBar: false,
@@ -92,23 +95,27 @@ export default class Plan extends Vue {
   private planService = new PlanService();
 
   private created(): void {
-    this.loadPlan();
-  }
+    let planJson: any | any[] = {};
+    try {
+      planJson = JSON.parse(this.planRaw);
+      this.validationMessage = '';
+    } catch (e) {
+      this.validationMessage = 'The string you submitted is not valid JSON';
+      return;
+    }
 
-  private loadPlan(): void {
-    let planJson = this.planJson;
     if (planJson instanceof Array) {
       planJson = planJson[0];
     }
     this.node = planJson.Plan;
     this.plan = this.planService.createPlan('', planJson, this.planQuery);
-    this.rootContainer = this.plan.content;
+    const content = this.plan.content;
     this.plan.planStats = {
-      executionTime: this.rootContainer['Execution Time'] || this.rootContainer['Total Runtime'],
-      planningTime: this.rootContainer['Planning Time'] || 0,
-      maxRows: this.rootContainer[this.planService.MAXIMUM_ROWS_PROP] || 0,
-      maxCost: this.rootContainer[this.planService.MAXIMUM_COSTS_PROP] || 0,
-      maxDuration: this.rootContainer[this.planService.MAXIMUM_DURATION_PROP] || 0,
+      executionTime: content['Execution Time'] || content['Total Runtime'],
+      planningTime: content['Planning Time'] || 0,
+      maxRows: content[this.planService.MAXIMUM_ROWS_PROP] || 0,
+      maxCost: content[this.planService.MAXIMUM_COSTS_PROP] || 0,
+      maxDuration: content[this.planService.MAXIMUM_DURATION_PROP] || 0,
     };
   }
 }

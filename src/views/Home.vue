@@ -15,7 +15,6 @@
     <form v-on:submit.prevent="submitPlan">
       <div class="form-group">
         <label for="planInput">Plan</label>
-        <p v-if="validationMessage" class="alert alert-danger">{{validationMessage}}</p>
         <textarea class="form-control" id="planInput" rows="8" v-model="planInput"></textarea>
       </div>
       <div class="form-group">
@@ -45,21 +44,13 @@ export default class App extends Vue {
   ];
   private planInput: string = '';
   private queryInput: string = '';
-  private validationMessage: string = '';
 
   private created(): void {
     this.loadSample(this.samples[0]);
   }
 
   private submitPlan(): void {
-    try {
-      planData[0] = JSON.parse(this.planInput);
-      this.validationMessage = '';
-    } catch (e) {
-      this.validationMessage = 'The string you submitted is not valid JSON';
-      return;
-    }
-
+    planData[0] = this.planInput;
     planData[1] = this.queryInput;
     router.push({ path: 'plan' });
   }

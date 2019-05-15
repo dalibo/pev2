@@ -1,5 +1,5 @@
 <template>
-  <plan v-if="plan" :plan-json="plan" :plan-query="planQuery" />
+  <plan v-if="planRaw" :plan-raw="planRaw" :plan-query="planQuery" />
 </template>
 
 <script lang="ts">
@@ -15,11 +15,11 @@ import { planData } from '@/App.vue';
   },
 })
 export default class App extends Vue {
-  private plan: any | any[] = planData[0];
+  private planRaw: any | any[] = planData[0];
   private planQuery: string = planData[1];
 
   private beforeMount() {
-    if (!this.plan) {
+    if (!this.planRaw) {
       router.push({ name: 'home' });
     }
   }
