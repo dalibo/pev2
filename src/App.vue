@@ -13,6 +13,11 @@
           </a>
         </li>
       </ul>
+      <div class="text-muted">
+        For best results, use <code>EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)</code>
+        <br>
+        <em>psql</em> users can export the plan to a file using <code>psql -qAt -f explain.sql > analyze.json</code>
+      </div>
       <form v-on:submit.prevent="submitPlan">
         <div class="form-group">
           <label for="planInput">Plan</label>
