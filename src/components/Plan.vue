@@ -24,13 +24,13 @@
           <div>Graph metric</div>
           <div class="btn-group btn-group-sm">
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!node[planService.ACTUAL_DURATION_PROP]">duration</button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="!node[planService.ACTUAL_ROWS_PROP]">rows</button>
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!node[nodeProps.ACTUAL_DURATION]">duration</button>
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="!node[nodeProps.ACTUAL_ROWS]">rows</button>
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
           </div>
         </div>
         <div class="form-check">
-          <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate" class="form-check-input" :disabled="!node[planService.ACTUAL_ROWS_PROP]">
+          <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate" class="form-check-input" :disabled="!node[nodeProps.ACTUAL_ROWS]">
           <label for="showPlannerEstimate" class="form-check-label">Estimations</label>
         </div>
         <div class="form-check">
@@ -57,7 +57,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
 import { PlanService } from '@/services/plan-service';
-import { HighlightType, ViewMode } from '../enums';
+import { HighlightType, NodeProp, ViewMode } from '../enums';
 
 import VueDragscroll from 'vue-dragscroll';
 Vue.use(VueDragscroll);
@@ -93,6 +93,7 @@ export default class Plan extends Vue {
   private viewModes = ViewMode;
 
   private planService = new PlanService();
+  private nodeProps = NodeProp;
 
   private created(): void {
     let planJson: any | any[] = {};
@@ -113,9 +114,9 @@ export default class Plan extends Vue {
     this.plan.planStats = {
       executionTime: content['Execution Time'] || content['Total Runtime'],
       planningTime: content['Planning Time'] || 0,
-      maxRows: content[this.planService.MAXIMUM_ROWS_PROP] || 0,
-      maxCost: content[this.planService.MAXIMUM_COSTS_PROP] || 0,
-      maxDuration: content[this.planService.MAXIMUM_DURATION_PROP] || 0,
+      maxRows: content[NodeProp.MAXIMUM_ROWS] || 0,
+      maxCost: content[NodeProp.MAXIMUM_COSTS] || 0,
+      maxDuration: content[NodeProp.MAXIMUM_DURATION] || 0,
     };
   }
 }

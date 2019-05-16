@@ -6,8 +6,8 @@
           {{ getNodeName() }}
         </h4>
         <span v-if="viewOptions.viewMode === viewModes.FULL">
-          <span class="node-duration" v-if="node[planService.ACTUAL_DURATION_PROP]">
-            {{node[planService.ACTUAL_DURATION_PROP] | duration}}<span class="text-muted">{{node[planService.ACTUAL_DURATION_PROP] | durationUnit}} | </span>
+          <span class="node-duration" v-if="node[nodeProps.ACTUAL_DURATION]">
+            {{node[nodeProps.ACTUAL_DURATION] | duration}}<span class="text-muted">{{node[nodeProps.ACTUAL_DURATION] | durationUnit}} | </span>
           <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
           </span>
         </span>
@@ -21,24 +21,24 @@
       </button>
 
       <div v-if="viewOptions.viewMode === viewModes.FULL">
-        <div class="relation-name" v-if="node[planService.RELATION_NAME_PROP]">
+        <div class="relation-name" v-if="node[nodeProps.RELATION_NAME]">
           <span class="text-muted">on </span>
-          <span v-if="node[planService.SCHEMA_PROP]">{{node[planService.SCHEMA_PROP]}}.</span>{{node[planService.RELATION_NAME_PROP]}}
-          <span v-if="node[planService.ALIAS_PROP]"> ({{node[planService.ALIAS_PROP]}})</span>
+          <span v-if="node[nodeProps.SCHEMA]">{{node[nodeProps.SCHEMA]}}.</span>{{node[nodeProps.RELATION_NAME]}}
+          <span v-if="node[nodeProps.ALIAS]"> ({{node[nodeProps.ALIAS]}})</span>
         </div>
 
-        <div class="relation-name" v-if="node[planService.GROUP_KEY_PROP]">
-          <span class="text-muted">by</span> {{node[planService.GROUP_KEY_PROP] | keysToString }}</div>
-        <div class="relation-name" v-if="node[planService.SORT_KEY_PROP]">
-          <span class="text-muted">by</span> {{node[planService.SORT_KEY_PROP] | keysToString }}</div>
-        <div class="relation-name" v-if="node[planService.JOIN_TYPE_PROP]">{{node[planService.JOIN_TYPE_PROP] | keysToString }}
+        <div class="relation-name" v-if="node[nodeProps.GROUP_KEY]">
+          <span class="text-muted">by</span> {{node[nodeProps.GROUP_KEY] | keysToString }}</div>
+        <div class="relation-name" v-if="node[nodeProps.SORT_KEY]">
+          <span class="text-muted">by</span> {{node[nodeProps.SORT_KEY] | keysToString }}</div>
+        <div class="relation-name" v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] | keysToString }}
           <span class="text-muted">join</span></div>
-        <div class="relation-name" v-if="node[planService.INDEX_NAME_PROP]"><span class="text-muted">
-            using</span> {{node[planService.INDEX_NAME_PROP] | keysToString }}</div>
-        <div class="relation-name" v-if="node[planService.HASH_CONDITION_PROP]"><span class="text-muted">
-            on</span> {{node[planService.HASH_CONDITION_PROP] | keysToString }}</div>
-        <div class="relation-name" v-if="node[planService.CTE_NAME_PROP]">
-          <span class="text-muted">CTE</span> {{node[planService.CTE_NAME_PROP]}}
+        <div class="relation-name" v-if="node[nodeProps.INDEX_NAME]"><span class="text-muted">
+            using</span> {{node[nodeProps.INDEX_NAME] | keysToString }}</div>
+        <div class="relation-name" v-if="node[nodeProps.HASH_CONDITION]"><span class="text-muted">
+            on</span> {{node[nodeProps.HASH_CONDITION] | keysToString }}</div>
+        <div class="relation-name" v-if="node[nodeProps.CTE_NAME]">
+          <span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
         </div>
       </div>
 
@@ -73,7 +73,7 @@
 
       <div v-if="showDetails">
         <div v-if="getNodeTypeDescription()" class="node-description">
-          <span class="node-type">{{node[planService.NODE_TYPE_PROP]}} Node</span>&nbsp;<span v-html="getNodeTypeDescription()"></span>
+          <span class="node-type">{{node[nodeProps.NODE_TYPE]}} Node</span>&nbsp;<span v-html="getNodeTypeDescription()"></span>
         </div>
         <table class="table table-sm prop-list">
           <tr v-for="prop in props">
@@ -96,12 +96,11 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { PlanService } from '@/services/plan-service';
 import { HelpService } from '@/services/help-service';
 import { ColorService } from '@/services/color-service';
 import { SyntaxHighlightService } from '@/services/syntax-highlight-service';
 import { duration, durationUnit, keysToString } from '@/filters';
-import { EstimateDirection, HighlightType, ViewMode } from '@/enums';
+import { EstimateDirection, HighlightType, NodeProp, ViewMode } from '@/enums';
 import * as _ from 'lodash';
 import numeral from 'numeral';
 
@@ -147,7 +146,7 @@ export default class PlanNode extends Vue {
   private highlightTypes = HighlightType;
   private viewModes = ViewMode;
 
-  private planService = new PlanService();
+  private nodeProps = NodeProp;
   private helpService = new HelpService();
   private colorService = new ColorService();
   private syntaxHighlightService = new SyntaxHighlightService();
@@ -158,21 +157,21 @@ export default class PlanNode extends Vue {
     this.calculateDuration();
     this.calculateTags();
 
-    this.plans = this.node[this.planService.PLANS_PROP];
+    this.plans = this.node[NodeProp.PLANS];
 
-    this.plannerRowEstimateDirection = this.node[this.planService.PLANNER_ESIMATE_DIRECTION];
-    this.plannerRowEstimateValue = _.round(this.node[this.planService.PLANNER_ESTIMATE_FACTOR]);
+    this.plannerRowEstimateDirection = this.node[NodeProp.PLANNER_ESIMATE_DIRECTION];
+    this.plannerRowEstimateValue = _.round(this.node[NodeProp.PLANNER_ESTIMATE_FACTOR]);
   }
 
   private calculateDuration() {
     this.executionTimePercent = _.round(
-      (this.node[this.planService.ACTUAL_DURATION_PROP] / this.plan.planStats.executionTime) * 100);
+      (this.node[NodeProp.ACTUAL_DURATION] / this.plan.planStats.executionTime) * 100);
   }
 
   // create an array of node propeties so that they can be displayed in the view
   private calculateProps() {
     this.props = _.chain(this.node)
-      .omit(this.planService.PLANS_PROP)
+      .omit(NodeProp.PLANS)
       .map((value, key) => {
         return { key, value };
       })
@@ -180,26 +179,26 @@ export default class PlanNode extends Vue {
   }
 
   private calculateTags() {
-    if (this.node[this.planService.SLOWEST_NODE_PROP]) {
+    if (this.node[NodeProp.SLOWEST_NODE]) {
       this.tags.push(this.SLOW_TAG);
     }
-    if (this.node[this.planService.COSTLIEST_NODE_PROP]) {
+    if (this.node[NodeProp.COSTLIEST_NODE]) {
       this.tags.push(this.COSTLY_TAG);
     }
-    if (this.node[this.planService.LARGEST_NODE_PROP]) {
+    if (this.node[NodeProp.LARGEST_NODE]) {
       this.tags.push(this.LARGE_TAG);
     }
-    if (this.node[this.planService.PLANNER_ESTIMATE_FACTOR] >= this.MIN_ESTIMATE_MISS) {
+    if (this.node[NodeProp.PLANNER_ESTIMATE_FACTOR] >= this.MIN_ESTIMATE_MISS) {
       this.tags.push(this.ESTIMATE_TAG);
     }
   }
 
   private getNodeTypeDescription() {
-    return this.helpService.getNodeTypeDescription(this.node[this.planService.NODE_TYPE_PROP]);
+    return this.helpService.getNodeTypeDescription(this.node[NodeProp.NODE_TYPE]);
   }
 
   private getNodeName(): string {
-    const nodeName = this.node[this.planService.NODE_TYPE_PROP];
+    const nodeName = this.node[NodeProp.NODE_TYPE];
     if (this.viewOptions.viewMode === ViewMode.DOT && !this.showDetails) {
       return nodeName.replace(/[^A-Z]/g, '').toUpperCase();
     }
@@ -242,17 +241,17 @@ export default class PlanNode extends Vue {
     let value: number;
     switch (this.viewOptions.highlightType) {
       case HighlightType.DURATION:
-        value = (this.node[this.planService.ACTUAL_DURATION_PROP]);
+        value = (this.node[NodeProp.ACTUAL_DURATION]);
         this.barWidth = Math.round(value / this.plan.planStats.maxDuration * 100);
         this.highlightValue = duration(value) + durationUnit(value);
         break;
       case HighlightType.ROWS:
-        value = (this.node[this.planService.ACTUAL_ROWS_PROP]);
+        value = (this.node[NodeProp.ACTUAL_ROWS]);
         this.barWidth = Math.round(value / this.plan.planStats.maxRows * 100);
         this.highlightValue = numeral(value).format('0');
         break;
       case HighlightType.COST:
-        value = (this.node[this.planService.ACTUAL_COST_PROP]);
+        value = (this.node[NodeProp.ACTUAL_COST]);
         this.barWidth = Math.round(value / this.plan.planStats.maxCost * 100);
         this.highlightValue = numeral(value).format('0.00');
         break;
@@ -267,21 +266,21 @@ export default class PlanNode extends Vue {
     const keyItems: string[] = [];
 
     // relation name will be highlighted for SCAN nodes
-    const relationName: string = this.node[this.planService.RELATION_NAME_PROP];
+    const relationName: string = this.node[NodeProp.RELATION_NAME];
     if (relationName) {
-      keyItems.push(this.node[this.planService.SCHEMA_PROP] + '.' + relationName);
+      keyItems.push(this.node[NodeProp.SCHEMA] + '.' + relationName);
       keyItems.push(' ' + relationName);
-      keyItems.push(' ' + this.node[this.planService.ALIAS_PROP] + ' ');
+      keyItems.push(' ' + this.node[NodeProp.ALIAS] + ' ');
     }
 
     // group key will be highlighted for AGGREGATE nodes
-    const groupKey: string[] = this.node[this.planService.GROUP_KEY_PROP];
+    const groupKey: string[] = this.node[NodeProp.GROUP_KEY];
     if (groupKey) {
       keyItems.push('GROUP BY ' + groupKey.join(', '));
     }
 
     // hash condition will be highlighted for HASH JOIN nodes
-    let hashCondition: string = this.node[this.planService.HASH_CONDITION_PROP];
+    let hashCondition: string = this.node[NodeProp.HASH_CONDITION];
     if (hashCondition) {
       hashCondition = hashCondition.replace('(', '').replace(')', '');
       keyItems.push(hashCondition);
@@ -290,13 +289,13 @@ export default class PlanNode extends Vue {
       keyItems.push(_.reverse(hashCondition.split(' ')).join(' '));
     }
 
-    let sortKey: string[] = this.node[this.planService.SORT_KEY_PROP];
+    let sortKey: string[] = this.node[NodeProp.SORT_KEY];
     if (sortKey) {
       sortKey = _.map(sortKey, (k) => k.replace('(', '').replace(')', ''));
       keyItems.push('ORDER BY ' + sortKey.join(', '));
     }
 
-    if (this.node[this.planService.NODE_TYPE_PROP].toUpperCase() === 'LIMIT') {
+    if (this.node[NodeProp.NODE_TYPE].toUpperCase() === 'LIMIT') {
       keyItems.push('LIMIT');
     }
     return this.syntaxHighlightService.highlight(this.plan.query, keyItems);
