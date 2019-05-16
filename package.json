@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --name pgExplain ./src/components/Plan.vue"
+    "build-bundle": "vue-cli-service build --target lib --name pgExplain ./src/components/Plan.vue",
+    "test:unit": "jest"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
@@ -26,16 +27,22 @@
     "vue-router": "^3.0.6"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.13",
     "@vue/cli-plugin-babel": "^3.6.0",
     "@vue/cli-plugin-typescript": "^3.6.0",
     "@vue/cli-service": "^3.6.0",
     "husky": "^2.5.0",
     "lint-staged": "^8.2.1",
     "moment-locales-webpack-plugin": "^1.0.7",
+    "@vue/test-utils": "^1.0.0-beta.29",
+    "babel-core": "^6.26.3",
+    "jest": "^24.8.0",
     "node-sass": "^4.9.0",
     "prettier": "1.18.2",
     "sass-loader": "^7.1.0",
+    "ts-jest": "^24.0.2",
     "typescript": "^3.4.3",
+    "vue-jest": "^3.0.4",
     "vue-template-compiler": "^2.5.21"
   },
   "gitHooks": {
@@ -59,5 +66,19 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      ".*\\.(vue)$": "vue-jest",
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testURL": "http://localhost/",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$"
   }
 }
