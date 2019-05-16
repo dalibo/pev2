@@ -113,8 +113,12 @@ export default class Plan extends Vue {
       planJson = JSON.parse(this.planRaw);
       this.validationMessage = '';
     } catch (e) {
-      this.validationMessage = 'The string you submitted is not valid JSON';
-      return;
+      try {
+        planJson = this.planService.fromText(this.planRaw);
+      } catch (e) {
+        this.validationMessage = 'Couldn\'t parse plan';
+        return;
+      }
     }
 
     if (planJson instanceof Array) {

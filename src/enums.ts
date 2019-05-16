@@ -39,6 +39,7 @@ export class NodeProp {
   public static JOIN_TYPE: string = 'Join Type';
   public static INDEX_NAME: string = 'Index Name';
   public static HASH_CONDITION: string = 'Hash Cond';
+  public static NEVER_EXECUTED: string = 'Never Executed';
 
   // computed by pev
   public static COMPUTED_TAGS: string = '*Tags';

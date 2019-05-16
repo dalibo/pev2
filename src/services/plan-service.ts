@@ -130,4 +130,67 @@ export class PlanService {
       node[NodeProp.PLANNER_ESTIMATE_FACTOR] = node[NodeProp.PLAN_ROWS] / node[NodeProp.ACTUAL_ROWS];
     }
   }
+
+  public fromText(text: string) {
+    const lines = text.split(/\r?\n/);
+
+    const root = {};
+    _.each(lines, (line: string) => {
+      // Remove any trailing "
+      line = line.replace(/"\s*$/, '');
+      // Remove any begining "
+      line = line.replace(/^\s*"/, '');
+
+      /*
+       * Groups
+       * 1: prefix
+       * 2: type
+       * 3: estimated_startup_cost
+       * 4: estimated_total_cost
+       * 5: estimated_rows
+       * 6: estimated_row_width
+       * 7: actual_time_first
+       * 8: actual_time_last
+       * 9: actual_rows
+       * 10: actual_loops
+       * 11: actual_rows_
+       * 12: actual_loops_
+       * 13: never_executed
+       */
+      // tslint:disable-next-line:max-line-length
+      const nodeRegex = /^(?<prefix>\s*->\s*|\s*)(?<type>\S.*?)\s+\(cost=(?<estimated_startup_cost>\d+\.\d+)\.\.(?<estimated_total_cost>\d+\.\d+)\s+rows=(?<estimated_rows>\d+)\s+width=(?<estimated_row_width>\d+)\)\s*(?:\s+\((?:actual\stime=(?<actual_time_first>\d+\.\d+)\.\.(?<actual_time_last>\d+\.\d+)\srows=(?<actual_rows>\d+)\sloops=(?<actual_loops>\d+)|actual\srows=(?<actual_rows_>\d+)\sloops=(?<actual_loops_>\d+)|(?<never_executed>never\s+executed))\))?\S*$/gm;
+      const nodeMatches = nodeRegex.exec(line);
+
+      // tslint:disable-next-line:max-line-length
+      const subRegex = /^(\s*)((?:Sub|Init)Plan)\s*(?:\d+\s*)?\s*(?:\(returns.*\)\s*)?$/gm;
+      const subMatches = subRegex.exec(line);
+
+      const cteRegex = /^(\s*)CTE\s+(\S+)\s*$/g;
+      const cteMatches = cteRegex.exec(line);
+
+      const extraRegex = /^(\s*)(\S.*\S)\s*$/g;
+      const extraMatches = extraRegex.exec(line);
+
+      if (nodeMatches) {
+        const prefix = nodeMatches[1];
+        const neverExecuted = nodeMatches[13];
+        const newNode: any = {};
+        if (neverExecuted) {
+          newNode[NodeProp.ACTUAL_LOOPS] = 0;
+          newNode[NodeProp.NEVER_EXECUTED] = 1;
+        }
+
+        nodeMatches.forEach((match, groupIndex) => {
+          // console.log(`Found match, group ${groupIndex}: ${match}`);
+        });
+      } else if (subMatches) {
+        //
+      } else if (cteMatches) {
+        //
+      } else if (extraMatches) {
+        //
+      }
+    });
+    throw new Error('Unable to parse plan');
+  }
 }
