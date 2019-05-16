@@ -191,6 +191,7 @@ export class PlanService {
         //
       }
     });
-    throw new Error('Unable to parse plan');
+    // throw new Error('Unable to parse plan');
+    return root;
   }
 }
