@@ -84,7 +84,7 @@ import { dragscroll } from 'vue-dragscroll';
   },
 })
 export default class Plan extends Vue {
-  @Prop(String) private planRaw!: string;
+  @Prop(String) private planSource!: string;
   @Prop(String) private planQuery!: string;
   private plan: any;
   private node!: any;
@@ -108,21 +108,13 @@ export default class Plan extends Vue {
   private nodeProps = NodeProp;
 
   private created(): void {
-    let planJson: any | any[] = {};
+    let planJson: any;
     try {
-      planJson = JSON.parse(this.planRaw);
+      planJson = this.planService.fromSource(this.planSource);
       this.validationMessage = '';
     } catch (e) {
-      try {
-        planJson = this.planService.fromText(this.planRaw);
-      } catch (e) {
-        this.validationMessage = 'Couldn\'t parse plan';
-        return;
-      }
-    }
-
-    if (planJson instanceof Array) {
-      planJson = planJson[0];
+      this.validationMessage = 'Couldn\'t parse plan';
+      return;
     }
     this.node = planJson.Plan;
     this.plan = this.planService.createPlan('', planJson, this.planQuery);

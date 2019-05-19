@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import {EstimateDirection, NodeProp} from '@/enums';
 import { IPlan } from '@/iplan';
+import Node from '@/inode';
 import moment from 'moment';
 
 export class PlanService {
@@ -131,10 +132,61 @@ export class PlanService {
     }
   }
 
+  public fromSource(source: string) {
+    // remove quotes added by pgAdmin3
+    source = source.replace(/^(["'])(.*)\1\r?\n/gm, '$2\n');
+    // remove + character at the end of line added by default psql config
+    source = source.replace(/\s*\+\r?\n/g, '\n');
+
+    if (/^(\s*)\[\s*\n.*?\1\]\s*/gms.exec(source)) {
+      return this.fromJson(source);
+    }
+    return this.fromText(source);
+  }
+
+  public fromJson(source: string) {
+    // We need to remove things before and/or after explain
+    // To do this, first - split explain into lines...
+    const sourceLines = source.split(/[\r\n]+/);
+
+    // Now, find first line of explain, and cache it's prefix (some spaces ...)
+    let prefix = '';
+    let firstLineIndex = 0;
+    _.each(sourceLines, (l: string, index: number) => {
+      const matches = /^(\s*)\[\s*$/.exec(l);
+      if (matches) {
+        prefix = matches[1];
+        firstLineIndex = index;
+      }
+    });
+    // now find last line
+    let lastLineIndex = 0;
+    _.each(sourceLines, (l: string, index: number) => {
+      const matches = new RegExp('^' + prefix + '\]\s*$').exec(l);
+      if (matches) {
+        lastLineIndex = index;
+      }
+    });
+
+    const useSource: string = sourceLines.slice(firstLineIndex, lastLineIndex + 1).join('\n');
+
+    let planJson = JSON.parse(useSource);
+    if (planJson instanceof Array) {
+      planJson = planJson[0];
+    }
+    return planJson;
+  }
+
   public fromText(text: string) {
+
     const lines = text.split(/\r?\n/);
 
-    const root = {};
+    const root: any = {};
+    root.Plan = null;
+    type ElementAtDepth = [number, any];
+    // Array to keep reference to previous nodes with there depth
+    const elementsAtDepth: ElementAtDepth[] = [];
+
     _.each(lines, (line: string) => {
       // Remove any trailing "
       line = line.replace(/"\s*$/, '');
@@ -174,21 +226,76 @@ export class PlanService {
       if (nodeMatches) {
         const prefix = nodeMatches[1];
         const neverExecuted = nodeMatches[13];
-        const newNode: any = {};
+        const newNode: Node = new Node(nodeMatches[2]);
+        newNode[NodeProp.TOTAL_COST] = parseFloat(nodeMatches[4]);
+        newNode[NodeProp.PLAN_ROWS] = parseInt(nodeMatches[5], 0);
+        newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(nodeMatches[8]);
+        // FIXME could be actual_rows_
+        newNode[NodeProp.ACTUAL_ROWS] = parseInt(nodeMatches[9], 0);
+        // FIXME could be actual_loops_
+        newNode[NodeProp.ACTUAL_LOOPS] = parseInt(nodeMatches[10], 0);
         if (neverExecuted) {
           newNode[NodeProp.ACTUAL_LOOPS] = 0;
-          newNode[NodeProp.NEVER_EXECUTED] = 1;
+          newNode[NodeProp.ACTUAL_ROWS] = 0;
+          newNode[NodeProp.ACTUAL_TOTAL_TIME] = 0;
+        }
+        const element = {
+          node: newNode,
+          subelementType: 'subnode',
+        };
+        const prefixLength = prefix.length;
+
+        if (0 === elementsAtDepth.length) {
+          elementsAtDepth.push([prefixLength, element]);
+          root.Plan = newNode;
+          return;
         }
 
-        nodeMatches.forEach((match, groupIndex) => {
-          // console.log(`Found match, group ${groupIndex}: ${match}`);
+        // Remove elements from elementsAtDepth for deeper levels
+        _.remove(elementsAtDepth, (e) => {
+          return e[0] >= prefixLength;
         });
+
+        // ! is for non-null assertion
+        // Prevents the "Object is possibly 'undefined'" linting error
+        const previousElement = _.last(elementsAtDepth)![1];
+
+        elementsAtDepth.push([prefixLength, element]);
+
+        if (previousElement.subelementType === 'subnode') {
+          if (!previousElement.node[NodeProp.PLANS]) {
+            previousElement.node[NodeProp.PLANS] = [];
+          }
+          previousElement.node.Plans.push(newNode);
+        }
+
       } else if (subMatches) {
         //
       } else if (cteMatches) {
         //
       } else if (extraMatches) {
-        //
+        const prefix = extraMatches[1];
+        // Remove elements from elementsAtDepth for deeper levels
+        _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
+
+        const info = extraMatches[2].split(': ');
+        if (!info[1]) {
+          return;
+        }
+        // remove the " ms" unit in case of time
+        let value: string | number = info[1].replace(/(\s*ms)$/, '');
+        // try to convert to number
+        if (parseFloat(value)) {
+          value = parseFloat(value);
+        }
+
+        const property = _.startCase(info[0]);
+        if (elementsAtDepth.length === 0) {
+          root[property] = value;
+        } else {
+          const previousElement = _.last(elementsAtDepth)![1];
+          previousElement.node[property] = value;
+        }
       }
     });
     // throw new Error('Unable to parse plan');

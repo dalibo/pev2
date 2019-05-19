@@ -39,7 +39,6 @@ export class NodeProp {
   public static JOIN_TYPE: string = 'Join Type';
   public static INDEX_NAME: string = 'Index Name';
   public static HASH_CONDITION: string = 'Hash Cond';
-  public static NEVER_EXECUTED: string = 'Never Executed';
 
   // computed by pev
   public static COMPUTED_TAGS: string = '*Tags';
@@ -56,8 +55,9 @@ export class NodeProp {
   public static PLANNER_ESTIMATE_FACTOR: string = '*Planner Row Estimate Factor';
   public static PLANNER_ESIMATE_DIRECTION: string = '*Planner Row Estimate Direction';
 
-  public static CTE_SCAN = 'CTE Scan';
-  public static CTE_NAME = 'CTE Name';
+  public static CTE_SCAN: string = 'CTE Scan';
+  public static CTE_NAME: string = 'CTE Name';
+  public static FUNCTION_NAME: string = 'Function Name';
 
   public static ARRAY_INDEX_KEY: string = 'arrayIndex';
 
