@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME] }">
+    <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
     <div :class="['plan-node', {'expanded': showDetails}]">
       <header title="view node details" v-on:click="showDetails = !showDetails">
         <h4>
