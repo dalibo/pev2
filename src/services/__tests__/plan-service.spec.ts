@@ -3,8 +3,6 @@ import { PlanService } from '@/services/plan-service';
 describe('PlanService', () => {
   test('can parse plan in json format', () => {
     const planService = new PlanService();
-    // tslint:disable:max-line-length
-    // tslint:disable:no-trailing-whitespace
     const source = `
 [
   {
@@ -25,8 +23,6 @@ describe('PlanService', () => {
 
   test('can parse plan in json format with extra text', () => {
     const planService = new PlanService();
-    // tslint:disable:max-line-length
-    // tslint:disable:no-trailing-whitespace
     const source = `
            QUERY PLAN
 ---------------------------------
@@ -50,8 +46,6 @@ describe('PlanService', () => {
 
   test('can parse plan with extra text', () => {
     const planService = new PlanService();
-    // tslint:disable:max-line-length
-    // tslint:disable:no-trailing-whitespace
     const planText = `
                   QUERY PLAN
 -----------------------------------------------------------
@@ -164,5 +158,34 @@ Execution time: 136.448 ms`;
     // tslint:enable:max-line-length
     const r: any = planService.fromText(planText);
     expect(r['Execution Time']).toEqual(136.448);
+  });
+
+  test('can parse plan with subplan', () => {
+    const planService = new PlanService();
+    const source = `
+Result  (cost=0.31..0.32 rows=1 width=4)
+  InitPlan 1 (returns $0)
+    ->  Limit  (cost=0.28..0.31 rows=1 width=4)
+          ->  Index Only Scan Backward using pg_proc_oid_index on pg_proc  (cost=0.28..91.84 rows=2946 width=4)
+                Index Cond: (oid IS NOT NULL)`;
+    const r: any = planService.fromSource(source);
+    expect(r.Plan.Plans[0]['Parent Relationship']).toEqual('InitPlan');
+  });
+
+  test('can parse plan with CTE', () => {
+    const planService = new PlanService();
+    const source = `
+                            QUERY PLAN
+------------------------------------------------------------------
+ Aggregate  (cost=38.51..38.52 rows=1 width=4)
+   CTE e
+     ->  Seq Scan on employes  (cost=0.00..38.25 rows=11 width=8)
+           Filter: (num_service = 4)
+   ->  CTE Scan on e  (cost=0.00..0.25 rows=4 width=4)
+         Filter: (date_embauche < '2006-01-01'::date)
+(6 rows)`;
+    const r: any = planService.fromSource(source);
+    expect(r.Plan.Plans[0]['Parent Relationship']).toEqual('InitPlan');
+    expect(r.Plan.Plans[0]['Subplan Name']).toEqual('CTE e');
   });
 });

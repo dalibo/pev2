@@ -39,6 +39,8 @@ export class NodeProp {
   public static JOIN_TYPE: string = 'Join Type';
   public static INDEX_NAME: string = 'Index Name';
   public static HASH_CONDITION: string = 'Hash Cond';
+  public static PARENT_RELATIONSHIP: string = 'Parent Relationship';
+  public static SUBPLAN_NAME: string = 'Subplan Name';
 
   // computed by pev
   public static COMPUTED_TAGS: string = '*Tags';

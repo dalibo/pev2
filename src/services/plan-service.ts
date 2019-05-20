@@ -262,17 +262,44 @@ export class PlanService {
 
         elementsAtDepth.push([prefixLength, element]);
 
-        if (previousElement.subelementType === 'subnode') {
-          if (!previousElement.node[NodeProp.PLANS]) {
-            previousElement.node[NodeProp.PLANS] = [];
-          }
-          previousElement.node.Plans.push(newNode);
+        if (!previousElement.node[NodeProp.PLANS]) {
+          previousElement.node[NodeProp.PLANS] = [];
         }
+        if (previousElement.subelementType === 'initplan' ) {
+          newNode[NodeProp.PARENT_RELATIONSHIP] = 'InitPlan';
+          newNode[NodeProp.SUBPLAN_NAME] = previousElement.name;
+        } else if (previousElement.subelementType === 'subplan' ) {
+          newNode[NodeProp.PARENT_RELATIONSHIP] = 'InitPlan';
+          newNode[NodeProp.SUBPLAN_NAME] = previousElement.name;
+        }
+        previousElement.node.Plans.push(newNode);
 
       } else if (subMatches) {
-        //
+        const prefix = subMatches[1];
+        const type = subMatches[2];
+        // Remove elements from elementsAtDepth for deeper levels
+        _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
+        const previousElement = _.last(elementsAtDepth)![1];
+        const element = {
+          node: previousElement.node,
+          subelementType: type.toLowerCase(),
+          name: subMatches[0],
+        };
+        const prefixLength = prefix.length;
+        elementsAtDepth.push([prefixLength, element]);
       } else if (cteMatches) {
-        //
+        const prefix = cteMatches[1];
+        const cteName = cteMatches[2];
+        // Remove elements from elementsAtDepth for deeper levels
+        _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
+        const previousElement = _.last(elementsAtDepth)![1];
+        const element = {
+          node: previousElement.node,
+          subelementType: 'initplan',
+          name: 'CTE ' + cteName,
+        };
+        const prefixLength = prefix.length;
+        elementsAtDepth.push([prefixLength, element]);
       } else if (extraMatches) {
         const prefix = extraMatches[1];
         // Remove elements from elementsAtDepth for deeper levels
