@@ -26,14 +26,9 @@ The current project has several goals:
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Compiles and minifies library for production
 ```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
+npm run build-bundle
 ```
 
 [pev]: https://github.com/AlexTatiyants/pev
