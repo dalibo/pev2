@@ -37,6 +37,10 @@ $connector-line: 2px solid darken($line-color, 10%);
     cursor : -o-grabbing;
     cursor : grabbing;
   }
+
+  .text-muted {
+    color: $gray !important;
+  }
 }
 
 .plan {
