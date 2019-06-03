@@ -14,12 +14,15 @@
   word-wrap: break-word;
   box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
 
-  width: 240px;
-  .plan-container.compact & {
-    width: 140px;
-  }
-  .plan-container.dot & {
-    width: 50px;
+  width: 400px;
+  .vertical & {
+    width: 240px;
+    .plan-container.compact & {
+      width: 140px;
+    }
+    .plan-container.dot & {
+      width: 50px;
+    }
   }
 
   header {

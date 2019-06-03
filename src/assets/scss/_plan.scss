@@ -20,6 +20,10 @@ $connector-line: 2px solid darken($line-color, 10%);
     }
   }
 
+  &.horizontal .menu {
+    right: 0;
+  }
+
   .grab-bing {
     cursor : -webkit-grab;
     cursor : -moz-grab;
@@ -40,66 +44,126 @@ $connector-line: 2px solid darken($line-color, 10%);
 
   ol, ul {
     list-style: none;
-    margin: 0;
-    padding: 0;
+
+    .vertical & {
+      margin: 0;
+      padding: 0;
+    }
   }
 
   ul {
-    display: flex;
-    padding-top: $connector-height;
+
+    .vertical & {
+      display: flex;
+      margin: auto;
+      padding-top: $connector-height;
+      margin-top: -5px;
+    }
+
     position: relative;
-    margin: auto;
     transition: all 0.5s;
-    margin-top: -5px;
 
     // vertical connector
-    ul::before {
+    .vertical & ul::before {
       content: '';
-      position: absolute; top: 0; left: 50%;
+      position: absolute;
+      top: 0;
+      left: 50%;
       border-left: $connector-line;
       height: $connector-height;
       width: 0;
     }
 
+    .horizontal &:first-child {
+      padding-left: 0;
+      &>li::after,
+      &>li::before {
+        display: none;
+      }
+    }
+
     li {
-      //float: left;
-      text-align: center;
       list-style-type: none;
       position: relative;
-      padding: $connector-height $padding-sm 0 $padding-sm;
+      padding: 0 $padding-sm 0 $padding-sm;
+
       transition: all 0.5s;
 
+      .vertical & {
+        text-align: center;
+        padding-top: $connector-height;
+      }
+
       // connectors
-      &:before, &:after {
-        content: '';
-        position: absolute; top: 0; right: 50%;
-        border-top: $connector-line;
-        width: 50%; height: $connector-height;
-      }
+      .vertical & {
+        &:before, &:after {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 50%;
+          border-top: $connector-line;
+          width: 50%;
+          height: $connector-height;
+        }
 
-      &:after {
-        right: auto; left: 50%;
-        border-left: $connector-line;
-      }
+        &:after {
+          right: auto;
+          left: 50%;
+          border-left: $connector-line;
+        }
 
-      &:only-child {
-        padding-top: 0;
-        &:after, &:before {
-          display: none;
+        &:only-child {
+          padding-top: 0;
+          &:after, &:before {
+            display: none;
+          }
+        }
+
+        &:first-child::before, &:last-child::after {
+          border: 0 none;
+        }
+
+        &:last-child::before {
+          border-right: $connector-line;
+          border-radius: 0 $border-radius-lg 0 0;
+        }
+
+        &:first-child::after {
+          border-radius: $border-radius-lg 0 0 0;
         }
       }
 
-      &:first-child::before, &:last-child::after {
-        border: 0 none;
-      }
+      .horizontal & {
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          left: -10px;
+        }
 
-      &:last-child::before {
-        border-right: $connector-line;
-        border-radius: 0 $border-radius-lg 0 0;
-      }
+        &::before {
+          border-top: $connector-line;
+          top: 22px;
+          width: 13px;
+          left: -10px;
+        }
 
-      &:first-child::after {
-        border-radius: $border-radius-lg 0 0 0;
+        &::after {
+          border-left: $connector-line;
+          height: 100%;
+          width: $border-radius-lg;
+          top: -5px;
+        }
+
+        &:last-child::after {
+          height: 29px;
+          border-bottom: $connector-line;
+          border-radius: 0 0 0 $border-radius-lg;
+        }
+        &:last-child::before {
+          left: (-10px + $border-radius-lg);
+          width: (13px - $border-radius-lg);
+        }
       }
 
       //hovers
