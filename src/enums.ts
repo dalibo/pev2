@@ -16,6 +16,11 @@ export class ViewMode {
     public static DOT: string = 'dot';
 }
 
+export class Orientation {
+  public static VERTICAL: string = 'vertical';
+  public static HORIZONTAL: string = 'horizontal';
+}
+
 export class NodeProp {
   // plan property keys
   public static NODE_TYPE: string = 'Node Type';

@@ -1,14 +1,12 @@
 <template>
-  <div :class="['plan-container overflow-auto flex-grow-1 bg-light', viewOptions.viewMode]" v-dragscroll>
-    <div class="menu p-2 bg-white border rounded-right border-left-0" :class="{'menu-hidden': menuHidden}">
-      <header>
-        <button v-on:click="menuHidden = !menuHidden" class="btn">
-          <i class="fa fa-cogs p-0"></i>
-        </button>
+  <div :class="['plan-container overflow-auto flex-grow-1 bg-light', viewOptions.viewMode, viewOptions.orientation]" v-dragscroll>
+    <div :class="['menu p-2 bg-white border', {'rounded-right border-left-0': viewOptions.orientation == orientations.VERTICAL, 'rounded-left border-right-0': viewOptions.orientation == orientations.HORIZONTAL, 'menu-hidden': menuHidden}]">
+      <button v-on:click="menuHidden = !menuHidden" class="btn">
+        <i class="fa fa-cogs p-0"></i>
         <strong v-if="!menuHidden">
           Display Options
         </strong>
-      </header>
+      </button>
       <div v-if="!menuHidden">
         <div class="form-group">
           <div>
@@ -18,6 +16,18 @@
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.FULL}" v-on:click="viewOptions.viewMode = viewModes.FULL">full</button>
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.COMPACT}" v-on:click="viewOptions.viewMode = viewModes.COMPACT">compact</button>
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.DOT}" v-on:click="viewOptions.viewMode = viewModes.DOT">dot</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.VERTICAL}" v-on:click="viewOptions.orientation = orientations.VERTICAL">
+              <i class="fa fa-sitemap"></i>
+              vertical
+            </button>
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.HORIZONTAL}" v-on:click="viewOptions.orientation = orientations.HORIZONTAL">
+              <i class="fa fa-indent"></i>
+              horizontal
+            </button>
           </div>
         </div>
         <div class="form-group">
@@ -44,7 +54,7 @@
       <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
     </div>
     <div class="plan grab-bing h-100 w-100 d-flex" v-else>
-      <ul class="align-self-center">
+      <ul class="">
         <li>
           <plan-node :node="node" :plan="plan" :viewOptions="viewOptions"/>
         </li>
@@ -57,7 +67,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
 import { PlanService } from '@/services/plan-service';
-import { HighlightType, NodeProp, ViewMode } from '../enums';
+import { HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
 
 import VueDragscroll from 'vue-dragscroll';
 Vue.use(VueDragscroll);
@@ -87,10 +97,12 @@ export default class Plan extends Vue {
     showTags: true,
     highlightType: HighlightType.NONE,
     viewMode: ViewMode.FULL,
+    orientation: Orientation.VERTICAL,
   };
 
   private highlightTypes = HighlightType;
   private viewModes = ViewMode;
+  private orientations = Orientation;
 
   private planService = new PlanService();
   private nodeProps = NodeProp;
