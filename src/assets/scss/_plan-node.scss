@@ -17,12 +17,12 @@
   width: 400px;
   .vertical & {
     width: 240px;
-    .plan-container.compact & {
-      width: 140px;
-    }
-    .plan-container.dot & {
-      width: 50px;
-    }
+  }
+  .vertical.plan-container.compact & {
+    width: 140px;
+  }
+  .vertical.plan-container.dot & {
+    width: 50px;
   }
 
   header {
