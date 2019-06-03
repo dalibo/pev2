@@ -65,7 +65,7 @@
         </span>
       </div>
 
-      <div class="planner-estimate" v-if="shouldShowPlannerEstimate()">
+      <div class="planner-estimate" v-if="shouldShowPlannerEstimate() && plannerRowEstimateDirection != estimateDirections.none">
         <span v-if="plannerRowEstimateDirection === estimateDirections.over"><strong><i class="fa fa-arrow-up"></i> over</strong> estimated rows</span>
         <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong><i class="fa fa-arrow-down"></i> under</strong> estimated rows</span>
         <span v-if="plannerRowEstimateValue != Infinity"> by <strong>{{plannerRowEstimateValue}}</strong>x</span>

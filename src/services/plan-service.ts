@@ -120,8 +120,11 @@ export class PlanService {
   // invloved in this node
   public calculatePlannerEstimate(node: any) {
     node[NodeProp.PLANNER_ESTIMATE_FACTOR] = node[NodeProp.ACTUAL_ROWS] / node[NodeProp.PLAN_ROWS];
-    node[NodeProp.PLANNER_ESIMATE_DIRECTION] = EstimateDirection.under;
+    node[NodeProp.PLANNER_ESIMATE_DIRECTION] = EstimateDirection.none;
 
+    if (node[NodeProp.PLANNER_ESTIMATE_FACTOR] > 1) {
+      node[NodeProp.PLANNER_ESIMATE_DIRECTION] = EstimateDirection.under;
+    }
     if (node[NodeProp.PLANNER_ESTIMATE_FACTOR] < 1) {
       node[NodeProp.PLANNER_ESIMATE_DIRECTION] = EstimateDirection.over;
       node[NodeProp.PLANNER_ESTIMATE_FACTOR] = node[NodeProp.PLAN_ROWS] / node[NodeProp.ACTUAL_ROWS];
