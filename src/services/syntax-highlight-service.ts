@@ -1,5 +1,8 @@
 import * as _ from 'lodash';
-import * as hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/highlight';
+import 'highlight.js/styles/default.css';
+import pgsql from 'highlight.js/lib/languages/pgsql';
+hljs.registerLanguage('pgsql', pgsql);
 
 export class SyntaxHighlightService {
   private OPEN_TAG: string = ' _OPEN_TAG_';
