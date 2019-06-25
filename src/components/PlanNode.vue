@@ -7,8 +7,12 @@
         </h4>
         <span v-if="viewOptions.viewMode === viewModes.FULL">
           <span class="node-duration" v-if="node[nodeProps.ACTUAL_DURATION]">
-            {{node[nodeProps.ACTUAL_DURATION] | duration}}<span class="text-muted">{{node[nodeProps.ACTUAL_DURATION] | durationUnit}} | </span>
-          <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
+            {{node[nodeProps.ACTUAL_DURATION] | duration}}<span class="text-muted">{{node[nodeProps.ACTUAL_DURATION] | durationUnit}}</span>
+
+            <template v-if="executionTimePercent">
+              |
+              <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
+            </template>
           </span>
         </span>
       </header>
