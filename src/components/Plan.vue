@@ -1,5 +1,5 @@
 <template>
-  <div :class="['plan-container overflow-auto flex-grow-1 bg-light', viewOptions.viewMode, viewOptions.orientation]" v-dragscroll>
+  <div :class="['plan-container overflow-auto h-100 bg-light', viewOptions.viewMode, viewOptions.orientation]" v-dragscroll>
     <div :class="['menu p-2 bg-white border', {'rounded-right border-left-0': viewOptions.orientation == orientations.VERTICAL, 'rounded-left border-right-0': viewOptions.orientation == orientations.HORIZONTAL, 'menu-hidden': menuHidden}]">
       <button v-on:click="menuHidden = !menuHidden" class="btn">
         <i class="fa fa-cogs p-0"></i>
