@@ -1,12 +1,15 @@
 <template>
-  <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME] }">
+  <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'collapsed': collapsed, 'expanded': !collapsed }">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :class="['plan-node', {'expanded': showDetails}]">
-      <header title="view node details" v-on:click="showDetails = !showDetails">
+    <div :class="['plan-node', {'detailed': showDetails}]">
+      <div class="collapse-handle">
+        <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()"></i>
+      </div>
+      <header title="view node details" v-on:click.stop="showDetails = !showDetails">
         <h4>
           {{ getNodeName() }}
         </h4>
-        <span v-if="viewOptions.viewMode === viewModes.FULL">
+        <span v-if="viewOptions.viewMode === viewModes.FULL && !collapsed">
           <span class="node-duration" v-if="node[nodeProps.ACTUAL_DURATION]">
             {{node[nodeProps.ACTUAL_DURATION] | duration}}<span class="text-muted">{{node[nodeProps.ACTUAL_DURATION] | durationUnit}}</span>
 
@@ -18,14 +21,14 @@
         </span>
       </header>
 
-      <button v-if="plan.query && viewOptions.viewMode === viewModes.FULL" title="view corresponding query"
+      <button v-if="plan.query && viewOptions.viewMode === viewModes.FULL && !collapsed" title="view corresponding query"
         class="btn btn-sm pull-right py-0 btn-link" v-on:click="showQuery = !showQuery">
         <small>
           <i class="fa fa-database"></i>
         </small>
       </button>
 
-      <div v-if="viewOptions.viewMode === viewModes.FULL">
+      <div v-if="viewOptions.viewMode === viewModes.FULL && !collapsed">
         <div class="relation-name" v-if="node[nodeProps.RELATION_NAME]">
           <span class="text-muted">on </span>
           <span v-if="node[nodeProps.SCHEMA]">{{node[nodeProps.SCHEMA]}}.</span>{{node[nodeProps.RELATION_NAME]}}
@@ -131,6 +134,7 @@ export default class PlanNode extends Vue {
   // UI flags
   private showDetails: boolean = false;
   private showQuery: boolean = false;
+  private collapsed: boolean = false;
 
   // calculated properties
   private executionTimePercent: number = NaN;
@@ -144,7 +148,6 @@ export default class PlanNode extends Vue {
 
   // required for custom change detection
   private currentCompactView?: boolean;
-  private currentExpandedView?: boolean;
 
   // expose enum to view
   private estimateDirections = EstimateDirection;
@@ -204,14 +207,14 @@ export default class PlanNode extends Vue {
 
   private getNodeName(): string {
     const nodeName = this.node[NodeProp.NODE_TYPE];
-    if (this.viewOptions.viewMode === ViewMode.DOT && !this.showDetails) {
+    if ((this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) && !this.showDetails) {
       return nodeName.replace(/[^A-Z]/g, '').toUpperCase();
     }
     return nodeName.toUpperCase();
   }
 
   private getTagName(tagName: string) {
-    if (this.viewOptions.viewMode === ViewMode.DOT && !this.showDetails) {
+    if ((this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) && !this.showDetails) {
       return tagName.charAt(0);
     }
     return tagName;
@@ -222,7 +225,7 @@ export default class PlanNode extends Vue {
       return true;
     }
 
-    if (this.viewOptions.viewMode === ViewMode.DOT) {
+    if (this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) {
       return false;
     }
 
@@ -234,7 +237,7 @@ export default class PlanNode extends Vue {
       return true;
     }
 
-    if (this.viewOptions.viewMode === ViewMode.DOT) {
+    if (this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) {
       return false;
     }
 
@@ -304,6 +307,18 @@ export default class PlanNode extends Vue {
       keyItems.push('LIMIT');
     }
     return this.syntaxHighlightService.highlight(this.plan.query, keyItems);
+  }
+
+  private toggleCollapsed(collapsed) {
+    // collapsed is undefined when called from click event
+    if (collapsed === undefined) {
+      collapsed = !this.collapsed;
+    }
+    this.collapsed = collapsed;
+    // Call toggleCollapsed on all children
+    this.$children.forEach((child) => {
+      child.toggleCollapsed(collapsed);
+    });
   }
 }
 </script>

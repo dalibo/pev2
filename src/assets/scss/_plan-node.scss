@@ -21,7 +21,8 @@
   .vertical.plan-container.compact & {
     width: 140px;
   }
-  .vertical.plan-container.dot & {
+  .vertical.plan-container.dot &,
+  .collapsed>& {
     width: 50px;
   }
 
@@ -212,6 +213,20 @@
       border: 0;
     }
   }
+
+  .collapse-handle {
+    cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: none;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 2;
+  }
+
+  &:hover .collapse-handle {
+    display: block;
+  }
 }
 
 .node-bar-container {
@@ -237,7 +252,7 @@
   display: block;
 }
 
-.expanded {
+.detailed {
   width: 400px !important;
   overflow: visible !important;
   padding: $padding-base $padding-lg !important;
