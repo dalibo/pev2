@@ -310,14 +310,14 @@ export default class PlanNode extends Vue {
     return this.syntaxHighlightService.highlight(this.plan.query, keyItems);
   }
 
-  private toggleCollapsed(collapsed) {
+  private toggleCollapsed(collapsed: boolean | undefined) {
     // collapsed is undefined when called from click event
     if (collapsed === undefined) {
       collapsed = !this.collapsed;
     }
     this.collapsed = collapsed;
     // Call toggleCollapsed on all children
-    this.$children.forEach((child) => {
+    this.$children.forEach((child: any) => {
       child.toggleCollapsed(collapsed);
     });
   }
