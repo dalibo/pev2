@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'collapsed': collapsed, 'expanded': !collapsed }">
+  <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'collapsed': collapsed, 'expanded': !collapsed, 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.VERTICAL}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
     <div :class="['plan-node', {'detailed': showDetails}]">
       <div class="collapse-handle">
@@ -108,7 +108,7 @@ import { HelpService } from '@/services/help-service';
 import { ColorService } from '@/services/color-service';
 import { SyntaxHighlightService } from '@/services/syntax-highlight-service';
 import { duration, durationUnit, keysToString } from '@/filters';
-import { EstimateDirection, HighlightType, NodeProp, ViewMode } from '@/enums';
+import { EstimateDirection, HighlightType, NodeProp, Orientation, ViewMode } from '@/enums';
 import * as _ from 'lodash';
 import numeral from 'numeral';
 
@@ -153,6 +153,7 @@ export default class PlanNode extends Vue {
   private estimateDirections = EstimateDirection;
   private highlightTypes = HighlightType;
   private viewModes = ViewMode;
+  private orientations = Orientation;
 
   private nodeProps = NodeProp;
   private helpService = new HelpService();
