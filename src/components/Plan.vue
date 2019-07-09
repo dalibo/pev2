@@ -40,7 +40,7 @@
           </div>
         </div>
         <div class="form-check">
-          <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate" class="form-check-input" :disabled="!node[nodeProps.ACTUAL_ROWS]">
+          <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate" class="form-check-input">
           <label for="showPlannerEstimate" class="form-check-label">Estimations</label>
         </div>
         <div class="form-check">
