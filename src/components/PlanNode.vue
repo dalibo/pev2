@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'collapsed': collapsed, 'expanded': !collapsed, 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.VERTICAL}">
+  <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'collapsed': collapsed, 'expanded': !collapsed, 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
     <div :class="['plan-node', {'detailed': showDetails}]">
       <div class="collapse-handle">

@@ -21,7 +21,7 @@ $connector-line: 2px solid darken($line-color, 10%);
     }
   }
 
-  &.horizontal .menu {
+  &.classic .menu {
     right: 0;
   }
 
@@ -50,7 +50,7 @@ $connector-line: 2px solid darken($line-color, 10%);
   ol, ul {
     list-style: none;
 
-    .vertical & {
+    .twod & {
       margin: 0;
       padding: 0;
     }
@@ -58,7 +58,7 @@ $connector-line: 2px solid darken($line-color, 10%);
 
   ul {
 
-    .vertical & {
+    .twod & {
       display: flex;
       margin: auto;
       padding-top: $connector-height;
@@ -68,8 +68,8 @@ $connector-line: 2px solid darken($line-color, 10%);
     position: relative;
     transition: all 0.5s;
 
-    // vertical connector
-    .vertical & ul::before {
+    // twod connector
+    .twod & ul::before {
       content: '';
       position: absolute;
       top: 0;
@@ -79,7 +79,7 @@ $connector-line: 2px solid darken($line-color, 10%);
       width: 0;
     }
 
-    .horizontal &:first-child {
+    .classic &:first-child {
       padding-left: 0;
       &>li::after,
       &>li::before {
@@ -94,13 +94,13 @@ $connector-line: 2px solid darken($line-color, 10%);
 
       transition: all 0.5s;
 
-      .vertical & {
+      .twod & {
         text-align: center;
         padding-top: $connector-height;
       }
 
       // connectors
-      .vertical & {
+      .twod & {
         &:before, &:after {
           content: '';
           position: absolute;
@@ -138,7 +138,7 @@ $connector-line: 2px solid darken($line-color, 10%);
         }
       }
 
-      .horizontal & {
+      .classic & {
         &::before,
         &::after {
           content: "";

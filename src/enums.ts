@@ -18,8 +18,8 @@ export class ViewMode {
 }
 
 export class Orientation {
-  public static VERTICAL: string = 'vertical';
-  public static HORIZONTAL: string = 'horizontal';
+  public static TWOD: string = 'twod';
+  public static CLASSIC: string = 'classic';
 }
 
 export class NodeProp {

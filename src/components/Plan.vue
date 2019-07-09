@@ -1,6 +1,6 @@
 <template>
   <div :class="['plan-container overflow-auto h-100 bg-light', viewOptions.viewMode, viewOptions.orientation]" v-dragscroll>
-    <div :class="['menu p-2 bg-white border', {'rounded-right border-left-0': viewOptions.orientation == orientations.VERTICAL, 'rounded-left border-right-0': viewOptions.orientation == orientations.HORIZONTAL, 'menu-hidden': menuHidden}]">
+    <div :class="['menu p-2 bg-white border', {'rounded-right border-left-0': viewOptions.orientation == orientations.TWOD, 'rounded-left border-right-0': viewOptions.orientation == orientations.CLASSIC, 'menu-hidden': menuHidden}]">
       <button v-on:click="menuHidden = !menuHidden" class="btn">
         <i class="fa fa-cogs p-0"></i>
         <strong v-if="!menuHidden">
@@ -20,13 +20,13 @@
         </div>
         <div class="form-group">
           <div class="btn-group btn-group-sm">
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.VERTICAL}" v-on:click="viewOptions.orientation = orientations.VERTICAL">
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.TWOD}" v-on:click="viewOptions.orientation = orientations.TWOD">
               <i class="fa fa-sitemap"></i>
-              vertical
+              2D
             </button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.HORIZONTAL}" v-on:click="viewOptions.orientation = orientations.HORIZONTAL">
-              <i class="fa fa-indent"></i>
-              horizontal
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.CLASSIC}" v-on:click="viewOptions.orientation = orientations.CLASSIC">
+              <i class="fa fa-list"></i>
+              classic
             </button>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default class Plan extends Vue {
     showTags: true,
     highlightType: HighlightType.NONE,
     viewMode: ViewMode.FULL,
-    orientation: Orientation.VERTICAL,
+    orientation: Orientation.TWOD,
   };
 
   private highlightTypes = HighlightType;
