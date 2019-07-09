@@ -108,6 +108,10 @@ export default class Plan extends Vue {
   private nodeProps = NodeProp;
 
   private created(): void {
+    const savedOptions = localStorage.getItem('viewOptions');
+    if (savedOptions) {
+      this.viewOptions = JSON.parse(savedOptions);
+    }
     let planJson: any;
     try {
       planJson = this.planService.fromSource(this.planSource);
@@ -126,6 +130,11 @@ export default class Plan extends Vue {
       maxCost: content[NodeProp.MAXIMUM_COSTS] || 0,
       maxDuration: content[NodeProp.MAXIMUM_DURATION] || 0,
     };
+  }
+
+  @Watch('viewOptions', {deep: true})
+  private onViewOptionsChanged(val: any, oldVal: any) {
+    localStorage.setItem('viewOptions', JSON.stringify(this.viewOptions));
   }
 }
 </script>
