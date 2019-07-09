@@ -227,6 +227,15 @@
   &:hover .collapse-handle {
     display: block;
   }
+
+  &.never-executed {
+    $color: white;
+    $angle: 45deg;
+    $progress-height: 1rem !default;
+    background-color: $gray-lightest;
+    background-image: linear-gradient($angle, $color 25%, transparent 25%, transparent 50%, $color 50%, $color 75%, transparent 75%, transparent);
+    background-size: $progress-height $progress-height;
+  }
 }
 
 .node-bar-container {

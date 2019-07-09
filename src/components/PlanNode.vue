@@ -1,7 +1,7 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'collapsed': collapsed, 'expanded': !collapsed, 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :class="['plan-node', {'detailed': showDetails}]">
+    <div :class="['plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION]}]">
       <div class="collapse-handle">
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()"></i>
       </div>
@@ -17,6 +17,9 @@
               |
               <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
             </template>
+          </span>
+          <span class="node-duration text-warning" v-else>
+            Never executed
           </span>
         </span>
       </header>
