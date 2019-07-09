@@ -60,8 +60,19 @@
         <pre class="plan-query-text"><code v-html="getFormattedQuery()"></code></pre>
       </div>
 
-      <div class="tags" v-if="viewOptions.showTags && tags.length > 0">
-        <span v-for="tag in tags">{{getTagName(tag)}}</span>
+      <div class="tags">
+        <span v-if="node[nodeProps.SLOWEST_NODE]" title="Slowest node" class="badge badge-danger">
+          <i class="icon-tortoise2 fa fa-fw"></i>
+        </span>
+        <span v-if="node[nodeProps.COSTLIEST_NODE]" title="Costliest node">
+          <i class="fa fa-usd fa-fw"></i>
+        </span>
+        <span v-if="node[nodeProps.LARGEST_NODE]" title="Largest node">
+          <i class="fa fa-align-justify fa-fw"></i>
+        </span>
+        <span v-if="node[nodeProps.PLANNER_ESTIMATE_FACTOR] >= MIN_ESTIMATE_MISS" title="Bad estimation">
+          <i class="fa fa-thumbs-down fa-fw"></i>
+        </span>
       </div>
 
       <div v-if="viewOptions.highlightType !== highlightTypes.NONE">
@@ -164,7 +175,6 @@ export default class PlanNode extends Vue {
     this.calculateBar();
     this.calculateProps();
     this.calculateDuration();
-    this.calculateTags();
 
     this.plans = this.node[NodeProp.PLANS];
 
@@ -187,21 +197,6 @@ export default class PlanNode extends Vue {
       .value();
   }
 
-  private calculateTags() {
-    if (this.node[NodeProp.SLOWEST_NODE]) {
-      this.tags.push(this.SLOW_TAG);
-    }
-    if (this.node[NodeProp.COSTLIEST_NODE]) {
-      this.tags.push(this.COSTLY_TAG);
-    }
-    if (this.node[NodeProp.LARGEST_NODE]) {
-      this.tags.push(this.LARGE_TAG);
-    }
-    if (this.node[NodeProp.PLANNER_ESTIMATE_FACTOR] >= this.MIN_ESTIMATE_MISS) {
-      this.tags.push(this.ESTIMATE_TAG);
-    }
-  }
-
   private getNodeTypeDescription() {
     return this.helpService.getNodeTypeDescription(this.node[NodeProp.NODE_TYPE]);
   }
@@ -212,13 +207,6 @@ export default class PlanNode extends Vue {
       return nodeName.replace(/[^A-Z]/g, '').toUpperCase();
     }
     return nodeName.toUpperCase();
-  }
-
-  private getTagName(tagName: string) {
-    if ((this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) && !this.showDetails) {
-      return tagName.charAt(0);
-    }
-    return tagName;
   }
 
   private shouldShowPlannerEstimate() {

@@ -1,0 +1,31 @@
+@font-face {
+  font-family: "symbols";
+  src: url("../assets/fonts/symbols.eot?oyw23f");
+  src: url("../assets/fonts/symbols.eot?oyw23f#iefix")
+      format("embedded-opentype"),
+    url("../assets/fonts/symbols.ttf?oyw23f") format("truetype"),
+    url("../assets/fonts/symbols.woff?oyw23f") format("woff"),
+    url("../assets/fonts/symbols.svg?oyw23f#symbols") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "symbols" !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-tortoise2:before {
+  content: "\e902";
+}
