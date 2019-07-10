@@ -243,7 +243,7 @@ export class PlanService {
           node: newNode,
           subelementType: 'subnode',
         };
-        const prefixLength = prefix.length;
+        const prefixLength = prefix.split('->')[0].length;
 
         if (0 === elementsAtDepth.length) {
           elementsAtDepth.push([prefixLength, element]);
