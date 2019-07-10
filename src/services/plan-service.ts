@@ -269,7 +269,7 @@ export class PlanService {
           newNode[NodeProp.PARENT_RELATIONSHIP] = 'InitPlan';
           newNode[NodeProp.SUBPLAN_NAME] = previousElement.name;
         } else if (previousElement.subelementType === 'subplan' ) {
-          newNode[NodeProp.PARENT_RELATIONSHIP] = 'InitPlan';
+          newNode[NodeProp.PARENT_RELATIONSHIP] = 'SubPlan';
           newNode[NodeProp.SUBPLAN_NAME] = previousElement.name;
         }
         previousElement.node.Plans.push(newNode);
