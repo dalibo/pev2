@@ -101,9 +101,9 @@ export class PlanService {
     node[NodeProp.ACTUAL_COST] = node[NodeProp.TOTAL_COST];
 
     _.each(node[NodeProp.PLANS], (subPlan) => {
-      // since CTE scan duration is already included in its subnodes, it should be be
-      // subtracted from the duration of this node
-      if (subPlan[NodeProp.NODE_TYPE] !== NodeProp.CTE_SCAN) {
+      // Subtract sub plans duration from this node except for InitPlans
+      // (ie. CTE)
+      if (subPlan[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan') {
         node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - subPlan[NodeProp.ACTUAL_TOTAL_TIME];
         node[NodeProp.ACTUAL_COST] = node[NodeProp.ACTUAL_COST] - subPlan[NodeProp.TOTAL_COST];
       }
