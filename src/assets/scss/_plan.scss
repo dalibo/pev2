@@ -90,7 +90,10 @@ $connector-line: 2px solid darken($line-color, 10%);
     li {
       list-style-type: none;
       position: relative;
-      padding: 0 $padding-sm 0 $padding-sm;
+
+      .twod &:not(:first-child) {
+        padding-left: $padding-lg;
+      }
 
       transition: all 0.5s;
 
@@ -149,13 +152,13 @@ $connector-line: 2px solid darken($line-color, 10%);
         &::before {
           border-top: $connector-line;
           top: 22px;
-          width: 13px;
+          width: 11px;
           left: -10px;
         }
 
         &::after {
           border-left: $connector-line;
-          height: 100%;
+          height: calc(100% + #{$padding-sm});
           width: $border-radius-lg;
           top: -5px;
         }
@@ -167,7 +170,7 @@ $connector-line: 2px solid darken($line-color, 10%);
         }
         &:last-child::before {
           left: (-10px + $border-radius-lg);
-          width: (13px - $border-radius-lg);
+          width: (11px - $border-radius-lg);
         }
       }
 
@@ -193,6 +196,11 @@ $connector-line: 2px solid darken($line-color, 10%);
       font-size: $font-size-sm;
       margin-top: .5rem;
       font-weight: 600;
+    }
+    padding: 0 $padding-lg ($padding-lg - 4px) $padding-lg;
+
+    .classic & {
+      margin-bottom: $padding-sm;
     }
   }
 
