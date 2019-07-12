@@ -53,6 +53,7 @@ export default class App extends Vue {
     ['Very large plan', 'plan_8.json'],
     ['With trigger', 'plan_trigger.json', 'plan_trigger.sql'],
     ['With trigger (plain text)', 'plan_trigger.txt', 'plan_trigger_2.sql'],
+    ['Parallel', 'plan_parallel.json'],
   ];
   private planInput: string = '';
   private queryInput: string = '';
