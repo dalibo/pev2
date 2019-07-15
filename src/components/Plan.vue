@@ -1,6 +1,6 @@
 <template>
-  <div :class="['plan-container overflow-auto h-100 bg-light', viewOptions.viewMode, viewOptions.orientation]" v-dragscroll>
-    <div :class="['menu p-2 bg-white border', {'rounded-right border-left-0': viewOptions.orientation == orientations.TWOD, 'rounded-left border-right-0': viewOptions.orientation == orientations.CLASSIC, 'menu-hidden': menuHidden}]">
+  <div :class="['plan-container d-flex flex-column h-100 bg-light', viewOptions.viewMode, viewOptions.orientation]">
+    <div :class="['menu p-2 bg-white border rounded-left', {'menu-hidden': menuHidden}]">
       <button v-on:click="menuHidden = !menuHidden" class="btn">
         <i class="fa fa-cogs p-0"></i>
         <strong v-if="!menuHidden">
@@ -49,16 +49,40 @@
         </div>
       </div>
     </div>
+    <div class="plan-stats">
+      <div>
+        <span class="stat-value">{{plan.planStats.executionTime | duration}}<span class="text-muted">{{plan.planStats.executionTime | durationUnit}}</span></span>
+        <span class="stat-label">execution time</span>
+      </div>
+      <div v-if="plan.planStats.planningTime">
+        <span class="stat-value">{{plan.planStats.planningTime}}<span class="text-muted">{{plan.planStats.planningTime | durationUnit}}</span></span>
+        <span class="stat-label">planning time</span>
+      </div>
+      <div v-if="plan.planStats.maxDuration">
+        <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span></span>
+        <span class="stat-label">slowest node</span>
+      </div>
+      <div v-if="plan.planStats.maxRows">
+        <span class="stat-value">{{plan.planStats.maxRows}} <span class="text-muted">rows</span></span>
+        <span class="stat-label">largest node</span>
+      </div>
+      <div v-if="plan.planStats.maxCost">
+        <span class="stat-value">{{plan.planStats.maxCost | numeral_('0.00')}}</span>
+        <span class="stat-label">costliest node</span>
+      </div>
+    </div>
 
     <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
       <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
     </div>
-    <div class="plan grab-bing h-100 w-100 d-flex" v-else>
-      <ul class="">
-        <li>
-          <plan-node :node="node" :plan="plan" :viewOptions="viewOptions"/>
-        </li>
-      </ul>
+    <div class="overflow-auto h-100" v-else v-dragscroll>
+      <div class="plan h-100 w-100 d-flex grab-bing">
+        <ul class="">
+          <li>
+            <plan-node :node="node" :plan="plan" :viewOptions="viewOptions"/>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -67,6 +91,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
 import { PlanService } from '@/services/plan-service';
+import { duration, durationUnit, numeral_ } from '@/filters';
 import { HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
 
 import VueDragscroll from 'vue-dragscroll';
@@ -82,6 +107,11 @@ import { dragscroll } from 'vue-dragscroll';
   directives: {
     dragscroll,
   },
+  filters: {
+    duration,
+    durationUnit,
+    numeral_,
+  },
 })
 export default class Plan extends Vue {
   @Prop(String) private planSource!: string;
@@ -94,6 +124,7 @@ export default class Plan extends Vue {
   private viewOptions: any = {
     showHighlightBar: false,
     showPlannerEstimate: false,
+    showPlanStats: true,
     showTags: true,
     highlightType: HighlightType.NONE,
     viewMode: ViewMode.FULL,

@@ -5,7 +5,7 @@ $connector-height: 12px;
 $connector-line: 2px solid darken($line-color, 10%);
 
 .plan-container {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: $font-family-sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -19,9 +19,6 @@ $connector-line: 2px solid darken($line-color, 10%);
         display: none;
       }
     }
-  }
-
-  &.classic .menu {
     right: 0;
   }
 
@@ -45,7 +42,6 @@ $connector-line: 2px solid darken($line-color, 10%);
 }
 
 .plan {
-  font-family: $font-family-sans-serif;
 
   ol, ul {
     list-style: none;
@@ -211,5 +207,44 @@ $connector-line: 2px solid darken($line-color, 10%);
     border: 1px solid $line-color;
     background-color: #fff;
     font-size: $font-size-sm;
+  }
+}
+
+.plan-stats {
+  display: flex;
+  font-size: $font-size-base;
+  margin: $padding-lg auto $padding-lg auto;
+  padding-bottom: $padding-lg;
+  border-bottom: 1px solid $line-color;
+  width: 650px;
+  position: relative;
+
+  div {
+    padding-right: $padding-lg;
+    flex-grow: 1;
+  }
+
+  .stat-value {
+    display: block;
+    text-align: center;
+    font-size: $font-size-lg;
+  }
+
+  .stat-label {
+    display: block;
+    text-align: center;
+    font-size: $font-size-sm;
+  }
+
+
+  .btn-close {
+    padding: $padding-base;
+    background-color: transparent;
+    font-size: $font-size-lg;
+    text-align: center;
+    @extend .text-muted;
+    margin-left: $padding-base;
+    cursor: pointer;
+    border: 0;
   }
 }

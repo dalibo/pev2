@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import numeral from 'numeral';
 
 export function duration(value: number): string {
   let dur: string = '';
@@ -36,4 +37,8 @@ export function keysToString(value: any): string {
   }
   value = _.map(value, (v) => v.replace(/(^\(|\)$)/g, ''));
   return value.join(', ');
+}
+
+export function numeral_(value: number, format: string): string {
+  return numeral(value).format(format);
 }
