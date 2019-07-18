@@ -47,10 +47,6 @@ export default class App extends Vue {
   private planInput: string = '';
   private queryInput: string = '';
 
-  private created(): void {
-    this.loadSample(this.samples[0]);
-  }
-
   private submitPlan(): void {
     planData[0] = this.planInput;
     planData[1] = this.queryInput;
