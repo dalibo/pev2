@@ -52,23 +52,23 @@
     <div class="plan-stats">
       <div>
         <span class="stat-value">{{plan.planStats.executionTime | duration}}<span class="text-muted">{{plan.planStats.executionTime | durationUnit}}</span></span>
-        <span class="stat-label">execution time</span>
+        <span class="stat-label">Execution time</span>
       </div>
       <div v-if="plan.planStats.planningTime">
         <span class="stat-value">{{plan.planStats.planningTime}}<span class="text-muted">{{plan.planStats.planningTime | durationUnit}}</span></span>
-        <span class="stat-label">planning time</span>
+        <span class="stat-label">Planning time</span>
       </div>
       <div v-if="plan.planStats.maxDuration">
         <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span></span>
-        <span class="stat-label">slowest node</span>
+        <span class="stat-label">Slowest node</span>
       </div>
       <div v-if="plan.planStats.maxRows">
         <span class="stat-value">{{plan.planStats.maxRows}} <span class="text-muted">rows</span></span>
-        <span class="stat-label">largest node</span>
+        <span class="stat-label">Largest node</span>
       </div>
       <div v-if="plan.planStats.maxCost">
         <span class="stat-value">{{plan.planStats.maxCost | numeral_('0.00')}}</span>
-        <span class="stat-label">costliest node</span>
+        <span class="stat-label">Costliest node</span>
       </div>
     </div>
 
