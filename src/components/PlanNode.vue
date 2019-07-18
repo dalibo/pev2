@@ -63,7 +63,7 @@
         <pre class="plan-query-text"><code v-html="getFormattedQuery()"></code></pre>
       </div>
 
-      <div class="tags">
+      <div class="tags" v-if="viewOptions.showTags">
         <span v-if="node[nodeProps.SLOWEST_NODE]" title="Slowest node" class="badge badge-danger">
           <i class="icon-tortoise2 fa fa-fw"></i>
         </span>
