@@ -51,22 +51,46 @@
     </div>
     <div class="plan-stats">
       <div>
-        <span class="stat-value">{{plan.planStats.executionTime | duration}}<span class="text-muted">{{plan.planStats.executionTime | durationUnit}}</span></span>
+        <template v-if="!plan.planStats.executionTime">
+          <span class="stat-value text-muted">
+            N/A
+            <small><i class="fa fa-info-circle" :title="getHelpMessage('missing execution time')"></i></small>
+          </span>
+        </template>
+        <template v-else>
+          <span class="stat-value">{{plan.planStats.executionTime | duration}}<span class="text-muted">{{plan.planStats.executionTime | durationUnit}}</span></span>
+        </template>
         <span class="stat-label">Execution time</span>
       </div>
-      <div v-if="plan.planStats.planningTime">
-        <span class="stat-value">{{plan.planStats.planningTime}}<span class="text-muted">{{plan.planStats.planningTime | durationUnit}}</span></span>
+      <div>
+        <template v-if="!plan.planStats.planningTime">
+          <span class="stat-value text-muted">
+            N/A
+            <small><i class="fa fa-info-circle" :title="getHelpMessage('missing planning time')"></i></small>
+          </span>
+        </template>
+        <template v-else>
+          <span class="stat-value">{{plan.planStats.planningTime}}<span class="text-muted">{{plan.planStats.planningTime | durationUnit}}</span></span>
+        </template>
         <span class="stat-label">Planning time</span>
       </div>
-      <div v-if="plan.planStats.maxDuration">
-        <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span></span>
+      <div>
+        <template v-if="!plan.planStats.maxDuration">
+          <span class="stat-value text-muted">
+            N/A
+            <small><i class="fa fa-info-circle" :title="getHelpMessage('missing slowest')"></i></small>
+          </span>
+        </template>
+        <template v-else>
+          <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span></span>
+        </template>
         <span class="stat-label">Slowest node</span>
       </div>
       <div>
         <template v-if="!plan.planStats.maxRows">
           <span class="stat-value text-muted">
             N/A
-            <small><i class="fa fa-info-circle" title="No rows returned"></i></small>
+            <small><i class="fa fa-info-circle" :title="getHelpMessage('no rows')"></i></small>
           </span>
         </template>
         <template v-else>
@@ -98,6 +122,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
+import { HelpService } from '@/services/help-service';
 import { PlanService } from '@/services/plan-service';
 import { duration, durationUnit, numeral_ } from '@/filters';
 import { HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
@@ -128,6 +153,8 @@ export default class Plan extends Vue {
   private node!: any;
   private menuHidden: boolean = true;
   private validationMessage: string = '';
+
+  private helpService = new HelpService();
 
   private viewOptions: any = {
     showHighlightBar: false,
@@ -163,8 +190,8 @@ export default class Plan extends Vue {
     this.plan = this.planService.createPlan('', planJson, this.planQuery);
     const content = this.plan.content;
     this.plan.planStats = {
-      executionTime: content['Execution Time'] || content['Total Runtime'],
-      planningTime: content['Planning Time'] || 0,
+      executionTime: content['Execution Time'] || content['Total Runtime'] || null,
+      planningTime: content['Planning Time'] || null,
       maxRows: content[NodeProp.MAXIMUM_ROWS] || null,
       maxCost: content[NodeProp.MAXIMUM_COSTS] || 0,
       maxDuration: content[NodeProp.MAXIMUM_DURATION] || 0,
@@ -174,6 +201,10 @@ export default class Plan extends Vue {
   @Watch('viewOptions', {deep: true})
   private onViewOptionsChanged(val: any, oldVal: any) {
     localStorage.setItem('viewOptions', JSON.stringify(this.viewOptions));
+  }
+
+  private getHelpMessage(message: string) {
+    return this.helpService.getHelpMessage(message);
   }
 }
 </script>

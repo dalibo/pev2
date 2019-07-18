@@ -2,6 +2,10 @@ export class HelpService {
   public getNodeTypeDescription(nodeType: string) {
     return NODE_DESCRIPTIONS[nodeType.toUpperCase()];
   }
+
+  public getHelpMessage(helpMessage: string) {
+    return HELP_MESSAGES[helpMessage.toUpperCase()];
+  }
 }
 
 interface INodeDescription {
@@ -35,4 +39,16 @@ export const NODE_DESCRIPTIONS: INodeDescription = {
     Results of this node are fed to the <strong>Bitmap Heap Scan</strong>.`,
     'CTE SCAN': `performs a sequential scan of <strong>Common Table Expression (CTE) query</strong> results. Note that
     results of a CTE are materialized (calculated and temporarily stored).`,
+};
+
+interface IHelpMessage {
+  [key: string]: string;
+}
+
+export const HELP_MESSAGES: IHelpMessage = {
+  'MISSING EXECUTION TIME': `Execution time (or Total runtime) not available for this plan. Make sure you
+    use EXPLAIN ANALYZE.`,
+  'MISSING PLANNING TIME': 'Planning time not available for this plan.',
+  'MISSING SLOWEST NODE': 'Could not compute durations. Make sure you use EXPLAIN ANALYZE.',
+  'NO ROWS': 'No rows returned',
 };
