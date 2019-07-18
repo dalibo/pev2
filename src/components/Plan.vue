@@ -35,7 +35,7 @@
           <div class="btn-group btn-group-sm">
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!node[nodeProps.ACTUAL_DURATION]">duration</button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="!node[nodeProps.ACTUAL_ROWS]">rows</button>
+            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS">rows</button>
             <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
           </div>
         </div>
@@ -62,8 +62,16 @@
         <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span></span>
         <span class="stat-label">Slowest node</span>
       </div>
-      <div v-if="plan.planStats.maxRows">
-        <span class="stat-value">{{plan.planStats.maxRows}} <span class="text-muted">rows</span></span>
+      <div>
+        <template v-if="!plan.planStats.maxRows">
+          <span class="stat-value text-muted">
+            N/A
+            <small><i class="fa fa-info-circle" title="No rows returned"></i></small>
+          </span>
+        </template>
+        <template v-else>
+          <span class="stat-value">{{plan.planStats.maxRows}} <span class="text-muted">rows</span></span>
+        </template>
         <span class="stat-label">Largest node</span>
       </div>
       <div v-if="plan.planStats.maxCost">
@@ -157,7 +165,7 @@ export default class Plan extends Vue {
     this.plan.planStats = {
       executionTime: content['Execution Time'] || content['Total Runtime'],
       planningTime: content['Planning Time'] || 0,
-      maxRows: content[NodeProp.MAXIMUM_ROWS] || 0,
+      maxRows: content[NodeProp.MAXIMUM_ROWS] || null,
       maxCost: content[NodeProp.MAXIMUM_COSTS] || 0,
       maxDuration: content[NodeProp.MAXIMUM_DURATION] || 0,
     };
