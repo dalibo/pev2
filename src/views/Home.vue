@@ -1,16 +1,23 @@
 <template>
   <div class="container">
-    <ul class="list-inline">
-      <li v-for="(sample, index) in samples" class="list-inline-item">
-        <a v-on:click.prevent="loadSample(sample)" href class="btn btn-outline-secondary btn-sm">
-          {{ sample[0] }}
-        </a>
-      </li>
-    </ul>
-    <div class="text-muted">
-      For best results, use <code>EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)</code>
-      <br>
-      <em>psql</em> users can export the plan to a file using <code>psql -qAt -f explain.sql > analyze.json</code>
+    <div class="row">
+      <div class="col d-flex">
+        <div class="text-muted">
+          For best results, use <code>EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)</code>
+          <br>
+          <em>psql</em> users can export the plan to a file using <code>psql -qAt -f explain.sql > analyze.json</code>
+        </div>
+        <div class="dropdown ml-auto">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sample Plans
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a v-for="(sample, index) in samples" class="dropdown-item" v-on:click.prevent="loadSample(sample)" href>
+              {{ sample[0] }}
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
     <form v-on:submit.prevent="submitPlan">
       <div class="form-group">
