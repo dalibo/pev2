@@ -228,6 +228,10 @@
     display: block;
   }
 
+  .dot & .collapse-handle {
+    display: none;
+  }
+
   &.never-executed {
     $color: white;
     $angle: 45deg;
