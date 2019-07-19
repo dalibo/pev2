@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --name pgExplain ./src/components/Plan.vue",
+    "build-lib": "vue-cli-service build --target lib --dest dist-lib --name pev2 ./src/components/Plan.vue",
     "test:unit": "jest"
   },
   "dependencies": {
