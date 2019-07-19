@@ -154,7 +154,7 @@ $connector-line: 2px solid darken($line-color, 10%);
 
         &::after {
           border-left: $connector-line;
-          height: calc(100% + #{$padding-sm});
+          height: calc(100% + #{$padding-sm} + 1px);
           width: $border-radius-lg;
           top: -5px;
         }

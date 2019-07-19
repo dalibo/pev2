@@ -1,3 +1,4 @@
+$compact-width: 50px;
 .plan-node {
   text-decoration: none;
   color: $text-color;
@@ -21,9 +22,8 @@
   .twod.plan-container.compact & {
     width: 140px;
   }
-  .twod.plan-container.dot &,
-  .twod.plan-container .collapsed>& {
-    width: 50px;
+  .twod.plan-container.dot & {
+    width: $compact-width;
   }
 
   header {
@@ -228,10 +228,6 @@
     display: block;
   }
 
-  .dot & .collapse-handle {
-    display: none;
-  }
-
   &.never-executed {
     $color: white;
     $angle: 45deg;
@@ -271,5 +267,23 @@
   padding: $padding-base $padding-lg !important;
   .tags span {
     margin-right: $padding-sm !important;
+  }
+}
+
+ul.collapsed {
+  & .plan-node {
+    width: $compact-width !important;
+    height: 0;
+    display: block;
+    * {
+      display: none;
+    }
+  }
+
+  .classic .plan & li::before {
+    top: 7px;
+  }
+  .classic .plan & li:last-child::after {
+    height: 14px;
   }
 }

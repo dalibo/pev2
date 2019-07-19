@@ -1,15 +1,15 @@
 <template>
-  <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'collapsed': collapsed, 'expanded': !collapsed, 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
+  <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
     <div :class="['plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION]}]">
-      <div class="collapse-handle">
-        <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()"></i>
+      <div class="collapse-handle" v-if="hasChildren">
+        <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
       <header title="view node details" v-on:click.stop="showDetails = !showDetails">
         <h4>
           {{ getNodeName() }}
         </h4>
-        <span v-if="viewOptions.viewMode === viewModes.FULL && !collapsed">
+        <span v-if="viewOptions.viewMode === viewModes.FULL">
           <span class="node-duration" v-if="node[nodeProps.ACTUAL_DURATION]">
             {{node[nodeProps.ACTUAL_DURATION] | duration}}<span class="text-muted">{{node[nodeProps.ACTUAL_DURATION] | durationUnit}}</span>
 
@@ -24,14 +24,14 @@
         </span>
       </header>
 
-      <button v-if="plan.query && viewOptions.viewMode === viewModes.FULL && !collapsed" title="view corresponding query"
+      <button v-if="plan.query && viewOptions.viewMode === viewModes.FULL" title="view corresponding query"
         class="btn btn-sm pull-right py-0 btn-link" v-on:click="showQuery = !showQuery">
         <small>
           <i class="fa fa-database"></i>
         </small>
       </button>
 
-      <div v-if="viewOptions.viewMode === viewModes.FULL && !collapsed">
+      <div v-if="viewOptions.viewMode === viewModes.FULL">
         <div class="relation-name" v-if="node[nodeProps.RELATION_NAME]">
           <span class="text-muted">on </span>
           <span v-if="node[nodeProps.SCHEMA]">{{node[nodeProps.SCHEMA]}}.</span>{{node[nodeProps.RELATION_NAME]}}
@@ -108,7 +108,7 @@
       </div>
 
     </div>
-    <ul v-if="plans">
+    <ul v-if="plans" :class="{'collapsed': collapsed}">
       <li v-for="subnode in plans">
         <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions"/>
       </li>
@@ -301,16 +301,12 @@ export default class PlanNode extends Vue {
     return this.syntaxHighlightService.highlight(this.plan.query, keyItems);
   }
 
-  private toggleCollapsed(collapsed: boolean | undefined) {
-    // collapsed is undefined when called from click event
-    if (collapsed === undefined) {
-      collapsed = !this.collapsed;
-    }
-    this.collapsed = collapsed;
-    // Call toggleCollapsed on all children
-    this.$children.forEach((child: any) => {
-      child.toggleCollapsed(collapsed);
-    });
+  private toggleCollapsed() {
+    this.collapsed = !this.collapsed;
+  }
+
+  private get hasChildren(): boolean {
+    return !!this.plans;
   }
 }
 </script>
