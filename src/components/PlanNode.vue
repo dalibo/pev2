@@ -71,7 +71,7 @@
           <i class="fa fa-usd fa-fw"></i>
         </span>
         <span v-if="node[nodeProps.LARGEST_NODE]" title="Largest node">
-          <i class="fa fa-align-justify fa-fw"></i>
+          <i class="fa fa-bars fa-fw"></i>
         </span>
         <span v-if="node[nodeProps.PLANNER_ESTIMATE_FACTOR] >= MIN_ESTIMATE_MISS" title="Bad estimation">
           <i class="fa fa-thumbs-down fa-fw"></i>

@@ -84,7 +84,10 @@
         <template v-else>
           <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span></span>
         </template>
-        <span class="stat-label">Slowest node</span>
+        <span class="stat-label">
+          Slowest node
+          <i class="icon-tortoise2 fa fa-fw text-muted"></i>
+        </span>
       </div>
       <div>
         <template v-if="!plan.planStats.maxRows">
@@ -96,11 +99,15 @@
         <template v-else>
           <span class="stat-value">{{plan.planStats.maxRows}} <span class="text-muted">rows</span></span>
         </template>
-        <span class="stat-label">Largest node</span>
+        <span class="stat-label">Largest node
+          <i class="fa fa-bars text-muted"></i>
+        </span>
       </div>
       <div v-if="plan.planStats.maxCost">
         <span class="stat-value">{{plan.planStats.maxCost | numeral_('0.00')}}</span>
-        <span class="stat-label">Costliest node</span>
+        <span class="stat-label">Costliest node
+          <i class="fa fa-dollar text-muted"></i>
+        </span>
       </div>
     </div>
 
