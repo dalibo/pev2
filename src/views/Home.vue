@@ -21,7 +21,7 @@
     </div>
     <form v-on:submit.prevent="submitPlan">
       <div class="form-group">
-        <label for="planInput">Plan</label>
+        <label for="planInput">Plan <span class="small text-muted">(text or JSON)</span></label>
         <textarea class="form-control" id="planInput" rows="8" v-model="planInput"></textarea>
       </div>
       <div class="form-group">
