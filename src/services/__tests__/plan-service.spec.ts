@@ -19,6 +19,26 @@ describe('PlanService', () => {
   }
 ]`;
     const r: any = planService.fromSource(source);
+    expect(r.Plan['Plan Rows']).toEqual(1270);
+  });
+
+  test('can parse plan in json format 2', () => {
+    const planService = new PlanService();
+    const source = `
+{
+  "Plan": {
+    "Node Type": "Seq Scan",
+    "Parallel Aware": false,
+    "Relation Name": "users",
+    "Alias": "users",
+    "Startup Cost": 0.00,
+    "Total Cost": 22.70,
+    "Plan Rows": 1270,
+    "Plan Width": 36
+  }
+}`;
+    const r: any = planService.fromSource(source);
+    expect(r.Plan['Plan Rows']).toEqual(1270);
   });
 
   test('can parse plan in json format with extra text', () => {

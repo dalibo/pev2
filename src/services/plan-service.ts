@@ -138,7 +138,7 @@ export class PlanService {
     // remove + character at the end of line added by default psql config
     source = source.replace(/\s*\+\r?\n/g, '\n');
 
-    if (/^(\s*)\[\s*\n.*?\1\]\s*/gms.exec(source)) {
+    if (/^(\s*)(\[|\{)\s*\n.*?\1(\]|\})\s*/gms.exec(source)) {
       return this.fromJson(source);
     }
     return this.fromText(source);
@@ -153,18 +153,20 @@ export class PlanService {
     let prefix = '';
     let firstLineIndex = 0;
     _.each(sourceLines, (l: string, index: number) => {
-      const matches = /^(\s*)\[\s*$/.exec(l);
+      const matches = /^(\s*)(\[|\{)\s*$/.exec(l);
       if (matches) {
         prefix = matches[1];
         firstLineIndex = index;
+        return false;
       }
     });
     // now find last line
     let lastLineIndex = 0;
     _.each(sourceLines, (l: string, index: number) => {
-      const matches = new RegExp('^' + prefix + '\]\s*$').exec(l);
+      const matches = new RegExp('^' + prefix + '(\]|\})\s*$').exec(l);
       if (matches) {
         lastLineIndex = index;
+        return false;
       }
     });
 
