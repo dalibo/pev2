@@ -50,6 +50,7 @@ export default class App extends Vue {
     ['Example 5', 'plan_5.json', 'plan_5.sql'],
     ['With subplan', 'plan_6.txt'],
     ['With CTE', 'plan_7.txt'],
+    ['Very large plan', 'plan_8.json'],
   ];
   private planInput: string = '';
   private queryInput: string = '';
