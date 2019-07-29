@@ -105,12 +105,13 @@
           <i class="fa fa-bars text-muted"></i>
         </span>
       </div>
-      <div v-if="plan.planStats.maxCost">
+      <button @click.prevent="showNode(plan.costliestNodeId, false, true)" :disabled="!plan.planStats.maxCost" v-if="plan.planStats.maxCost">
         <span class="stat-value">{{plan.planStats.maxCost | numeral_('0.00')}}</span>
         <span class="stat-label">Costliest node
           <i class="fa fa-dollar text-muted"></i>
         </span>
-      </div>
+        <div class="show" v-if="plan.planStats.maxCost"><i class="fa fa-search bg-white p-1 rounded"></i></div>
+      </button>
     </div>
 
     <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">

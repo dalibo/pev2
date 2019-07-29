@@ -81,6 +81,7 @@ export class PlanService {
 
     if (node[NodeProp.ACTUAL_COST] === this.maxCost) {
       node[NodeProp.COSTLIEST_NODE] = true;
+      root.costliestNodeId = node.nodeId;
     }
     if (node[NodeProp.ACTUAL_ROWS] === this.maxRows && node[NodeProp.ACTUAL_ROWS] !== 0) {
       node[NodeProp.LARGEST_NODE] = true;
