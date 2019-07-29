@@ -74,7 +74,7 @@
         </template>
         <span class="stat-label">Planning time</span>
       </div>
-      <button @click.prevent="showNode(plan.slowestNodeId, true)" :disabled="!plan.planStats.maxDuration">
+      <button @click.prevent="showNode(plan.slowestNodeId, false, true)" :disabled="!plan.planStats.maxDuration">
         <template v-if="!plan.planStats.maxDuration">
           <span class="stat-value text-muted">
             N/A
@@ -207,7 +207,7 @@ export default class Plan extends Vue {
     };
 
     window.setTimeout(() => {
-      this.showNode('0', false);
+      this.showNode('0', true, false);
     }, 200);
   }
 
@@ -220,7 +220,7 @@ export default class Plan extends Vue {
     return this.helpService.getHelpMessage(message);
   }
 
-  private showNode(nodeId: string, highlight: boolean) {
+  private showNode(nodeId: string, shouldCenter: boolean, highlight: boolean) {
     const parent = document.querySelector('.plan-container .overflow-auto');
     if (!parent) {
       return;
@@ -228,7 +228,7 @@ export default class Plan extends Vue {
     const child = document.getElementById('node-' + nodeId);
 
     if (child) {
-      scrollChildIntoParentView(parent, child, () => {
+      scrollChildIntoParentView(parent, child, shouldCenter, () => {
         if (highlight) {
           child.classList.add('highlight');
           setTimeout(() => {
