@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <div class="plan-stats">
+    <div class="plan-stats border-bottom p-1 mb-1 align-self-center">
       <div>
         <template v-if="!plan.planStats.executionTime">
           <span class="stat-value text-muted">
@@ -74,7 +74,7 @@
         </template>
         <span class="stat-label">Planning time</span>
       </div>
-      <div>
+      <button @click.prevent="showNode(plan.slowestNodeId)" :disabled="!plan.planStats.maxDuration">
         <template v-if="!plan.planStats.maxDuration">
           <span class="stat-value text-muted">
             N/A
@@ -82,13 +82,15 @@
           </span>
         </template>
         <template v-else>
-          <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span></span>
+          <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span>
+          </span>
         </template>
         <span class="stat-label">
           Slowest node
           <i class="icon-tortoise2 fa fa-fw text-muted"></i>
         </span>
-      </div>
+        <div class="show" v-if="plan.planStats.maxDuration"><i class="fa fa-search bg-white p-1 rounded"></i></div>
+      </button>
       <div>
         <template v-if="!plan.planStats.maxRows">
           <span class="stat-value text-muted">
@@ -129,7 +131,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
-import { HelpService } from '@/services/help-service';
+import { HelpService, scrollChildIntoParentView } from '@/services/help-service';
 import { PlanService } from '@/services/plan-service';
 import { duration, durationUnit, numeral_ } from '@/filters';
 import { HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
@@ -212,6 +214,24 @@ export default class Plan extends Vue {
 
   private getHelpMessage(message: string) {
     return this.helpService.getHelpMessage(message);
+  }
+
+  private showNode(nodeId: string) {
+    const parent = document.querySelector('.plan-container .overflow-auto');
+    if (!parent) {
+      return;
+    }
+    const child = document.getElementById('node-' + nodeId);
+
+    if (child) {
+      scrollChildIntoParentView(parent, child, () => {
+        child.classList.add('highlight');
+        setTimeout(() => {
+          child.classList.remove('highlight');
+        }, 1000);
+      });
+
+    }
   }
 }
 </script>

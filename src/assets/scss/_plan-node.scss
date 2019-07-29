@@ -1,4 +1,5 @@
 $compact-width: 50px;
+$bg-color: #fff;
 .plan-node {
   text-decoration: none;
   color: $text-color;
@@ -6,7 +7,7 @@ $compact-width: 50px;
   transition: all 0.1s;
   position: relative;
   padding: $padding-base $padding-lg;
-  background-color: #fff;
+  background-color: $bg-color;
   font-size: $font-size-sm;
   border: 1px solid $line-color;
   margin-bottom: 4px;
@@ -229,12 +230,27 @@ $compact-width: 50px;
   }
 
   &.never-executed {
-    $color: white;
+    $color: $gray-lightest;
     $angle: 45deg;
     $progress-height: 1rem !default;
-    background-color: $gray-lightest;
     background-image: linear-gradient($angle, $color 25%, transparent 25%, transparent 50%, $color 50%, $color 75%, transparent 75%, transparent);
     background-size: $progress-height $progress-height;
+  }
+
+  @keyframes highlight {
+    0% {
+      background: $bg-color;
+    }
+    20% {
+      background: #ffff99;
+    }
+    100% {
+      background: $bg-color;
+    }
+  }
+
+  &.highlight {
+    animation: highlight 1s;
   }
 }
 

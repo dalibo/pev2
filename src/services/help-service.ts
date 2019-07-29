@@ -52,3 +52,111 @@ export const HELP_MESSAGES: IHelpMessage = {
   'MISSING SLOWEST NODE': 'Could not compute durations. Make sure you use EXPLAIN ANALYZE.',
   'NO ROWS': 'No rows returned',
 };
+
+interface EaseInOutQuadOptions {
+  currentTime: number;
+  start: number;
+  change: number;
+  duration: number;
+}
+
+export function scrollChildIntoParentView(parent: Element, child: Element, done: () => void) {
+  // Where is the parent on page
+  const parentRect = parent.getBoundingClientRect();
+  // Where is the child
+  const childRect = child.getBoundingClientRect();
+
+  let scrollLeft = parent.scrollLeft; // don't move
+  const isChildViewableX = (childRect.left >= parentRect.left) &&
+    (childRect.left <= parentRect.right) &&
+    (childRect.right <= parentRect.right);
+
+  let scrollTop = parent.scrollTop;
+  const isChildViewableY = (childRect.top >= parentRect.top) &&
+    (childRect.top <= parentRect.bottom) &&
+    (childRect.bottom <= parentRect.bottom);
+
+  if (!isChildViewableX || !isChildViewableY) {
+    // scroll by offset relative to parent
+    // try to put the child in the middle of parent horizontaly
+    scrollLeft = childRect.left + parent.scrollLeft - parentRect.left
+      - parentRect.width / 2 + childRect.width / 2;
+    scrollTop = childRect.top + parent.scrollTop - parentRect.top - 20;
+    smoothScroll({element: parent, to: {scrollTop, scrollLeft}, duration: 400, done});
+  } else {
+    done();
+  }
+}
+
+const easeInOutQuad = ({
+  currentTime,
+  start,
+  change,
+  duration,
+}: EaseInOutQuadOptions) => {
+  let newCurrentTime = currentTime;
+  newCurrentTime /= duration / 2;
+
+  if (newCurrentTime < 1) {
+    return (change / 2) * newCurrentTime * newCurrentTime + start;
+  }
+
+  newCurrentTime -= 1;
+  return (-change / 2) * (newCurrentTime * (newCurrentTime - 2) - 1) + start;
+};
+
+enum ScrollDirection {
+  'scrollTop',
+  'scrollLeft',
+}
+
+interface SmoothScrollOptions {
+  duration: number;
+  element: Element;
+  to: {
+    scrollTop: number;
+    scrollLeft: number;
+  };
+  done?: () => void;
+}
+
+export function smoothScroll({
+  duration,
+  element,
+  to,
+  done,
+}: SmoothScrollOptions) {
+  const startX = element.scrollTop;
+  const startY = element.scrollLeft;
+  const changeX = to.scrollTop - startX;
+  const changeY = to.scrollLeft - startY;
+  const startDate = new Date().getTime();
+
+  const animateScroll = () => {
+    const currentDate = new Date().getTime();
+    const currentTime = currentDate - startDate;
+    element.scrollTop = easeInOutQuad({
+      currentTime,
+      start: startX,
+      change: changeX,
+      duration,
+    });
+    element.scrollLeft = easeInOutQuad({
+      currentTime,
+      start: startY,
+      change: changeY,
+      duration,
+    });
+
+    if (currentTime < duration) {
+      requestAnimationFrame(animateScroll);
+    } else {
+      element.scrollTop = to.scrollTop;
+      element.scrollLeft = to.scrollLeft;
+      if (done) {
+        done();
+      }
+    }
+  };
+  animateScroll();
+}
