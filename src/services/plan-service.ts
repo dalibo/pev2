@@ -228,6 +228,15 @@ export class PlanService {
       const cteRegex = /^(\s*)CTE\s+(\S+)\s*$/g;
       const cteMatches = cteRegex.exec(line);
 
+      /*
+       * Groups
+       * 2: trigger name
+       * 3: time
+       * 4: calls
+       */
+      const triggerRegex = /^(\s*)Trigger\s+(.*):\s+time=(\d+\.\d+)\s+calls=(\d+)\s*$/g;
+      const triggerMatches = triggerRegex.exec(line);
+
       const extraRegex = /^(\s*)(\S.*\S)\s*$/g;
       const extraMatches = extraRegex.exec(line);
 
@@ -308,6 +317,16 @@ export class PlanService {
         };
         const prefixLength = prefix.length;
         elementsAtDepth.push([prefixLength, element]);
+      } else if (triggerMatches) {
+        const prefix = triggerMatches[1];
+        // Remove elements from elementsAtDepth for deeper levels
+        _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
+        root.Triggers = root.Triggers || [];
+        root.Triggers.push({
+          'Trigger Name': triggerMatches[2],
+          'Time': parseFloat(triggerMatches[3].replace(/(\s*ms)$/, '')),
+          'Calls': triggerMatches[4],
+        });
       } else if (extraMatches) {
         const prefix = extraMatches[1];
         // Remove elements from elementsAtDepth for deeper levels

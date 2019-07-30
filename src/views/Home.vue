@@ -52,7 +52,7 @@ export default class App extends Vue {
     ['With CTE', 'plan_7.txt'],
     ['Very large plan', 'plan_8.json'],
     ['With trigger', 'plan_trigger.json', 'plan_trigger.sql'],
-    ['With trigger (plain text)', 'plan_trigger.txt', 'plan_trigger.sql'],
+    ['With trigger (plain text)', 'plan_trigger.txt', 'plan_trigger_2.sql'],
   ];
   private planInput: string = '';
   private queryInput: string = '';
