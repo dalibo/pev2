@@ -1,0 +1,7 @@
+Insert on brut.emp  (cost=0.00..0.01 rows=1 width=44) (actual time=0.032..0.032 rows=0 loops=1)
+  Buffers: shared hit=1 dirtied=1
+  ->  Result  (cost=0.00..0.01 rows=1 width=44) (actual time=0.004..0.004 rows=1 loops=1)
+        Output: 10000, now(), 'pouet'::text
+Planning Time: 0.036 ms
+Trigger emp_stamp: time=0.902 calls=1
+Execution Time: 0.956 ms
