@@ -28,6 +28,7 @@ export class PlanService {
       createdOn: new Date(),
       content: planContent,
       query: planQuery,
+      planStats: {},
     };
 
     this.analyzePlan(plan);

@@ -49,8 +49,8 @@
         </div>
       </div>
     </div>
-    <div class="plan-stats border-bottom p-1 mb-1 align-self-center">
-      <div>
+    <div class="plan-stats border-bottom p-1 mb-1 align-self-center row">
+      <div class="col px-0">
         <template v-if="!plan.planStats.executionTime">
           <span class="stat-value text-muted">
             N/A
@@ -62,7 +62,7 @@
         </template>
         <span class="stat-label">Execution time</span>
       </div>
-      <div>
+      <div class="col px-0">
         <template v-if="!plan.planStats.planningTime">
           <span class="stat-value text-muted">
             N/A
@@ -74,21 +74,25 @@
         </template>
         <span class="stat-label">Planning time</span>
       </div>
-      <button @click.prevent="showNode(plan.slowestNodeId, false, true)" :disabled="!plan.planStats.maxDuration">
-        <template v-if="!plan.planStats.maxDuration">
-          <span class="stat-value text-muted">
-            N/A
-            <small><i class="fa fa-info-circle" :title="getHelpMessage('missing slowest')"></i></small>
+      <div class="col px-0">
+        <button @click.prevent="showNode(plan.slowestNodeId, false, true)" :disabled="!plan.planStats.maxDuration" class="w-100">
+          <template v-if="!plan.planStats.maxDuration">
+            <span class="stat-value text-muted">
+              N/A
+              <small><i class="fa fa-info-circle" :title="getHelpMessage('missing slowest')"></i></small>
+            </span>
+          </template>
+          <template v-else>
+            <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span>
+            </span>
+          </template>
+          <span class="stat-label">
+            Slowest node
           </span>
-        </template>
-        <template v-else>
-          <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span>
-          </span>
-        </template>
-        <span class="stat-label">Slowest node</span>
-        <div class="show" v-if="plan.planStats.maxDuration"><i class="fa fa-search bg-white p-1 rounded"></i></div>
-      </button>
-      <div>
+          <div class="show" v-if="plan.planStats.maxDuration"><i class="fa fa-search bg-white p-1 rounded"></i></div>
+        </button>
+      </div>
+      <div class="col px-0">
         <template v-if="!plan.planStats.maxRows">
           <span class="stat-value text-muted">
             N/A
@@ -100,11 +104,38 @@
         </template>
         <span class="stat-label">Largest node</span>
       </div>
-      <button @click.prevent="showNode(plan.costliestNodeId, false, true)" :disabled="!plan.planStats.maxCost" v-if="plan.planStats.maxCost">
-        <span class="stat-value">{{plan.planStats.maxCost | numeral_('0.00')}}</span>
-        <span class="stat-label">Costliest node</span>
-        <div class="show" v-if="plan.planStats.maxCost"><i class="fa fa-search bg-white p-1 rounded"></i></div>
-      </button>
+      <div class="col px-0">
+        <button @click.prevent="showNode(plan.costliestNodeId, false, true)" :disabled="!plan.planStats.maxCost" v-if="plan.planStats.maxCost"  class="w-100">
+          <span class="stat-value">{{plan.planStats.maxCost | numeral_('0.00')}}</span>
+          <span class="stat-label">Costliest node</span>
+          <div class="show" v-if="plan.planStats.maxCost"><i class="fa fa-search bg-white p-1 rounded"></i></div>
+        </button>
+      </div>
+      <div v-if="plan.planStats.triggers.length" class="position-relative col px-0">
+        <button @click.prevent="showTriggers = !showTriggers" class="w-100">
+          <span class="stat-value">{{ triggersTotalDuration | duration }}<span class="text-muted">{{ triggersTotalDuration | durationUnit }}</span></span>
+          <span class="stat-label">Triggers</span>
+        </button>
+        <div class="plan-triggers-container" v-if="showTriggers">
+          <button class="btn btn-close pull-right" v-on:click="showTriggers = false">
+            <i class="fa fa-close"></i>
+          </button>
+          <h3>Triggers</h3>
+          <div v-for="(trigger, index) in plan.planStats.triggers">
+            {{ trigger['Trigger Name'] }}
+            <br>
+            <span class="text-muted">Called</span> {{ trigger['Calls'] }}<span class="text-muted">&times</span>
+            <span class="float-right">
+              {{ trigger.Time | duration}}<span class="text-muted">{{ trigger.Time | durationUnit }}</span> | {{ triggerDurationPercent(trigger) }}<span class="text-muted">%</span>
+            </span>
+            <br>
+            <span class="text-muted" v-if="trigger.Relation">on</span>
+            {{ trigger.Relation }}
+            <div class="clearfix"></div>
+            <hr v-if="index != plan.planStats.triggers.length - 1">
+          </div>
+        </div>
+      </div>
     </div>
 
     <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
@@ -123,12 +154,15 @@
 </template>
 
 <script lang="ts">
+import * as _ from 'lodash';
+
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
 import { HelpService, scrollChildIntoParentView } from '@/services/help-service';
 import { PlanService } from '@/services/plan-service';
 import { duration, durationUnit, numeral_ } from '@/filters';
 import { HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
+import { IPlan } from '../iplan';
 
 import VueDragscroll from 'vue-dragscroll';
 Vue.use(VueDragscroll);
@@ -152,10 +186,11 @@ import { dragscroll } from 'vue-dragscroll';
 export default class Plan extends Vue {
   @Prop(String) private planSource!: string;
   @Prop(String) private planQuery!: string;
-  private plan: any;
+  private plan!: IPlan;
   private node!: any;
   private menuHidden: boolean = true;
   private validationMessage: string = '';
+  private showTriggers: boolean = false;
 
   private helpService = new HelpService();
 
@@ -198,6 +233,7 @@ export default class Plan extends Vue {
       maxRows: content[NodeProp.MAXIMUM_ROWS] || null,
       maxCost: content[NodeProp.MAXIMUM_COSTS] || 0,
       maxDuration: content[NodeProp.MAXIMUM_DURATION] || 0,
+      triggers: content.Triggers || [],
     };
 
     window.setTimeout(() => {
@@ -232,6 +268,18 @@ export default class Plan extends Vue {
       });
 
     }
+  }
+
+  private triggerDurationPercent(trigger: any) {
+    const plan = this.plan;
+    const planStats = this.plan.planStats;
+    const executionTime = this.plan.planStats.executionTime || 0;
+    const time = trigger.Time;
+    return _.round(time / executionTime * 100);
+  }
+
+  private get triggersTotalDuration() {
+    return _.sumBy(this.plan.planStats.triggers, (o) => o.Time);
   }
 }
 </script>
