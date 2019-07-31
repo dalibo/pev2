@@ -1,7 +1,7 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :id="'node-' + node.nodeId" :class="['plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION]}]">
+    <div :id="'node-' + node.nodeId" :class="['plan-node', durationClass, {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION]}]">
       <div class="collapse-handle" v-if="hasChildren">
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
@@ -262,6 +262,10 @@ export default class PlanNode extends Vue {
 
   private getBarColor(percent: number) {
     return this.colorService.numberToColorHsl(percent);
+  }
+
+  private get durationClass(): string {
+    return 'c-' + this.colorService.durationPercentToClass(this.executionTimePercent);
   }
 
   private getFormattedQuery(): string {

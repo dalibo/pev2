@@ -42,6 +42,17 @@ export class ColorService {
     return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
   }
 
+  public durationPercentToClass(i: number): number {
+    if (i > 90) {
+      return 4;
+    } else if (i > 40) {
+      return 3;
+    } else if (i > 10) {
+      return 2;
+    }
+    return 1;
+  }
+
   private hue2rgb(p: number, q: number, t: number) {
     if (t < 0) {t += 1; }
     if (t > 1) {t -= 1; }

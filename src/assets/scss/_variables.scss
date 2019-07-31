@@ -51,3 +51,11 @@ $highlight-color: $blue;
 $highlight-color-dark: $dark-blue;
 
 $alert-color: #FB4418;
+
+
+$severity-colors: (
+  1: #fff,
+  2: #fe8,
+  3: #e80,
+  4: #800
+) !default;
