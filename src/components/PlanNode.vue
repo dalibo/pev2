@@ -186,8 +186,10 @@ export default class PlanNode extends Vue {
   }
 
   private calculateDuration() {
+    // use the first node total time if plan execution time is not available
+    const executionTime = this.plan.planStats.executionTime || this.plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME];
     this.executionTimePercent = _.round(
-      (this.node[NodeProp.ACTUAL_DURATION] / this.plan.planStats.executionTime) * 100);
+      (this.node[NodeProp.ACTUAL_DURATION] / executionTime) * 100);
   }
 
   // create an array of node propeties so that they can be displayed in the view
