@@ -44,6 +44,7 @@ export class NodeProp {
   public static PARENT_RELATIONSHIP: string = 'Parent Relationship';
   public static SUBPLAN_NAME: string = 'Subplan Name';
   public static PARALLEL_AWARE: string = 'Parallel Aware';
+  public static WORKERS: string = 'Workers';
 
   // computed by pev
   public static COSTLIEST_NODE: string = '*Costiest Node (by cost)';

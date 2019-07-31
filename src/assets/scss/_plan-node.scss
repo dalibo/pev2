@@ -60,6 +60,12 @@ $bg-color: #fff;
   //hovers
   &:hover {
     border-color: $highlight-color;
+    &.parallel {
+      &::after,
+      &::before {
+        border-color: $highlight-color;
+      }
+    }
   }
 
   .node-description {
@@ -163,6 +169,32 @@ $bg-color: #fff;
 
   &.highlight {
     animation: highlight 1s;
+  }
+
+  &.parallel {
+    box-shadow: none;
+
+    &::before,
+    &::after {
+      position: absolute;
+      z-index: -1;
+      content: '';
+      width: calc(100% + 2px);
+      height: calc(100% + 2px);
+      border-radius: $border-radius-base;
+      border: 1px solid $gray-light;
+      background-color: $bg-color;
+      top: -1px;
+    }
+
+    &::before {
+      left: 3px;
+    }
+    &::after {
+      left: 7px;
+      z-index: -2;
+      box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
+    }
   }
 }
 
