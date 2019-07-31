@@ -118,9 +118,6 @@ export class PlanService {
     if (node[NodeProp.ACTUAL_COST] < 0) {
       node[NodeProp.ACTUAL_COST] = 0;
     }
-
-    // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
-    node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
   }
 
   // figure out order of magnitude by which the planner mis-estimated how many rows would be
