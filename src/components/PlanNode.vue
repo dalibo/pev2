@@ -1,7 +1,7 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION], 'parallel': node[nodeProps.WORKERS] || node['Worker 0']}]">
+    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION], 'parallel': isParallel}]">
       <div class="collapse-handle" v-if="hasChildren">
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
@@ -217,7 +217,8 @@ export default class PlanNode extends Vue {
   }
 
   private getNodeName(): string {
-    const nodeName = this.node[NodeProp.NODE_TYPE];
+    let nodeName = this.isParallel ? 'Parallel ' : '';
+    nodeName += this.node[NodeProp.NODE_TYPE];
     if ((this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) && !this.showDetails) {
       return nodeName.replace(/[^A-Z]/g, '').toUpperCase();
     }
@@ -397,6 +398,10 @@ export default class PlanNode extends Vue {
 
   private get hasChildren(): boolean {
     return !!this.plans;
+  }
+
+  private get isParallel(): boolean {
+    return this.node[NodeProp.PARALLEL_AWARE];
   }
 }
 </script>
