@@ -41,6 +41,7 @@ export class NodeProp {
   public static HASH_CONDITION: string = 'Hash Cond';
   public static PARENT_RELATIONSHIP: string = 'Parent Relationship';
   public static SUBPLAN_NAME: string = 'Subplan Name';
+  public static PARALLEL_AWARE: string = 'Parallel Aware';
 
   // computed by pev
   public static COMPUTED_TAGS: string = '*Tags';

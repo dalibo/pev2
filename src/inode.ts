@@ -44,5 +44,10 @@ export default class Node {
       this[NodeProp.NODE_TYPE] = subqueryMatches[1];
       // this[NodeProp.SUBQUERY_NAME] = subqueryMatches[2].replace
     }
+    const parallelMatches = /^(Parallel\s+)(.*)/.exec(this[NodeProp.NODE_TYPE]);
+    if (parallelMatches) {
+      this[NodeProp.NODE_TYPE] = parallelMatches[2];
+      this[NodeProp.PARALLEL_AWARE] = true;
+    }
   }
 }
