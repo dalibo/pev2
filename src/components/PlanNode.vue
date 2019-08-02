@@ -39,10 +39,10 @@
         </div>
 
         <div v-if="node[nodeProps.GROUP_KEY]">
-          <span class="text-muted">by</span> {{node[nodeProps.GROUP_KEY] | keysToString }}</div>
+          <span class="text-muted">by</span> {{node[nodeProps.GROUP_KEY] | keysToString | truncate(250, '…') }}</div>
         <div v-if="node[nodeProps.SORT_KEY]">
-          <span class="text-muted">by</span> {{node[nodeProps.SORT_KEY] | keysToString }}</div>
-        <div v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] | keysToString }}
+          <span class="text-muted">by</span> {{node[nodeProps.SORT_KEY] | keysToString | truncate(250, '…') }}</div>
+        <div v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] | keysToString | truncate(250, '…') }}
           <span class="text-muted">join</span></div>
         <div v-if="node[nodeProps.INDEX_NAME]"><span class="text-muted">
             using</span> {{node[nodeProps.INDEX_NAME] | keysToString }}</div>
@@ -118,7 +118,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { HelpService } from '@/services/help-service';
 import { ColorService } from '@/services/color-service';
 import { SyntaxHighlightService } from '@/services/syntax-highlight-service';
-import { duration, durationUnit, keysToString } from '@/filters';
+import { duration, durationUnit, keysToString, truncate } from '@/filters';
 import { EstimateDirection, HighlightType, NodeProp, Orientation, ViewMode } from '@/enums';
 import * as _ from 'lodash';
 import numeral from 'numeral';
@@ -129,6 +129,7 @@ import numeral from 'numeral';
     duration,
     durationUnit,
     keysToString,
+    truncate,
   },
 })
 export default class PlanNode extends Vue {

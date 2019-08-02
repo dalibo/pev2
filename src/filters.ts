@@ -42,3 +42,8 @@ export function keysToString(value: any): string {
 export function numeral_(value: number, format: string): string {
   return numeral(value).format(format);
 }
+
+export function truncate(text: string, length: number, clamp: string): string {
+    clamp = clamp || '...';
+    return text.length > length ? text.slice(0, length) + clamp : text;
+}
