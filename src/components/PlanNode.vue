@@ -179,7 +179,7 @@ export default class PlanNode extends Vue {
 
     this.plans = this.node[NodeProp.PLANS];
 
-    this.plannerRowEstimateDirection = this.node[NodeProp.PLANNER_ESIMATE_DIRECTION];
+    this.plannerRowEstimateDirection = this.node[NodeProp.PLANNER_ESTIMATE_DIRECTION];
     this.plannerRowEstimateValue = _.round(this.node[NodeProp.PLANNER_ESTIMATE_FACTOR]);
   }
 

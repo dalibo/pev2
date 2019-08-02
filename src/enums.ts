@@ -55,7 +55,7 @@ export class NodeProp {
   public static ACTUAL_DURATION: string = '*Actual Duration';
   public static ACTUAL_COST: string = '*Actual Cost';
   public static PLANNER_ESTIMATE_FACTOR: string = '*Planner Row Estimate Factor';
-  public static PLANNER_ESIMATE_DIRECTION: string = '*Planner Row Estimate Direction';
+  public static PLANNER_ESTIMATE_DIRECTION: string = '*Planner Row Estimate Direction';
 
   public static CTE_SCAN: string = 'CTE Scan';
   public static CTE_NAME: string = 'CTE Name';
