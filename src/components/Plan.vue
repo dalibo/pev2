@@ -126,7 +126,8 @@
             <br>
             <span class="text-muted">Called</span> {{ trigger['Calls'] }}<span class="text-muted">&times</span>
             <span class="float-right">
-              {{ trigger.Time | duration}}<span class="text-muted">{{ trigger.Time | durationUnit }}</span> | {{ triggerDurationPercent(trigger) }}<span class="text-muted">%</span>
+              <span :class="'p-0 px-1 alert ' + triggerDurationClass(triggerDurationPercent(trigger))"><strong>{{ trigger.Time | duration}}</strong>{{ trigger.Time | durationUnit }}</span>
+              | {{ triggerDurationPercent(trigger) }}<span class="text-muted">%</span>
             </span>
             <br>
             <span class="text-muted" v-if="trigger.Relation">on</span>
@@ -276,6 +277,22 @@ export default class Plan extends Vue {
     const executionTime = this.plan.planStats.executionTime || 0;
     const time = trigger.Time;
     return _.round(time / executionTime * 100);
+  }
+
+  private triggerDurationClass(triggerDurationPercent: number) {
+    let c;
+    const i = triggerDurationPercent;
+    if (i > 90) {
+      c = 4;
+    } else if (i > 40) {
+      c = 3;
+    } else if (i > 10) {
+      c = 2;
+    }
+    if (c) {
+      return 'c-' + c;
+    }
+    return false;
   }
 
   private get triggersTotalDuration() {
