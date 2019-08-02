@@ -1,7 +1,7 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :id="'node-' + node.nodeId" :class="['plan-node', durationClass, {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION]}]">
+    <div :id="'node-' + node.nodeId" :class="['plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION]}]">
       <div class="collapse-handle" v-if="hasChildren">
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
@@ -11,8 +11,8 @@
         </h4>
         <span v-if="viewOptions.viewMode === viewModes.FULL">
           <span class="node-duration" v-if="node[nodeProps.ACTUAL_DURATION]">
-            {{node[nodeProps.ACTUAL_DURATION] | duration}}<span class="text-muted">{{node[nodeProps.ACTUAL_DURATION] | durationUnit}}</span>
-
+            <span :class="'p-0 px-1 rounded alert ' + durationClass">
+              <strong>{{node[nodeProps.ACTUAL_DURATION] | duration}}</strong>{{node[nodeProps.ACTUAL_DURATION] | durationUnit}}</span>
             <template v-if="executionTimePercent !== Infinity">
               |
               <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
@@ -64,17 +64,11 @@
       </div>
 
       <div class="tags" v-if="viewOptions.showTags">
-        <span v-if="node[nodeProps.SLOWEST_NODE]" title="Slowest node" class="badge badge-danger">
-          <i class="icon-tortoise2 fa fa-fw"></i>
-        </span>
         <span v-if="node[nodeProps.COSTLIEST_NODE]" title="Costliest node">
           <i class="fa fa-usd fa-fw"></i>
         </span>
         <span v-if="node[nodeProps.LARGEST_NODE]" title="Largest node">
           <i class="fa fa-bars fa-fw"></i>
-        </span>
-        <span v-if="node[nodeProps.PLANNER_ESTIMATE_FACTOR] >= MIN_ESTIMATE_MISS" title="Bad estimation">
-          <i class="fa fa-thumbs-down fa-fw"></i>
         </span>
       </div>
 
@@ -90,7 +84,10 @@
       <div class="planner-estimate" v-if="shouldShowPlannerEstimate() && plannerRowEstimateDirection != estimateDirections.none">
         <span v-if="plannerRowEstimateDirection === estimateDirections.over"><strong><i class="fa fa-arrow-up"></i> over</strong> estimated rows</span>
         <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong><i class="fa fa-arrow-down"></i> under</strong> estimated rows</span>
-        <span v-if="plannerRowEstimateValue != Infinity"> by <strong>{{plannerRowEstimateValue}}</strong>x</span>
+        <span v-if="plannerRowEstimateValue != Infinity"> by
+        <span :class="'p-0 px-1 alert ' + estimationClass">
+          <strong>{{plannerRowEstimateValue}}</strong>x</span>
+        </span>
       </div>
 
       <div v-if="showDetails">
@@ -143,7 +140,6 @@ export default class PlanNode extends Vue {
   private COSTLY_TAG: string = 'costliest';
   private SLOW_TAG: string = 'slowest';
   private LARGE_TAG: string = 'largest';
-  private ESTIMATE_TAG: string = 'bad estimate';
 
   // UI flags
   private showDetails: boolean = false;
@@ -264,8 +260,36 @@ export default class PlanNode extends Vue {
     return this.colorService.numberToColorHsl(percent);
   }
 
-  private get durationClass(): string {
-    return 'c-' + this.colorService.durationPercentToClass(this.executionTimePercent);
+  private get durationClass() {
+    let c;
+    const i = this.executionTimePercent;
+    if (i > 90) {
+      c = 4;
+    } else if (i > 40) {
+      c = 3;
+    } else if (i > 10) {
+      c = 2;
+    }
+    if (c) {
+      return 'c-' + c;
+    }
+    return false;
+  }
+
+  private get estimationClass() {
+    let c;
+    const i = this.node[NodeProp.PLANNER_ESTIMATE_FACTOR];
+    if (i > 1000) {
+      c = 4;
+    } else if (i > 100) {
+      c = 3;
+    } else if (i > 10) {
+      c = 2;
+    }
+    if (c) {
+      return 'c-' + c;
+    }
+    return false;
   }
 
   private getFormattedQuery(): string {

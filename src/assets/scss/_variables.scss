@@ -19,6 +19,7 @@ $gray-light: darken($gray-lightest, 10%);
 $gray: darken(#f7f7f7, 30%);
 $gray-dark: darken(#f7f7f7, 50%);
 $gray-darkest: darken($gray-lightest, 70%);
+$white: white;
 
 $blue: #00B5E2;
 $dark-blue: #008CAF;
@@ -59,3 +60,25 @@ $severity-colors: (
   3: #e80,
   4: #800
 ) !default;
+
+// The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
+$yiq-contrasted-threshold:  150 !default;
+
+// Customize the light and dark text colors for use in our YIQ color contrast function.
+$yiq-text-dark:             $gray-darkest !default;
+$yiq-text-light:            $white !default;
+
+// Color contrast
+@function color-yiq($color, $dark: $yiq-text-dark, $light: $yiq-text-light) {
+  $r: red($color);
+  $g: green($color);
+  $b: blue($color);
+
+  $yiq: (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+
+  @if ($yiq >= $yiq-contrasted-threshold) {
+    @return $dark;
+  } @else {
+    @return $light;
+  }
+}

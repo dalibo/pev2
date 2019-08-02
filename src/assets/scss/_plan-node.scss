@@ -89,8 +89,16 @@ $bg-color: #fff;
       padding: $padding-sm;
       border-radius: 50%;
       line-height: 1.1;
+
+      @each $severity, $color in $severity-colors {
+        &.c-#{$severity} {
+          background-color: $color;
+          color: color-yiq($color);
+        }
+      }
     }
   }
+
 
   //hovers
   &:hover {
@@ -252,26 +260,6 @@ $bg-color: #fff;
   &.highlight {
     animation: highlight 1s;
   }
-
-  overflow: hidden;
-
-  /**
-   * Severity classes
-   */
-  @each $color, $value in $severity-colors {
-    &.c-#{$color}::before {
-      content: "";
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 0 20px 20px 0;
-      border-radius: 50%;
-      border-color: transparent $value transparent transparent;
-    }
-  }
 }
 
 .node-bar-container {
@@ -320,5 +308,15 @@ ul.collapsed {
   }
   .classic .plan & li:last-child::after {
     height: 14px;
+  }
+}
+
+/**
+ * Severity classes
+ */
+@each $color, $value in $severity-colors {
+  .alert.c-#{$color} {
+    background-color: $value;
+    color: color-yiq($value);
   }
 }
