@@ -29,6 +29,7 @@ export class NodeProp {
   public static PLAN_ROWS: string = 'Plan Rows';
   public static ACTUAL_TOTAL_TIME: string = 'Actual Total Time';
   public static ACTUAL_LOOPS: string = 'Actual Loops';
+  public static STARTUP_COST: string = 'Startup Cost';
   public static TOTAL_COST: string = 'Total Cost';
   public static PLANS: string = 'Plans';
   public static RELATION_NAME: string = 'Relation Name';

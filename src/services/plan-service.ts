@@ -241,6 +241,7 @@ export class PlanService {
         const prefix = nodeMatches[1];
         const neverExecuted = nodeMatches[13];
         const newNode: Node = new Node(nodeMatches[2]);
+        newNode[NodeProp.STARTUP_COST] = parseFloat(nodeMatches[3]);
         newNode[NodeProp.TOTAL_COST] = parseFloat(nodeMatches[4]);
         newNode[NodeProp.PLAN_ROWS] = parseInt(nodeMatches[5], 0);
         newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(nodeMatches[8]);
