@@ -62,44 +62,6 @@ $bg-color: #fff;
     color: inherit;
   }
 
-  .relation-name {
-    text-align: left;
-  }
-
-  .planner-estimate {
-    border-top: 1px solid $line-color;
-    text-align: left;
-    padding-top: $padding-sm;
-    margin-top: $padding-base;
-    width: 100%;
-  }
-
-  .tags {
-    margin-top: $padding-base;
-    text-align: left;
-
-    span {
-      display: inline-block;
-      background-color: $alert-color;
-      color: #fff;
-      font-size: round($font-size-sm * 0.8);
-      font-weight: 600;
-      margin-right: $padding-sm;
-      margin-bottom: $padding-sm;
-      padding: $padding-sm;
-      border-radius: 50%;
-      line-height: 1.1;
-
-      @each $severity, $color in $severity-colors {
-        &.c-#{$severity} {
-          background-color: $color;
-          color: color-yiq($color);
-        }
-      }
-    }
-  }
-
-
   //hovers
   &:hover {
     border-color: $highlight-color;
@@ -288,9 +250,6 @@ $bg-color: #fff;
 .detailed {
   width: 400px !important;
   padding: $padding-base $padding-lg !important;
-  .tags span {
-    margin-right: $padding-sm !important;
-  }
 }
 
 ul.collapsed {

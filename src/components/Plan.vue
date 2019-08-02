@@ -40,12 +40,12 @@
           </div>
         </div>
         <div class="form-check">
-          <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate" class="form-check-input">
-          <label for="showPlannerEstimate" class="form-check-label">Estimations</label>
+          <input id="showCost" type="checkbox" v-model="viewOptions.showCost" class="form-check-input">
+          <label for="showCost" class="form-check-label">Cost</label>
         </div>
         <div class="form-check">
-          <input id="showTags" type="checkbox" v-model="viewOptions.showTags" class="form-check-input">
-          <label class="clickable" for="showTags"> Tags</label>
+          <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate" class="form-check-input">
+          <label for="showPlannerEstimate" class="form-check-label">Estimations</label>
         </div>
       </div>
     </div>
@@ -162,8 +162,8 @@ export default class Plan extends Vue {
   private viewOptions: any = {
     showHighlightBar: false,
     showPlannerEstimate: false,
+    showCost: false,
     showPlanStats: true,
-    showTags: true,
     highlightType: HighlightType.NONE,
     viewMode: ViewMode.FULL,
     orientation: Orientation.TWOD,

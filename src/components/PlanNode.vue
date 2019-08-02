@@ -1,7 +1,7 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :id="'node-' + node.nodeId" :class="['plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION]}]">
+    <div :id="'node-' + node.nodeId" :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION]}]">
       <div class="collapse-handle" v-if="hasChildren">
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
@@ -31,24 +31,24 @@
         </small>
       </button>
 
-      <div v-if="viewOptions.viewMode === viewModes.FULL">
-        <div class="relation-name" v-if="node[nodeProps.RELATION_NAME]">
+      <div v-if="viewOptions.viewMode === viewModes.FULL" class="font-italic text-left">
+        <div v-if="node[nodeProps.RELATION_NAME]">
           <span class="text-muted">on </span>
           <span v-if="node[nodeProps.SCHEMA]">{{node[nodeProps.SCHEMA]}}.</span>{{node[nodeProps.RELATION_NAME]}}
           <span v-if="node[nodeProps.ALIAS]"> ({{node[nodeProps.ALIAS]}})</span>
         </div>
 
-        <div class="relation-name" v-if="node[nodeProps.GROUP_KEY]">
+        <div v-if="node[nodeProps.GROUP_KEY]">
           <span class="text-muted">by</span> {{node[nodeProps.GROUP_KEY] | keysToString }}</div>
-        <div class="relation-name" v-if="node[nodeProps.SORT_KEY]">
+        <div v-if="node[nodeProps.SORT_KEY]">
           <span class="text-muted">by</span> {{node[nodeProps.SORT_KEY] | keysToString }}</div>
-        <div class="relation-name" v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] | keysToString }}
+        <div v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] | keysToString }}
           <span class="text-muted">join</span></div>
-        <div class="relation-name" v-if="node[nodeProps.INDEX_NAME]"><span class="text-muted">
+        <div v-if="node[nodeProps.INDEX_NAME]"><span class="text-muted">
             using</span> {{node[nodeProps.INDEX_NAME] | keysToString }}</div>
-        <div class="relation-name" v-if="node[nodeProps.HASH_CONDITION]"><span class="text-muted">
+        <div v-if="node[nodeProps.HASH_CONDITION]"><span class="text-muted">
             on</span> {{node[nodeProps.HASH_CONDITION] | keysToString }}</div>
-        <div class="relation-name" v-if="node[nodeProps.CTE_NAME]">
+        <div v-if="node[nodeProps.CTE_NAME]">
           <span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
         </div>
       </div>
@@ -63,15 +63,6 @@
         <pre class="plan-query-text"><code v-html="getFormattedQuery()"></code></pre>
       </div>
 
-      <div class="tags" v-if="viewOptions.showTags">
-        <span v-if="node[nodeProps.COSTLIEST_NODE]" title="Costliest node">
-          <i class="fa fa-usd fa-fw"></i>
-        </span>
-        <span v-if="node[nodeProps.LARGEST_NODE]" title="Largest node">
-          <i class="fa fa-bars fa-fw"></i>
-        </span>
-      </div>
-
       <div v-if="viewOptions.highlightType !== highlightTypes.NONE">
         <div class="progress node-bar-container" style="height: 5px;">
           <div class="progress-bar" role="progressbar" v-bind:style="{ width: barWidth + '%', 'background-color': getBarColor(barWidth)}" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -81,7 +72,16 @@
         </span>
       </div>
 
-      <div class="planner-estimate" v-if="shouldShowPlannerEstimate() && plannerRowEstimateDirection != estimateDirections.none">
+      <div v-if="shouldShowCost">
+        <span>
+          Cost:
+          <strong :class="'p-0 px-1 alert ' + costClass">{{lodash.round(node[nodeProps.ACTUAL_COST])}}</strong>
+          |
+          <span>{{ costPercent }}<span class="text-muted">%</span></span>
+          </span>
+      </div>
+
+      <div v-if="shouldShowPlannerEstimate() && plannerRowEstimateDirection != estimateDirections.none">
         <span v-if="plannerRowEstimateDirection === estimateDirections.over"><strong><i class="fa fa-arrow-up"></i> over</strong> estimated rows</span>
         <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong><i class="fa fa-arrow-down"></i> under</strong> estimated rows</span>
         <span v-if="plannerRowEstimateValue != Infinity"> by
@@ -148,11 +148,11 @@ export default class PlanNode extends Vue {
 
   // calculated properties
   private executionTimePercent: number = NaN;
+  private costPercent: number = NaN;
   private barWidth: number = 0;
   private highlightValue?: string;
   private props: any[] = [];
   private plans: any[] = [];
-  private tags: string[] = [];
   private plannerRowEstimateValue?: number;
   private plannerRowEstimateDirection?: EstimateDirection;
 
@@ -169,11 +169,13 @@ export default class PlanNode extends Vue {
   private helpService = new HelpService();
   private colorService = new ColorService();
   private syntaxHighlightService = new SyntaxHighlightService();
+  private lodash = _;
 
   private created(): void {
     this.calculateBar();
     this.calculateProps();
     this.calculateDuration();
+    this.calculateCost();
 
     this.plans = this.node[NodeProp.PLANS];
 
@@ -186,6 +188,11 @@ export default class PlanNode extends Vue {
     const executionTime = this.plan.planStats.executionTime || this.plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME];
     this.executionTimePercent = _.round(
       (this.node[NodeProp.ACTUAL_DURATION] / executionTime) * 100);
+  }
+
+  private calculateCost() {
+    const planCost = this.plan.content.Plan[NodeProp.TOTAL_COST];
+    this.costPercent = _.round((this.node[NodeProp.ACTUAL_COST] / planCost) * 100);
   }
 
   // create an array of node propeties so that they can be displayed in the view
@@ -220,6 +227,18 @@ export default class PlanNode extends Vue {
     }
 
     return this.viewOptions.showPlannerEstimate;
+  }
+
+  private get shouldShowCost() {
+    if (this.viewOptions.showCost && this.showDetails) {
+      return true;
+    }
+
+    if (this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) {
+      return false;
+    }
+
+    return this.viewOptions.showCost;
   }
 
   private shouldShowNodeBarLabel(): boolean {
@@ -282,6 +301,22 @@ export default class PlanNode extends Vue {
     if (i > 1000) {
       c = 4;
     } else if (i > 100) {
+      c = 3;
+    } else if (i > 10) {
+      c = 2;
+    }
+    if (c) {
+      return 'c-' + c;
+    }
+    return false;
+  }
+
+  private get costClass() {
+    let c;
+    const i = this.costPercent;
+    if (i > 90) {
+      c = 4;
+    } else if (i > 40) {
       c = 3;
     } else if (i > 10) {
       c = 2;
