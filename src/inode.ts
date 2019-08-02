@@ -49,5 +49,16 @@ export default class Node {
       this[NodeProp.NODE_TYPE] = parallelMatches[2];
       this[NodeProp.PARALLEL_AWARE] = true;
     }
+
+    const joinMatches = /(.*)\s(Join)$/.exec(this[NodeProp.NODE_TYPE]);
+    const joinModifierMatches = /(.*)\s+(Full|Left|Right|Anti)/.exec(this[NodeProp.NODE_TYPE]);
+    if (joinMatches) {
+      this[NodeProp.NODE_TYPE] = joinMatches[1];
+      if (joinModifierMatches) {
+        this[NodeProp.NODE_TYPE] = joinModifierMatches[1];
+        this[NodeProp.JOIN_TYPE] = joinModifierMatches[2];
+      }
+    }
+
   }
 }
