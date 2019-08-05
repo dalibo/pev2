@@ -4,6 +4,9 @@
       <router-link tag="button" class="btn btn-secondary ml-auto" to="/">
         New Plan
       </router-link>
+      <router-link tag="a" class="btn btn-link" to="about">
+        About
+      </router-link>
     </div>
     <router-view></router-view>
   </div>
