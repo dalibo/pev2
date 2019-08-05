@@ -22,11 +22,11 @@
     <form v-on:submit.prevent="submitPlan">
       <div class="form-group">
         <label for="planInput">Plan <span class="small text-muted">(text or JSON)</span></label>
-        <textarea class="form-control" id="planInput" rows="8" v-model="planInput"></textarea>
+        <textarea :class="['form-control', draggingPlan ? 'dropzone-over' : '']" id="planInput" rows="8" v-model="planInput" @dragenter="draggingPlan = true" @dragleave="draggingPlan = false" @drop.prevent="handleDrop" placeholder="Paste execution plan\nOr drop a file"></textarea>
       </div>
       <div class="form-group">
         <label for="queryInput">Query</label>
-        <textarea class="form-control" id="queryInput" rows="8" v-model="queryInput"></textarea>
+        <textarea :class="['form-control', draggingQuery ? 'dropzone-over' : '']" id="queryInput" rows="8" v-model="queryInput" @dragenter="draggingQuery = true" @dragleave="draggingQuery = false" @drop.prevent="handleDrop" placeholder="Paste corresponding SQL query\nOr drop a file"></textarea>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
@@ -56,6 +56,15 @@ export default class App extends Vue {
   ];
   private planInput: string = '';
   private queryInput: string = '';
+  private draggingPlan: boolean = false;
+  private draggingQuery: boolean = false;
+
+  private mounted() {
+    const textAreas = document.getElementsByTagName('textarea');
+    Array.prototype.forEach.call(textAreas, (elem: HTMLInputElement) => {
+        elem.placeholder = elem.placeholder.replace(/\\n/g, '\n');
+    });
+  }
 
   private submitPlan(): void {
     planData[0] = this.planInput;
@@ -75,5 +84,34 @@ export default class App extends Vue {
       this.queryInput = '';
     }
   }
+
+  private handleDrop(event: DragEvent) {
+    const input = event.srcElement;
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+    this.draggingPlan = false;
+    this.draggingQuery = false;
+    if (!event.dataTransfer) {
+      return;
+    }
+    const file = event.dataTransfer.files[0];
+    const reader = new FileReader();
+    reader.onload = (e: Event) => {
+      if (reader.result instanceof ArrayBuffer) {
+        return;
+      }
+      input.value = reader.result || '';
+      input.dispatchEvent(new Event('input'));
+    };
+    reader.readAsText(file);
+  }
 }
 </script>
+
+<style>
+.dropzone-over {
+  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+  border: 1px solid rgba(81, 203, 238, 1);
+}
+</style>
