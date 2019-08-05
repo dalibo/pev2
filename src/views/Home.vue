@@ -87,7 +87,7 @@ export default class App extends Vue {
 
   private handleDrop(event: DragEvent) {
     const input = event.srcElement;
-    if (!(input instanceof HTMLInputElement)) {
+    if (!(input instanceof HTMLTextAreaElement)) {
       return;
     }
     this.draggingPlan = false;
