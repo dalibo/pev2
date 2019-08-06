@@ -137,11 +137,6 @@ export default class PlanNode extends Vue {
   @Prop(Object) private plan!: any;
   @Prop(Object) private viewOptions!: any;
 
-  private MIN_ESTIMATE_MISS: number = 100;
-  private COSTLY_TAG: string = 'costliest';
-  private SLOW_TAG: string = 'slowest';
-  private LARGE_TAG: string = 'largest';
-
   // UI flags
   private showDetails: boolean = false;
   private showQuery: boolean = false;
