@@ -341,9 +341,12 @@ export default class PlanNode extends Vue {
     }
 
     // group key will be highlighted for AGGREGATE nodes
-    const groupKey: string[] = this.node[NodeProp.GROUP_KEY];
+    let groupKey: string[] | string = this.node[NodeProp.GROUP_KEY];
     if (groupKey) {
-      keyItems.push('GROUP BY ' + groupKey.join(', '));
+      if (_.isArray(groupKey)) {
+        groupKey = groupKey.join(', ');
+      }
+      keyItems.push('GROUP BY ' + groupKey);
     }
 
     // hash condition will be highlighted for HASH JOIN nodes
@@ -356,7 +359,7 @@ export default class PlanNode extends Vue {
       keyItems.push(_.reverse(hashCondition.split(' ')).join(' '));
     }
 
-    let sortKey: string[] = this.node[NodeProp.SORT_KEY];
+    let sortKey: string[] | string = this.node[NodeProp.SORT_KEY];
     if (sortKey) {
       sortKey = _.map(sortKey, (k) => k.replace('(', '').replace(')', ''));
       keyItems.push('ORDER BY ' + sortKey.join(', '));
