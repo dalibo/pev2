@@ -12,7 +12,6 @@ export class PlanService {
   private maxRows: number = 0;
   private maxCost: number = 0;
   private maxDuration: number = 0;
-  private nodeId: number = 0;
 
   public createPlan(planName: string, planContent: any, planQuery: string): IPlan {
     // remove any extra white spaces in the middle of query
@@ -36,7 +35,6 @@ export class PlanService {
   }
 
   public analyzePlan(plan: IPlan) {
-    this.nodeId = 0;
     this.processNode(plan.content.Plan);
     plan.content[NodeProp.MAXIMUM_ROWS] = this.maxRows;
     plan.content[NodeProp.MAXIMUM_COSTS] = this.maxCost;
@@ -47,7 +45,6 @@ export class PlanService {
 
   // recursively walk down the plan to compute various metrics
   public processNode(node: any) {
-    node.nodeId = this.nodeId++;
     this.calculatePlannerEstimate(node);
     this.calculateActuals(node);
 
@@ -76,20 +73,14 @@ export class PlanService {
   }
 
   public findOutlierNodes(node: any, root: any) {
-    node[NodeProp.SLOWEST_NODE] = false;
-    node[NodeProp.LARGEST_NODE] = false;
-    node[NodeProp.COSTLIEST_NODE] = false;
-
     if (node[NodeProp.ACTUAL_COST] === this.maxCost) {
       node[NodeProp.COSTLIEST_NODE] = true;
-      root.costliestNodeId = node.nodeId;
     }
     if (node[NodeProp.ACTUAL_ROWS] === this.maxRows && node[NodeProp.ACTUAL_ROWS] !== 0) {
       node[NodeProp.LARGEST_NODE] = true;
     }
     if (node[NodeProp.ACTUAL_DURATION] === this.maxDuration) {
       node[NodeProp.SLOWEST_NODE] = true;
-      root.slowestNodeId = node.nodeId;
     }
 
     _.each(node, (value, key) => {

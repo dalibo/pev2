@@ -75,7 +75,7 @@
         <span class="stat-label">Planning time</span>
       </div>
       <div class="col px-0">
-        <button @click.prevent="showNode(plan.slowestNodeId, false, true)" :disabled="!plan.planStats.maxDuration" class="w-100">
+        <button @click.prevent="showNode(plan.slowestNode, false, true)" :disabled="!plan.planStats.maxDuration" class="w-100">
           <template v-if="!plan.planStats.maxDuration">
             <span class="stat-value text-muted">
               N/A
@@ -105,7 +105,7 @@
         <span class="stat-label">Largest node</span>
       </div>
       <div class="col px-0">
-        <button @click.prevent="showNode(plan.costliestNodeId, false, true)" :disabled="!plan.planStats.maxCost" v-if="plan.planStats.maxCost"  class="w-100">
+        <button @click.prevent="showNode(plan.costliestNode, false, true)" :disabled="!plan.planStats.maxCost" v-if="plan.planStats.maxCost"  class="w-100">
           <span class="stat-value">{{plan.planStats.maxCost | numeral_('0.00')}}</span>
           <span class="stat-label">Costliest node</span>
           <div class="show" v-if="plan.planStats.maxCost"><i class="fa fa-search bg-white p-1 rounded"></i></div>
@@ -146,7 +146,7 @@
       <div class="plan h-100 w-100 d-flex grab-bing">
         <ul class="">
           <li>
-            <plan-node :node="node" :plan="plan" :viewOptions="viewOptions"/>
+            <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" ref="root"/>
           </li>
         </ul>
       </div>
@@ -238,7 +238,7 @@ export default class Plan extends Vue {
     };
 
     window.setTimeout(() => {
-      this.showNode('0', true, false);
+      this.showNode(this.$refs.root as PlanNode, true, false);
     }, 200);
   }
 
@@ -251,12 +251,12 @@ export default class Plan extends Vue {
     return this.helpService.getHelpMessage(message);
   }
 
-  private showNode(nodeId: string, shouldCenter: boolean, highlight: boolean) {
+  private showNode(nodeCmp: PlanNode, shouldCenter: boolean, highlight: boolean) {
     const parent = document.querySelector('.plan-container .overflow-auto');
     if (!parent) {
       return;
     }
-    const child = document.getElementById('node-' + nodeId);
+    const child = nodeCmp.$el.querySelector('.plan-node');
 
     if (child) {
       scrollChildIntoParentView(parent, child, shouldCenter, () => {
