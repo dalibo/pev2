@@ -73,10 +73,6 @@ export class PlanService {
   }
 
   public findOutlierNodes(node: any, root: any) {
-    node[NodeProp.SLOWEST_NODE] = false;
-    node[NodeProp.LARGEST_NODE] = false;
-    node[NodeProp.COSTLIEST_NODE] = false;
-
     if (node[NodeProp.ACTUAL_COST] === this.maxCost) {
       node[NodeProp.COSTLIEST_NODE] = true;
     }
