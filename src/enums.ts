@@ -75,6 +75,7 @@ export enum PropType {
   cost,
   factor,
   estimateDirection,
+  json,
 }
 
 export const nodePropTypes: any = {};
@@ -86,6 +87,7 @@ nodePropTypes[NodeProp.ACTUAL_STARTUP_TIME] = PropType.duration;
 nodePropTypes[NodeProp.STARTUP_COST] = PropType.cost;
 nodePropTypes[NodeProp.TOTAL_COST] = PropType.cost;
 nodePropTypes[NodeProp.PARALLEL_AWARE] = PropType.boolean;
+nodePropTypes[NodeProp.WORKERS] = PropType.json;
 
 nodePropTypes[NodeProp.COSTLIEST_NODE] = PropType.boolean;
 nodePropTypes[NodeProp.LARGEST_NODE] = PropType.boolean;

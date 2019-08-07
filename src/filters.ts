@@ -74,6 +74,8 @@ export function formatNodeProp(key: string, value: any, detail: boolean): string
         default:
           return '-';
       }
+    } else if (nodePropTypes[key] === PropType.json) {
+      return JSON.stringify(value, null, 2);
     }
   }
   return value;
