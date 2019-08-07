@@ -1,7 +1,4 @@
 import * as _ from 'lodash';
-import numeral from 'numeral';
-import 'numeral/locales';
-numeral.locale(navigator.language || 'en');
 import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
 
 export function duration(value: number): string {
@@ -21,7 +18,7 @@ export function duration(value: number): string {
       value = value / 60000;
       unit = 'min';
     }
-    dur = numeral(value.toPrecision(3)).format('0[.]0');
+    dur = value.toPrecision(3).toLocaleString();
   }
   const compiled = _.template('${dur}<span class="text-muted">${unit}</span>');
   return compiled({dur, unit});
@@ -29,15 +26,15 @@ export function duration(value: number): string {
 
 export function cost(value: number): string {
   value = parseFloat(value.toPrecision(3));
-  return numeral(value).format('0,0[.]00');
+  return value.toLocaleString();
 }
 
 export function rows(value: number): string {
-  return numeral(value).format('0,0[.]00');
+  return value.toLocaleString();
 }
 
 export function factor(value: number): string {
-  const f: string = numeral(value.toPrecision(2)).format('0[.]0');
+  const f: string = value.toPrecision(2).toLocaleString();
   const compiled = _.template('${f}<span class="text-muted">&times;</span>');
   return compiled({f});
 }
@@ -48,10 +45,6 @@ export function keysToString(value: any): string {
   }
   value = _.map(value, (v) => v.replace(/(^\(|\)$)/g, ''));
   return value.join(', ');
-}
-
-export function numeral_(value: number, format: string): string {
-  return numeral(value).format(format);
 }
 
 export function truncate(text: string, length: number, clamp: string): string {
