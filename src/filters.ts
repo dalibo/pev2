@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
 import numeral from 'numeral';
+import 'numeral/locales';
+numeral.locale(navigator.language || 'en');
 import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
 
 export function duration(value: number): string {
@@ -31,7 +33,7 @@ export function cost(value: number): string {
 }
 
 export function rows(value: number): string {
-  return numeral(value).format('Oa');
+  return numeral(value).format('0,0[.]00');
 }
 
 export function factor(value: number): string {
