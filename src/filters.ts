@@ -33,7 +33,7 @@ export function cost(value: number): string {
 }
 
 export function rows(value: number): string {
-  return numeral(value).format('Oa');
+  return numeral(value).format('0,0[.]00');
 }
 
 export function factor(value: number): string {
