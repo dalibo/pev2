@@ -69,7 +69,7 @@
           <div class="progress-bar" role="progressbar" v-bind:style="{ width: barWidth + '%', 'background-color': getBarColor(barWidth)}" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         <span class="node-bar-label" v-if="shouldShowNodeBarLabel()">
-          <span class="text-muted">{{viewOptions.highlightType}}:</span>
+          <span class="text-muted">{{viewOptions.highlightType}}:</span>&nbsp;
           <span v-html="highlightValue"></span>
         </span>
       </div>
