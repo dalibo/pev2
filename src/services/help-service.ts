@@ -20,7 +20,7 @@ export const NODE_DESCRIPTIONS: INodeDescription = {
   'MERGE JOIN': `merges two record sets by first sorting them on a <strong>join key</strong>.`,
   'HASH': `generates a hash table from the records in the input recordset. Hash is used by
    <strong>Hash Join</strong>.`,
-  'HASH JOIN': `joins to record sets by hashing one of them (using a <strong>Hash Scan</strong>).`,
+  'HASH JOIN': `joins two record sets by hashing one of them (using a <strong>Hash Scan</strong>).`,
   'AGGREGATE': `groups records together based on a GROUP BY or aggregate function (like <code>sum()</code>).`,
   'HASHAGGREGATE': `groups records together based on a GROUP BY or aggregate function (like sum()). Hash Aggregate uses
    a hash to first organize the records by a key.`,
