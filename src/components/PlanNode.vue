@@ -88,7 +88,8 @@
         <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong><i class="fa fa-arrow-down"></i> under</strong> estimated rows</span>
         <span v-if="plannerRowEstimateValue != Infinity"> by
         <span :class="'p-0 px-1 alert ' + estimationClass">
-          <strong>{{plannerRowEstimateValue}}</strong>x</span>
+          <strong v-html="$options.filters.factor(plannerRowEstimateValue)"></strong>
+          </span>
         </span>
       </div>
 
@@ -120,7 +121,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { HelpService } from '@/services/help-service';
 import { ColorService } from '@/services/color-service';
 import { SyntaxHighlightService } from '@/services/syntax-highlight-service';
-import { cost, duration, formatNodeProp, keysToString, truncate, rows } from '@/filters';
+import { cost, duration, factor, formatNodeProp, keysToString, truncate, rows } from '@/filters';
 import { EstimateDirection, HighlightType, NodeProp, nodePropTypes, Orientation, PropType, ViewMode } from '@/enums';
 import * as _ from 'lodash';
 
@@ -129,6 +130,7 @@ import * as _ from 'lodash';
   filters: {
     cost,
     duration,
+    factor,
     formatNodeProp,
     keysToString,
     truncate,
@@ -179,7 +181,7 @@ export default class PlanNode extends Vue {
     this.plans = this.node[NodeProp.PLANS];
 
     this.plannerRowEstimateDirection = this.node[NodeProp.PLANNER_ESTIMATE_DIRECTION];
-    this.plannerRowEstimateValue = _.round(this.node[NodeProp.PLANNER_ESTIMATE_FACTOR]);
+    this.plannerRowEstimateValue = this.node[NodeProp.PLANNER_ESTIMATE_FACTOR];
     if (this.node[NodeProp.SLOWEST_NODE]) {
       this.plan.slowestNode = this;
     }

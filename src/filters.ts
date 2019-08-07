@@ -34,6 +34,12 @@ export function rows(value: number): string {
   return numeral(value).format('Oa');
 }
 
+export function factor(value: number): string {
+  const f: string = numeral(value.toPrecision(2)).format('0[.]0');
+  const compiled = _.template('${f}<span class="text-muted">&times;</span>');
+  return compiled({f});
+}
+
 export function keysToString(value: any): string {
   if (!(value instanceof Array)) {
     value = [value];
@@ -62,7 +68,7 @@ export function formatNodeProp(key: string, value: any): string {
     } else if (nodePropTypes[key] === PropType.rows) {
       return rows(value);
     } else if (nodePropTypes[key] === PropType.factor) {
-      return numeral(value.toPrecision(2)).format('0[.]0') + '&times;';
+      return factor(value);
     } else if (nodePropTypes[key] === PropType.estimateDirection) {
       switch (value) {
         case EstimateDirection.over:
