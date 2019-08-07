@@ -11,8 +11,9 @@
         </h4>
         <span v-if="viewOptions.viewMode === viewModes.FULL">
           <span class="node-duration" v-if="node[nodeProps.ACTUAL_DURATION]">
-            <span :class="'p-0 px-1 rounded alert ' + durationClass">
-              <strong>{{node[nodeProps.ACTUAL_DURATION] | duration}}</strong>{{node[nodeProps.ACTUAL_DURATION] | durationUnit}}</span>
+            <span :class="'p-0 px-1 rounded alert ' + durationClass"
+                  v-html="$options.filters.duration(node[nodeProps.ACTUAL_DURATION])">
+            </span>
             <template v-if="executionTimePercent !== Infinity">
               |
               <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
@@ -68,14 +69,15 @@
           <div class="progress-bar" role="progressbar" v-bind:style="{ width: barWidth + '%', 'background-color': getBarColor(barWidth)}" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         <span class="node-bar-label" v-if="shouldShowNodeBarLabel()">
-          <span class="text-muted">{{viewOptions.highlightType}}:</span> {{highlightValue}}
+          <span class="text-muted">{{viewOptions.highlightType}}:</span>
+          <span v-html="highlightValue"></span>
         </span>
       </div>
 
       <div v-if="shouldShowCost">
         <span>
           Cost:
-          <strong :class="'p-0 px-1 alert ' + costClass">{{lodash.round(node[nodeProps.ACTUAL_COST])}}</strong>
+          <span :class="'p-0 px-1 alert ' + costClass">{{node[nodeProps.ACTUAL_COST] | cost}}</span>
           |
           <span>{{ costPercent }}<span class="text-muted">%</span></span>
           </span>
@@ -97,7 +99,7 @@
         <table class="table table-sm prop-list">
           <tr v-for="prop in props">
             <td width="40%">{{prop.key}}</td>
-            <td>{{prop.value}}</td>
+            <td v-html="$options.filters.formatNodeProp(prop.key, prop.value)"></td>
           </tr>
         </table>
 
@@ -118,18 +120,19 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { HelpService } from '@/services/help-service';
 import { ColorService } from '@/services/color-service';
 import { SyntaxHighlightService } from '@/services/syntax-highlight-service';
-import { duration, durationUnit, keysToString, truncate } from '@/filters';
-import { EstimateDirection, HighlightType, NodeProp, Orientation, ViewMode } from '@/enums';
+import { cost, duration, formatNodeProp, keysToString, truncate, rows } from '@/filters';
+import { EstimateDirection, HighlightType, NodeProp, nodePropTypes, Orientation, PropType, ViewMode } from '@/enums';
 import * as _ from 'lodash';
-import numeral from 'numeral';
 
 @Component({
   name: 'plan-node',
   filters: {
+    cost,
     duration,
-    durationUnit,
+    formatNodeProp,
     keysToString,
     truncate,
+    rows,
   },
 })
 export default class PlanNode extends Vue {
@@ -168,8 +171,8 @@ export default class PlanNode extends Vue {
   private lodash = _;
 
   private created(): void {
-    this.calculateBar();
     this.calculateProps();
+    this.calculateBar();
     this.calculateDuration();
     this.calculateCost();
 
@@ -256,23 +259,26 @@ export default class PlanNode extends Vue {
   }
 
   @Watch('viewOptions.highlightType')
-  private calculateBar() {
+  private calculateBar(): void {
     let value: number;
+    if (!this.$options || !this.$options.filters) {
+      return;
+    }
     switch (this.viewOptions.highlightType) {
       case HighlightType.DURATION:
         value = (this.node[NodeProp.ACTUAL_DURATION]);
         this.barWidth = Math.round(value / this.plan.planStats.maxDuration * 100);
-        this.highlightValue = duration(value) + durationUnit(value);
+        this.highlightValue = this.$options.filters.duration(value);
         break;
       case HighlightType.ROWS:
         value = (this.node[NodeProp.ACTUAL_ROWS]);
         this.barWidth = Math.round(value / this.plan.planStats.maxRows * 100) || 0;
-        this.highlightValue = numeral(value).format('0');
+        this.highlightValue = this.$options.filters.rows(value);
         break;
       case HighlightType.COST:
         value = (this.node[NodeProp.ACTUAL_COST]);
         this.barWidth = Math.round(value / this.plan.planStats.maxCost * 100);
-        this.highlightValue = numeral(value).format('0.00');
+        this.highlightValue = this.$options.filters.cost(value);
         break;
     }
   }

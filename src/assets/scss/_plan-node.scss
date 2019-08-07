@@ -132,59 +132,6 @@ $bg-color: #fff;
     }
   }
 
-  .plan-stats {
-    display: flex;
-    font-size: $font-size-base;
-    margin: $padding-lg auto $padding-lg auto;
-    padding-bottom: $padding-lg;
-    border-bottom: 1px solid $line-color;
-    border-radius: $border-radius-lg*2;
-    width: 650px;
-    position: relative;
-
-    div {
-      padding-right: $padding-lg;
-      flex-grow: 1;
-    }
-
-    .stat-value {
-      display: block;
-      text-align: center;
-      font-size: $font-size-lg;
-    }
-
-    .stat-label {
-      display: block;
-      text-align: center;
-      font-size: $font-size-sm;
-    }
-
-    $triangle-size: 9px;
-    &:after {
-      content:'';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      margin-left: $triangle-size*-1;
-      width: 0;
-      height: 0;
-      border-top: solid $triangle-size $line-color;
-      border-left: solid $triangle-size transparent;
-      border-right: solid $triangle-size transparent;
-    }
-
-    .btn-close {
-      padding: $padding-base;
-      background-color: transparent;
-      font-size: $font-size-lg;
-      text-align: center;
-      //@extend .text-muted;
-      margin-left: $padding-base;
-      cursor: pointer;
-      border: 0;
-    }
-  }
-
   .collapse-handle {
     cursor: pointer;
     position: absolute;
@@ -277,5 +224,11 @@ ul.collapsed {
   .alert.c-#{$color} {
     background-color: $value;
     color: color-yiq($value);
+    font-weight: bold;
+
+    .text-muted {
+      color: color-yiq($value) !important;
+      font-weight: normal;
+    }
   }
 }

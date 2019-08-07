@@ -58,7 +58,7 @@
           </span>
         </template>
         <template v-else>
-          <span class="stat-value">{{plan.planStats.executionTime | duration}}<span class="text-muted">{{plan.planStats.executionTime | durationUnit}}</span></span>
+          <span class="stat-value" v-html="$options.filters.duration(plan.planStats.executionTime)"></span>
         </template>
         <span class="stat-label">Execution time</span>
       </div>
@@ -70,7 +70,7 @@
           </span>
         </template>
         <template v-else>
-          <span class="stat-value">{{plan.planStats.planningTime}}<span class="text-muted">{{plan.planStats.planningTime | durationUnit}}</span></span>
+          <span class="stat-value" v-html="$options.filters.duration(plan.planStats.planningTime)"></span>
         </template>
         <span class="stat-label">Planning time</span>
       </div>
@@ -83,8 +83,7 @@
             </span>
           </template>
           <template v-else>
-            <span class="stat-value">{{plan.planStats.maxDuration | duration}}<span class="text-muted">{{plan.planStats.maxDuration | durationUnit}}</span>
-            </span>
+            <span class="stat-value" v-html="$options.filters.duration(plan.planStats.maxDuration)"></span>
           </template>
           <span class="stat-label">
             Slowest node
@@ -100,20 +99,20 @@
           </span>
         </template>
         <template v-else>
-          <span class="stat-value">{{plan.planStats.maxRows}} <span class="text-muted">rows</span></span>
+          <span class="stat-value">{{plan.planStats.maxRows | rows}} <span class="text-muted">rows</span></span>
         </template>
         <span class="stat-label">Largest node</span>
       </div>
       <div class="col px-0">
         <button @click.prevent="showNode(plan.costliestNode, false, true)" :disabled="!plan.planStats.maxCost" v-if="plan.planStats.maxCost"  class="w-100">
-          <span class="stat-value">{{plan.planStats.maxCost | numeral_('0.00')}}</span>
+          <span class="stat-value">{{plan.planStats.maxCost | cost}}</span>
           <span class="stat-label">Costliest node</span>
           <div class="show" v-if="plan.planStats.maxCost"><i class="fa fa-search bg-white p-1 rounded"></i></div>
         </button>
       </div>
       <div v-if="plan.planStats.triggers.length" class="position-relative col px-0">
         <button @click.prevent="showTriggers = !showTriggers" class="w-100">
-          <span class="stat-value">{{ triggersTotalDuration | duration }}<span class="text-muted">{{ triggersTotalDuration | durationUnit }}</span></span>
+          <span class="stat-value" v-html="$options.filters.duration(triggersTotalDuration)"></span>
           <span class="stat-label">Triggers</span>
         </button>
         <div class="plan-triggers-container" v-if="showTriggers">
@@ -126,7 +125,7 @@
             <br>
             <span class="text-muted">Called</span> {{ trigger['Calls'] }}<span class="text-muted">&times</span>
             <span class="float-right">
-              <span :class="'p-0 px-1 alert ' + triggerDurationClass(triggerDurationPercent(trigger))"><strong>{{ trigger.Time | duration}}</strong>{{ trigger.Time | durationUnit }}</span>
+              <span :class="'p-0 px-1 alert ' + triggerDurationClass(triggerDurationPercent(trigger))" v-html="$options.filters.duration(trigger.Time)"></span>
               | {{ triggerDurationPercent(trigger) }}<span class="text-muted">%</span>
             </span>
             <br>
@@ -161,7 +160,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
 import { HelpService, scrollChildIntoParentView } from '@/services/help-service';
 import { PlanService } from '@/services/plan-service';
-import { duration, durationUnit, numeral_ } from '@/filters';
+import { cost, duration, rows } from '@/filters';
 import { HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
 import { IPlan } from '../iplan';
 
@@ -179,9 +178,9 @@ import { dragscroll } from 'vue-dragscroll';
     dragscroll,
   },
   filters: {
+    cost,
     duration,
-    durationUnit,
-    numeral_,
+    rows,
   },
 })
 export default class Plan extends Vue {
