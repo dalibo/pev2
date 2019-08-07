@@ -27,6 +27,7 @@ export class NodeProp {
   public static NODE_TYPE: string = 'Node Type';
   public static ACTUAL_ROWS: string = 'Actual Rows';
   public static PLAN_ROWS: string = 'Plan Rows';
+  public static ACTUAL_STARTUP_TIME: string = 'Actual Startup Time';
   public static ACTUAL_TOTAL_TIME: string = 'Actual Total Time';
   public static ACTUAL_LOOPS: string = 'Actual Loops';
   public static STARTUP_COST: string = 'Startup Cost';
@@ -45,8 +46,6 @@ export class NodeProp {
   public static PARALLEL_AWARE: string = 'Parallel Aware';
 
   // computed by pev
-  public static COMPUTED_TAGS: string = '*Tags';
-
   public static COSTLIEST_NODE: string = '*Costiest Node (by cost)';
   public static LARGEST_NODE: string = '*Largest Node (by rows)';
   public static SLOWEST_NODE: string = '*Slowest Node (by duration)';
@@ -67,3 +66,34 @@ export class NodeProp {
 
   public static PEV_PLAN_TAG: string = 'plan_';
 }
+
+export enum PropType {
+  duration,
+  boolean,
+  rows,
+  cost,
+  factor,
+  estimateDirection,
+}
+
+export const nodePropTypes: any = {};
+
+nodePropTypes[NodeProp.ACTUAL_ROWS] = PropType.rows;
+nodePropTypes[NodeProp.PLAN_ROWS] = PropType.rows;
+nodePropTypes[NodeProp.ACTUAL_TOTAL_TIME] = PropType.duration;
+nodePropTypes[NodeProp.ACTUAL_STARTUP_TIME] = PropType.duration;
+nodePropTypes[NodeProp.STARTUP_COST] = PropType.cost;
+nodePropTypes[NodeProp.TOTAL_COST] = PropType.cost;
+nodePropTypes[NodeProp.PARALLEL_AWARE] = PropType.boolean;
+
+nodePropTypes[NodeProp.COSTLIEST_NODE] = PropType.boolean;
+nodePropTypes[NodeProp.LARGEST_NODE] = PropType.boolean;
+nodePropTypes[NodeProp.SLOWEST_NODE] = PropType.boolean;
+
+nodePropTypes[NodeProp.MAXIMUM_COSTS] = PropType.cost;
+nodePropTypes[NodeProp.MAXIMUM_ROWS] = PropType.rows;
+nodePropTypes[NodeProp.MAXIMUM_DURATION] = PropType.duration;
+nodePropTypes[NodeProp.ACTUAL_DURATION] = PropType.duration;
+nodePropTypes[NodeProp.ACTUAL_COST] = PropType.cost;
+nodePropTypes[NodeProp.PLANNER_ESTIMATE_FACTOR] = PropType.factor;
+nodePropTypes[NodeProp.PLANNER_ESTIMATE_DIRECTION] = PropType.estimateDirection;
