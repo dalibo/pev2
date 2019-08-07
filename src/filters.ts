@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
 import numeral from 'numeral';
+import 'numeral/locales';
+numeral.locale(navigator.language || 'en');
 import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
 
 export function duration(value: number): string {
