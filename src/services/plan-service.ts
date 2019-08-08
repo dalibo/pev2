@@ -206,7 +206,7 @@ export class PlanService {
        * 13: never_executed
        */
       // tslint:disable-next-line:max-line-length
-      const nodeRegex = /^(?<prefix>\s*->\s*|\s*)(?<type>\S.*?)\s+\(cost=(?<estimated_startup_cost>\d+\.\d+)\.\.(?<estimated_total_cost>\d+\.\d+)\s+rows=(?<estimated_rows>\d+)\s+width=(?<estimated_row_width>\d+)\)\s*(?:\s+\((?:actual\stime=(?<actual_time_first>\d+\.\d+)\.\.(?<actual_time_last>\d+\.\d+)\srows=(?<actual_rows>\d+)\sloops=(?<actual_loops>\d+)|actual\srows=(?<actual_rows_>\d+)\sloops=(?<actual_loops_>\d+)|(?<never_executed>never\s+executed))\))?\S*$/gm;
+      const nodeRegex = /^(?<prefix>\s*->\s*|\s*)(?<type>\S.*?)\s+\(cost=(?<estimated_startup_cost>\d+\.\d+)\.\.(?<estimated_total_cost>\d+\.\d+)\s+rows=(?<estimated_rows>\d+)\s+width=(?<estimated_row_width>\d+)\)\s*(?:\s+\((?:actual\stime=(?<actual_time_first>\d+\.\d+)\.\.(?<actual_time_last>\d+\.\d+)\srows=(?<actual_rows>\d+)\sloops=(?<actual_loops>\d+)|actual\srows=(?<actual_rows_>\d+)\sloops=(?<actual_loops_>\d+)|(?<never_executed>never\s+executed))\))?\s*$/gm;
       const nodeMatches = nodeRegex.exec(line);
 
       // tslint:disable-next-line:max-line-length
@@ -341,7 +341,9 @@ export class PlanService {
         }
       }
     });
-    // throw new Error('Unable to parse plan');
+    if (!root.Plan) {
+      throw new Error('Unable to parse plan');
+    }
     return root;
   }
 }
