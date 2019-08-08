@@ -17,7 +17,7 @@
     "axios": "^0.19.0",
     "core-js": "^3.1.4",
     "highlight.js": "^9.15.6",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
