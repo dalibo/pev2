@@ -3,7 +3,8 @@ node_js:
   - lts/*
 cache: npm
 script:
-  - npm run deploy
+  - npm run test:unit
+  - npm run build
 deploy:
   provider: pages
   local_dir: dist
