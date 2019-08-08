@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <div class="plan-stats border-bottom p-1 mb-1 align-self-center row">
+    <div class="plan-stats border-bottom p-1 mb-1 align-self-center row" v-if="plan">
       <div class="col px-0">
         <template v-if="!plan.planStats.executionTime">
           <span class="stat-value text-muted">
@@ -186,7 +186,7 @@ import { dragscroll } from 'vue-dragscroll';
 export default class Plan extends Vue {
   @Prop(String) private planSource!: string;
   @Prop(String) private planQuery!: string;
-  private plan!: IPlan;
+  private plan!: IPlan | null;
   private node!: any;
   private menuHidden: boolean = true;
   private validationMessage: string = '';
@@ -222,6 +222,7 @@ export default class Plan extends Vue {
       this.validationMessage = '';
     } catch (e) {
       this.validationMessage = 'Couldn\'t parse plan';
+      this.plan = null;
       return;
     }
     this.node = planJson.Plan;
@@ -272,8 +273,8 @@ export default class Plan extends Vue {
 
   private triggerDurationPercent(trigger: any) {
     const plan = this.plan;
-    const planStats = this.plan.planStats;
-    const executionTime = this.plan.planStats.executionTime || 0;
+    const planStats = this.plan && this.plan.planStats;
+    const executionTime = this.plan && this.plan.planStats.executionTime || 0;
     const time = trigger.Time;
     return _.round(time / executionTime * 100);
   }
@@ -295,6 +296,9 @@ export default class Plan extends Vue {
   }
 
   private get triggersTotalDuration() {
+    if (!this.plan) {
+      return;
+    }
     return _.sumBy(this.plan.planStats.triggers, (o) => o.Time);
   }
 }
