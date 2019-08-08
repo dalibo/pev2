@@ -7,8 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "build-lib": "vue-cli-service build --target lib --dest dist-lib --name pev2 ./src/components/Plan.vue",
-    "test:unit": "jest",
-    "deploy": "npm run build"
+    "test:unit": "jest"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
