@@ -1,5 +1,7 @@
 # pev2
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/dalibo/pev2.svg)](https://greenkeeper.io/)
+
 A VueJS app to show a graphical vizualization of a PostgreSQL execution plan.
 
 ## Disclaimer
