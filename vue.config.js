@@ -1,11 +1,17 @@
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 
 module.exports = {
-  publicPath: '',
+  publicPath: "",
+  pages: {
+    index: {
+      entry: "example/src/main.ts",
+      template: "example/index.html"
+    }
+  },
   configureWebpack: {
     plugins: [
       // To strip all locales except “en”
       new MomentLocalesPlugin()
     ]
   }
-}
+};

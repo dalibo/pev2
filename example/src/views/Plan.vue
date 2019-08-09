@@ -5,9 +5,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Plan from '@/components/Plan.vue';
-import router from '@/router';
+import router from '../router';
 
-import { planData } from '@/App.vue';
+import { planData } from '../App.vue';
 
 @Component({
   components: {

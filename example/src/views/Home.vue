@@ -36,8 +36,8 @@
 <script lang="ts">
 import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
-import router from '@/router';
-import { planData } from '@/App.vue';
+import router from '../router';
+import { planData } from '../App.vue';
 
 @Component
 export default class App extends Vue {
