@@ -235,6 +235,7 @@ export class PlanService {
         newNode[NodeProp.STARTUP_COST] = parseFloat(nodeMatches[3]);
         newNode[NodeProp.TOTAL_COST] = parseFloat(nodeMatches[4]);
         newNode[NodeProp.PLAN_ROWS] = parseInt(nodeMatches[5], 0);
+        newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(nodeMatches[7]);
         newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(nodeMatches[8]);
         // FIXME could be actual_rows_
         newNode[NodeProp.ACTUAL_ROWS] = parseInt(nodeMatches[9], 0);
