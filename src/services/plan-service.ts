@@ -94,7 +94,9 @@ export class PlanService {
 
   // actual duration and actual cost are calculated by subtracting child values from the total
   public calculateActuals(node: any) {
-    node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
+    if (node[NodeProp.ACTUAL_TOTAL_TIME]) {
+      node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
+    }
     node[NodeProp.ACTUAL_COST] = node[NodeProp.TOTAL_COST];
 
     _.each(node[NodeProp.PLANS], (subPlan) => {
@@ -114,6 +116,9 @@ export class PlanService {
   // figure out order of magnitude by which the planner mis-estimated how many rows would be
   // invloved in this node
   public calculatePlannerEstimate(node: any) {
+    if (!node[NodeProp.ACTUAL_ROWS]) {
+      return;
+    }
     node[NodeProp.PLANNER_ESTIMATE_FACTOR] = node[NodeProp.ACTUAL_ROWS] / node[NodeProp.PLAN_ROWS];
     node[NodeProp.PLANNER_ESTIMATE_DIRECTION] = EstimateDirection.none;
 
@@ -235,12 +240,15 @@ export class PlanService {
         newNode[NodeProp.STARTUP_COST] = parseFloat(nodeMatches[3]);
         newNode[NodeProp.TOTAL_COST] = parseFloat(nodeMatches[4]);
         newNode[NodeProp.PLAN_ROWS] = parseInt(nodeMatches[5], 0);
-        newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(nodeMatches[7]);
-        newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(nodeMatches[8]);
-        // FIXME could be actual_rows_
-        newNode[NodeProp.ACTUAL_ROWS] = parseInt(nodeMatches[9], 0);
-        // FIXME could be actual_loops_
-        newNode[NodeProp.ACTUAL_LOOPS] = parseInt(nodeMatches[10], 0);
+        if (nodeMatches[7] && nodeMatches[8]) {
+          newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(nodeMatches[7]);
+          newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(nodeMatches[8]);
+          // FIXME could be actual_rows_
+          newNode[NodeProp.ACTUAL_ROWS] = parseInt(nodeMatches[9], 0);
+          // FIXME could be actual_loops_
+          newNode[NodeProp.ACTUAL_LOOPS] = parseInt(nodeMatches[10], 0);
+        }
+
         if (neverExecuted) {
           newNode[NodeProp.ACTUAL_LOOPS] = 0;
           newNode[NodeProp.ACTUAL_ROWS] = 0;

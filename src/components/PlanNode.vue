@@ -64,7 +64,7 @@
         <pre class="plan-query-text"><code v-html="getFormattedQuery()"></code></pre>
       </div>
 
-      <div v-if="viewOptions.highlightType !== highlightTypes.NONE">
+      <div v-if="viewOptions.highlightType !== highlightTypes.NONE && highlightValue !== null">
         <div class="progress node-bar-container" style="height: 5px;">
           <div class="progress-bar" role="progressbar" v-bind:style="{ width: barWidth + '%', 'background-color': getBarColor(barWidth)}" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
@@ -151,7 +151,7 @@ export default class PlanNode extends Vue {
   private executionTimePercent: number = NaN;
   private costPercent: number = NaN;
   private barWidth: number = 0;
-  private highlightValue?: string;
+  private highlightValue?: string | null;
   private props: any[] = [];
   private plans: any[] = [];
   private plannerRowEstimateValue?: number;
@@ -269,16 +269,28 @@ export default class PlanNode extends Vue {
     switch (this.viewOptions.highlightType) {
       case HighlightType.DURATION:
         value = (this.node[NodeProp.ACTUAL_DURATION]);
+        if (value === undefined) {
+          this.highlightValue = null;
+          break;
+        }
         this.barWidth = Math.round(value / this.plan.planStats.maxDuration * 100);
         this.highlightValue = this.$options.filters.duration(value);
         break;
       case HighlightType.ROWS:
         value = (this.node[NodeProp.ACTUAL_ROWS]);
+        if (value === undefined) {
+          this.highlightValue = null;
+          break;
+        }
         this.barWidth = Math.round(value / this.plan.planStats.maxRows * 100) || 0;
         this.highlightValue = this.$options.filters.rows(value);
         break;
       case HighlightType.COST:
         value = (this.node[NodeProp.ACTUAL_COST]);
+        if (value === undefined) {
+          this.highlightValue = null;
+          break;
+        }
         this.barWidth = Math.round(value / this.plan.planStats.maxCost * 100);
         this.highlightValue = this.$options.filters.cost(value);
         break;
