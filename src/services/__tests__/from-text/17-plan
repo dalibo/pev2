@@ -1,0 +1,2 @@
+ Limit  (cost=0.00..0.08 rows=2 width=36)
+   ->  Index Scan Backward using w on x  (cost=0.00..5770.49 rows=149976 width=36)

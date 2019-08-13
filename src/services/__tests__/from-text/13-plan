@@ -1,0 +1,12 @@
+# explain analyze select *, (select 1) + (select oid::int4 from pg_class c2 where c2.relname = c.relname) - oid::int4 from pg_class c;
+                                                  QUERY PLAN
+---------------------------------------------------------------------------------------------------------------
+ Seq Scan on pg_class c  (cost=0.00..1490.37 rows=226 width=200) (actual time=0.092..11.416 rows=226 loops=1)
+   InitPlan
+     ->  Result  (cost=0.00..0.00 rows=1 width=0) (actual time=0.002..0.004 rows=1 loops=1)
+   SubPlan
+     ->  Seq Scan on pg_class c2  (cost=0.00..6.57 rows=1 width=4) (actual time=0.022..0.043 rows=1 loops=226)
+           Filter: (relname = $1)
+ Total runtime: 11.804 ms
+(7 rows)
+

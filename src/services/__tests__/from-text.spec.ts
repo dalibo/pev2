@@ -22,8 +22,7 @@ tests.forEach((planTest: string) => {
       const planExpect = fs.readFileSync(planExpectFile, {encoding: 'utf-8'});
 
       const planService = new PlanService();
-      const r = planService.fromText(planText);
-      // console.log(JSON.stringify(r));
+      const r = planService.fromSource(planText);
       expect(JSON.stringify(r)).toEqual(JSON.stringify(JSON.parse(planExpect)));
     });
   });
