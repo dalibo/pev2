@@ -16,13 +16,13 @@ describe('PlanService', () => {
 `;
     const r: any = planService.fromSource(source);
     const plan: IPlan = planService.createPlan('', r, '');
-    // Materialize duration: total time * loops - Seq Scan total time
+    // Materialize duration: total time * loops - Seq Scan duration
     const mDuration = 0.008 * 402 - 0.015;
     expect(plan.content.Plan.Plans[1]['*Actual Duration']).toBe(mDuration);
 
-    // Nested Loop duration: total time - Materialize duration - Seq Scan
-    // duration
-    const nlDuration = 10.198 - mDuration - 0.058;
+    // Nested Loop duration: total time - (Materialize duration + Seq Scan
+    // duration) - Seq Scan duration
+    const nlDuration = 10.198 - (mDuration + 0.015) - 0.058;
     expect(plan.content.Plan['*Actual Duration']).toBe(nlDuration);
   });
 });
