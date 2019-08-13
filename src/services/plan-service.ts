@@ -46,16 +46,17 @@ export class PlanService {
   // recursively walk down the plan to compute various metrics
   public processNode(node: any) {
     this.calculatePlannerEstimate(node);
+
+    _.each(node[NodeProp.PLANS], (val) => {
+      this.processNode(val);
+    });
+
+    // calculate actuals after processing child nodes so that actual duration
+    // takes loops into account
     this.calculateActuals(node);
 
     _.each(node, (value, key) => {
       this.calculateMaximums(node, key, value);
-
-      if (key === NodeProp.PLANS) {
-        _.each(value, (val) => {
-          this.processNode(val);
-        });
-      }
     });
   }
 
@@ -99,11 +100,14 @@ export class PlanService {
     }
     node[NodeProp.ACTUAL_COST] = node[NodeProp.TOTAL_COST];
 
+    // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
+    node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
+
     _.each(node[NodeProp.PLANS], (subPlan) => {
       // Subtract sub plans duration from this node except for InitPlans
       // (ie. CTE)
       if (subPlan[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan') {
-        node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - subPlan[NodeProp.ACTUAL_TOTAL_TIME];
+        node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - subPlan[NodeProp.ACTUAL_DURATION];
         node[NodeProp.ACTUAL_COST] = node[NodeProp.ACTUAL_COST] - subPlan[NodeProp.TOTAL_COST];
       }
     });
