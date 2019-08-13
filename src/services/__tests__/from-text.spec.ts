@@ -23,7 +23,7 @@ tests.forEach((planTest: string) => {
 
       const planService = new PlanService();
       const r = planService.fromSource(planText);
-      expect(JSON.stringify(r)).toEqual(JSON.stringify(JSON.parse(planExpect)));
+      expect(JSON.stringify(r, null, '  ')).toEqual(JSON.stringify(JSON.parse(planExpect), null, '  '));
     });
   });
 });
