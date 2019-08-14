@@ -97,13 +97,13 @@ export class PlanService {
   public calculateActuals(node: any) {
     if (node[NodeProp.ACTUAL_TOTAL_TIME]) {
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
+      // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
+      node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
+
+      node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);
     }
     node[NodeProp.ACTUAL_COST] = node[NodeProp.TOTAL_COST];
 
-    // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
-    node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
-
-    node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);
 
     _.each(node[NodeProp.PLANS], (subPlan) => {
       if (subPlan[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan') {
