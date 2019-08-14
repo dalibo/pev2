@@ -122,7 +122,7 @@ export class PlanService {
       // Subtract sub plans duration from this node except for InitPlans
       // (ie. CTE)
       if (subPlan[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan') {
-        duration += subPlan[NodeProp.ACTUAL_DURATION];
+        duration += subPlan[NodeProp.ACTUAL_DURATION] || 0; // Duration may not be set
         duration = this.childrenDuration(subPlan, duration);
       }
     });
