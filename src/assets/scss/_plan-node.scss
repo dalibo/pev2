@@ -53,6 +53,8 @@ $bg-color: #fff;
 
   .prop-list {
     color: inherit;
+    // required for overflow-wrap to be taken into account
+    table-layout: fixed;
   }
 
   //hovers
