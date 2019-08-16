@@ -55,6 +55,23 @@ and doesn't require a backend.
 
 You can run this simple web app using any web server.
 
+#### Build docker container
+
+- Install [Docker](https://www.docker.com/) if needed.
+- Build docker image
+
+```
+docker build . -t pev2
+```
+
+- Run docker container
+
+```
+docker run -d -p 8080:80 pev2
+```
+
+After few seconds, open `http://localhost:8080` to enjoy pev2.
+
 ## Plan Vue Component
 
 As opposed to [PEV][pev], PEV2 can be used as a component in a third-party
