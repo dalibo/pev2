@@ -98,7 +98,11 @@ export class PlanService {
     if (node[NodeProp.ACTUAL_TOTAL_TIME]) {
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
-      node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
+      // unless the current node is parallel aware
+      // or has workers (which is the case for Sort nodes in parallel queries)
+      if (!node[NodeProp.PARALLEL_AWARE] && !node[NodeProp.WORKERS]) {
+        node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
+      }
 
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);
     }
