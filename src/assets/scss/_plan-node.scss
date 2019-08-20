@@ -60,11 +60,8 @@ $bg-color: #fff;
   //hovers
   &:hover {
     border-color: $highlight-color;
-    &.parallel {
-      &::after,
-      &::before {
-        border-color: $highlight-color;
-      }
+    & .workers > div {
+      border-color: $highlight-color;
     }
   }
 
@@ -173,27 +170,43 @@ $bg-color: #fff;
 
   &.parallel {
     box-shadow: none;
+  }
 
-    &::before,
-    &::after {
-      position: absolute;
-      z-index: -1;
-      content: '';
-      width: calc(100% + 2px);
-      height: calc(100% + 2px);
-      border-radius: $border-radius-base;
+  .workers {
+    position: absolute;
+    z-index: -1;
+    right: 0;
+    top: 0;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    cursor: pointer;
+
+    > div {
       border: 1px solid $gray-light;
-      background-color: $bg-color;
-      top: -1px;
+      border-radius: $border-radius-base;
+      background-color: $white;
+      width: 100%;
+      height: 100%;
+      position: absolute;
     }
+  }
 
-    &::before {
-      left: 3px;
-    }
-    &::after {
-      left: 7px;
-      z-index: -2;
-      box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
+  .workers-handle {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: -5px;
+    > div {
+      position: absolute;
+      top: 0;
+      background-color: white;
+      border: 1px solid darken($gray-lightest, 3);
+      border-radius: $border-radius-base;
+
+      &:hover {
+        background-color: $gray-lightest;
+        border-color: $gray-light;
+      }
     }
   }
 }
