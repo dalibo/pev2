@@ -100,3 +100,8 @@ nodePropTypes[NodeProp.ACTUAL_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.ACTUAL_COST] = PropType.cost;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_FACTOR] = PropType.factor;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_DIRECTION] = PropType.estimateDirection;
+
+export class WorkerProp {
+  // plan property keys
+  public static WORKER_NUMBER: string = 'Worker Number';
+}

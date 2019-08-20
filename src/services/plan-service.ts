@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
-import {EstimateDirection, NodeProp} from '@/enums';
+import {EstimateDirection, NodeProp, WorkerProp} from '@/enums';
 import { IPlan } from '@/iplan';
 import Node from '@/inode';
+import Worker from '@/iworker';
 import moment from 'moment';
 
 export class PlanService {
@@ -278,6 +279,30 @@ export class PlanService {
       const triggerRegex = /^(\s*)Trigger\s+(.*):\s+time=(\d+\.\d+)\s+calls=(\d+)\s*$/g;
       const triggerMatches = triggerRegex.exec(line);
 
+      /*
+       * Groups
+       * 2: Worker number
+       * 3: actual_time_first
+       * 4: actual_time_last
+       * 5: actual_rows
+       * 6: actual_loops
+       * 7: actual_rows_
+       * 8: actual_loops_
+       * 9: never_executed
+       * 10: extra
+       */
+      const workerRegex = new RegExp(
+        /^(\s*)Worker\s+(\d+):\s+/.source +
+        nonCapturingGroupOpen +
+        actualRegex +
+        nonCapturingGroupClose +
+        optionalGroup +
+        '(?<extra>.*)' +
+        '\\s*$',
+        'g',
+      );
+      const workerMatches = workerRegex.exec(line);
+
       const extraRegex = /^(\s*)(\S.*\S)\s*$/g;
       const extraMatches = extraRegex.exec(line);
 
@@ -363,6 +388,33 @@ export class PlanService {
         };
         const prefixLength = prefix.length;
         elementsAtDepth.push([prefixLength, element]);
+      } else if (workerMatches) {
+        const prefix = workerMatches[1];
+        const workerNumber = parseInt(workerMatches[2], 0);
+        const previousElement = _.last(elementsAtDepth)![1];
+        if (!previousElement.node[NodeProp.WORKERS]) {
+          previousElement.node[NodeProp.WORKERS] = [];
+        }
+        let worker = this.getWorker(previousElement.node, workerNumber);
+        if (!worker) {
+          worker = new Worker(workerNumber);
+          previousElement.node[NodeProp.WORKERS].push(worker);
+        }
+        if (workerMatches[3] && workerMatches[4]) {
+          worker[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(workerMatches[3]);
+          worker[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(workerMatches[4]);
+          worker[NodeProp.ACTUAL_ROWS] = parseInt(workerMatches[5], 0);
+          worker[NodeProp.ACTUAL_LOOPS] = parseInt(workerMatches[6], 0);
+        }
+        // extra info (Sort method for example)
+        if (workerMatches[10]) {
+          const info = workerMatches[10].split(': ');
+          if (!info[1]) {
+            return;
+          }
+          const property = _.startCase(info[0]);
+          worker[property] = info[1];
+        }
       } else if (triggerMatches) {
         const prefix = triggerMatches[1];
         // Remove elements from elementsAtDepth for deeper levels
@@ -402,5 +454,11 @@ export class PlanService {
       throw new Error('Unable to parse plan');
     }
     return root;
+  }
+
+  private getWorker(node: Node, workerNumber: number): Worker|null {
+    return _.find(node[NodeProp.WORKERS], (worker) => {
+      return worker[WorkerProp.WORKER_NUMBER] === workerNumber;
+    });
   }
 }
