@@ -153,7 +153,7 @@
     </div>
     <div class="overflow-auto h-100" style="z-index: 0" v-else v-dragscroll v-on:mousedown="menuHidden = true">
       <div class="plan h-100 w-100 d-flex grab-bing">
-        <ul class="">
+        <ul class="node-children">
           <li>
             <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" ref="root"/>
           </li>

@@ -239,7 +239,7 @@ $bg-color: #fff;
   padding: $padding-base $padding-lg !important;
 }
 
-ul.collapsed {
+ul.node-children.collapsed {
   & .plan-node {
     width: $compact-width !important;
     height: 0;

@@ -6,11 +6,6 @@
         <div v-for="(worker, index) in node[nodeProps.WORKERS]" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;z-index: -' + index + ';'">
         </div>
       </div>
-      <div class="workers-handle text-muted" v-if="hasWorkers">
-        <div class="p-0 px-1" :title="node[nodeProps.WORKERS].length + ' workers'">
-          {{ node[nodeProps.WORKERS].length }}&times;
-        </div>
-      </div>
       <div class="collapse-handle" v-if="hasChildren">
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
@@ -63,6 +58,11 @@
         </div>
       </div>
 
+      <div v-if="hasWorkers">
+        <span>Workers: </span>
+        <span class="font-weight-bold">{{ node[nodeProps.WORKERS].length }}</span>
+      </div>
+
       <div class="clearfix"></div>
 
       <div v-if="showQuery" class="plan-query-container">
@@ -112,12 +112,38 @@
             <td v-html="$options.filters.formatNodeProp(prop.key, prop.value, true)"></td>
           </tr>
         </table>
+        <div v-if="hasWorkers">
+          <div class="accordion" :id="'accordion-' + _uid">
+            <template v-for="(worker, index) in node[nodeProps.WORKERS]">
+              <div class="card">
+                <div class="card-header p-0">
+                  <button class="btn btn-link btn-sm text-secondary" type="button" data-toggle="collapse" :data-target="'#collapse-' + _uid + '-' + index" style="font-size: inherit;">
+                    <i class="fa fa-chevron-right fa-fw"></i>
+                    <i class="fa fa-chevron-down fa-fw"></i>
+                      Worker {{ worker[workerProps.WORKER_NUMBER] }}
+                  </button>
+                </div>
+
+                <div :id="'collapse-' + _uid + '-' + index" class="collapse" :data-parent="'#accordion-' + _uid">
+                  <div class="card-body p-0">
+                    <table class="table table-sm prop-list mb-0">
+                      <tr v-for="(value, key) in worker">
+                        <td width="40%">{{key}}</td>
+                        <td v-html="$options.filters.formatNodeProp(key, value)"></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
 
         <div class="text-muted text-right"><em>* Calculated value</em></div>
       </div>
 
     </div>
-    <ul v-if="plans" :class="{'collapsed': collapsed}">
+    <ul v-if="plans" :class="['node-children', {'collapsed': collapsed}]">
       <li v-for="subnode in plans">
         <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions"/>
       </li>
@@ -131,7 +157,8 @@ import { HelpService } from '@/services/help-service';
 import { ColorService } from '@/services/color-service';
 import { SyntaxHighlightService } from '@/services/syntax-highlight-service';
 import { cost, duration, factor, formatNodeProp, keysToString, truncate, rows } from '@/filters';
-import { EstimateDirection, HighlightType, NodeProp, nodePropTypes, Orientation, PropType, ViewMode } from '@/enums';
+import { EstimateDirection, HighlightType, NodeProp, nodePropTypes, Orientation,
+         PropType, ViewMode, WorkerProp } from '@/enums';
 import * as _ from 'lodash';
 
 @Component({
@@ -176,6 +203,7 @@ export default class PlanNode extends Vue {
   private orientations = Orientation;
 
   private nodeProps = NodeProp;
+  private workerProps = WorkerProp;
   private helpService = new HelpService();
   private colorService = new ColorService();
   private syntaxHighlightService = new SyntaxHighlightService();
@@ -215,6 +243,7 @@ export default class PlanNode extends Vue {
   private calculateProps() {
     this.props = _.chain(this.node)
       .omit(NodeProp.PLANS)
+      .omit(NodeProp.WORKERS)
       .map((value, key) => {
         return { key, value };
       })

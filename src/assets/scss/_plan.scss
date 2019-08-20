@@ -51,7 +51,7 @@ $connector-line: 2px solid darken($line-color, 10%);
     }
   }
 
-  ul {
+  ul.node-children {
 
     .twod & {
       display: flex;
@@ -64,7 +64,7 @@ $connector-line: 2px solid darken($line-color, 10%);
     transition: all 0.5s;
 
     // twod connector
-    .twod & ul::before {
+    .twod & ul.node-children::before {
       content: '';
       position: absolute;
       top: 0;
@@ -82,7 +82,7 @@ $connector-line: 2px solid darken($line-color, 10%);
       }
     }
 
-    li {
+    > li {
       list-style-type: none;
       position: relative;
 
@@ -206,6 +206,25 @@ $connector-line: 2px solid darken($line-color, 10%);
     border: 1px solid $line-color;
     background-color: #fff;
     font-size: $font-size-sm;
+  }
+
+  .accordion {
+    button {
+      .fa-chevron-right {
+        display: inline-block;
+      }
+      .fa-chevron-down {
+        display: none;
+      }
+    }
+    button[aria-expanded='true'] {
+      .fa-chevron-right {
+        display: none !important;
+      }
+      .fa-chevron-down {
+        display: inline-block !important;
+      }
+    }
   }
 }
 
