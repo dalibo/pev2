@@ -406,9 +406,14 @@ export class PlanService {
           worker[NodeProp.ACTUAL_ROWS] = parseInt(workerMatches[5], 0);
           worker[NodeProp.ACTUAL_LOOPS] = parseInt(workerMatches[6], 0);
         }
-        // extra info (Sort method for example)
+
+        if (this.parseSort(workerMatches[10], worker)) {
+          return;
+        }
+
+        // extra info
+        const info = workerMatches[10].split(/: (.+)/).filter((x) => x);
         if (workerMatches[10]) {
-          const info = workerMatches[10].split(/: (.+)/).filter((x) => x);
           if (!info[1]) {
             return;
           }
