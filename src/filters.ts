@@ -1,11 +1,12 @@
 import * as _ from 'lodash';
 import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
 
-export function duration(value: number): string {
+export function duration(value: number, detail: boolean): string {
   let dur: string = '';
   let unit: string = '';
+  detail = !!detail;
 
-  if (value < 1) {
+  if (!detail && value < 1) {
     dur = '<1';
     unit = 'ms';
   } else {
@@ -52,10 +53,10 @@ export function truncate(text: string, length: number, clamp: string): string {
     return text.length > length ? text.slice(0, length) + clamp : text;
 }
 
-export function formatNodeProp(key: string, value: any): string {
+export function formatNodeProp(key: string, value: any, detail: boolean): string {
   if (_.has(nodePropTypes, key)) {
     if (nodePropTypes[key] === PropType.duration) {
-      return duration(value);
+      return duration(value, detail);
     } else if (nodePropTypes[key] === PropType.boolean) {
       return value ? 'yes' : 'no';
     } else if (nodePropTypes[key] === PropType.cost) {

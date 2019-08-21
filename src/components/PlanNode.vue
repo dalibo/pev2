@@ -100,7 +100,7 @@
         <table class="table table-sm prop-list">
           <tr v-for="prop in props">
             <td width="40%">{{prop.key}}</td>
-            <td v-html="$options.filters.formatNodeProp(prop.key, prop.value)"></td>
+            <td v-html="$options.filters.formatNodeProp(prop.key, prop.value, true)"></td>
           </tr>
         </table>
 
