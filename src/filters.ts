@@ -19,7 +19,7 @@ export function duration(value: number, detail: boolean): string {
       value = value / 60000;
       unit = 'min';
     }
-    dur = value.toPrecision(3).toLocaleString();
+    dur = parseFloat(value.toPrecision(3)).toLocaleString();
   }
   const compiled = _.template('${dur}<span class="text-muted">${unit}</span>');
   return compiled({dur, unit});
