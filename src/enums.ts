@@ -38,6 +38,9 @@ export class NodeProp {
   public static ALIAS: string = 'Alias';
   public static GROUP_KEY: string = 'Group Key';
   public static SORT_KEY: string = 'Sort Key';
+  public static SORT_METHOD: string = 'Sort Method';
+  public static SORT_SPACE_TYPE: string = 'Sort Space Type';
+  public static SORT_SPACE_USED: string = 'Sort Space Used';
   public static JOIN_TYPE: string = 'Join Type';
   public static INDEX_NAME: string = 'Index Name';
   public static HASH_CONDITION: string = 'Hash Cond';

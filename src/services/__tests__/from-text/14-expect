@@ -19,7 +19,9 @@
         "Actual Rows": 50,
         "Actual Loops": 1,
         "Sort Key": "s.last_updated_date",
-        "Sort Method": " top-N heapsort  Memory",
+        "Sort Method": "top-N heapsort",
+        "Sort Space Used": "50kB",
+        "Sort Space Type": "Memory",
         "Plans": [
           {
             "Node Type": "Nested Loop",
@@ -160,7 +162,9 @@
                         "Actual Rows": 1,
                         "Actual Loops": 22035,
                         "Sort Key": "mu2.update_date",
-                        "Sort Method": " quicksort  Memory",
+                        "Sort Method": "quicksort",
+                        "Sort Space Used": "25kB",
+                        "Sort Space Type": "Memory",
                         "Plans": [
                           {
                             "Node Type": "Index Scan",

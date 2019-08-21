@@ -9,7 +9,9 @@
     "Actual Rows": 24935,
     "Actual Loops": 1,
     "Sort Key": "ak.artikelnr_list",
-    "Sort Method": " quicksort  Memory",
+    "Sort Method": "quicksort",
+    "Sort Space Used": "3536kB",
+    "Sort Space Type": "Memory",
     "Plans": [
       {
         "Node Type": "Nested Loop",

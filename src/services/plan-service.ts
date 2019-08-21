@@ -408,7 +408,7 @@ export class PlanService {
         }
         // extra info (Sort method for example)
         if (workerMatches[10]) {
-          const info = workerMatches[10].split(': ');
+          const info = workerMatches[10].split(/: (.+)/).filter((x) => x);
           if (!info[1]) {
             return;
           }
@@ -426,14 +426,27 @@ export class PlanService {
           'Calls': triggerMatches[4],
         });
       } else if (extraMatches) {
+
         const prefix = extraMatches[1];
         // Remove elements from elementsAtDepth for deeper levels
         _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
 
-        const info = extraMatches[2].split(': ');
+        let element;
+        if (elementsAtDepth.length === 0) {
+          element = root;
+        } else {
+          element = _.last(elementsAtDepth)![1].node;
+        }
+
+        if (this.parseSort(extraMatches[2], element)) {
+          return;
+        }
+
+        const info = extraMatches[2].split(/: (.+)/).filter((x) => x);
         if (!info[1]) {
           return;
         }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, '');
         // try to convert to number
@@ -442,18 +455,31 @@ export class PlanService {
         }
 
         const property = _.startCase(info[0]);
-        if (elementsAtDepth.length === 0) {
-          root[property] = value;
-        } else {
-          const previousElement = _.last(elementsAtDepth)![1];
-          previousElement.node[property] = value;
-        }
+        element[property] = value;
       }
     });
     if (!root.Plan) {
       throw new Error('Unable to parse plan');
     }
     return root;
+  }
+
+  private parseSort(text: string, el: Node | Worker): boolean {
+    /*
+     * Groups
+     * 2: Sort Method
+     * 3: Sort Space Type
+     * 4: Sort Space Used
+     */
+    const sortRegex = /^(\s*)Sort Method:\s+(?<method>.*)\s+(?<spacetype>Memory|Disk):\s+(?<spaceused>\S*)\s*$/g;
+    const sortMatches = sortRegex.exec(text);
+    if (sortMatches) {
+      el[NodeProp.SORT_METHOD] = sortMatches[2].trim();
+      el[NodeProp.SORT_SPACE_USED] = sortMatches[4];
+      el[NodeProp.SORT_SPACE_TYPE] = sortMatches[3];
+      return true;
+    }
+    return false;
   }
 
   private getWorker(node: Node, workerNumber: number): Worker|null {
