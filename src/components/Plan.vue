@@ -112,7 +112,9 @@
       </div>
       <div v-if="plan.planStats.triggers.length" class="position-relative col px-0">
         <button @click.prevent="showTriggers = !showTriggers" class="w-100">
-          <span class="stat-value" v-html="$options.filters.duration(triggersTotalDuration)"></span>
+          <span class="stat-value">
+            <span :class="'mb-0 p-0 px-1 alert ' + triggerDurationClass(totalTriggerDurationPercent)" v-html="$options.filters.duration(triggersTotalDuration)"></span>
+          </span>
           <span class="stat-label">Triggers</span>
         </button>
         <div class="plan-triggers-container" v-if="showTriggers">
@@ -269,6 +271,14 @@ export default class Plan extends Vue {
       });
 
     }
+  }
+
+  private get totalTriggerDurationPercent() {
+    const plan = this.plan;
+    const planStats = this.plan && this.plan.planStats;
+    const executionTime = this.plan && this.plan.planStats.executionTime || 0;
+    const totalDuration = this.triggersTotalDuration || 0;
+    return _.round(totalDuration / executionTime * 100);
   }
 
   private triggerDurationPercent(trigger: any) {
