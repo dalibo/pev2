@@ -3,7 +3,7 @@
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
     <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION], 'parallel': hasWorkers}]">
       <div class="workers text-muted py-0 px-1" v-if="hasWorkers">
-        <div v-for="(worker, index) in node[nodeProps.WORKERS]" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;z-index: -' + index + ';'">
+        <div v-for="(worker, index) in node[nodeProps.ACTUAL_LOOPS] - 1" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;z-index: -' + index + ';'">
         </div>
       </div>
       <div class="collapse-handle" v-if="hasChildren">
@@ -60,7 +60,7 @@
 
       <div v-if="hasWorkers">
         <span>Workers: </span>
-        <span class="font-weight-bold">{{ node[nodeProps.WORKERS].length }}</span>
+        <span class="font-weight-bold">{{ node[nodeProps.ACTUAL_LOOPS] - 1 }}</span>
       </div>
 
       <div class="clearfix"></div>
@@ -113,7 +113,7 @@
           </tr>
         </table>
         <div v-if="hasWorkers">
-          <div class="accordion" :id="'accordion-' + _uid">
+          <div class="accordion" :id="'accordion-' + _uid" v-if="node[nodeProps.WORKERS]">
             <template v-for="(worker, index) in node[nodeProps.WORKERS]">
               <div class="card">
                 <div class="card-header p-0">
@@ -136,6 +136,10 @@
                 </div>
               </div>
             </template>
+          </div>
+          <div v-else class="font-italic">
+            <strong>Workers</strong>: Detailed information not available.
+            Consider using <code>EXPLAIN VERBOSE</code>.
           </div>
         </div>
 
@@ -255,7 +259,7 @@ export default class PlanNode extends Vue {
   }
 
   private getNodeName(): string {
-    let nodeName = this.isParallel ? 'Parallel ' : '';
+    let nodeName = this.isParallelAware ? 'Parallel ' : '';
     nodeName += this.node[NodeProp.NODE_TYPE];
     if ((this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) && !this.showDetails) {
       return nodeName.replace(/[^A-Z]/g, '').toUpperCase();
@@ -439,10 +443,10 @@ export default class PlanNode extends Vue {
   }
 
   private get hasWorkers(): boolean {
-    return this.node[NodeProp.WORKERS];
+    return this.node[NodeProp.PARALLEL];
   }
 
-  private get isParallel(): boolean {
+  private get isParallelAware(): boolean {
     return this.node[NodeProp.PARALLEL_AWARE];
   }
 }

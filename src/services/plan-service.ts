@@ -45,16 +45,19 @@ export class PlanService {
   }
 
   // recursively walk down the plan to compute various metrics
-  public processNode(node: any) {
+  public processNode(node: any, parallel?: boolean) {
     this.calculatePlannerEstimate(node);
 
+    // All children of Gather node will be considered parallel
+    const isParallel = parallel || node[NodeProp.NODE_TYPE].includes('Gather');
+
     _.each(node[NodeProp.PLANS], (val) => {
-      this.processNode(val);
+      this.processNode(val, isParallel);
     });
 
     // calculate actuals after processing child nodes so that actual duration
     // takes loops into account
-    this.calculateActuals(node);
+    this.calculateActuals(node, isParallel);
 
     _.each(node, (value, key) => {
       this.calculateMaximums(node, key, value);
@@ -95,14 +98,16 @@ export class PlanService {
   }
 
   // actual duration and actual cost are calculated by subtracting child values from the total
-  public calculateActuals(node: any) {
+  public calculateActuals(node: any, parallel: boolean) {
     if (node[NodeProp.ACTUAL_TOTAL_TIME]) {
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
       // unless the current node is parallel aware
       // or has workers (which is the case for Sort nodes in parallel queries)
-      if (!node[NodeProp.PARALLEL_AWARE] && !node[NodeProp.WORKERS]) {
+      if (!parallel) {
         node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
+      } else {
+        node[NodeProp.PARALLEL] = node[NodeProp.ACTUAL_LOOPS] > 1;
       }
 
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);

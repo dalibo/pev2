@@ -61,6 +61,8 @@ export class NodeProp {
   public static ACTUAL_COST: string = '*Actual Cost';
   public static PLANNER_ESTIMATE_FACTOR: string = '*Planner Row Estimate Factor';
   public static PLANNER_ESTIMATE_DIRECTION: string = '*Planner Row Estimate Direction';
+  // true when child of Gather node and loops > 1
+  public static PARALLEL: string = '* Parallel';
 
   public static CTE_SCAN: string = 'CTE Scan';
   public static CTE_NAME: string = 'CTE Name';
@@ -103,6 +105,7 @@ nodePropTypes[NodeProp.ACTUAL_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.ACTUAL_COST] = PropType.cost;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_FACTOR] = PropType.factor;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_DIRECTION] = PropType.estimateDirection;
+nodePropTypes[NodeProp.PARALLEL] = PropType.boolean;
 
 export class WorkerProp {
   // plan property keys
