@@ -83,7 +83,7 @@
           </span>
       </div>
 
-      <div v-if="shouldShowPlannerEstimate() && plannerRowEstimateDirection != estimateDirections.none">
+      <div v-if="shouldShowPlannerEstimate() && plannerRowEstimateDirection != estimateDirections.none && plannerRowEstimateValue">
         <span v-if="plannerRowEstimateDirection === estimateDirections.over"><strong><i class="fa fa-arrow-up"></i> over</strong> estimated rows</span>
         <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong><i class="fa fa-arrow-down"></i> under</strong> estimated rows</span>
         <span v-if="plannerRowEstimateValue != Infinity"> by
