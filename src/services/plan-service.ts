@@ -485,7 +485,7 @@ export class PlanService {
      * 3: Sort Space Type
      * 4: Sort Space Used
      */
-    const sortRegex = /^(\s*)Sort Method:\s+(?<method>.*)\s+(?<spacetype>Memory|Disk):\s+(?<spaceused>\S*)\s*$/g;
+    const sortRegex = /^(\s*)Sort Method:\s+(?<method>.*)\s+(?<spacetype>Memory|Disk):\s+(?:(?<spaceused>\S*)kB)\s*$/g;
     const sortMatches = sortRegex.exec(text);
     if (sortMatches) {
       el[NodeProp.SORT_METHOD] = sortMatches[2].trim();

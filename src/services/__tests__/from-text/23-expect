@@ -10,7 +10,7 @@
     "Actual Loops": 1,
     "Sort Key": "ak.artikelnr_list",
     "Sort Method": "quicksort",
-    "Sort Space Used": "3536kB",
+    "Sort Space Used": "3536",
     "Sort Space Type": "Memory",
     "Plans": [
       {

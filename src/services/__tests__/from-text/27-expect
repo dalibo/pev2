@@ -10,7 +10,7 @@
     "Actual Loops": 1,
     "Sort Key": "relallvisible",
     "Sort Method": "quicksort",
-    "Sort Space Used": "118kB",
+    "Sort Space Used": "118",
     "Sort Space Type": "Memory",
     "Plans": [
       {
