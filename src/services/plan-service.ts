@@ -447,6 +447,10 @@ export class PlanService {
           return;
         }
 
+        if (this.parseBuffers(extraMatches[2], element)) {
+          return;
+        }
+
         const info = extraMatches[2].split(/: (.+)/).filter((x) => x);
         if (!info[1]) {
           return;
@@ -485,6 +489,41 @@ export class PlanService {
       return true;
     }
     return false;
+  }
+
+  private parseBuffers(text: string, el: Node | Worker): boolean {
+    /*
+     * Groups
+     */
+    const buffersRegex = /Buffers:\s+(.*)\s*$/g;
+    const buffersMatches = buffersRegex.exec(text);
+
+    /*
+     * Groups:
+     * 1: type
+     * 2: info
+     */
+    if (buffersMatches) {
+      _.each(buffersMatches[1].split(/,\s+/), (infos) => {
+        const bufferInfoRegex = /(shared|temp|local)\s+(.*)$/g;
+        const m = bufferInfoRegex.exec(infos);
+        if (m) {
+          const type = m[1];
+          _.each(m[2].split(/\s+/), (buffer) => {
+            this.parseBuffer(buffer, type, el);
+          });
+        }
+      });
+      return true;
+    }
+    return false;
+  }
+
+  private parseBuffer(text: string, type: string, el: Node|Worker): void {
+    const s = text.split(/=/);
+    const method = s[0];
+    const value = parseInt(s[1], 0);
+    el[_.map([type, method, 'blocks'], _.capitalize).join(' ')] = value;
   }
 
   private getWorker(node: Node, workerNumber: number): Worker|null {

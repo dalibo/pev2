@@ -208,4 +208,25 @@ Result  (cost=0.31..0.32 rows=1 width=4)
     expect(r.Plan.Plans[0]['Parent Relationship']).toEqual('InitPlan');
     expect(r.Plan.Plans[0]['Subplan Name']).toEqual('CTE e');
   });
+
+  test('correctly parses buffers', () => {
+    const planService = new PlanService();
+    const source = `
+ Sort  (cost=1892901.51..1917901.71 rows=10000080 width=37) (actual time=4083.481..5153.029 rows=10000000 loops=1)
+   Sort Key: c1
+   Sort Method: external merge  Disk: 459976kB
+   Buffers: shared hit=16230 read=67104, temp read=173492 written=173750
+   ->  Seq Scan on foo  (cost=0.00..183334.80 rows=10000080 width=37) (actual time=0.179..853.428 rows=10000000 loops=1)
+         Buffers: shared hit=16230 read=67104
+ Planning Time: 0.104 ms
+ Execution Time: 5581.481 ms
+(8 rows)`;
+    const r: any = planService.fromSource(source);
+    expect(r.Plan['Shared Hit Blocks']).toEqual(16230);
+    expect(r.Plan['Shared Read Blocks']).toEqual(67104);
+    expect(r.Plan['Temp Read Blocks']).toEqual(173492);
+    expect(r.Plan['Temp Written Blocks']).toEqual(173750);
+    expect(r.Plan.Plans[0]['Shared Hit Blocks']).toEqual(16230);
+    expect(r.Plan.Plans[0]['Shared Read Blocks']).toEqual(67104);
+  });
 });
