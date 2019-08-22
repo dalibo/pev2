@@ -143,7 +143,7 @@
     <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
       <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
     </div>
-    <div class="overflow-auto h-100" v-else v-dragscroll>
+    <div class="overflow-auto h-100" v-else v-dragscroll v-on:mousedown="menuHidden = true">
       <div class="plan h-100 w-100 d-flex grab-bing">
         <ul class="">
           <li>
