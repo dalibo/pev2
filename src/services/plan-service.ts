@@ -102,11 +102,14 @@ export class PlanService {
 
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);
     }
-    node[NodeProp.ACTUAL_COST] = node[NodeProp.TOTAL_COST];
+
+    if (node[NodeProp.TOTAL_COST]) {
+      node[NodeProp.ACTUAL_COST] = node[NodeProp.TOTAL_COST];
+    }
 
 
     _.each(node[NodeProp.PLANS], (subPlan) => {
-      if (subPlan[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan') {
+      if (subPlan[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan' && subPlan[NodeProp.TOTAL_COST]) {
         node[NodeProp.ACTUAL_COST] = node[NodeProp.ACTUAL_COST] - subPlan[NodeProp.TOTAL_COST];
       }
     });

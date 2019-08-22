@@ -104,8 +104,16 @@
         <span class="stat-label">Largest node</span>
       </div>
       <div class="col px-0">
-        <button @click.prevent="showNode(plan.costliestNode, false, true)" :disabled="!plan.planStats.maxCost" v-if="plan.planStats.maxCost"  class="w-100">
-          <span class="stat-value">{{plan.planStats.maxCost | cost}}</span>
+        <button @click.prevent="showNode(plan.costliestNode, false, true)" :disabled="!plan.planStats.maxCost" class="w-100">
+          <template v-if="!plan.planStats.maxCost">
+            <span class="stat-value text-muted">
+              N/A
+              <small><i class="fa fa-info-circle" :title="getHelpMessage('missing costliest')"></i></small>
+            </span>
+          </template>
+          <template v-else>
+            <span class="stat-value">{{plan.planStats.maxCost | cost}}</span>
+          </template>
           <span class="stat-label">Costliest node</span>
           <div class="show" v-if="plan.planStats.maxCost"><i class="fa fa-search bg-white p-1 rounded"></i></div>
         </button>

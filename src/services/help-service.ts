@@ -49,8 +49,9 @@ export const HELP_MESSAGES: IHelpMessage = {
   'MISSING EXECUTION TIME': `Execution time (or Total runtime) not available for this plan. Make sure you
     use EXPLAIN ANALYZE.`,
   'MISSING PLANNING TIME': 'Planning time not available for this plan.',
-  'MISSING SLOWEST NODE': 'Could not compute durations. Make sure you use EXPLAIN ANALYZE.',
+  'MISSING SLOWEST': 'Could not compute durations. Make sure you use EXPLAIN ANALYZE.',
   'NO ROWS': 'No rows returned',
+  'MISSING COSTLIEST': 'No cost info available. Considering using COSTS ON.',
 };
 
 interface EaseInOutQuadOptions {
