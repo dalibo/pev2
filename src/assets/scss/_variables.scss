@@ -82,3 +82,23 @@ $yiq-text-light:            $white !default;
     @return $light;
   }
 }
+
+/**
+ * Severity classes
+ */
+@each $color, $value in $severity-colors {
+  .alert.c-#{$color} {
+    background-color: $value;
+    color: color-yiq($value);
+    font-weight: bold;
+
+    .text-muted {
+      color: color-yiq($value) !important;
+      font-weight: normal;
+    }
+  }
+
+  .text-c-#{$color} {
+    color: $value;
+  }
+}

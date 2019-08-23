@@ -48,6 +48,8 @@ export class NodeProp {
   public static SUBPLAN_NAME: string = 'Subplan Name';
   public static PARALLEL_AWARE: string = 'Parallel Aware';
   public static WORKERS: string = 'Workers';
+  public static WORKERS_PLANNED: string = 'Workers Planned';
+  public static WORKERS_LAUNCHED: string = 'Workers Launched';
 
   // computed by pev
   public static COSTLIEST_NODE: string = '*Costiest Node (by cost)';

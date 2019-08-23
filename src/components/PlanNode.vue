@@ -58,7 +58,12 @@
         </div>
       </div>
 
-      <div v-if="hasWorkers">
+      <div v-if="!allWorkersLaunched && viewOptions.viewMode === viewModes.FULL" class="text-c-3" :title="getHelpMessage('workers planned not launched')">
+        <i class="fa fa-exclamation-triangle"></i>&nbsp;
+        <span>Not all workers launched</span>
+      </div>
+
+      <div v-if="hasWorkers && viewOptions.viewMode === viewModes.FULL">
         <span>Workers: </span>
         <span class="font-weight-bold">{{ node[nodeProps.ACTUAL_LOOPS] - 1 }}</span>
       </div>
@@ -448,6 +453,14 @@ export default class PlanNode extends Vue {
 
   private get isParallelAware(): boolean {
     return this.node[NodeProp.PARALLEL_AWARE];
+  }
+
+  private get allWorkersLaunched(): boolean {
+    return this.node[NodeProp.WORKERS_PLANNED] === this.node[NodeProp.WORKERS_LAUNCHED];
+  }
+
+  private getHelpMessage(message: string) {
+    return this.helpService.getHelpMessage(message);
   }
 }
 </script>
