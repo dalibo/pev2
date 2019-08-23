@@ -112,7 +112,7 @@
           <span class="node-type">{{node[nodeProps.NODE_TYPE]}} Node</span>&nbsp;<span v-html="getNodeTypeDescription()"></span>
         </div>
         <table class="table table-sm prop-list">
-          <tr v-for="prop in props">
+          <tr v-for="prop in props" v-if="shouldShowProp(prop.key, prop.value)">
             <td width="40%">{{prop.key}}</td>
             <td v-html="$options.filters.formatNodeProp(prop.key, prop.value, true)"></td>
           </tr>
@@ -132,7 +132,7 @@
                 <div :id="'collapse-' + _uid + '-' + index" class="collapse" :data-parent="'#accordion-' + _uid">
                   <div class="card-body p-0">
                     <table class="table table-sm prop-list mb-0">
-                      <tr v-for="(value, key) in worker">
+                      <tr v-for="(value, key) in worker" v-if="shouldShowProp(key, value)">
                         <td width="40%">{{key}}</td>
                         <td v-html="$options.filters.formatNodeProp(key, value)"></td>
                       </tr>
@@ -461,6 +461,10 @@ export default class PlanNode extends Vue {
 
   private getHelpMessage(message: string) {
     return this.helpService.getHelpMessage(message);
+  }
+
+  private shouldShowProp(key: string, value: any): boolean {
+    return value || nodePropTypes[key] === PropType.increment;
   }
 }
 </script>

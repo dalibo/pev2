@@ -84,6 +84,7 @@ export enum PropType {
   estimateDirection,
   json,
   space,
+  increment,
 }
 
 export const nodePropTypes: any = {};
@@ -115,3 +116,5 @@ export class WorkerProp {
   // plan property keys
   public static WORKER_NUMBER: string = 'Worker Number';
 }
+
+nodePropTypes[WorkerProp.WORKER_NUMBER] = PropType.increment;
