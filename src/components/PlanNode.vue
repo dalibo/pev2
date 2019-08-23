@@ -134,7 +134,7 @@
                     <table class="table table-sm prop-list mb-0">
                       <tr v-for="(value, key) in worker" v-if="shouldShowProp(key, value)">
                         <td width="40%">{{key}}</td>
-                        <td v-html="$options.filters.formatNodeProp(key, value)"></td>
+                        <td v-html="$options.filters.formatNodeProp(key, value, true)"></td>
                       </tr>
                     </table>
                   </div>
