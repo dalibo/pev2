@@ -54,7 +54,7 @@
         <template v-if="!plan.planStats.executionTime">
           <span class="stat-value text-muted">
             N/A
-            <small><i class="fa fa-info-circle" :title="getHelpMessage('missing execution time')"></i></small>
+            <small><i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing execution time')"></i></small>
           </span>
         </template>
         <template v-else>
@@ -66,7 +66,7 @@
         <template v-if="!plan.planStats.planningTime">
           <span class="stat-value text-muted">
             N/A
-            <small><i class="fa fa-info-circle" :title="getHelpMessage('missing planning time')"></i></small>
+            <small><i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing planning time')"></i></small>
           </span>
         </template>
         <template v-else>
@@ -79,7 +79,7 @@
           <template v-if="!plan.planStats.maxDuration">
             <span class="stat-value text-muted">
               N/A
-              <small><i class="fa fa-info-circle" :title="getHelpMessage('missing slowest')"></i></small>
+              <small><i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing slowest')"></i></small>
             </span>
           </template>
           <template v-else>
@@ -95,7 +95,7 @@
         <template v-if="!plan.planStats.maxRows">
           <span class="stat-value text-muted">
             N/A
-            <small><i class="fa fa-info-circle" :title="getHelpMessage('no rows')"></i></small>
+            <small><i class="fa fa-info-circle cursor-help" :title="getHelpMessage('no rows')"></i></small>
           </span>
         </template>
         <template v-else>
@@ -108,7 +108,7 @@
           <template v-if="!plan.planStats.maxCost">
             <span class="stat-value text-muted">
               N/A
-              <small><i class="fa fa-info-circle" :title="getHelpMessage('missing costliest')"></i></small>
+              <small><i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing costliest')"></i></small>
             </span>
           </template>
           <template v-else>
@@ -151,9 +151,9 @@
     <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
       <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
     </div>
-    <div class="overflow-auto h-100" v-else v-dragscroll v-on:mousedown="menuHidden = true">
+    <div class="overflow-auto h-100" style="z-index: 0" v-else v-dragscroll v-on:mousedown="menuHidden = true">
       <div class="plan h-100 w-100 d-flex grab-bing">
-        <ul class="">
+        <ul class="node-children">
           <li>
             <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" ref="root"/>
           </li>

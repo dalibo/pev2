@@ -1,7 +1,11 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION]}]">
+    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION], 'parallel': hasWorkers}]">
+      <div class="workers text-muted py-0 px-1" v-if="hasWorkers">
+        <div v-for="(worker, index) in node[nodeProps.ACTUAL_LOOPS] - 1" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;z-index: -' + index + ';'">
+        </div>
+      </div>
       <div class="collapse-handle" v-if="hasChildren">
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
@@ -54,6 +58,16 @@
         </div>
       </div>
 
+      <div v-if="!allWorkersLaunched && viewOptions.viewMode === viewModes.FULL" class="text-c-3 cursor-help" :title="getHelpMessage('workers planned not launched')">
+        <i class="fa fa-exclamation-triangle"></i>&nbsp;
+        <span>Not all workers launched</span>
+      </div>
+
+      <div v-if="hasWorkers && viewOptions.viewMode === viewModes.FULL">
+        <span>Workers: </span>
+        <span class="font-weight-bold">{{ node[nodeProps.ACTUAL_LOOPS] - 1 }}</span>
+      </div>
+
       <div class="clearfix"></div>
 
       <div v-if="showQuery" class="plan-query-container">
@@ -98,17 +112,47 @@
           <span class="node-type">{{node[nodeProps.NODE_TYPE]}} Node</span>&nbsp;<span v-html="getNodeTypeDescription()"></span>
         </div>
         <table class="table table-sm prop-list">
-          <tr v-for="prop in props">
+          <tr v-for="prop in props" v-if="shouldShowProp(prop.key, prop.value)">
             <td width="40%">{{prop.key}}</td>
             <td v-html="$options.filters.formatNodeProp(prop.key, prop.value, true)"></td>
           </tr>
         </table>
+        <div v-if="hasWorkers">
+          <div class="accordion" :id="'accordion-' + _uid" v-if="node[nodeProps.WORKERS]">
+            <template v-for="(worker, index) in node[nodeProps.WORKERS]">
+              <div class="card">
+                <div class="card-header p-0">
+                  <button class="btn btn-link btn-sm text-secondary" type="button" data-toggle="collapse" :data-target="'#collapse-' + _uid + '-' + index" style="font-size: inherit;">
+                    <i class="fa fa-chevron-right fa-fw"></i>
+                    <i class="fa fa-chevron-down fa-fw"></i>
+                      Worker {{ worker[workerProps.WORKER_NUMBER] }}
+                  </button>
+                </div>
+
+                <div :id="'collapse-' + _uid + '-' + index" class="collapse" :data-parent="'#accordion-' + _uid">
+                  <div class="card-body p-0">
+                    <table class="table table-sm prop-list mb-0">
+                      <tr v-for="(value, key) in worker" v-if="shouldShowProp(key, value)">
+                        <td width="40%">{{key}}</td>
+                        <td v-html="$options.filters.formatNodeProp(key, value, true)"></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+          <div v-else class="font-italic">
+            <strong>Workers</strong>: Detailed information not available.
+            Consider using <code>EXPLAIN VERBOSE</code>.
+          </div>
+        </div>
 
         <div class="text-muted text-right"><em>* Calculated value</em></div>
       </div>
 
     </div>
-    <ul v-if="plans" :class="{'collapsed': collapsed}">
+    <ul v-if="plans" :class="['node-children', {'collapsed': collapsed}]">
       <li v-for="subnode in plans">
         <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions"/>
       </li>
@@ -122,7 +166,8 @@ import { HelpService } from '@/services/help-service';
 import { ColorService } from '@/services/color-service';
 import { SyntaxHighlightService } from '@/services/syntax-highlight-service';
 import { cost, duration, factor, formatNodeProp, keysToString, truncate, rows } from '@/filters';
-import { EstimateDirection, HighlightType, NodeProp, nodePropTypes, Orientation, PropType, ViewMode } from '@/enums';
+import { EstimateDirection, HighlightType, NodeProp, nodePropTypes, Orientation,
+         PropType, ViewMode, WorkerProp } from '@/enums';
 import * as _ from 'lodash';
 
 @Component({
@@ -167,6 +212,7 @@ export default class PlanNode extends Vue {
   private orientations = Orientation;
 
   private nodeProps = NodeProp;
+  private workerProps = WorkerProp;
   private helpService = new HelpService();
   private colorService = new ColorService();
   private syntaxHighlightService = new SyntaxHighlightService();
@@ -206,6 +252,7 @@ export default class PlanNode extends Vue {
   private calculateProps() {
     this.props = _.chain(this.node)
       .omit(NodeProp.PLANS)
+      .omit(NodeProp.WORKERS)
       .map((value, key) => {
         return { key, value };
       })
@@ -217,7 +264,8 @@ export default class PlanNode extends Vue {
   }
 
   private getNodeName(): string {
-    const nodeName = this.node[NodeProp.NODE_TYPE];
+    let nodeName = this.isParallelAware ? 'Parallel ' : '';
+    nodeName += this.node[NodeProp.NODE_TYPE];
     if ((this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) && !this.showDetails) {
       return nodeName.replace(/[^A-Z]/g, '').toUpperCase();
     }
@@ -397,6 +445,26 @@ export default class PlanNode extends Vue {
 
   private get hasChildren(): boolean {
     return !!this.plans;
+  }
+
+  private get hasWorkers(): boolean {
+    return this.node[NodeProp.PARALLEL];
+  }
+
+  private get isParallelAware(): boolean {
+    return this.node[NodeProp.PARALLEL_AWARE];
+  }
+
+  private get allWorkersLaunched(): boolean {
+    return this.node[NodeProp.WORKERS_PLANNED] === this.node[NodeProp.WORKERS_LAUNCHED];
+  }
+
+  private getHelpMessage(message: string) {
+    return this.helpService.getHelpMessage(message);
+  }
+
+  private shouldShowProp(key: string, value: any): boolean {
+    return value || nodePropTypes[key] === PropType.increment;
   }
 }
 </script>

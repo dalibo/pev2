@@ -1,0 +1,9 @@
+                                                  QUERY PLAN                                                   
+---------------------------------------------------------------------------------------------------------------
+ Sort  (cost=29.81..30.67 rows=342 width=262) (actual time=0.440..0.537 rows=352 loops=1)
+   Sort Key: relallvisible
+   Sort Method: quicksort  Memory: 118kB
+   ->  Seq Scan on pg_class  (cost=0.00..15.42 rows=342 width=262) (actual time=0.021..0.175 rows=352 loops=1)
+ Planning Time: 0.255 ms
+ Execution Time: 0.678 ms
+(6 rows)

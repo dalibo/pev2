@@ -38,12 +38,18 @@ export class NodeProp {
   public static ALIAS: string = 'Alias';
   public static GROUP_KEY: string = 'Group Key';
   public static SORT_KEY: string = 'Sort Key';
+  public static SORT_METHOD: string = 'Sort Method';
+  public static SORT_SPACE_TYPE: string = 'Sort Space Type';
+  public static SORT_SPACE_USED: string = 'Sort Space Used';
   public static JOIN_TYPE: string = 'Join Type';
   public static INDEX_NAME: string = 'Index Name';
   public static HASH_CONDITION: string = 'Hash Cond';
   public static PARENT_RELATIONSHIP: string = 'Parent Relationship';
   public static SUBPLAN_NAME: string = 'Subplan Name';
   public static PARALLEL_AWARE: string = 'Parallel Aware';
+  public static WORKERS: string = 'Workers';
+  public static WORKERS_PLANNED: string = 'Workers Planned';
+  public static WORKERS_LAUNCHED: string = 'Workers Launched';
 
   // computed by pev
   public static COSTLIEST_NODE: string = '*Costiest Node (by cost)';
@@ -57,6 +63,8 @@ export class NodeProp {
   public static ACTUAL_COST: string = '*Actual Cost';
   public static PLANNER_ESTIMATE_FACTOR: string = '*Planner Row Estimate Factor';
   public static PLANNER_ESTIMATE_DIRECTION: string = '*Planner Row Estimate Direction';
+  // true when child of Gather node and loops > 1
+  public static PARALLEL: string = '* Parallel';
 
   public static CTE_SCAN: string = 'CTE Scan';
   public static CTE_NAME: string = 'CTE Name';
@@ -74,6 +82,9 @@ export enum PropType {
   cost,
   factor,
   estimateDirection,
+  json,
+  space,
+  increment,
 }
 
 export const nodePropTypes: any = {};
@@ -85,6 +96,8 @@ nodePropTypes[NodeProp.ACTUAL_STARTUP_TIME] = PropType.duration;
 nodePropTypes[NodeProp.STARTUP_COST] = PropType.cost;
 nodePropTypes[NodeProp.TOTAL_COST] = PropType.cost;
 nodePropTypes[NodeProp.PARALLEL_AWARE] = PropType.boolean;
+nodePropTypes[NodeProp.WORKERS] = PropType.json;
+nodePropTypes[NodeProp.SORT_SPACE_USED] = PropType.space;
 
 nodePropTypes[NodeProp.COSTLIEST_NODE] = PropType.boolean;
 nodePropTypes[NodeProp.LARGEST_NODE] = PropType.boolean;
@@ -97,3 +110,11 @@ nodePropTypes[NodeProp.ACTUAL_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.ACTUAL_COST] = PropType.cost;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_FACTOR] = PropType.factor;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_DIRECTION] = PropType.estimateDirection;
+nodePropTypes[NodeProp.PARALLEL] = PropType.boolean;
+
+export class WorkerProp {
+  // plan property keys
+  public static WORKER_NUMBER: string = 'Worker Number';
+}
+
+nodePropTypes[WorkerProp.WORKER_NUMBER] = PropType.increment;

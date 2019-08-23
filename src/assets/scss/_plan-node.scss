@@ -60,6 +60,9 @@ $bg-color: #fff;
   //hovers
   &:hover {
     border-color: $highlight-color;
+    & .workers > div {
+      border-color: $highlight-color;
+    }
   }
 
   .node-description {
@@ -164,6 +167,48 @@ $bg-color: #fff;
   &.highlight {
     animation: highlight 1s;
   }
+
+  &.parallel {
+    box-shadow: none;
+  }
+
+  .workers {
+    position: absolute;
+    z-index: -1;
+    right: 0;
+    top: 0;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    cursor: pointer;
+
+    > div {
+      border: 1px solid $gray-light;
+      border-radius: $border-radius-base;
+      background-color: $white;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+    }
+  }
+
+  .workers-handle {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: -5px;
+    > div {
+      position: absolute;
+      top: 0;
+      background-color: white;
+      border: 1px solid darken($gray-lightest, 3);
+      border-radius: $border-radius-base;
+
+      &:hover {
+        background-color: $gray-lightest;
+        border-color: $gray-light;
+      }
+    }
+  }
 }
 
 .node-bar-container {
@@ -194,7 +239,7 @@ $bg-color: #fff;
   padding: $padding-base $padding-lg !important;
 }
 
-ul.collapsed {
+ul.node-children.collapsed {
   & .plan-node {
     width: $compact-width !important;
     height: 0;
@@ -209,21 +254,5 @@ ul.collapsed {
   }
   .classic .plan & li:last-child::after {
     height: 14px;
-  }
-}
-
-/**
- * Severity classes
- */
-@each $color, $value in $severity-colors {
-  .alert.c-#{$color} {
-    background-color: $value;
-    color: color-yiq($value);
-    font-weight: bold;
-
-    .text-muted {
-      color: color-yiq($value) !important;
-      font-weight: normal;
-    }
   }
 }

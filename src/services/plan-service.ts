@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
-import {EstimateDirection, NodeProp} from '@/enums';
+import {EstimateDirection, NodeProp, WorkerProp} from '@/enums';
 import { IPlan } from '@/iplan';
 import Node from '@/inode';
+import Worker from '@/iworker';
 import moment from 'moment';
 
 export class PlanService {
@@ -44,16 +45,19 @@ export class PlanService {
   }
 
   // recursively walk down the plan to compute various metrics
-  public processNode(node: any) {
+  public processNode(node: any, parallel?: boolean) {
     this.calculatePlannerEstimate(node);
 
+    // All children of Gather node will be considered parallel
+    const isParallel = parallel || node[NodeProp.NODE_TYPE].includes('Gather');
+
     _.each(node[NodeProp.PLANS], (val) => {
-      this.processNode(val);
+      this.processNode(val, isParallel);
     });
 
     // calculate actuals after processing child nodes so that actual duration
     // takes loops into account
-    this.calculateActuals(node);
+    this.calculateActuals(node, isParallel);
 
     _.each(node, (value, key) => {
       this.calculateMaximums(node, key, value);
@@ -94,11 +98,17 @@ export class PlanService {
   }
 
   // actual duration and actual cost are calculated by subtracting child values from the total
-  public calculateActuals(node: any) {
+  public calculateActuals(node: any, parallel: boolean) {
     if (node[NodeProp.ACTUAL_TOTAL_TIME]) {
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
-      node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
+      // unless the current node is parallel aware
+      // or has workers (which is the case for Sort nodes in parallel queries)
+      if (!parallel) {
+        node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
+      } else {
+        node[NodeProp.PARALLEL] = node[NodeProp.ACTUAL_LOOPS] > 1;
+      }
 
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);
     }
@@ -213,6 +223,18 @@ export class PlanService {
       // Remove any begining "
       line = line.replace(/^\s*"/, '');
 
+      const prefixRegex = '^(?<prefix>\\s*->\\s*|\\s*)';
+      const typeRegex = '(?<type>\\S.*?)\\s+';
+      // tslint:disable-next-line:max-line-length
+      const estimationRegex = '\\(cost=(?<estimated_startup_cost>\\d+\\.\\d+)\\.\\.(?<estimated_total_cost>\\d+\\.\\d+)\\s+rows=(?<estimated_rows>\\d+)\\s+width=(?<estimated_row_width>\\d+)\\)';
+      const nonCapturingGroupOpen = '(?:';
+      const nonCapturingGroupClose = ')';
+      const openParenthesisRegex = '\\(';
+      const closeParenthesisRegex = '\\)';
+      // tslint:disable-next-line:max-line-length
+      const actualRegex = '(?:actual\\stime=(?<actual_time_first>\\d+\\.\\d+)\\.\\.(?<actual_time_last>\\d+\\.\\d+)\\srows=(?<actual_rows>\\d+)\\sloops=(?<actual_loops>\\d+)|actual\\srows=(?<actual_rows_>\\d+)\\sloops=(?<actual_loops_>\\d+)|(?<never_executed>never\\s+executed))';
+      const optionalGroup = '?';
+
       /*
        * Groups
        * 1: prefix
@@ -229,8 +251,21 @@ export class PlanService {
        * 12: actual_loops_
        * 13: never_executed
        */
-      // tslint:disable-next-line:max-line-length
-      const nodeRegex = /^(?<prefix>\s*->\s*|\s*)(?<type>\S.*?)\s+\(cost=(?<estimated_startup_cost>\d+\.\d+)\.\.(?<estimated_total_cost>\d+\.\d+)\s+rows=(?<estimated_rows>\d+)\s+width=(?<estimated_row_width>\d+)\)\s*(?:\s+\((?:actual\stime=(?<actual_time_first>\d+\.\d+)\.\.(?<actual_time_last>\d+\.\d+)\srows=(?<actual_rows>\d+)\sloops=(?<actual_loops>\d+)|actual\srows=(?<actual_rows_>\d+)\sloops=(?<actual_loops_>\d+)|(?<never_executed>never\s+executed))\))?\s*$/gm;
+      const nodeRegex = new RegExp(
+        prefixRegex +
+        typeRegex +
+        estimationRegex +
+        '\\s*' +
+        nonCapturingGroupOpen +
+        '\\s+' +
+        openParenthesisRegex +
+        actualRegex +
+        closeParenthesisRegex +
+        nonCapturingGroupClose +
+        optionalGroup +
+        '\\s*$',
+        'gm',
+      );
       const nodeMatches = nodeRegex.exec(line);
 
       // tslint:disable-next-line:max-line-length
@@ -248,6 +283,30 @@ export class PlanService {
        */
       const triggerRegex = /^(\s*)Trigger\s+(.*):\s+time=(\d+\.\d+)\s+calls=(\d+)\s*$/g;
       const triggerMatches = triggerRegex.exec(line);
+
+      /*
+       * Groups
+       * 2: Worker number
+       * 3: actual_time_first
+       * 4: actual_time_last
+       * 5: actual_rows
+       * 6: actual_loops
+       * 7: actual_rows_
+       * 8: actual_loops_
+       * 9: never_executed
+       * 10: extra
+       */
+      const workerRegex = new RegExp(
+        /^(\s*)Worker\s+(\d+):\s+/.source +
+        nonCapturingGroupOpen +
+        actualRegex +
+        nonCapturingGroupClose +
+        optionalGroup +
+        '(?<extra>.*)' +
+        '\\s*$',
+        'g',
+      );
+      const workerMatches = workerRegex.exec(line);
 
       const extraRegex = /^(\s*)(\S.*\S)\s*$/g;
       const extraMatches = extraRegex.exec(line);
@@ -334,6 +393,38 @@ export class PlanService {
         };
         const prefixLength = prefix.length;
         elementsAtDepth.push([prefixLength, element]);
+      } else if (workerMatches) {
+        const prefix = workerMatches[1];
+        const workerNumber = parseInt(workerMatches[2], 0);
+        const previousElement = _.last(elementsAtDepth)![1];
+        if (!previousElement.node[NodeProp.WORKERS]) {
+          previousElement.node[NodeProp.WORKERS] = [];
+        }
+        let worker = this.getWorker(previousElement.node, workerNumber);
+        if (!worker) {
+          worker = new Worker(workerNumber);
+          previousElement.node[NodeProp.WORKERS].push(worker);
+        }
+        if (workerMatches[3] && workerMatches[4]) {
+          worker[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(workerMatches[3]);
+          worker[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(workerMatches[4]);
+          worker[NodeProp.ACTUAL_ROWS] = parseInt(workerMatches[5], 0);
+          worker[NodeProp.ACTUAL_LOOPS] = parseInt(workerMatches[6], 0);
+        }
+
+        if (this.parseSort(workerMatches[10], worker)) {
+          return;
+        }
+
+        // extra info
+        const info = workerMatches[10].split(/: (.+)/).filter((x) => x);
+        if (workerMatches[10]) {
+          if (!info[1]) {
+            return;
+          }
+          const property = _.startCase(info[0]);
+          worker[property] = info[1];
+        }
       } else if (triggerMatches) {
         const prefix = triggerMatches[1];
         // Remove elements from elementsAtDepth for deeper levels
@@ -345,14 +436,31 @@ export class PlanService {
           'Calls': triggerMatches[4],
         });
       } else if (extraMatches) {
+
         const prefix = extraMatches[1];
         // Remove elements from elementsAtDepth for deeper levels
         _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
 
-        const info = extraMatches[2].split(': ');
+        let element;
+        if (elementsAtDepth.length === 0) {
+          element = root;
+        } else {
+          element = _.last(elementsAtDepth)![1].node;
+        }
+
+        if (this.parseSort(extraMatches[2], element)) {
+          return;
+        }
+
+        if (this.parseBuffers(extraMatches[2], element)) {
+          return;
+        }
+
+        const info = extraMatches[2].split(/: (.+)/).filter((x) => x);
         if (!info[1]) {
           return;
         }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, '');
         // try to convert to number
@@ -361,17 +469,71 @@ export class PlanService {
         }
 
         const property = _.startCase(info[0]);
-        if (elementsAtDepth.length === 0) {
-          root[property] = value;
-        } else {
-          const previousElement = _.last(elementsAtDepth)![1];
-          previousElement.node[property] = value;
-        }
+        element[property] = value;
       }
     });
     if (!root.Plan) {
       throw new Error('Unable to parse plan');
     }
     return root;
+  }
+
+  private parseSort(text: string, el: Node | Worker): boolean {
+    /*
+     * Groups
+     * 2: Sort Method
+     * 3: Sort Space Type
+     * 4: Sort Space Used
+     */
+    const sortRegex = /^(\s*)Sort Method:\s+(?<method>.*)\s+(?<spacetype>Memory|Disk):\s+(?:(?<spaceused>\S*)kB)\s*$/g;
+    const sortMatches = sortRegex.exec(text);
+    if (sortMatches) {
+      el[NodeProp.SORT_METHOD] = sortMatches[2].trim();
+      el[NodeProp.SORT_SPACE_USED] = sortMatches[4];
+      el[NodeProp.SORT_SPACE_TYPE] = sortMatches[3];
+      return true;
+    }
+    return false;
+  }
+
+  private parseBuffers(text: string, el: Node | Worker): boolean {
+    /*
+     * Groups
+     */
+    const buffersRegex = /Buffers:\s+(.*)\s*$/g;
+    const buffersMatches = buffersRegex.exec(text);
+
+    /*
+     * Groups:
+     * 1: type
+     * 2: info
+     */
+    if (buffersMatches) {
+      _.each(buffersMatches[1].split(/,\s+/), (infos) => {
+        const bufferInfoRegex = /(shared|temp|local)\s+(.*)$/g;
+        const m = bufferInfoRegex.exec(infos);
+        if (m) {
+          const type = m[1];
+          _.each(m[2].split(/\s+/), (buffer) => {
+            this.parseBuffer(buffer, type, el);
+          });
+        }
+      });
+      return true;
+    }
+    return false;
+  }
+
+  private parseBuffer(text: string, type: string, el: Node|Worker): void {
+    const s = text.split(/=/);
+    const method = s[0];
+    const value = parseInt(s[1], 0);
+    el[_.map([type, method, 'blocks'], _.capitalize).join(' ')] = value;
+  }
+
+  private getWorker(node: Node, workerNumber: number): Worker|null {
+    return _.find(node[NodeProp.WORKERS], (worker) => {
+      return worker[WorkerProp.WORKER_NUMBER] === workerNumber;
+    });
   }
 }
