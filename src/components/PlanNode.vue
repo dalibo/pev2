@@ -58,7 +58,7 @@
         </div>
       </div>
 
-      <div v-if="!allWorkersLaunched && viewOptions.viewMode === viewModes.FULL" class="text-c-3" :title="getHelpMessage('workers planned not launched')">
+      <div v-if="!allWorkersLaunched && viewOptions.viewMode === viewModes.FULL" class="text-c-3 cursor-help" :title="getHelpMessage('workers planned not launched')">
         <i class="fa fa-exclamation-triangle"></i>&nbsp;
         <span>Not all workers launched</span>
       </div>

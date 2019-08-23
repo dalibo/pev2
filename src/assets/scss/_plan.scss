@@ -38,6 +38,10 @@ $connector-line: 2px solid darken($line-color, 10%);
   .text-muted {
     color: $gray !important;
   }
+
+  .cursor-help {
+    cursor: help;
+  }
 }
 
 .plan {
