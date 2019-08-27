@@ -10,10 +10,12 @@ export class PlanService {
 
   private static instance: PlanService;
 
-
   private maxRows: number | undefined;
   private maxCost: number | undefined;
   private maxDuration: number | undefined;
+  private maxSharedBlocks: number | undefined;
+  private maxTempBlocks: number | undefined;
+  private maxLocalBlocks: number | undefined;
 
   public createPlan(planName: string, planContent: any, planQuery: string): IPlan {
     // remove any extra white spaces in the middle of query
@@ -30,6 +32,7 @@ export class PlanService {
       content: planContent,
       query: planQuery,
       planStats: {},
+      nodeComponents: [],
     };
 
     this.analyzePlan(plan);
@@ -44,6 +47,9 @@ export class PlanService {
     plan.content.maxRows = this.maxRows;
     plan.content.maxCost = this.maxCost;
     plan.content.maxDuration = this.maxDuration;
+    plan.content.maxSharedBlocks = this.maxSharedBlocks;
+    plan.content.maxTempBlocks = this.maxTempBlocks;
+    plan.content.maxLocalBlocks = this.maxLocalBlocks;
   }
 
   // recursively walk down the plan to compute various metrics
@@ -91,6 +97,45 @@ export class PlanService {
     if (slowest) {
       slowest[NodeProp.SLOWEST_NODE] = true;
       this.maxDuration = slowest[NodeProp.ACTUAL_DURATION];
+    }
+
+    function sumShared(o: Node) {
+      return o[NodeProp.SHARED_HIT_BLOCKS] +
+        o[NodeProp.SHARED_READ_BLOCKS] +
+        o[NodeProp.SHARED_DIRTIED_BLOCKS] +
+        o[NodeProp.SHARED_WRITTEN_BLOCKS];
+    }
+    const highestShared = _.maxBy(flat, (o) => {
+      return sumShared(o);
+    });
+    if (highestShared) {
+      this.maxSharedBlocks = sumShared(highestShared);
+    }
+
+    function sumTemp(o: Node) {
+      return o[NodeProp.TEMP_HIT_BLOCKS] +
+        o[NodeProp.TEMP_READ_BLOCKS] +
+        o[NodeProp.TEMP_DIRTIED_BLOCKS] +
+        o[NodeProp.TEMP_WRITTEN_BLOCKS];
+    }
+    const highestTemp = _.maxBy(flat, (o) => {
+      return sumTemp(o);
+    });
+    if (highestTemp) {
+      this.maxTempBlocks = sumTemp(highestTemp);
+    }
+
+    function sumLocal(o: Node) {
+      return o[NodeProp.LOCAL_HIT_BLOCKS] +
+        o[NodeProp.LOCAL_READ_BLOCKS] +
+        o[NodeProp.LOCAL_DIRTIED_BLOCKS] +
+        o[NodeProp.LOCAL_WRITTEN_BLOCKS];
+    }
+    const highestLocal = _.maxBy(flat, (o) => {
+      return sumLocal(o);
+    });
+    if (highestLocal) {
+      this.maxLocalBlocks = sumLocal(highestLocal);
     }
   }
 
@@ -597,6 +642,10 @@ export class PlanService {
         const m = bufferInfoRegex.exec(infos);
         if (m) {
           const type = m[1];
+          // Initiate with default value
+          _.each(['hit', 'read', 'written', 'dirtied'], (method) => {
+            el[_.map([type, method, 'blocks'], _.capitalize).join(' ')] = 0;
+          });
           _.each(m[2].split(/\s+/), (buffer) => {
             this.parseBuffer(buffer, type, el);
           });

@@ -96,3 +96,20 @@ export function formatNodeProp(key: string, value: any, detail: boolean): string
   }
   return value;
 }
+
+export function durationClass(i: number): string {
+  let c;
+  if (i > 90) {
+    c = 4;
+  } else if (i > 40) {
+    c = 3;
+  } else if (i > 10) {
+    c = 2;
+  } else {
+    c = 1;
+  }
+  if (c) {
+    return 'c-' + c;
+  }
+  return '';
+}

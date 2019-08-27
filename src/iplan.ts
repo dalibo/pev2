@@ -1,3 +1,5 @@
+import PlanNode from '@/components/PlanNode.vue';
+
 export interface IPlan {
   id: string;
   name: string;
@@ -6,6 +8,7 @@ export interface IPlan {
   createdOn: Date;
   planStats: IPlanStats;
   formattedQuery?: string;
+  nodeComponents: PlanNode[];
 }
 
 export interface ITrigger {
@@ -21,5 +24,7 @@ export interface IPlanStats {
   maxRows?: number;
   maxCost?: number;
   maxDuration?: number;
+  maxSharedBlocks?: number;
+  maxTempBlocks?: number;
   triggers?: ITrigger[];
 }

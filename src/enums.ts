@@ -1,3 +1,29 @@
+export enum Metric {
+  time,
+  rows,
+  cost,
+  buffers,
+}
+
+export enum BuffersMetric {
+  shared,
+  temp,
+  local,
+}
+
+export enum BufferLocation {
+  shared = 'Shared',
+  temp = 'Temp',
+  local = 'Local',
+}
+
+export enum BufferType {
+  hit = 'Hit',
+  read = 'Read',
+  written = 'Written',
+  dirtied = 'Dirtied',
+}
+
 export class HighlightType {
     public static NONE: string = 'none';
     public static DURATION: string = 'duration';
@@ -50,6 +76,18 @@ export class NodeProp {
   public static WORKERS: string = 'Workers';
   public static WORKERS_PLANNED: string = 'Workers Planned';
   public static WORKERS_LAUNCHED: string = 'Workers Launched';
+  public static SHARED_HIT_BLOCKS: string = 'Shared Hit Blocks';
+  public static SHARED_READ_BLOCKS: string = 'Shared Read Blocks';
+  public static SHARED_DIRTIED_BLOCKS: string = 'Shared Dirtied Blocks';
+  public static SHARED_WRITTEN_BLOCKS: string = 'Shared Written Blocks';
+  public static TEMP_HIT_BLOCKS: string = 'Temp Hit Blocks';
+  public static TEMP_READ_BLOCKS: string = 'Temp Read Blocks';
+  public static TEMP_DIRTIED_BLOCKS: string = 'Temp Dirtied Blocks';
+  public static TEMP_WRITTEN_BLOCKS: string = 'Temp Written Blocks';
+  public static LOCAL_HIT_BLOCKS: string = 'Local Hit Blocks';
+  public static LOCAL_READ_BLOCKS: string = 'Local Read Blocks';
+  public static LOCAL_DIRTIED_BLOCKS: string = 'Local Dirtied Blocks';
+  public static LOCAL_WRITTEN_BLOCKS: string = 'Local Written Blocks';
 
   // computed by pev
   public static COSTLIEST_NODE: string = '*Costiest Node (by cost)';
