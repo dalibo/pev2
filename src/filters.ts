@@ -35,7 +35,7 @@ export function rows(value: number): string {
 }
 
 export function factor(value: number): string {
-  const f: string = value.toPrecision(2).toLocaleString();
+  const f: string = parseFloat(value.toPrecision(2)).toLocaleString();
   const compiled = _.template('${f}<span class="text-muted">&times;</span>');
   return compiled({f});
 }
