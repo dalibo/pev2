@@ -38,7 +38,7 @@
     "moment-locales-webpack-plugin": "^1.0.7",
     "node-sass": "^4.12.0",
     "prettier": "1.18.2",
-    "sass-loader": "^7.1.0",
+    "sass-loader": "^8.0.0",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.3",
     "vue-jest": "^3.0.4",
