@@ -38,7 +38,6 @@ Execution Time: 1626.725 ms
   const plan: IPlan = planService.createPlan('', r, '');
   it('doesn\'t not multiply by number of loops', () => {
     const aggregateNode = plan.content.Plan.Plans[0].Plans[0].Plans[0];
-    expect(aggregateNode['* Parallel']).toBeTruthy();
     expect(1.79 - aggregateNode['*Actual Duration'] < 0.1).toBeTruthy();
   });
 });
