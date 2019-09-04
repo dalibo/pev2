@@ -497,8 +497,13 @@ export class PlanService {
           'Calls': triggerMatches[4],
         });
       } else if (extraMatches) {
-
         const prefix = extraMatches[1];
+
+        const info = extraMatches[2].split(/: (.+)/).filter((x) => x);
+        if (!info[1]) {
+          return;
+        }
+
         // Remove elements from elementsAtDepth for deeper levels
         _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
 
@@ -514,11 +519,6 @@ export class PlanService {
         }
 
         if (this.parseBuffers(extraMatches[2], element)) {
-          return;
-        }
-
-        const info = extraMatches[2].split(/: (.+)/).filter((x) => x);
-        if (!info[1]) {
           return;
         }
 
