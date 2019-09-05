@@ -284,18 +284,22 @@ export class PlanService {
       // Remove any begining "
       line = line.replace(/^\s*"/, '');
 
-      const prefixRegex = '^(?<prefix>\\s*->\\s*|\\s*)';
-      const typeRegex = '(?<type>\\S.*?)\\s+';
+      const prefixRegex = '^(\\s*->\\s*|\\s*)';
+      const typeRegex = '(\\S.*?)\\s+';
       // tslint:disable-next-line:max-line-length
-      const estimationRegex = '\\(cost=(?<estimated_startup_cost>\\d+\\.\\d+)\\.\\.(?<estimated_total_cost>\\d+\\.\\d+)\\s+rows=(?<estimated_rows>\\d+)\\s+width=(?<estimated_row_width>\\d+)\\)';
+      const estimationRegex = '\\(cost=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\s+rows=(\\d+)\\s+width=(\\d+)\\)';
       const nonCapturingGroupOpen = '(?:';
       const nonCapturingGroupClose = ')';
       const openParenthesisRegex = '\\(';
       const closeParenthesisRegex = '\\)';
       // tslint:disable-next-line:max-line-length
-      const actualRegex = '(?:actual\\stime=(?<actual_time_first>\\d+\\.\\d+)\\.\\.(?<actual_time_last>\\d+\\.\\d+)\\srows=(?<actual_rows>\\d+)\\sloops=(?<actual_loops>\\d+)|actual\\srows=(?<actual_rows_>\\d+)\\sloops=(?<actual_loops_>\\d+)|(?<never_executed>never\\s+executed))';
+      const actualRegex = '(?:actual\\stime=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\srows=(\\d+)\\sloops=(\\d+)|actual\\srows=(\\d+)\\sloops=(\\d+)|(never\\s+executed))';
       const optionalGroup = '?';
 
+      const a = new RegExp(
+        prefixRegex,
+        'gm',
+      );
       /*
        * Groups
        * 1: prefix
@@ -363,7 +367,7 @@ export class PlanService {
         actualRegex +
         nonCapturingGroupClose +
         optionalGroup +
-        '(?<extra>.*)' +
+        '(.*)' +
         '\\s*$',
         'g',
       );
@@ -546,7 +550,7 @@ export class PlanService {
      * 3: Sort Space Type
      * 4: Sort Space Used
      */
-    const sortRegex = /^(\s*)Sort Method:\s+(?<method>.*)\s+(?<spacetype>Memory|Disk):\s+(?:(?<spaceused>\S*)kB)\s*$/g;
+    const sortRegex = /^(\s*)Sort Method:\s+(.*)\s+(Memory|Disk):\s+(?:(\S*)kB)\s*$/g;
     const sortMatches = sortRegex.exec(text);
     if (sortMatches) {
       el[NodeProp.SORT_METHOD] = sortMatches[2].trim();
