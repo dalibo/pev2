@@ -1,9 +1,9 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION], 'parallel': hasWorkers}]">
-      <div class="workers text-muted py-0 px-1" v-if="hasWorkers">
-        <div v-for="(worker, index) in node[nodeProps.ACTUAL_LOOPS] - 1" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;z-index: -' + index + ';'">
+    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION], 'parallel': workersCount}]">
+      <div class="workers text-muted py-0 px-1" v-if="workersCount">
+        <div v-for="(worker, index) in workersCount" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;z-index: -' + index + ';'">
         </div>
       </div>
       <div class="collapse-handle" v-if="hasChildren">
@@ -63,9 +63,9 @@
         <span>Not all workers launched</span>
       </div>
 
-      <div v-if="hasWorkers && viewOptions.viewMode === viewModes.FULL">
+      <div v-if="workersCount && viewOptions.viewMode === viewModes.FULL">
         <span>Workers: </span>
-        <span class="font-weight-bold">{{ node[nodeProps.ACTUAL_LOOPS] - 1 }}</span>
+        <span class="font-weight-bold">{{ workersCount }}</span>
       </div>
 
       <div class="clearfix"></div>
@@ -117,8 +117,8 @@
             <td v-html="$options.filters.formatNodeProp(prop.key, prop.value, true)"></td>
           </tr>
         </table>
-        <div v-if="hasWorkers">
-          <div class="accordion" :id="'accordion-' + _uid" v-if="node[nodeProps.WORKERS]">
+        <div v-if="workersCount">
+          <div class="accordion" :id="'accordion-' + _uid" v-if="lodash.isArray(node[nodeProps.WORKERS])">
             <template v-for="(worker, index) in node[nodeProps.WORKERS]">
               <div class="card">
                 <div class="card-header p-0">
@@ -447,8 +447,11 @@ export default class PlanNode extends Vue {
     return !!this.plans;
   }
 
-  private get hasWorkers(): boolean {
-    return this.node[NodeProp.PARALLEL];
+  private get workersCount(): number {
+    if (_.isArray(this.node[NodeProp.WORKERS])) {
+      return this.node[NodeProp.WORKERS].length;
+    }
+    return this.node[NodeProp.WORKERS];
   }
 
   private get isParallelAware(): boolean {

@@ -46,19 +46,21 @@ export class PlanService {
   }
 
   // recursively walk down the plan to compute various metrics
-  public processNode(node: any, parallel?: boolean) {
+  public processNode(node: any) {
     this.calculatePlannerEstimate(node);
 
-    // All children of Gather node will be considered parallel
-    const isParallel = parallel || node[NodeProp.NODE_TYPE].includes('Gather');
-
-    _.each(node[NodeProp.PLANS], (val) => {
-      this.processNode(val, isParallel);
+    _.each(node[NodeProp.PLANS], (child) => {
+      // All children of Gather node will be considered parallel
+      // Pass the number of workers launched to children
+      if (!child[NodeProp.WORKERS]) {
+        child[NodeProp.WORKERS] = node[NodeProp.WORKERS_LAUNCHED] || node[NodeProp.WORKERS];
+      }
+      this.processNode(child);
     });
 
     // calculate actuals after processing child nodes so that actual duration
     // takes loops into account
-    this.calculateActuals(node, isParallel);
+    this.calculateActuals(node);
 
     _.each(node, (value, key) => {
       this.calculateMaximums(node, key, value);
@@ -99,16 +101,13 @@ export class PlanService {
   }
 
   // actual duration and actual cost are calculated by subtracting child values from the total
-  public calculateActuals(node: any, parallel: boolean) {
+  public calculateActuals(node: any) {
     if (node[NodeProp.ACTUAL_TOTAL_TIME]) {
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
-      // unless the current node is parallel aware
-      // or has workers (which is the case for Sort nodes in parallel queries)
-      if (!parallel) {
+      // unless the current node is a child of a gather node
+      if (!node[NodeProp.WORKERS]) {
         node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
-      } else {
-        node[NodeProp.PARALLEL] = node[NodeProp.ACTUAL_LOOPS] > 1;
       }
 
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);
