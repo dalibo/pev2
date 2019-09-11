@@ -8,6 +8,9 @@ module.exports = {
       template: "example/index.html"
     }
   },
+  css: {
+    extract: false
+  },
   configureWebpack: {
     plugins: [
       // To strip all locales except “en”
