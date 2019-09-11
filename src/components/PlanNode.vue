@@ -1,7 +1,7 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': !node[nodeProps.ACTUAL_DURATION], 'parallel': workersCount}]">
+    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': isNeverExecuted, 'parallel': workersCount}]">
       <div class="workers text-muted py-0 px-1" v-if="workersCount">
         <div v-for="(worker, index) in workersCount" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;z-index: -' + index + ';'">
         </div>
@@ -14,7 +14,7 @@
           {{ getNodeName() }}
         </h4>
         <span v-if="viewOptions.viewMode === viewModes.FULL">
-          <span class="node-duration" v-if="node[nodeProps.ACTUAL_DURATION]">
+          <span class="node-duration" v-if="!isNeverExecuted">
             <span :class="'p-0 px-1 rounded alert ' + durationClass"
                   v-html="$options.filters.duration(node[nodeProps.ACTUAL_DURATION])">
             </span>
@@ -468,6 +468,10 @@ export default class PlanNode extends Vue {
 
   private shouldShowProp(key: string, value: any): boolean {
     return value || nodePropTypes[key] === PropType.increment;
+  }
+
+  private get isNeverExecuted(): boolean {
+    return this.plan.planStats.executionTime && !this.node[NodeProp.ACTUAL_LOOPS];
   }
 }
 </script>
