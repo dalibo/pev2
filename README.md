@@ -50,7 +50,7 @@ You can also run `vue ui`
 npm run build
 ```
 
-Application is built in the `dist` directory. This application is standalone
+Application is built in the `dist-app` directory. This application is standalone
 and doesn't require a backend.
 
 You can run this simple web app using any web server.
@@ -86,7 +86,7 @@ used in an other application.
 npm run build-lib
 ```
 
-Library is built in the `dist-lib` directory.
+Library is built in the `dist` directory.
 
 ### Usage
 

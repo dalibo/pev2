@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build-lib": "vue-cli-service build --target lib --dest dist-lib --name pev2 ./src/components/Plan.vue",
+    "build": "vue-cli-service build --target lib --name pev2 ./src/components/Plan.vue",
+    "build-app": "vue-cli-service build --dest dist-app",
     "test:unit": "jest"
   },
   "dependencies": {
