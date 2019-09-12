@@ -266,7 +266,7 @@ export default class PlanNode extends Vue {
   private getNodeName(): string {
     let nodeName = this.isParallelAware ? 'Parallel ' : '';
     nodeName += this.node[NodeProp.NODE_TYPE];
-    if ((this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) && !this.showDetails) {
+    if (this.viewOptions.viewMode === ViewMode.DOT && !this.showDetails) {
       return nodeName.replace(/[^A-Z]/g, '').toUpperCase();
     }
     return nodeName.toUpperCase();
