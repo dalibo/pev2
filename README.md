@@ -4,6 +4,8 @@
 
 A VueJS component to show a graphical vizualization of a PostgreSQL execution plan.
 
+See [Demo][demo].
+
 ## Disclaimer
 
 This project is a rewrite of the excellent [Postgres Explain Visualizer
@@ -75,8 +77,9 @@ add the following in you header (or load them with your favorite bundler).
 />
 ```
 
-For a complete example, see (this codesandbox)[codesandbox].
+For a complete example, see [this codesandbox][codesandbox].
 
 [pev]: https://github.com/AlexTatiyants/pev
 [atatiyan]: https://github.com/AlexTatiyants
 [codesandbox]: https://codesandbox.io/s/pev2-ry2dd
+[demo]: https://dalibo.github.io/pev2
