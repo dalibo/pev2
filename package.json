@@ -1,19 +1,27 @@
 {
   "name": "pev2",
-  "version": "0.1.0",
-  "private": true,
+  "keywords": [
+    "PostgreSQL",
+    "vuejs",
+    "SQL",
+    "plan"
+  ],
+  "version": "0.1.4",
+  "main": "./dist/pev2.common.js",
+  "files": [
+    "dist/*"
+  ],
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build-lib": "vue-cli-service build --target lib --dest dist-lib --name pev2 ./src/components/Plan.vue",
+    "build": "vue-cli-service build --target lib --name pev2 ./src/components/Plan.vue",
+    "build-app": "vue-cli-service build --dest dist-app",
     "test:unit": "jest"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/highlight.js": "^9.12.3",
     "@types/lodash": "^4.14.123",
-    "axios": "^0.19.0",
     "clarinet": "^0.12.3",
     "core-js": "^3.1.4",
     "highlight.js": "^9.15.6",
@@ -22,8 +30,7 @@
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-dragscroll": "^1.8.3",
-    "vue-property-decorator": "^8.1.0",
-    "vue-router": "^3.0.6"
+    "vue-property-decorator": "^8.1.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",
@@ -31,6 +38,7 @@
     "@vue/cli-plugin-typescript": "^3.6.0",
     "@vue/cli-service": "^3.6.0",
     "@vue/test-utils": "^1.0.0-beta.29",
+    "axios": "^0.19.0",
     "babel-core": "^6.26.3",
     "husky": "^3.0.2",
     "jest": "^24.8.0",
@@ -42,6 +50,7 @@
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.3",
     "vue-jest": "^3.0.4",
+    "vue-router": "^3.0.6",
     "vue-template-compiler": "^2.5.21"
   },
   "gitHooks": {

@@ -4,10 +4,10 @@ node_js:
 cache: npm
 script:
   - npm run test:unit
-  - npm run build
+  - npm run build-app
 deploy:
   provider: pages
-  local_dir: dist
+  local_dir: dist-app
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
 
