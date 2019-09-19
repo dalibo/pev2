@@ -6,15 +6,11 @@ $bg-color: #fff;
   display: inline-block;
   transition: all 0.1s;
   position: relative;
-  padding: $padding-base $padding-lg;
-  background-color: $bg-color;
   font-size: $font-size-sm;
-  border: 1px solid $line-color;
   margin-bottom: 4px;
-  border-radius: $border-radius-base;
   overflow-wrap: break-word;
   word-wrap: break-word;
-  box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
+  z-index: 0;
 
   width: 400px;
   .twod & {
@@ -25,6 +21,15 @@ $bg-color: #fff;
   }
   .twod.plan-container.dot & {
     width: $compact-width;
+  }
+
+  .plan-node-body {
+    border: 1px solid $line-color;
+    border-radius: $border-radius-base;
+    padding: $padding-base $padding-lg;
+    background-color: $bg-color;
+    background-color: white;
+    box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
   }
 
   header {
@@ -59,8 +64,8 @@ $bg-color: #fff;
 
   //hovers
   &:hover {
-    border-color: $highlight-color;
-    & .workers > div {
+    .plan-node-body,
+    .workers > div {
       border-color: $highlight-color;
     }
   }
@@ -137,7 +142,6 @@ $bg-color: #fff;
     right: 0;
     display: none;
     background-color: rgba(255, 255, 255, 0.7);
-    z-index: 2;
   }
 
   &:hover .collapse-handle {
@@ -175,10 +179,10 @@ $bg-color: #fff;
   .workers {
     position: absolute;
     z-index: -1;
-    right: 0;
-    top: 0;
-    width: calc(100% + 2px);
-    height: calc(100% + 2px);
+    left: -1px;
+    top: 1px;
+    width: 100%;
+    height: 100%;
     cursor: pointer;
 
     > div {
@@ -236,16 +240,20 @@ $bg-color: #fff;
 
 .detailed {
   width: 400px !important;
-  padding: $padding-base $padding-lg !important;
 }
 
 ul.node-children.collapsed {
-  & .plan-node {
+  .plan-node,
+  .plan-node-body {
     width: $compact-width !important;
-    height: 0;
+  }
+  .plan-node {
     display: block;
-    * {
-      display: none;
+    .plan-node-body {
+      height: 0;
+      * {
+        display: none;
+      }
     }
   }
 
