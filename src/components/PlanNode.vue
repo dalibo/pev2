@@ -3,154 +3,156 @@
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
     <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': isNeverExecuted, 'parallel': workersCount}]">
       <div class="workers text-muted py-0 px-1" v-if="workersCount">
-        <div v-for="(worker, index) in workersCount" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;z-index: -' + index + ';'">
+        <div v-for="index in workersCountReversed" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;'">
         </div>
       </div>
       <div class="collapse-handle" v-if="hasChildren">
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
-      <header title="view node details" v-on:click.stop="showDetails = !showDetails">
-        <h4>
-          {{ getNodeName() }}
-        </h4>
-        <span v-if="viewOptions.viewMode === viewModes.FULL">
-          <span class="node-duration" v-if="!isNeverExecuted">
-            <span :class="'p-0 px-1 rounded alert ' + durationClass"
-                  v-html="$options.filters.duration(node[nodeProps.ACTUAL_DURATION])">
+      <div class="plan-node-body">
+        <header title="view node details" v-on:click.stop="showDetails = !showDetails">
+          <h4>
+            {{ getNodeName() }}
+          </h4>
+          <span v-if="viewOptions.viewMode === viewModes.FULL">
+            <span class="node-duration" v-if="!isNeverExecuted">
+              <span :class="'p-0 px-1 rounded alert ' + durationClass"
+                v-html="$options.filters.duration(node[nodeProps.ACTUAL_DURATION])">
+              </span>
+              <template v-if="executionTimePercent !== Infinity">
+                |
+                <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
+              </template>
             </span>
-            <template v-if="executionTimePercent !== Infinity">
-              |
-              <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
-            </template>
+            <span class="node-duration text-warning" v-else>
+              Never executed
+            </span>
           </span>
-          <span class="node-duration text-warning" v-else>
-            Never executed
-          </span>
-        </span>
-      </header>
+        </header>
 
-      <button v-if="plan.query && viewOptions.viewMode === viewModes.FULL" title="view corresponding query"
-        class="btn btn-sm pull-right py-0 btn-link" v-on:click="showQuery = !showQuery">
-        <small>
-          <i class="fa fa-database"></i>
-        </small>
-      </button>
-
-      <div v-if="viewOptions.viewMode === viewModes.FULL" class="font-italic text-left">
-        <div v-if="node[nodeProps.RELATION_NAME]">
-          <span class="text-muted">on </span>
-          <span v-if="node[nodeProps.SCHEMA]">{{node[nodeProps.SCHEMA]}}.</span>{{node[nodeProps.RELATION_NAME]}}
-          <span v-if="node[nodeProps.ALIAS]"> ({{node[nodeProps.ALIAS]}})</span>
-        </div>
-
-        <div v-if="node[nodeProps.GROUP_KEY]">
-          <span class="text-muted">by</span> {{node[nodeProps.GROUP_KEY] | keysToString | truncate(250, '…') }}</div>
-        <div v-if="node[nodeProps.SORT_KEY]">
-          <span class="text-muted">by</span> {{node[nodeProps.SORT_KEY] | keysToString | truncate(250, '…') }}</div>
-        <div v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] | keysToString | truncate(250, '…') }}
-          <span class="text-muted">join</span></div>
-        <div v-if="node[nodeProps.INDEX_NAME]"><span class="text-muted">
-            using</span> {{node[nodeProps.INDEX_NAME] | keysToString }}</div>
-        <div v-if="node[nodeProps.HASH_CONDITION]"><span class="text-muted">
-            on</span> {{node[nodeProps.HASH_CONDITION] | keysToString }}</div>
-        <div v-if="node[nodeProps.CTE_NAME]">
-          <span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
-        </div>
-      </div>
-
-      <div v-if="!allWorkersLaunched && viewOptions.viewMode === viewModes.FULL" class="text-c-3 cursor-help" :title="getHelpMessage('workers planned not launched')">
-        <i class="fa fa-exclamation-triangle"></i>&nbsp;
-        <span>Not all workers launched</span>
-      </div>
-
-      <div v-if="workersCount && viewOptions.viewMode === viewModes.FULL">
-        <span>Workers: </span>
-        <span class="font-weight-bold">{{ workersCount }}</span>
-      </div>
-
-      <div class="clearfix"></div>
-
-      <div v-if="showQuery" class="plan-query-container">
-        <button class="btn btn-close pull-right" v-on:click="showQuery = false">
-          <i class="fa fa-close"></i>
+        <button v-if="plan.query && viewOptions.viewMode === viewModes.FULL" title="view corresponding query"
+          class="btn btn-sm pull-right py-0 btn-link" v-on:click="showQuery = !showQuery">
+          <small>
+            <i class="fa fa-database"></i>
+          </small>
         </button>
-        <h3>query</h3>
-        <pre class="plan-query-text"><code v-html="getFormattedQuery()"></code></pre>
-      </div>
 
-      <div v-if="viewOptions.highlightType !== highlightTypes.NONE && highlightValue !== null">
-        <div class="progress node-bar-container" style="height: 5px;">
-          <div class="progress-bar" role="progressbar" v-bind:style="{ width: barWidth + '%', 'background-color': getBarColor(barWidth)}" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        <div v-if="viewOptions.viewMode === viewModes.FULL" class="font-italic text-left">
+          <div v-if="node[nodeProps.RELATION_NAME]">
+            <span class="text-muted">on </span>
+            <span v-if="node[nodeProps.SCHEMA]">{{node[nodeProps.SCHEMA]}}.</span>{{node[nodeProps.RELATION_NAME]}}
+            <span v-if="node[nodeProps.ALIAS]"> ({{node[nodeProps.ALIAS]}})</span>
+          </div>
+
+          <div v-if="node[nodeProps.GROUP_KEY]">
+            <span class="text-muted">by</span> {{node[nodeProps.GROUP_KEY] | keysToString | truncate(250, '…') }}</div>
+          <div v-if="node[nodeProps.SORT_KEY]">
+            <span class="text-muted">by</span> {{node[nodeProps.SORT_KEY] | keysToString | truncate(250, '…') }}</div>
+          <div v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] | keysToString | truncate(250, '…') }}
+            <span class="text-muted">join</span></div>
+          <div v-if="node[nodeProps.INDEX_NAME]"><span class="text-muted">
+              using</span> {{node[nodeProps.INDEX_NAME] | keysToString }}</div>
+          <div v-if="node[nodeProps.HASH_CONDITION]"><span class="text-muted">
+              on</span> {{node[nodeProps.HASH_CONDITION] | keysToString }}</div>
+          <div v-if="node[nodeProps.CTE_NAME]">
+            <span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
+          </div>
         </div>
-        <span class="node-bar-label" v-if="shouldShowNodeBarLabel()">
-          <span class="text-muted">{{viewOptions.highlightType}}:</span>&nbsp;
-          <span v-html="highlightValue"></span>
-        </span>
-      </div>
 
-      <div v-if="shouldShowCost">
-        <span>
-          Cost:
-          <span :class="'p-0 px-1 alert ' + costClass">{{node[nodeProps.ACTUAL_COST] | cost}}</span>
-          |
-          <span>{{ costPercent }}<span class="text-muted">%</span></span>
-          </span>
-      </div>
-
-      <div v-if="shouldShowPlannerEstimate() && plannerRowEstimateDirection != estimateDirections.none && plannerRowEstimateValue">
-        <span v-if="plannerRowEstimateDirection === estimateDirections.over"><strong><i class="fa fa-arrow-up"></i> over</strong> estimated rows</span>
-        <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong><i class="fa fa-arrow-down"></i> under</strong> estimated rows</span>
-        <span v-if="plannerRowEstimateValue != Infinity"> by
-        <span :class="'p-0 px-1 alert ' + estimationClass">
-          <strong v-html="$options.filters.factor(plannerRowEstimateValue)"></strong>
-          </span>
-        </span>
-      </div>
-
-      <div v-if="showDetails">
-        <div v-if="getNodeTypeDescription()" class="node-description">
-          <span class="node-type">{{node[nodeProps.NODE_TYPE]}} Node</span>&nbsp;<span v-html="getNodeTypeDescription()"></span>
+        <div v-if="!allWorkersLaunched && viewOptions.viewMode === viewModes.FULL" class="text-c-3 cursor-help" :title="getHelpMessage('workers planned not launched')">
+          <i class="fa fa-exclamation-triangle"></i>&nbsp;
+          <span>Not all workers launched</span>
         </div>
-        <table class="table table-sm prop-list">
-          <tr v-for="prop in props" v-if="shouldShowProp(prop.key, prop.value)">
-            <td width="40%">{{prop.key}}</td>
-            <td v-html="$options.filters.formatNodeProp(prop.key, prop.value, true)"></td>
-          </tr>
-        </table>
-        <div v-if="workersCount">
-          <div class="accordion" :id="'accordion-' + _uid" v-if="lodash.isArray(node[nodeProps.WORKERS])">
-            <template v-for="(worker, index) in node[nodeProps.WORKERS]">
-              <div class="card">
-                <div class="card-header p-0">
-                  <button class="btn btn-link btn-sm text-secondary" type="button" data-toggle="collapse" :data-target="'#collapse-' + _uid + '-' + index" style="font-size: inherit;">
-                    <i class="fa fa-chevron-right fa-fw"></i>
-                    <i class="fa fa-chevron-down fa-fw"></i>
+
+        <div v-if="workersCount && viewOptions.viewMode === viewModes.FULL">
+          <span>Workers: </span>
+          <span class="font-weight-bold">{{ workersCount }}</span>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div v-if="showQuery" class="plan-query-container">
+          <button class="btn btn-close pull-right" v-on:click="showQuery = false">
+            <i class="fa fa-close"></i>
+          </button>
+          <h3>query</h3>
+          <pre class="plan-query-text"><code v-html="getFormattedQuery()"></code></pre>
+        </div>
+
+        <div v-if="viewOptions.highlightType !== highlightTypes.NONE && highlightValue !== null">
+          <div class="progress node-bar-container" style="height: 5px;">
+            <div class="progress-bar" role="progressbar" v-bind:style="{ width: barWidth + '%', 'background-color': getBarColor(barWidth)}" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <span class="node-bar-label" v-if="shouldShowNodeBarLabel()">
+            <span class="text-muted">{{viewOptions.highlightType}}:</span>&nbsp;
+            <span v-html="highlightValue"></span>
+          </span>
+        </div>
+
+        <div v-if="shouldShowCost">
+          <span>
+            Cost:
+            <span :class="'p-0 px-1 alert ' + costClass">{{node[nodeProps.ACTUAL_COST] | cost}}</span>
+            |
+            <span>{{ costPercent }}<span class="text-muted">%</span></span>
+          </span>
+        </div>
+
+        <div v-if="shouldShowPlannerEstimate() && plannerRowEstimateDirection != estimateDirections.none && plannerRowEstimateValue">
+          <span v-if="plannerRowEstimateDirection === estimateDirections.over"><strong><i class="fa fa-arrow-up"></i> over</strong> estimated rows</span>
+          <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong><i class="fa fa-arrow-down"></i> under</strong> estimated rows</span>
+          <span v-if="plannerRowEstimateValue != Infinity"> by
+            <span :class="'p-0 px-1 alert ' + estimationClass">
+              <strong v-html="$options.filters.factor(plannerRowEstimateValue)"></strong>
+            </span>
+          </span>
+        </div>
+
+        <div v-if="showDetails">
+          <div v-if="getNodeTypeDescription()" class="node-description">
+            <span class="node-type">{{node[nodeProps.NODE_TYPE]}} Node</span>&nbsp;<span v-html="getNodeTypeDescription()"></span>
+          </div>
+          <table class="table table-sm prop-list">
+            <tr v-for="prop in props" v-if="shouldShowProp(prop.key, prop.value)">
+              <td width="40%">{{prop.key}}</td>
+              <td v-html="$options.filters.formatNodeProp(prop.key, prop.value, true)"></td>
+            </tr>
+          </table>
+          <div v-if="workersCount">
+            <div class="accordion" :id="'accordion-' + _uid" v-if="lodash.isArray(node[nodeProps.WORKERS])">
+              <template v-for="(worker, index) in node[nodeProps.WORKERS]">
+                <div class="card">
+                  <div class="card-header p-0">
+                    <button class="btn btn-link btn-sm text-secondary" type="button" data-toggle="collapse" :data-target="'#collapse-' + _uid + '-' + index" style="font-size: inherit;">
+                      <i class="fa fa-chevron-right fa-fw"></i>
+                      <i class="fa fa-chevron-down fa-fw"></i>
                       Worker {{ worker[workerProps.WORKER_NUMBER] }}
-                  </button>
-                </div>
+                    </button>
+                  </div>
 
-                <div :id="'collapse-' + _uid + '-' + index" class="collapse" :data-parent="'#accordion-' + _uid">
-                  <div class="card-body p-0">
-                    <table class="table table-sm prop-list mb-0">
-                      <tr v-for="(value, key) in worker" v-if="shouldShowProp(key, value)">
-                        <td width="40%">{{key}}</td>
-                        <td v-html="$options.filters.formatNodeProp(key, value, true)"></td>
-                      </tr>
-                    </table>
+                  <div :id="'collapse-' + _uid + '-' + index" class="collapse" :data-parent="'#accordion-' + _uid">
+                    <div class="card-body p-0">
+                      <table class="table table-sm prop-list mb-0">
+                        <tr v-for="(value, key) in worker" v-if="shouldShowProp(key, value)">
+                          <td width="40%">{{key}}</td>
+                          <td v-html="$options.filters.formatNodeProp(key, value, true)"></td>
+                        </tr>
+                      </table>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
+              </template>
+            </div>
+            <div v-else class="font-italic">
+              <strong>Workers</strong>: Detailed information not available.
+              Consider using <code>EXPLAIN VERBOSE</code>.
+            </div>
           </div>
-          <div v-else class="font-italic">
-            <strong>Workers</strong>: Detailed information not available.
-            Consider using <code>EXPLAIN VERBOSE</code>.
-          </div>
+
+          <div class="text-muted text-right"><em>* Calculated value</em></div>
         </div>
 
-        <div class="text-muted text-right"><em>* Calculated value</em></div>
       </div>
-
     </div>
     <ul v-if="plans" :class="['node-children', {'collapsed': collapsed}]">
       <li v-for="subnode in plans">
@@ -452,6 +454,10 @@ export default class PlanNode extends Vue {
       return this.node[NodeProp.WORKERS].length;
     }
     return this.node[NodeProp.WORKERS];
+  }
+
+  private get workersCountReversed(): number[] {
+    return [...Array(this.workersCount).keys()].slice().reverse();
   }
 
   private get isParallelAware(): boolean {
