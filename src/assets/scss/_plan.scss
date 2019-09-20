@@ -191,7 +191,6 @@ $connector-line: 2px solid darken($line-color, 10%);
     border-radius: $border-radius-base;
     background-color: lighten($gray-lightest, 2);
     box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
-    overflow: hidden;
     > h4 {
       font-size: $font-size-sm;
       margin-top: .5rem;
