@@ -102,7 +102,7 @@ export class PlanService {
 
   // actual duration and actual cost are calculated by subtracting child values from the total
   public calculateActuals(node: any) {
-    if (node[NodeProp.ACTUAL_TOTAL_TIME]) {
+    if (!_.isUndefined(node[NodeProp.ACTUAL_TOTAL_TIME])) {
       node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
       // unless the current node is a child of a gather node
