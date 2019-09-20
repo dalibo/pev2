@@ -153,7 +153,7 @@ $bg-color: #fff;
     display: block;
   }
 
-  &.never-executed {
+  &.never-executed .plan-node-body {
     $color: $gray-lightest;
     $angle: 45deg;
     $progress-height: 1rem !default;
