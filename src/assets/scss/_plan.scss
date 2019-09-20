@@ -234,56 +234,6 @@ $connector-line: 2px solid darken($line-color, 10%);
 
 .plan-stats {
   font-size: $font-size-base;
-  width: 800px;
-  position: relative;
-
-  div,
-  button {
-    margin: 0 $padding-sm;
-  }
-  button {
-    $bg-color: #fff;
-    border-radius: $border-radius-base;
-    border: 1px solid $line-color;
-    background-color: #fff;
-    position: relative;
-
-    &:not([disabled]):hover {
-      background-color: darken($bg-color, 5%);
-
-      span {
-        opacity: 0.3;
-      }
-
-      .show {
-        opacity: 1;
-      }
-    }
-
-    .show {
-      opacity: 0;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
-  }
-
-  .stat-value {
-    display: block;
-    text-align: center;
-    font-size: $font-size-lg;
-  }
-
-  .stat-label {
-    display: block;
-    text-align: center;
-    font-size: $font-size-sm;
-  }
 
   .plan-triggers-container {
     border: 1px solid $line-color;
