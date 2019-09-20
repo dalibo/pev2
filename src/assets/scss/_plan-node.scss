@@ -10,7 +10,6 @@ $bg-color: #fff;
   margin-bottom: 4px;
   overflow-wrap: break-word;
   word-wrap: break-word;
-  z-index: 0;
 
   width: 400px;
   .twod & {
@@ -24,12 +23,17 @@ $bg-color: #fff;
   }
 
   .plan-node-body {
+    position: relative;
     border: 1px solid $line-color;
     border-radius: $border-radius-base;
     padding: $padding-base $padding-lg;
     background-color: $bg-color;
     background-color: white;
     box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
+  }
+
+  &.parallel .plan-node-body {
+    box-shadow: none;
   }
 
   header {
@@ -100,7 +104,7 @@ $bg-color: #fff;
     box-shadow: 0px 0px 10px 2px rgba(0,0,0,0.3);
     border-radius: $border-radius-base;
     margin-bottom: $padding-xl;
-    z-index: 6;
+    z-index: 1;
     left: 0;
 
     pre {
@@ -138,6 +142,7 @@ $bg-color: #fff;
   .collapse-handle {
     cursor: pointer;
     position: absolute;
+    z-index: 1;
     bottom: 0;
     right: 0;
     display: none;
@@ -172,13 +177,8 @@ $bg-color: #fff;
     animation: highlight 1s;
   }
 
-  &.parallel {
-    box-shadow: none;
-  }
-
   .workers {
     position: absolute;
-    z-index: -1;
     left: -1px;
     top: 1px;
     width: 100%;
