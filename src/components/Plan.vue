@@ -49,83 +49,82 @@
         </div>
       </div>
     </div>
-    <div class="plan-stats border-bottom p-1 mb-1 align-self-center row" v-if="plan">
-      <div class="col px-0">
+    <div class="plan-stats text-center mb-1" v-if="plan">
+      <div class="d-inline-block px-2">
+        Execution time:
         <template v-if="!plan.planStats.executionTime">
-          <span class="stat-value text-muted">
+          <span class="text-muted">
             N/A
-            <small><i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing execution time')"></i></small>
+            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing execution time')"></i>
           </span>
         </template>
         <template v-else>
           <span class="stat-value" v-html="$options.filters.duration(plan.planStats.executionTime)"></span>
         </template>
-        <span class="stat-label">Execution time</span>
       </div>
-      <div class="col px-0">
+      <div class="d-inline-block border-left px-2">
+        Planning time:
         <template v-if="!plan.planStats.planningTime">
-          <span class="stat-value text-muted">
+          <span class="text-muted">
             N/A
-            <small><i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing planning time')"></i></small>
+            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing planning time')"></i>
           </span>
         </template>
         <template v-else>
           <span class="stat-value" v-html="$options.filters.duration(plan.planStats.planningTime)"></span>
         </template>
-        <span class="stat-label">Planning time</span>
       </div>
-      <div class="col px-0">
-        <button @click.prevent="showNode(plan.slowestNode, false, true)" :disabled="!plan.planStats.maxDuration" class="w-100">
-          <template v-if="!plan.planStats.maxDuration">
-            <span class="stat-value text-muted">
-              N/A
-              <small><i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing slowest')"></i></small>
-            </span>
-          </template>
-          <template v-else>
-            <span class="stat-value" v-html="$options.filters.duration(plan.planStats.maxDuration)"></span>
-          </template>
-          <span class="stat-label">
-            Slowest node
-          </span>
-          <div class="show" v-if="plan.planStats.maxDuration"><i class="fa fa-search bg-white p-1 rounded"></i></div>
-        </button>
-      </div>
-      <div class="col px-0">
-        <template v-if="!plan.planStats.maxRows">
-          <span class="stat-value text-muted">
+      <div class="d-inline-block border-left px-2">
+        Slowest:
+        <template v-if="!plan.planStats.maxDuration">
+          <span class="text-muted">
             N/A
-            <small><i class="fa fa-info-circle cursor-help" :title="getHelpMessage('no rows')"></i></small>
+            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing slowest')"></i>
+          </span>
+        </template>
+        <template v-else>
+          <span class="stat-value" v-html="$options.filters.duration(plan.planStats.maxDuration)"></span>
+          <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showNode(plan.slowestNode, false, true)">
+            <i class="fa fa-thumb-tack text-muted"></i>
+          </button>
+        </template>
+      </div>
+      <div class="d-inline-block border-left px-2">
+        Largest:
+        <template v-if="!plan.planStats.maxRows">
+          <span class="text-muted">
+            N/A
+            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('no rows')"></i>
           </span>
         </template>
         <template v-else>
           <span class="stat-value">{{plan.planStats.maxRows | rows}} <span class="text-muted">rows</span></span>
         </template>
-        <span class="stat-label">Largest node</span>
       </div>
-      <div class="col px-0">
-        <button @click.prevent="showNode(plan.costliestNode, false, true)" :disabled="!plan.planStats.maxCost" class="w-100">
-          <template v-if="!plan.planStats.maxCost">
-            <span class="stat-value text-muted">
-              N/A
-              <small><i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing costliest')"></i></small>
-            </span>
-          </template>
-          <template v-else>
-            <span class="stat-value">{{plan.planStats.maxCost | cost}}</span>
-          </template>
-          <span class="stat-label">Costliest node</span>
-          <div class="show" v-if="plan.planStats.maxCost"><i class="fa fa-search bg-white p-1 rounded"></i></div>
-        </button>
-      </div>
-      <div v-if="plan.planStats.triggers.length" class="position-relative col px-0">
-        <button @click.prevent="showTriggers = !showTriggers" class="w-100">
-          <span class="stat-value">
-            <span :class="'mb-0 p-0 px-1 alert ' + triggerDurationClass(totalTriggerDurationPercent)" v-html="$options.filters.duration(triggersTotalDuration)"></span>
+      <div class="d-inline-block border-left px-2">
+        Costliest:
+        <template v-if="!plan.planStats.maxCost">
+          <span class="text-muted">
+            N/A
+            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing costliest')"></i>
           </span>
-          <span class="stat-label">Triggers</span>
+        </template>
+        <template v-else>
+          <span>{{plan.planStats.maxCost | cost}}</span>
+          <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showNode(plan.costliestNode, false, true)">
+            <i class="fa fa-thumb-tack text-muted"></i>
+          </button>
+        </template>
+      </div>
+      <div v-if="plan.planStats.triggers.length" class="d-inline-block border-left px-2 position-relative">
+        <span class="stat-label">Triggers: </span>
+        <span class="stat-value">
+          <span :class="'mb-0 p-0 px-1 alert ' + triggerDurationClass(totalTriggerDurationPercent)" v-html="$options.filters.duration(triggersTotalDuration)"></span>
+        </span>
+        <button @click.prevent="showTriggers = !showTriggers" class="bg-transparent border-0 p-0 m-0 pl-1">
+          <i class="fa fa-caret-down text-muted"></i>
         </button>
-        <div class="plan-triggers-container" v-if="showTriggers">
+        <div class="plan-triggers-container text-left" v-if="showTriggers">
           <button class="btn btn-close pull-right" v-on:click="showTriggers = false">
             <i class="fa fa-close"></i>
           </button>
@@ -142,7 +141,7 @@
             <span class="text-muted" v-if="trigger.Relation">on</span>
             {{ trigger.Relation }}
             <div class="clearfix"></div>
-            <hr v-if="index != plan.planStats.triggers.length - 1">
+            <hr v-if="index != plan.planStats.triggers.length - 1" class="my-2">
           </div>
         </div>
       </div>
