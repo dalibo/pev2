@@ -21,7 +21,7 @@ export function duration(value: number, detail: boolean): string {
     }
     dur = parseFloat(value.toPrecision(3)).toLocaleString();
   }
-  const compiled = _.template('${dur}<span class="text-muted">${unit}</span>');
+  const compiled = _.template('${dur}&nbsp;<span class="text-muted">${unit}</span>');
   return compiled({dur, unit});
 }
 
@@ -36,7 +36,7 @@ export function rows(value: number): string {
 
 export function factor(value: number): string {
   const f: string = parseFloat(value.toPrecision(2)).toLocaleString();
-  const compiled = _.template('${f}<span class="text-muted">&times;</span>');
+  const compiled = _.template('${f}&nbsp;<span class="text-muted">&times;</span>');
   return compiled({f});
 }
 
@@ -62,7 +62,7 @@ export function formatBytes(bytes: number, decimals = 2) {
   const dm = decimals < 0 ? 0 : decimals;
   const units = ['Bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const compiled = _.template('${value}<span class="text-muted">${unit}</span>');
+  const compiled = _.template('${value}&nsbp;<span class="text-muted">${unit}</span>');
   const value = parseFloat((bytes / Math.pow(k, i)).toFixed(dm)).toLocaleString();
   return compiled({value, unit: units[i]});
 }
