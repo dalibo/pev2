@@ -1,8 +1,8 @@
 # pev2
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/dalibo/pev2.svg)](https://greenkeeper.io/)
-
 A VueJS component to show a graphical vizualization of a PostgreSQL execution plan.
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/dalibo/pev2.svg)](https://greenkeeper.io/)
 
 See [Demo][demo].
 
