@@ -200,6 +200,7 @@ $connector-line: 2px solid darken($line-color, 10%);
 
     .classic & {
       margin-bottom: $padding-sm;
+      display: inline-block;
     }
   }
 
