@@ -212,7 +212,7 @@ export default class Plan extends Vue {
   private created(): void {
     const savedOptions = localStorage.getItem('viewOptions');
     if (savedOptions) {
-      this.viewOptions = JSON.parse(savedOptions);
+      _.assignIn(this.viewOptions, JSON.parse(savedOptions));
     }
     let planJson: any;
     try {
