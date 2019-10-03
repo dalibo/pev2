@@ -102,3 +102,13 @@ $yiq-text-light:            $white !default;
     color: $value;
   }
 }
+
+.btn-group-xs > .btn, .btn-xs {
+  padding: .25rem .4rem;
+  font-size: $font-size-sm;
+  border-radius: .2rem;
+
+  &, .fa {
+    line-height: .5;
+  }
+}
