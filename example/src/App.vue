@@ -8,6 +8,13 @@
         About
       </router-link>
     </div>
+    <div class="container">
+      <div class="alert alert-warning">
+        This is the demo application for <a href="https://github.com/dalibo/pev2">PEV2</a>. It is serverless and doesn't store your plans.
+        <br>
+        Please consider using <a href="https://explain.dalibo.com">explain.dalibo.com</a> instead if you want to save or share your plans.
+      </div>
+    </div>
     <router-view></router-view>
   </div>
 </template>
