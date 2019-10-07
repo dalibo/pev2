@@ -1,6 +1,6 @@
 <template>
   <div :class="['plan-container d-flex flex-column overflow-hidden flex-grow-1 bg-light', viewOptions.viewMode, viewOptions.orientation]">
-    <div class="plan-stats d-flex border-bottom border-top" v-if="plan">
+    <div class="plan-stats d-flex border-bottom border-top form-inline" v-if="plan">
       <div class="d-inline-block px-2">
         Execution time:
         <template v-if="!plan.planStats.executionTime">
@@ -96,11 +96,14 @@
           </div>
         </div>
       </div>
-      <button v-on:click="showHideMenu" :class="['ml-auto btn btn-sm p-0 px-2', {'text-primary': !viewOptions.menuHidden}]">
+      <button @click="showHideSource" :class="['btn btn-sm ml-auto p-0 px-2', {'text-primary': showSource}]" title="View source">
+        <i class="fa fa-code p-0"></i>
+      </button>
+      <button v-on:click="showHideMenu" :class="['border-left btn btn-sm p-0 px-2', {'text-primary': !viewOptions.menuHidden}]">
         <i class="fa fa-cog p-0"></i>
       </button>
     </div>
-    <div class="form-inline small border-bottom py-1" v-if="plan && !viewOptions.menuHidden">
+    <div class="form-inline small border-bottom py-1" v-if="plan && !viewOptions.menuHidden && !showSource">
       <div class="btn-group btn-group-xs ml-auto mr-2">
         <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.FULL}" v-on:click="viewOptions.viewMode = viewModes.FULL">full</button>
         <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.COMPACT}" v-on:click="viewOptions.viewMode = viewModes.COMPACT">compact</button>
@@ -137,6 +140,31 @@
 
     <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
       <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
+    </div>
+    <div v-else-if="showSource" class="h-100 w-100 d-flex flex-column">
+      <div class="h-100 w-100 d-flex flex-column">
+        <ul class="nav nav-pills p-2" id="sourceTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active py-1" id="plan-tab" data-toggle="tab" href="#plan-source" role="tab" aria-controls="plan-source" aria-selected="false">Plan</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link py-1" id="query-tab" data-toggle="tab" href="#query-source" role="tab" aria-controls="query-source" aria-selected="false">Query</a>
+          </li>
+        </ul>
+        <div class="flex-grow-1 flex-shrink-1 bg-dark overflow-auto tab-content px-2">
+          <div class="tab-pane fade show active" id="plan-source" role="tabpanel" aria-labelledby="plan-tab">
+            <pre class="small p-2 text-white mb-0"><code>{{ planSource }}</code></pre>
+          </div>
+          <div class="tab-pane fade" id="query-source" role="tabpanel" aria-labelledby="query-tab">
+            <div v-if="planQuery" class="bg-dark">
+              <pre class="small p-2 text-white mb-0"><code>{{ planQuery }}</code></pre>
+            </div>
+            <div v-else>
+              No query provided for this plan
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="overflow-auto flex-grow-1 flex-shrink-1 mt-1" v-else v-dragscroll v-on:mousedown="menuHidden = true">
       <div class="plan h-100 w-100 d-flex grab-bing">
@@ -188,6 +216,7 @@ export default class Plan extends Vue {
   private menuHidden: boolean = true;
   private validationMessage: string = '';
   private showTriggers: boolean = false;
+  private showSource: boolean = false;
 
   private helpService = new HelpService();
 
@@ -247,6 +276,10 @@ export default class Plan extends Vue {
 
   private showHideMenu(): void {
     this.viewOptions.menuHidden = !this.viewOptions.menuHidden;
+  }
+
+  private showHideSource(): void {
+    this.showSource = ! this.showSource;
   }
 
   private getHelpMessage(message: string) {

@@ -107,28 +107,6 @@ $bg-color: #fff;
     z-index: 1;
     left: 0;
 
-    pre {
-      overflow: initial;
-    }
-
-    code {
-      font-weight: 300;
-      font-family: $font-family-mono;
-    }
-
-    .plan-query-text {
-      background-color: #fff;
-      font-family: $font-family-mono;
-      text-align: left;
-      margin-bottom: 0;
-
-      .code-key-item {
-        background-color: $yellow;
-        font-weight: 600;
-        padding: 1px;
-      }
-    }
-
     h3 {
       font-size: $font-size-lg;
       width: 93%;
