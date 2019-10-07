@@ -1,55 +1,6 @@
 <template>
-  <div :class="['plan-container d-flex flex-column h-100 bg-light', viewOptions.viewMode, viewOptions.orientation]">
-    <div :class="['menu p-2 bg-white border rounded-left', {'menu-hidden': menuHidden}]">
-      <button v-on:click="menuHidden = !menuHidden" class="btn">
-        <i class="fa fa-cogs p-0"></i>
-        <strong v-if="!menuHidden">
-          Display Options
-        </strong>
-      </button>
-      <div v-if="!menuHidden">
-        <div class="form-group">
-          <div>
-            View
-          </div>
-          <div class="btn-group btn-group-sm">
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.FULL}" v-on:click="viewOptions.viewMode = viewModes.FULL">full</button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.COMPACT}" v-on:click="viewOptions.viewMode = viewModes.COMPACT">compact</button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.DOT}" v-on:click="viewOptions.viewMode = viewModes.DOT">dot</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="btn-group btn-group-sm">
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.TWOD}" v-on:click="viewOptions.orientation = orientations.TWOD">
-              <i class="fa fa-sitemap"></i>
-              2D
-            </button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.CLASSIC}" v-on:click="viewOptions.orientation = orientations.CLASSIC">
-              <i class="fa fa-list"></i>
-              classic
-            </button>
-          </div>
-        </div>
-        <div class="form-group">
-          <div>Graph metric</div>
-          <div class="btn-group btn-group-sm">
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!node[nodeProps.ACTUAL_DURATION]">duration</button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="node[nodeProps.ACTUAL_ROWS] === undefined">rows</button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
-          </div>
-        </div>
-        <div class="form-check">
-          <input id="showCost" type="checkbox" v-model="viewOptions.showCost" class="form-check-input">
-          <label for="showCost" class="form-check-label">Cost</label>
-        </div>
-        <div class="form-check">
-          <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate" class="form-check-input">
-          <label for="showPlannerEstimate" class="form-check-label">Estimations</label>
-        </div>
-      </div>
-    </div>
-    <div class="plan-stats text-center mb-1" v-if="plan">
+  <div :class="['plan-container d-flex flex-column overflow-hidden flex-grow-1 bg-light', viewOptions.viewMode, viewOptions.orientation]">
+    <div class="plan-stats d-flex border-bottom border-top" v-if="plan">
       <div class="d-inline-block px-2">
         Execution time:
         <template v-if="!plan.planStats.executionTime">
@@ -145,12 +96,49 @@
           </div>
         </div>
       </div>
+      <button v-on:click="showHideMenu" :class="['ml-auto btn btn-sm p-0 px-2', {'text-primary': !viewOptions.menuHidden}]">
+        <i class="fa fa-cog p-0"></i>
+      </button>
+    </div>
+    <div class="form-inline small border-bottom py-1" v-if="plan && !viewOptions.menuHidden">
+      <div class="btn-group btn-group-xs ml-auto mr-2">
+        <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.FULL}" v-on:click="viewOptions.viewMode = viewModes.FULL">full</button>
+        <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.COMPACT}" v-on:click="viewOptions.viewMode = viewModes.COMPACT">compact</button>
+        <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.DOT}" v-on:click="viewOptions.viewMode = viewModes.DOT">dot</button>
+      </div>
+      <div class="btn-group btn-group-xs mr-2">
+        <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.TWOD}" v-on:click="viewOptions.orientation = orientations.TWOD">
+          <i class="fa fa-sitemap"></i>
+          2D
+        </button>
+        <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.CLASSIC}" v-on:click="viewOptions.orientation = orientations.CLASSIC">
+          <i class="fa fa-list"></i>
+          classic
+        </button>
+      </div>
+      <div class="form-group mr-2 pl-2 border-left">
+        <label class="mr-2 text-muted">Graph metric:</label>
+        <div class="btn-group btn-group-xs">
+          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
+          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!node[nodeProps.ACTUAL_DURATION]">duration</button>
+          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="node[nodeProps.ACTUAL_ROWS] === undefined">rows</button>
+          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
+        </div>
+      </div>
+      <div class="form-check mr-2 pl-2 border-left">
+        <input id="showCost" type="checkbox" v-model="viewOptions.showCost" class="form-check-input">
+        <label for="showCost" class="form-check-label">Cost</label>
+      </div>
+      <div class="form-check mr-2">
+        <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate" class="form-check-input">
+        <label for="showPlannerEstimate" class="form-check-label">Estimations</label>
+      </div>
     </div>
 
     <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
       <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
     </div>
-    <div class="overflow-auto h-100" v-else v-dragscroll v-on:mousedown="menuHidden = true">
+    <div class="overflow-auto flex-grow-1 flex-shrink-1 mt-1" v-else v-dragscroll v-on:mousedown="menuHidden = true">
       <div class="plan h-100 w-100 d-flex grab-bing">
         <ul class="node-children">
           <li>
@@ -204,6 +192,7 @@ export default class Plan extends Vue {
   private helpService = new HelpService();
 
   private viewOptions: any = {
+    menuHidden: true,
     showHighlightBar: false,
     showPlannerEstimate: false,
     showCost: false,
@@ -223,7 +212,7 @@ export default class Plan extends Vue {
   private created(): void {
     const savedOptions = localStorage.getItem('viewOptions');
     if (savedOptions) {
-      this.viewOptions = JSON.parse(savedOptions);
+      _.assignIn(this.viewOptions, JSON.parse(savedOptions));
     }
     let planJson: any;
     try {
@@ -254,6 +243,10 @@ export default class Plan extends Vue {
   @Watch('viewOptions', {deep: true})
   private onViewOptionsChanged(val: any, oldVal: any) {
     localStorage.setItem('viewOptions', JSON.stringify(this.viewOptions));
+  }
+
+  private showHideMenu(): void {
+    this.viewOptions.menuHidden = !this.viewOptions.menuHidden;
   }
 
   private getHelpMessage(message: string) {
