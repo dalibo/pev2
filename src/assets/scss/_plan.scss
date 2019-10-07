@@ -42,6 +42,28 @@ $connector-line: 2px solid darken($line-color, 10%);
   .cursor-help {
     cursor: help;
   }
+
+  pre {
+    overflow: initial;
+  }
+
+  code {
+    font-weight: 300;
+    font-family: $font-family-mono;
+  }
+
+  .plan-query-text {
+    background-color: #fff;
+    font-family: $font-family-mono;
+    text-align: left;
+    margin-bottom: 0;
+
+    .code-key-item {
+      background-color: $yellow;
+      font-weight: 600;
+      padding: 1px;
+    }
+  }
 }
 
 .plan {
