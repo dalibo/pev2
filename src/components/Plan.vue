@@ -159,7 +159,7 @@
             <div v-if="planQuery" class="bg-dark">
               <pre class="small p-2 text-white mb-0"><code>{{ planQuery }}</code></pre>
             </div>
-            <div v-else>
+            <div v-else class="text-white p-2">
               No query provided for this plan
             </div>
           </div>
