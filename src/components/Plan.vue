@@ -143,19 +143,19 @@
     </div>
     <div v-else-if="showSource" class="h-100 w-100 d-flex flex-column">
       <div class="h-100 w-100 d-flex flex-column">
-        <ul class="nav nav-pills p-2" id="sourceTab" role="tablist">
+        <ul class="nav nav-pills p-2">
           <li class="nav-item">
-            <a class="nav-link active py-1" id="plan-tab" data-toggle="tab" href="#plan-source" role="tab" aria-controls="plan-source" aria-selected="false">Plan</a>
+            <a href="#" :class="['nav-link py-1', {'active': sourceTabActive == 'plan'}]" @click="sourceTabActive = 'plan'">Plan</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link py-1" id="query-tab" data-toggle="tab" href="#query-source" role="tab" aria-controls="query-source" aria-selected="false">Query</a>
+            <a href="#" :class="['nav-link py-1', {'active': sourceTabActive == 'query'}]" @click="sourceTabActive = 'query'">Query</a>
           </li>
         </ul>
         <div class="flex-grow-1 flex-shrink-1 bg-dark overflow-auto tab-content px-2">
-          <div class="tab-pane fade show active" id="plan-source" role="tabpanel" aria-labelledby="plan-tab">
+          <div :class="['tab-pane fade show', {'active': sourceTabActive == 'plan'}]">
             <pre class="small p-2 text-white mb-0"><code>{{ planSource }}</code></pre>
           </div>
-          <div class="tab-pane fade" id="query-source" role="tabpanel" aria-labelledby="query-tab">
+          <div :class="['tab-pane fade show', {'active': sourceTabActive == 'query'}]">
             <div v-if="planQuery" class="bg-dark">
               <pre class="small p-2 text-white mb-0"><code>{{ planQuery }}</code></pre>
             </div>
@@ -217,6 +217,7 @@ export default class Plan extends Vue {
   private validationMessage: string = '';
   private showTriggers: boolean = false;
   private showSource: boolean = false;
+  private sourceTabActive: string = 'plan';
 
   private helpService = new HelpService();
 
