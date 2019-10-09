@@ -145,10 +145,10 @@
       <div class="h-100 w-100 d-flex flex-column">
         <ul class="nav nav-pills p-2">
           <li class="nav-item">
-            <a href="#" :class="['nav-link py-1', {'active': sourceTabActive == 'plan'}]" @click="sourceTabActive = 'plan'">Plan</a>
+            <button :class="['nav-link py-1', {'active': sourceTabActive == 'plan'}]" @click="sourceTabActive = 'plan'">Plan</button>
           </li>
           <li class="nav-item">
-            <a href="#" :class="['nav-link py-1', {'active': sourceTabActive == 'query'}]" @click="sourceTabActive = 'query'">Query</a>
+            <button :class="['nav-link py-1', {'active': sourceTabActive == 'query'}]" @click="sourceTabActive = 'query'">Query</button>
           </li>
         </ul>
         <div class="flex-grow-1 flex-shrink-1 bg-dark overflow-auto tab-content px-2">
