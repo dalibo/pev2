@@ -38,11 +38,12 @@ export class PlanService {
 
   public analyzePlan(plan: IPlan) {
     this.processNode(plan.content.Plan);
+
+    this.calculateMaximums(plan.content.Plan);
+
     plan.content[NodeProp.MAXIMUM_ROWS] = this.maxRows;
     plan.content[NodeProp.MAXIMUM_COSTS] = this.maxCost;
     plan.content[NodeProp.MAXIMUM_DURATION] = this.maxDuration;
-
-    this.findOutlierNodes(plan.content.Plan, plan);
   }
 
   // recursively walk down the plan to compute various metrics
@@ -62,42 +63,24 @@ export class PlanService {
     // takes loops into account
     this.calculateActuals(node);
 
-    _.each(node, (value, key) => {
-      this.calculateMaximums(node, key, value);
-    });
   }
 
-  public calculateMaximums(node: any, key: string, value: number) {
-    if (key === NodeProp.ACTUAL_ROWS && this.maxRows < value) {
-      this.maxRows = value;
+  public calculateMaximums(root: IPlan) {
+    function recurse(nodes: any[]): any[] {
+      return _.map(nodes, (node) => [node, recurse(node[NodeProp.PLANS])]);
     }
-    if (key === NodeProp.ACTUAL_COST && this.maxCost < value) {
-      this.maxCost = value;
-    }
+    const flat = _.flattenDeep(recurse([root]));
 
-    if (key === NodeProp.ACTUAL_DURATION && this.maxDuration < value) {
-      this.maxDuration = value;
-    }
-  }
+    const largest = _.maxBy(flat, NodeProp.ACTUAL_ROWS);
+    this.maxRows = largest[NodeProp.ACTUAL_ROWS];
 
-  public findOutlierNodes(node: any, root: any) {
-    if (node[NodeProp.ACTUAL_COST] === this.maxCost) {
-      node[NodeProp.COSTLIEST_NODE] = true;
-    }
-    if (node[NodeProp.ACTUAL_ROWS] === this.maxRows && node[NodeProp.ACTUAL_ROWS] !== 0) {
-      node[NodeProp.LARGEST_NODE] = true;
-    }
-    if (node[NodeProp.ACTUAL_DURATION] === this.maxDuration) {
-      node[NodeProp.SLOWEST_NODE] = true;
-    }
+    const costliest = _.maxBy(flat, NodeProp.ACTUAL_COST);
+    costliest[NodeProp.COSTLIEST_NODE] = true;
+    this.maxCost = costliest[NodeProp.ACTUAL_COST];
 
-    _.each(node, (value, key) => {
-      if (key === NodeProp.PLANS) {
-        _.each(value, (val) => {
-          this.findOutlierNodes(val, root);
-        });
-      }
-    });
+    const slowest = _.maxBy(flat, NodeProp.ACTUAL_DURATION);
+    slowest[NodeProp.SLOWEST_NODE] = true;
+    this.maxDuration = slowest[NodeProp.ACTUAL_DURATION];
   }
 
   // actual duration and actual cost are calculated by subtracting child values from the total
