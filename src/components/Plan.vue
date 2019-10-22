@@ -259,9 +259,9 @@ export default class Plan extends Vue {
     this.plan.planStats = {
       executionTime: content['Execution Time'] || content['Total Runtime'] || null,
       planningTime: content['Planning Time'] || null,
-      maxRows: content[NodeProp.MAXIMUM_ROWS] || null,
-      maxCost: content[NodeProp.MAXIMUM_COSTS] || 0,
-      maxDuration: content[NodeProp.MAXIMUM_DURATION] || 0,
+      maxRows: content.maxRows || null,
+      maxCost: content.maxCost || null,
+      maxDuration: content.maxDuration || null,
       triggers: content.Triggers || [],
     };
 

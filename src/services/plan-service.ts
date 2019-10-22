@@ -11,9 +11,9 @@ export class PlanService {
   private static instance: PlanService;
 
 
-  private maxRows: number = 0;
-  private maxCost: number = 0;
-  private maxDuration: number = 0;
+  private maxRows: number | undefined;
+  private maxCost: number | undefined;
+  private maxDuration: number | undefined;
 
   public createPlan(planName: string, planContent: any, planQuery: string): IPlan {
     // remove any extra white spaces in the middle of query
@@ -41,9 +41,9 @@ export class PlanService {
 
     this.calculateMaximums(plan.content.Plan);
 
-    plan.content[NodeProp.MAXIMUM_ROWS] = this.maxRows;
-    plan.content[NodeProp.MAXIMUM_COSTS] = this.maxCost;
-    plan.content[NodeProp.MAXIMUM_DURATION] = this.maxDuration;
+    plan.content.maxRows = this.maxRows;
+    plan.content.maxCost = this.maxCost;
+    plan.content.maxDuration = this.maxDuration;
   }
 
   // recursively walk down the plan to compute various metrics
@@ -72,15 +72,21 @@ export class PlanService {
     const flat = _.flattenDeep(recurse([root]));
 
     const largest = _.maxBy(flat, NodeProp.ACTUAL_ROWS);
-    this.maxRows = largest[NodeProp.ACTUAL_ROWS];
+    if (largest) {
+      this.maxRows = largest[NodeProp.ACTUAL_ROWS];
+    }
 
     const costliest = _.maxBy(flat, NodeProp.ACTUAL_COST);
-    costliest[NodeProp.COSTLIEST_NODE] = true;
-    this.maxCost = costliest[NodeProp.ACTUAL_COST];
+    if (costliest) {
+      costliest[NodeProp.COSTLIEST_NODE] = true;
+      this.maxCost = costliest[NodeProp.ACTUAL_COST];
+    }
 
     const slowest = _.maxBy(flat, NodeProp.ACTUAL_DURATION);
-    slowest[NodeProp.SLOWEST_NODE] = true;
-    this.maxDuration = slowest[NodeProp.ACTUAL_DURATION];
+    if (slowest) {
+      slowest[NodeProp.SLOWEST_NODE] = true;
+      this.maxDuration = slowest[NodeProp.ACTUAL_DURATION];
+    }
   }
 
   // actual duration and actual cost are calculated by subtracting child values from the total
