@@ -56,9 +56,6 @@ export class NodeProp {
   public static LARGEST_NODE: string = '*Largest Node (by rows)';
   public static SLOWEST_NODE: string = '*Slowest Node (by duration)';
 
-  public static MAXIMUM_COSTS: string = '*Most Expensive Node (cost)';
-  public static MAXIMUM_ROWS: string = '*Largest Node (rows)';
-  public static MAXIMUM_DURATION: string = '*Slowest Node (time)';
   public static ACTUAL_DURATION: string = '*Actual Duration';
   public static ACTUAL_COST: string = '*Actual Cost';
   public static PLANNER_ESTIMATE_FACTOR: string = '*Planner Row Estimate Factor';
@@ -101,9 +98,6 @@ nodePropTypes[NodeProp.COSTLIEST_NODE] = PropType.boolean;
 nodePropTypes[NodeProp.LARGEST_NODE] = PropType.boolean;
 nodePropTypes[NodeProp.SLOWEST_NODE] = PropType.boolean;
 
-nodePropTypes[NodeProp.MAXIMUM_COSTS] = PropType.cost;
-nodePropTypes[NodeProp.MAXIMUM_ROWS] = PropType.rows;
-nodePropTypes[NodeProp.MAXIMUM_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.ACTUAL_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.ACTUAL_COST] = PropType.cost;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_FACTOR] = PropType.factor;
