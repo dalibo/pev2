@@ -1,7 +1,7 @@
 FROM node:10-slim
 COPY ./ /app
 WORKDIR /app
-RUN npm install && npm run build
+RUN npm install && npm run build-app
 
 FROM nginx:alpine
 RUN mkdir /app
