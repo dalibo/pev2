@@ -125,11 +125,11 @@
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!node[nodeProps.ACTUAL_DURATION]">duration</button>
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="node[nodeProps.ACTUAL_ROWS] === undefined">rows</button>
-          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
+          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST" :disabled="node[nodeProps.TOTAL_COST] === undefined">cost</button>
         </div>
       </div>
       <div class="form-check mr-2 pl-2 border-left">
-        <input id="showCost" type="checkbox" v-model="viewOptions.showCost" class="form-check-input">
+        <input id="showCost" type="checkbox" v-model="viewOptions.showCost" class="form-check-input" :disabled="node[nodeProps.TOTAL_COST] === undefined">
         <label for="showCost" class="form-check-label">Cost</label>
       </div>
       <div class="form-check mr-2">
