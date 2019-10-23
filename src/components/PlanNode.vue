@@ -15,7 +15,7 @@
             {{ getNodeName() }}
           </h4>
           <span v-if="viewOptions.viewMode === viewModes.FULL">
-            <span class="node-duration" v-if="!isNeverExecuted">
+            <span class="node-duration" v-if="node[nodeProps.ACTUAL_DURATION]">
               <span :class="'p-0 px-1 rounded alert ' + durationClass"
                 v-html="$options.filters.duration(node[nodeProps.ACTUAL_DURATION])">
               </span>
@@ -24,7 +24,7 @@
                 <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
               </template>
             </span>
-            <span class="node-duration text-warning" v-else>
+            <span class="node-duration text-warning" v-else-if="isNeverExecuted">
               Never executed
             </span>
           </span>
