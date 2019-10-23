@@ -385,10 +385,12 @@ export class PlanService {
         if (nodeMatches[7] && nodeMatches[8] || nodeMatches[18] && nodeMatches[19]) {
           newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(nodeMatches[7] || nodeMatches[18]);
           newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(nodeMatches[8] || nodeMatches[19]);
-          // FIXME could be actual_rows_
-          newNode[NodeProp.ACTUAL_ROWS] = parseInt(nodeMatches[9] || nodeMatches[20], 0);
-          // FIXME could be actual_loops_
-          newNode[NodeProp.ACTUAL_LOOPS] = parseInt(nodeMatches[10] || nodeMatches[21], 0);
+        }
+
+        if (nodeMatches[9] && nodeMatches[10] || nodeMatches[11] && nodeMatches[12] ||
+            nodeMatches[20] && nodeMatches[21]) {
+          newNode[NodeProp.ACTUAL_ROWS] = parseInt(nodeMatches[9] || nodeMatches[11] || nodeMatches[20], 0);
+          newNode[NodeProp.ACTUAL_LOOPS] = parseInt(nodeMatches[10] || nodeMatches[12] || nodeMatches[21], 0);
         }
 
         if (neverExecuted) {
