@@ -89,7 +89,7 @@
           </span>
         </div>
 
-        <div v-if="shouldShowCost">
+        <div v-if="shouldShowCost && node[nodeProps.ACTUAL_COST]">
           <span>
             Cost:
             <span :class="'p-0 px-1 alert ' + costClass">{{node[nodeProps.ACTUAL_COST] | cost}}</span>
