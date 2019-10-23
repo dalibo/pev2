@@ -273,7 +273,7 @@ export class PlanService {
       line = line.replace(/^\s*"/, '');
 
       const prefixRegex = '^(\\s*->\\s*|\\s*)';
-      const typeRegex = '(\\S.*?)\\s+';
+      const typeRegex = '(\\S.*?)';
       // tslint:disable-next-line:max-line-length
       const estimationRegex = '\\(cost=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\s+rows=(\\d+)\\s+width=(\\d+)\\)';
       const nonCapturingGroupOpen = '(?:';
@@ -303,19 +303,28 @@ export class PlanService {
        * 11: actual_rows_
        * 12: actual_loops_
        * 13: never_executed
+       * 14: estimated_startup_cost
+       * 15: estimated_total_cost
+       * 16: estimated_rows
+       * 17: estimated_row_width
+       * 18: actual_time_first
+       * 19: actual_time_last
+       * 20: actual_rows
+       * 21: actual_loops
        */
       const nodeRegex = new RegExp(
         prefixRegex +
         typeRegex +
-        estimationRegex +
-        '\\s*' +
-        nonCapturingGroupOpen +
         '\\s+' +
-        openParenthesisRegex +
-        actualRegex +
-        closeParenthesisRegex +
+        nonCapturingGroupOpen +
+          (nonCapturingGroupOpen + estimationRegex + '\\s+' +
+           openParenthesisRegex + actualRegex + closeParenthesisRegex +
+           nonCapturingGroupClose) +
+          '|' +
+          nonCapturingGroupOpen + estimationRegex + nonCapturingGroupClose +
+          '|' +
+          nonCapturingGroupOpen + openParenthesisRegex + actualRegex + closeParenthesisRegex + nonCapturingGroupClose +
         nonCapturingGroupClose +
-        optionalGroup +
         '\\s*$',
         'gm',
       );
@@ -368,16 +377,18 @@ export class PlanService {
         const prefix = nodeMatches[1];
         const neverExecuted = nodeMatches[13];
         const newNode: Node = new Node(nodeMatches[2]);
-        newNode[NodeProp.STARTUP_COST] = parseFloat(nodeMatches[3]);
-        newNode[NodeProp.TOTAL_COST] = parseFloat(nodeMatches[4]);
-        newNode[NodeProp.PLAN_ROWS] = parseInt(nodeMatches[5], 0);
-        if (nodeMatches[7] && nodeMatches[8]) {
-          newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(nodeMatches[7]);
-          newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(nodeMatches[8]);
+        if (nodeMatches[3] && nodeMatches[4] || nodeMatches[14] && nodeMatches[15]) {
+          newNode[NodeProp.STARTUP_COST] = parseFloat(nodeMatches[3] || nodeMatches[14]);
+          newNode[NodeProp.TOTAL_COST] = parseFloat(nodeMatches[4] || nodeMatches[15]);
+          newNode[NodeProp.PLAN_ROWS] = parseInt(nodeMatches[5] || nodeMatches[16], 0);
+        }
+        if (nodeMatches[7] && nodeMatches[8] || nodeMatches[18] && nodeMatches[19]) {
+          newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(nodeMatches[7] || nodeMatches[18]);
+          newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(nodeMatches[8] || nodeMatches[19]);
           // FIXME could be actual_rows_
-          newNode[NodeProp.ACTUAL_ROWS] = parseInt(nodeMatches[9], 0);
+          newNode[NodeProp.ACTUAL_ROWS] = parseInt(nodeMatches[9] || nodeMatches[20], 0);
           // FIXME could be actual_loops_
-          newNode[NodeProp.ACTUAL_LOOPS] = parseInt(nodeMatches[10], 0);
+          newNode[NodeProp.ACTUAL_LOOPS] = parseInt(nodeMatches[10] || nodeMatches[21], 0);
         }
 
         if (neverExecuted) {
