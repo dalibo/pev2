@@ -123,13 +123,13 @@
         <label class="mr-2 text-muted">Graph metric:</label>
         <div class="btn-group btn-group-xs">
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
-          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!node[nodeProps.ACTUAL_DURATION]">duration</button>
-          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="node[nodeProps.ACTUAL_ROWS] === undefined">rows</button>
-          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST" :disabled="node[nodeProps.TOTAL_COST] === undefined">cost</button>
+          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!rootNode[nodeProps.ACTUAL_DURATION]">duration</button>
+          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="rootNode[nodeProps.ACTUAL_ROWS] === undefined">rows</button>
+          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST" :disabled="rootNode[nodeProps.TOTAL_COST] === undefined">cost</button>
         </div>
       </div>
       <div class="form-check mr-2 pl-2 border-left">
-        <input id="showCost" type="checkbox" v-model="viewOptions.showCost" class="form-check-input" :disabled="node[nodeProps.TOTAL_COST] === undefined">
+        <input id="showCost" type="checkbox" v-model="viewOptions.showCost" class="form-check-input" :disabled="rootNode[nodeProps.TOTAL_COST] === undefined">
         <label for="showCost" class="form-check-label">Cost</label>
       </div>
       <div class="form-check mr-2">
@@ -170,7 +170,7 @@
       <div class="plan h-100 w-100 d-flex grab-bing">
         <ul class="node-children">
           <li>
-            <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" ref="root"/>
+            <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" ref="root"/>
           </li>
         </ul>
       </div>
@@ -212,7 +212,7 @@ export default class Plan extends Vue {
   @Prop(String) private planSource!: string;
   @Prop(String) private planQuery!: string;
   private plan!: IPlan | null;
-  private node!: any;
+  private rootNode!: any;
   private menuHidden: boolean = true;
   private validationMessage: string = '';
   private showTriggers: boolean = false;
@@ -253,7 +253,7 @@ export default class Plan extends Vue {
       this.plan = null;
       return;
     }
-    this.node = planJson.Plan;
+    this.rootNode = planJson.Plan;
     this.plan = this.planService.createPlan('', planJson, this.planQuery);
     const content = this.plan.content;
     this.plan.planStats = {
