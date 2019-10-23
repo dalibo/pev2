@@ -64,7 +64,7 @@
           <span>Not all workers launched</span>
         </div>
 
-        <div v-if="workersCount && viewOptions.viewMode === viewModes.FULL">
+        <div v-if="lodash.isNumber(workersCount) && !lodash.isNaN(workersCount) && viewOptions.viewMode === viewModes.FULL">
           <span>Workers: </span>
           <span class="font-weight-bold">{{ workersCount }}</span>
         </div>
@@ -453,7 +453,7 @@ export default class PlanNode extends Vue {
     if (_.isArray(this.node[NodeProp.WORKERS])) {
       return this.node[NodeProp.WORKERS].length;
     }
-    return this.node[NodeProp.WORKERS];
+    return parseInt(this.node[NodeProp.WORKERS], 0);
   }
 
   private get workersCountReversed(): number[] {
