@@ -54,7 +54,12 @@ export class PlanService {
       // All children of Gather node will be considered parallel
       // Pass the number of workers launched to children
       if (!child[NodeProp.WORKERS]) {
-        child[NodeProp.WORKERS] = node[NodeProp.WORKERS_LAUNCHED] || node[NodeProp.WORKERS];
+        let workersLaunched;
+        if (node[NodeProp.WORKERS_PLANNED]) {
+          // Launched workers info may not be available (ie. no analyze)
+          workersLaunched = node[NodeProp.WORKERS_LAUNCHED] || node[NodeProp.WORKERS_PLANNED];
+        }
+        child[NodeProp.WORKERS] = workersLaunched || node[NodeProp.WORKERS];
       }
       this.processNode(child);
     });
