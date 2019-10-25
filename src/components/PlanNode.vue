@@ -465,7 +465,8 @@ export default class PlanNode extends Vue {
   }
 
   private get allWorkersLaunched(): boolean {
-    return this.node[NodeProp.WORKERS_PLANNED] === this.node[NodeProp.WORKERS_LAUNCHED];
+    return !this.node[NodeProp.WORKERS_LAUNCHED] ||
+      this.node[NodeProp.WORKERS_PLANNED] === this.node[NodeProp.WORKERS_LAUNCHED];
   }
 
   private getHelpMessage(message: string) {
