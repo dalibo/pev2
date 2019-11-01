@@ -22,7 +22,10 @@
           </span>
         </template>
         <template v-else>
-          <span class="stat-value" v-html="$options.filters.duration(plan.planStats.planningTime)"></span>
+          <span class="stat-value">
+            <span :class="'mb-0 p-0 px-1 alert ' + planningTimeClass(plan.planStats.planningTime / plan.planStats.executionTime * 100)"
+                   v-html="$options.filters.duration(plan.planStats.planningTime)"></span>
+          </span>
         </template>
       </div>
       <div class="d-inline-block border-left px-2">
@@ -331,6 +334,21 @@ export default class Plan extends Vue {
     } else if (i > 40) {
       c = 3;
     } else if (i > 10) {
+      c = 2;
+    }
+    if (c) {
+      return 'c-' + c;
+    }
+    return false;
+  }
+
+  private planningTimeClass(percent: number) {
+    let c;
+    if (percent > 90) {
+      c = 4;
+    } else if (percent > 40) {
+      c = 3;
+    } else if (percent > 10) {
       c = 2;
     }
     if (c) {
