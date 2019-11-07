@@ -6,9 +6,9 @@ export class HighlightType {
 }
 
 export enum EstimateDirection {
-    over,
-    under,
-    none,
+  over = 1,
+  under = 2,
+  none = 3,
 }
 
 export class ViewMode {
