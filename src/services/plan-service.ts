@@ -155,12 +155,20 @@ export class PlanService {
   }
 
   public fromSource(source: string) {
+
     // remove quotes added by pgAdmin3
     source = source.replace(/^(["'])(.*)\1\r?\n/gm, '$2\n');
     // remove + character at the end of line added by default psql config
     source = source.replace(/\s*\+\r?\n/g, '\n');
 
-    if (/^(\s*)(\[|\{)\s*\n.*?\1(\]|\})\s*/gms.exec(source)) {
+    let isJson = false;
+    try {
+      isJson =  JSON.parse(source);
+    } catch (error) {
+      // continue
+    }
+
+    if (isJson || /^(\s*)(\[|\{)\s*\n.*?\1(\]|\})\s*/gms.exec(source)) {
       return this.fromJson(source);
     }
     return this.fromText(source);
