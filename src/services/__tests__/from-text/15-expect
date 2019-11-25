@@ -1,6 +1,6 @@
 {
   "Plan": {
-    "Node Type": "Hash",
+    "Node Type": "Hash Join",
     "Startup Cost": 6.65,
     "Total Cost": 104.1,
     "Plan Rows": 1600,

@@ -50,7 +50,7 @@ export default class Node {
       this[NodeProp.PARALLEL_AWARE] = true;
     }
 
-    const joinMatches = /(.*)\s(Join)$/.exec(this[NodeProp.NODE_TYPE]);
+    const joinMatches = /(.*)\sJoin$/.exec(this[NodeProp.NODE_TYPE]);
     const joinModifierMatches = /(.*)\s+(Full|Left|Right|Anti)/.exec(this[NodeProp.NODE_TYPE]);
     if (joinMatches) {
       this[NodeProp.NODE_TYPE] = joinMatches[1];
@@ -58,6 +58,7 @@ export default class Node {
         this[NodeProp.NODE_TYPE] = joinModifierMatches[1];
         this[NodeProp.JOIN_TYPE] = joinModifierMatches[2];
       }
+      this[NodeProp.NODE_TYPE] += ' Join';
     }
 
   }

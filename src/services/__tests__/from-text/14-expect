@@ -24,7 +24,7 @@
         "Sort Space Type": "Memory",
         "Plans": [
           {
-            "Node Type": "Nested Loop",
+            "Node Type": "Nested Loop Join",
             "Join Type": "Left",
             "Startup Cost": 2.16,
             "Total Cost": 186.81,
@@ -35,7 +35,7 @@
             "Actual Loops": 1,
             "Plans": [
               {
-                "Node Type": "Nested Loop",
+                "Node Type": "Nested Loop Join",
                 "Join Type": "Left",
                 "Startup Cost": 2.16,
                 "Total Cost": 186.49,

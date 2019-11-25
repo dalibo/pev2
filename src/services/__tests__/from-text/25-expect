@@ -13,7 +13,7 @@
         "Sort Key": "t.user_id, i.email, t.enabled, t.admin, t.abonnement, t.actu, t.first_sbsc, t.thematique, t.creation_date",
         "Plans": [
           {
-            "Node Type": "Hash",
+            "Node Type": "Hash Join",
             "Join Type": "Left",
             "Startup Cost": 4303.35,
             "Total Cost": 10423.04,
@@ -22,14 +22,14 @@
             "Filter": "(s.account_id IS NULL)",
             "Plans": [
               {
-                "Node Type": "Nested Loop",
+                "Node Type": "Nested Loop Join",
                 "Join Type": "Left",
                 "Startup Cost": 2671.24,
                 "Total Cost": 6316.24,
                 "Plan Rows": 12330,
                 "Plans": [
                   {
-                    "Node Type": "Hash",
+                    "Node Type": "Hash Join",
                     "Join Type": "Left",
                     "Startup Cost": 2671.24,
                     "Total Cost": 3742.1,
@@ -37,7 +37,7 @@
                     "Hash Cond": "((u.id)::text = (t.user_id)::text)",
                     "Plans": [
                       {
-                        "Node Type": "Hash",
+                        "Node Type": "Hash Join",
                         "Join Type": "Left",
                         "Startup Cost": 1422.12,
                         "Total Cost": 2047.04,
