@@ -14,7 +14,7 @@
     "Sort Space Type": "Memory",
     "Plans": [
       {
-        "Node Type": "Nested Loop",
+        "Node Type": "Nested Loop Join",
         "Join Type": "Left",
         "Startup Cost": 14296.97,
         "Total Cost": 19735.06,
@@ -27,7 +27,7 @@
         "Filter": "(((CASE WHEN (z.idx_gdz_pracy IS NULL) THEN gp.czy_ukryty ELSE z.czy_ukryty END)::\"char\" = 'N'::\"char\") OR ps_chkupr(246) OR (NOT (gu.idx_pracownika IS NULL)))",
         "Plans": [
           {
-            "Node Type": "Hash",
+            "Node Type": "Hash Join",
             "Join Type": "Left",
             "Startup Cost": 14296.72,
             "Total Cost": 19733.98,
@@ -40,7 +40,7 @@
             "Filter": "((((CASE WHEN (z.idx_gdz_pracy IS NULL) THEN gp.czy_lokalny ELSE z.czy_lokalny END)::\"char\" = 'N'::\"char\") OR (g.idx_placowki = ps_akt_placowka())) AND ((SubPlan 1) = $5))",
             "Plans": [
               {
-                "Node Type": "Merge",
+                "Node Type": "Merge Join",
                 "Startup Cost": 3509.52,
                 "Total Cost": 3900.07,
                 "Plan Rows": 1192,
@@ -104,7 +104,7 @@
                         "Actual Loops": 1,
                         "Plans": [
                           {
-                            "Node Type": "Hash",
+                            "Node Type": "Hash Join",
                             "Startup Cost": 46.42,
                             "Total Cost": 129.38,
                             "Plan Rows": 19,
