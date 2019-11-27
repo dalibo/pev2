@@ -18,7 +18,11 @@ export default class Dragscroll {
     this.startScrollPositionY = 0;
 
     this.element.addEventListener('mousedown', (e: any) => {
+      if (e.target.closest('.plan-node-body')) {
+        return;
+      }
       e.preventDefault();
+      this.clearSelection();
 
       this.startMousePositionX = e.screenX;
       this.startMousePositionY = e.screenY;
@@ -49,5 +53,14 @@ export default class Dragscroll {
         );
       }
     });
+  }
+
+  private clearSelection() {
+    if (window.getSelection) {
+      const sel = window.getSelection();
+      if (sel) {
+        sel.removeAllRanges();
+      }
+    }
   }
 }

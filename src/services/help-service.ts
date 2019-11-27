@@ -163,3 +163,27 @@ export function smoothScroll({
   };
   animateScroll();
 }
+
+// Polyfill for Element.closest
+// https://developer.mozilla.org/fr/docs/Web/API/Element/closest
+if (!Element.prototype.matches) {
+  // @ts-ignore
+  Element.prototype.matches = Element.prototype.msMatchesSelector ||
+    Element.prototype.webkitMatchesSelector;
+}
+
+if (!Element.prototype.closest) {
+  Element.prototype.closest = function(s: string) {
+    let el = this;
+    if (!document.documentElement.contains(el)) {
+      return null;
+    }
+    do {
+      if (el.matches(s)) {
+        return el;
+      }
+      el = (el.parentElement || el.parentNode) as Element;
+    } while (el !== null && el.nodeType === 1);
+    return null;
+  };
+}

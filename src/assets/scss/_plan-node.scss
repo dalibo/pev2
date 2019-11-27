@@ -30,6 +30,7 @@ $bg-color: #fff;
     background-color: $bg-color;
     background-color: white;
     box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
+    cursor: auto;
   }
 
   &.parallel .plan-node-body {
