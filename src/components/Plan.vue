@@ -169,7 +169,7 @@
         </div>
       </div>
     </div>
-    <div class="overflow-auto flex-grow-1 flex-shrink-1 mt-1" v-else v-dragscroll v-on:mousedown="menuHidden = true">
+    <div class="overflow-auto flex-grow-1 flex-shrink-1 mt-1" ref="planscroll" v-else v-on:mousedown="menuHidden = true">
       <div class="plan h-100 w-100 d-flex grab-bing">
         <ul class="node-children">
           <li>
@@ -192,10 +192,7 @@ import { cost, duration, rows } from '@/filters';
 import { HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
 import { IPlan } from '../iplan';
 
-import VueDragscroll from 'vue-dragscroll';
-Vue.use(VueDragscroll);
-
-import { dragscroll } from 'vue-dragscroll';
+import Dragscroll from '@/dragscroll';
 
 @Component({
   name: 'plan',
@@ -203,7 +200,6 @@ import { dragscroll } from 'vue-dragscroll';
     PlanNode,
   },
   directives: {
-    dragscroll,
   },
   filters: {
     cost,
@@ -241,6 +237,11 @@ export default class Plan extends Vue {
 
   private planService = new PlanService();
   private nodeProps = NodeProp;
+
+  private mounted(): void {
+    const el: Element = this.$refs.planscroll as Element;
+    const scroll = new Dragscroll(el);
+  }
 
   private created(): void {
     const savedOptions = localStorage.getItem('viewOptions');
