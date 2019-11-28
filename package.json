@@ -25,13 +25,11 @@
     "@types/lodash": "^4.14.141",
     "clarinet": "^0.12.3",
     "core-js": "^3.4.4",
-    "dragscroll": "0.0.8",
     "highlight.js": "^9.15.10",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
-    "vue-dragscroll": "^1.10.2",
     "vue-property-decorator": "^8.2.2"
   },
   "devDependencies": {
