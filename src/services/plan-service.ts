@@ -285,8 +285,11 @@ export class PlanService {
       // Remove any begining "
       line = line.replace(/^\s*"/, '');
 
+
+      const emptyLineRegex = '^\s*$';
+      const headerRegex = '^\\s*(QUERY|---|#).*$';
       const prefixRegex = '^(\\s*->\\s*|\\s*)';
-      const typeRegex = '(\\S.*?)';
+      const typeRegex = '([^\\r\\n\\t\\f\\v\\:\\(]*?)';
       // tslint:disable-next-line:max-line-length
       const estimationRegex = '\\(cost=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\s+rows=(\\d+)\\s+width=(\\d+)\\)';
       const nonCapturingGroupOpen = '(?:';
@@ -297,10 +300,9 @@ export class PlanService {
       const actualRegex = '(?:actual\\stime=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\srows=(\\d+)\\sloops=(\\d+)|actual\\srows=(\\d+)\\sloops=(\\d+)|(never\\s+executed))';
       const optionalGroup = '?';
 
-      const a = new RegExp(
-        prefixRegex,
-        'gm',
-      );
+      const emptyLineMatches = new RegExp(emptyLineRegex).exec(line);
+      const headerMatches = new RegExp(headerRegex).exec(line);
+
       /*
        * Groups
        * 1: prefix
@@ -328,7 +330,7 @@ export class PlanService {
       const nodeRegex = new RegExp(
         prefixRegex +
         typeRegex +
-        '\\s+' +
+        '\\s*' +
         nonCapturingGroupOpen +
           (nonCapturingGroupOpen + estimationRegex + '\\s+' +
            openParenthesisRegex + actualRegex + closeParenthesisRegex +
@@ -337,7 +339,7 @@ export class PlanService {
           nonCapturingGroupOpen + estimationRegex + nonCapturingGroupClose +
           '|' +
           nonCapturingGroupOpen + openParenthesisRegex + actualRegex + closeParenthesisRegex + nonCapturingGroupClose +
-        nonCapturingGroupClose +
+        nonCapturingGroupClose + '*' +
         '\\s*$',
         'gm',
       );
@@ -386,7 +388,9 @@ export class PlanService {
       const extraRegex = /^(\s*)(\S.*\S)\s*$/g;
       const extraMatches = extraRegex.exec(line);
 
-      if (nodeMatches) {
+      if (emptyLineMatches || headerMatches) {
+        return;
+      } else if (nodeMatches && !cteMatches && !subMatches) {
         const prefix = nodeMatches[1];
         const neverExecuted = nodeMatches[13];
         const newNode: Node = new Node(nodeMatches[2]);
