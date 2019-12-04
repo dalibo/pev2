@@ -70,34 +70,39 @@
           </button>
         </template>
       </div>
-      <div v-if="plan.planStats.triggers.length" class="d-inline-block border-left px-2 position-relative">
+      <div class="d-inline-block border-left px-2 position-relative">
         <span class="stat-label">Triggers: </span>
-        <span class="stat-value">
-          <span :class="'mb-0 p-0 px-1 alert ' + triggerDurationClass(totalTriggerDurationPercent)" v-html="$options.filters.duration(triggersTotalDuration)"></span>
-        </span>
-        <button @click.prevent="showTriggers = !showTriggers" class="bg-transparent border-0 p-0 m-0 pl-1">
-          <i class="fa fa-caret-down text-muted"></i>
-        </button>
-        <div class="plan-triggers-container text-left" v-if="showTriggers">
-          <button class="btn btn-close pull-right" v-on:click="showTriggers = false">
-            <i class="fa fa-close"></i>
+        <template v-if="plan.planStats.triggers.length">
+          <span class="stat-value">
+            <span :class="'mb-0 p-0 px-1 alert ' + triggerDurationClass(totalTriggerDurationPercent)" v-html="$options.filters.duration(triggersTotalDuration)"></span>
+          </span>
+          <button @click.prevent="showTriggers = !showTriggers" class="bg-transparent border-0 p-0 m-0 pl-1">
+            <i class="fa fa-caret-down text-muted"></i>
           </button>
-          <h3>Triggers</h3>
-          <div v-for="(trigger, index) in plan.planStats.triggers">
-            {{ trigger['Trigger Name'] }}
-            <br>
-            <span class="text-muted">Called</span> {{ trigger['Calls'] }}<span class="text-muted">&times</span>
-            <span class="float-right">
-              <span :class="'p-0 px-1 alert ' + triggerDurationClass(triggerDurationPercent(trigger))" v-html="$options.filters.duration(trigger.Time)"></span>
-              | {{ triggerDurationPercent(trigger) }}<span class="text-muted">%</span>
-            </span>
-            <br>
-            <span class="text-muted" v-if="trigger.Relation">on</span>
-            {{ trigger.Relation }}
-            <div class="clearfix"></div>
-            <hr v-if="index != plan.planStats.triggers.length - 1" class="my-2">
+          <div class="plan-triggers-container text-left" v-if="showTriggers">
+            <button class="btn btn-close pull-right" v-on:click="showTriggers = false">
+              <i class="fa fa-close"></i>
+            </button>
+            <h3>Triggers</h3>
+            <div v-for="(trigger, index) in plan.planStats.triggers">
+              {{ trigger['Trigger Name'] }}
+              <br>
+              <span class="text-muted">Called</span> {{ trigger['Calls'] }}<span class="text-muted">&times</span>
+              <span class="float-right">
+                <span :class="'p-0 px-1 alert ' + triggerDurationClass(triggerDurationPercent(trigger))" v-html="$options.filters.duration(trigger.Time)"></span>
+                | {{ triggerDurationPercent(trigger) }}<span class="text-muted">%</span>
+              </span>
+              <br>
+              <span class="text-muted" v-if="trigger.Relation">on</span>
+              {{ trigger.Relation }}
+              <div class="clearfix"></div>
+              <hr v-if="index != plan.planStats.triggers.length - 1" class="my-2">
+            </div>
           </div>
-        </div>
+        </template>
+        <span v-else class="text-muted">
+          N/A
+        </span>
       </div>
       <button @click="showHideSource" :class="['btn btn-sm ml-auto p-0 px-2', {'text-primary': showSource}]" title="View source">
         <i class="fa fa-code p-0"></i>
