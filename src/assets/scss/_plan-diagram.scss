@@ -1,0 +1,35 @@
+.plan-diagram {
+  line-height: 0.85em;
+  &.plan-diagram-top {
+    max-height: 30%;
+  }
+  &.plan-diagram-left {
+    table tr td:nth-child(2) {
+      min-width: 200px;
+    }
+  }
+  font-family: $font-family-sans-serif;
+
+  .legend ul li {
+    font-size: $font-size-base;
+    span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+  }
+
+  table {
+    cursor: pointer;
+  }
+  th {
+    text-transform: uppercase;
+    font-size: $font-size-base;
+    font-weight: 600;
+    margin: 0;
+    color: $text-color;
+    width: 10%;
+    white-space: nowrap;
+  }
+}

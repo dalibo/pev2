@@ -74,7 +74,7 @@
         <span class="stat-label">Triggers: </span>
         <template v-if="plan.planStats.triggers.length">
           <span class="stat-value">
-            <span :class="'mb-0 p-0 px-1 alert ' + triggerDurationClass(totalTriggerDurationPercent)" v-html="$options.filters.duration(triggersTotalDuration)"></span>
+            <span :class="'mb-0 p-0 px-1 alert ' + durationClass(totalTriggerDurationPercent)" v-html="$options.filters.duration(triggersTotalDuration)"></span>
           </span>
           <button @click.prevent="showTriggers = !showTriggers" class="bg-transparent border-0 p-0 m-0 pl-1">
             <i class="fa fa-caret-down text-muted"></i>
@@ -89,7 +89,7 @@
               <br>
               <span class="text-muted">Called</span> {{ trigger['Calls'] }}<span class="text-muted">&times</span>
               <span class="float-right">
-                <span :class="'p-0 px-1 alert ' + triggerDurationClass(triggerDurationPercent(trigger))" v-html="$options.filters.duration(trigger.Time)"></span>
+                <span :class="'p-0 px-1 alert ' + durationClass(triggerDurationPercent(trigger))" v-html="$options.filters.duration(trigger.Time)"></span>
                 | {{ triggerDurationPercent(trigger) }}<span class="text-muted">%</span>
               </span>
               <br>
@@ -127,13 +127,17 @@
           classic
         </button>
       </div>
+      <div class="form-check mr-2 border-left pl-2">
+        <input id="showDiagram" type="checkbox" v-model="viewOptions.showDiagram" class="form-check-input">
+        <label for="showDiagram" class="form-check-label"><i class="fa fa-align-left"></i> Diagram</label>
+      </div>
       <div class="form-group mr-2 pl-2 border-left">
         <label class="mr-2 text-muted">Graph metric:</label>
         <div class="btn-group btn-group-xs">
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!rootNode[nodeProps.ACTUAL_DURATION]">duration</button>
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="rootNode[nodeProps.ACTUAL_ROWS] === undefined">rows</button>
-          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST" :disabled="rootNode[nodeProps.TOTAL_COST] === undefined">cost</button>
+          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
         </div>
       </div>
       <div class="form-check mr-2 pl-2 border-left">
@@ -145,6 +149,7 @@
         <label for="showPlannerEstimate" class="form-check-label">Estimations</label>
       </div>
     </div>
+
 
     <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
       <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
@@ -174,13 +179,21 @@
         </div>
       </div>
     </div>
-    <div class="overflow-auto flex-grow-1 flex-shrink-1 mt-1" ref="planscroll" v-else v-on:mousedown="menuHidden = true">
-      <div class="plan h-100 w-100 d-flex grab-bing">
-        <ul class="node-children">
-          <li>
-            <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" ref="root"/>
-          </li>
-        </ul>
+    <div v-else class="overflow-hidden flex-grow-1 flex-shrink-1 d-flex">
+      <div ref="diagram"
+           class="plan-diagram overflow-auto flex-shrink-0 border-right plan-diagram-left h-100"
+        v-if="viewOptions.showDiagram"
+      >
+        <diagram :data="flat" :plan="plan" :showNode="showNode" v-if="flat"></diagram>
+      </div>
+      <div ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1" v-on:mousedown="menuHidden = true">
+        <div class="plan h-100 w-100 d-flex grab-bing">
+          <ul class="node-children">
+            <li>
+              <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" ref="root"/>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -188,35 +201,50 @@
 
 <script lang="ts">
 import * as _ from 'lodash';
+import tippy from 'tippy.js';
 
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
+import Diagram from '@/components/Diagram.vue';
 import { HelpService, scrollChildIntoParentView } from '@/services/help-service';
 import { PlanService } from '@/services/plan-service';
-import { cost, duration, rows } from '@/filters';
+import { cost, duration, durationClass, rows } from '@/filters';
 import { HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
 import { IPlan } from '../iplan';
+import Node from '../inode';
 
 import Dragscroll from '@/dragscroll';
+
+import VueTippy, { TippyComponent } from 'vue-tippy';
+Vue.use(VueTippy);
+Vue.component('tippy', TippyComponent);
 
 @Component({
   name: 'plan',
   components: {
     PlanNode,
+    Diagram,
   },
   directives: {
   },
   filters: {
     cost,
     duration,
+    durationClass,
     rows,
   },
 })
 export default class Plan extends Vue {
+  public $refs!: {
+    plan: HTMLElement,
+    root: PlanNode,
+  };
+
   @Prop(String) private planSource!: string;
   @Prop(String) private planQuery!: string;
   private plan!: IPlan | null;
   private rootNode!: any;
+  private flat: any[] = [];
   private menuHidden: boolean = true;
   private validationMessage: string = '';
   private showTriggers: boolean = false;
@@ -224,6 +252,7 @@ export default class Plan extends Vue {
   private sourceTabActive: string = 'plan';
 
   private helpService = new HelpService();
+  private lodash = _;
 
   private viewOptions: any = {
     menuHidden: true,
@@ -234,6 +263,7 @@ export default class Plan extends Vue {
     highlightType: HighlightType.NONE,
     viewMode: ViewMode.FULL,
     orientation: Orientation.TWOD,
+    showDiagram: true,
   };
 
   private highlightTypes = HighlightType;
@@ -244,7 +274,7 @@ export default class Plan extends Vue {
   private nodeProps = NodeProp;
 
   private mounted(): void {
-    const el: Element = this.$refs.planscroll as Element;
+    const el: Element = this.$refs.plan as Element;
     const scroll = new Dragscroll(el);
   }
 
@@ -271,12 +301,22 @@ export default class Plan extends Vue {
       maxRows: content.maxRows || null,
       maxCost: content.maxCost || null,
       maxDuration: content.maxDuration || null,
+      maxSharedBlocks: content.maxSharedBlocks || null,
+      maxTempBlocks: content.maxTempBlocks || 0,
       triggers: content.Triggers || [],
     };
 
     window.setTimeout(() => {
       this.showNode(this.$refs.root as PlanNode, true, false);
+      // build the diagram structure
+      // with level and reference to PlanNode components for interaction
+      if (!this.plan) {
+        return;
+      }
+      const components = this.plan.nodeComponents;
+      this.flatten(this.flat, 0, this.rootNode, components, true, []);
     }, 200);
+
   }
 
   @Watch('viewOptions', {deep: true})
@@ -297,7 +337,7 @@ export default class Plan extends Vue {
   }
 
   private showNode(nodeCmp: PlanNode, shouldCenter: boolean, highlight: boolean) {
-    const parent = document.querySelector('.plan-container .overflow-auto');
+    const parent = this.$refs.plan;
     if (!parent) {
       return;
     }
@@ -332,15 +372,57 @@ export default class Plan extends Vue {
     return _.round(time / executionTime * 100);
   }
 
-  private triggerDurationClass(triggerDurationPercent: number) {
+
+  private flatten(output: any[], level: number, node: Node, components: PlanNode[], isLast: boolean,
+                  branches: number[]) {
+    // [level, node, isLastSibbling, branches]
+    output.push([level, components.shift(), isLast, _.concat([], branches)]);
+    if (!isLast) {
+      branches.push(level);
+    }
+
+    _.each(node.Plans, (subnode) => {
+      this.flatten(
+        output,
+        level + 1,
+        subnode,
+        components,
+        subnode === _.last(node.Plans),
+        branches,
+      );
+    });
+    if (!isLast) {
+      branches.pop();
+    }
+  }
+
+  private toggleDiagram(): void {
+    this.viewOptions.showDiagram = !this.viewOptions.showDiagram;
+  }
+
+  private timelineTooltip(cmp: PlanNode): string {
+    if (this.plan) {
+      return [
+        'Duration: ',
+        duration(cmp.node[NodeProp.ACTUAL_DURATION], true),
+        ' | ',
+        cmp.executionTimePercent,
+        '%',
+      ].join('');
+    }
+    return '';
+  }
+
+  private durationClass(i: number) {
     let c;
-    const i = triggerDurationPercent;
     if (i > 90) {
       c = 4;
     } else if (i > 40) {
       c = 3;
     } else if (i > 10) {
       c = 2;
+    } else {
+      c = 1;
     }
     if (c) {
       return 'c-' + c;
@@ -374,5 +456,5 @@ export default class Plan extends Vue {
 
 <style lang="scss">
 @import '../assets/scss/plan';
-
+@import '../assets/scss/plan-diagram';
 </style>

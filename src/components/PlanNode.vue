@@ -169,7 +169,8 @@ import * as _ from 'lodash';
   },
 })
 export default class PlanNode extends Vue {
-  @Prop(Object) private node!: any;
+  @Prop(Object) public node!: any;
+  public executionTimePercent: number = NaN;
   @Prop(Object) private plan!: any;
   @Prop(Object) private viewOptions!: any;
 
@@ -178,7 +179,6 @@ export default class PlanNode extends Vue {
   private collapsed: boolean = false;
 
   // calculated properties
-  private executionTimePercent: number = NaN;
   private costPercent: number = NaN;
   private barWidth: number = 0;
   private highlightValue?: string | null;
@@ -218,6 +218,7 @@ export default class PlanNode extends Vue {
     if (this.node[NodeProp.COSTLIEST_NODE]) {
       this.plan.costliestNode = this;
     }
+    this.plan.nodeComponents.push(this);
   }
 
   private calculateDuration() {
