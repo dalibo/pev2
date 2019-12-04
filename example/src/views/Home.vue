@@ -30,7 +30,7 @@
         <textarea :class="['form-control', draggingPlan ? 'dropzone-over' : '']" id="planInput" rows="8" v-model="planInput" @dragenter="draggingPlan = true" @dragleave="draggingPlan = false" @drop.prevent="handleDrop" placeholder="Paste execution plan\nOr drop a file"></textarea>
       </div>
       <div class="form-group">
-        <label for="queryInput">Query</label>
+        <label for="queryInput">Query <span class="small text-muted">(optional)</span></label>
         <textarea :class="['form-control', draggingQuery ? 'dropzone-over' : '']" id="queryInput" rows="8" v-model="queryInput" @dragenter="draggingQuery = true" @dragleave="draggingQuery = false" @drop.prevent="handleDrop" placeholder="Paste corresponding SQL query\nOr drop a file"></textarea>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>

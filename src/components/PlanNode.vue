@@ -30,13 +30,6 @@
           </span>
         </header>
 
-        <button v-if="plan.query && viewOptions.viewMode === viewModes.FULL" title="view corresponding query"
-          class="btn btn-sm pull-right py-0 btn-link" v-on:click="showQuery = !showQuery">
-          <small>
-            <i class="fa fa-database"></i>
-          </small>
-        </button>
-
         <div v-if="viewOptions.viewMode === viewModes.FULL" class="font-italic text-left">
           <div v-if="node[nodeProps.RELATION_NAME]">
             <span class="text-muted">on </span>
@@ -70,14 +63,6 @@
         </div>
 
         <div class="clearfix"></div>
-
-        <div v-if="showQuery" class="plan-query-container">
-          <button class="btn btn-close pull-right" v-on:click="showQuery = false">
-            <i class="fa fa-close"></i>
-          </button>
-          <h3>query</h3>
-          <pre class="plan-query-text"><code v-html="getFormattedQuery()"></code></pre>
-        </div>
 
         <div v-if="viewOptions.highlightType !== highlightTypes.NONE && highlightValue !== null">
           <div class="progress node-bar-container" style="height: 5px;">
@@ -166,7 +151,6 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { HelpService } from '@/services/help-service';
 import { ColorService } from '@/services/color-service';
-import { SyntaxHighlightService } from '@/services/syntax-highlight-service';
 import { cost, duration, factor, formatNodeProp, keysToString, truncate, rows } from '@/filters';
 import { EstimateDirection, HighlightType, NodeProp, nodePropTypes, Orientation,
          PropType, ViewMode, WorkerProp } from '@/enums';
@@ -191,7 +175,6 @@ export default class PlanNode extends Vue {
 
   // UI flags
   private showDetails: boolean = false;
-  private showQuery: boolean = false;
   private collapsed: boolean = false;
 
   // calculated properties
@@ -217,7 +200,6 @@ export default class PlanNode extends Vue {
   private workerProps = WorkerProp;
   private helpService = new HelpService();
   private colorService = new ColorService();
-  private syntaxHighlightService = new SyntaxHighlightService();
   private lodash = _;
 
   private created(): void {
@@ -397,48 +379,6 @@ export default class PlanNode extends Vue {
       return 'c-' + c;
     }
     return false;
-  }
-
-  private getFormattedQuery(): string {
-    const keyItems: string[] = [];
-
-    // relation name will be highlighted for SCAN nodes
-    const relationName: string = this.node[NodeProp.RELATION_NAME];
-    if (relationName) {
-      keyItems.push(this.node[NodeProp.SCHEMA] + '.' + relationName);
-      keyItems.push(' ' + relationName);
-      keyItems.push(' ' + this.node[NodeProp.ALIAS] + ' ');
-    }
-
-    // group key will be highlighted for AGGREGATE nodes
-    let groupKey: string[] | string = this.node[NodeProp.GROUP_KEY];
-    if (groupKey) {
-      if (_.isArray(groupKey)) {
-        groupKey = groupKey.join(', ');
-      }
-      keyItems.push('GROUP BY ' + groupKey);
-    }
-
-    // hash condition will be highlighted for HASH JOIN nodes
-    let hashCondition: string = this.node[NodeProp.HASH_CONDITION];
-    if (hashCondition) {
-      hashCondition = hashCondition.replace('(', '').replace(')', '');
-      keyItems.push(hashCondition);
-
-      // also use reversed condition
-      keyItems.push(_.reverse(hashCondition.split(' ')).join(' '));
-    }
-
-    let sortKey: string[] | string = this.node[NodeProp.SORT_KEY];
-    if (sortKey) {
-      sortKey = _.map(sortKey, (k) => k.replace('(', '').replace(')', ''));
-      keyItems.push('ORDER BY ' + sortKey.join(', '));
-    }
-
-    if (this.node[NodeProp.NODE_TYPE].toUpperCase() === 'LIMIT') {
-      keyItems.push('LIMIT');
-    }
-    return this.syntaxHighlightService.highlight(this.plan.query, keyItems);
   }
 
   private toggleCollapsed() {
