@@ -26,7 +26,7 @@
     "core-js": "^3.4.5",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "tippy.js": "^4.3.5",
+    "tippy.js": "^5.1.3",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.2.2",
