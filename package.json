@@ -23,7 +23,7 @@
     "@types/dragscroll": "0.0.0",
     "@types/lodash": "^4.14.141",
     "clarinet": "^0.12.3",
-    "core-js": "^3.4.5",
+    "core-js": "^3.6.4",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "tippy.js": "^5.2.0",
