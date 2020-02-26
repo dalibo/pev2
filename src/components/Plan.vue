@@ -274,6 +274,10 @@ export default class Plan extends Vue {
   private nodeProps = NodeProp;
 
   private mounted(): void {
+    this.handleScroll();
+  }
+
+  private handleScroll(): void {
     const el: Element = this.$refs.plan as Element;
     const scroll = new Dragscroll(el);
   }
@@ -322,6 +326,14 @@ export default class Plan extends Vue {
   @Watch('viewOptions', {deep: true})
   private onViewOptionsChanged(val: any, oldVal: any) {
     localStorage.setItem('viewOptions', JSON.stringify(this.viewOptions));
+  }
+
+  @Watch('showSource')
+  private onShowSource(val: any) {
+    // reactivate dragscroll when switching from source to plan
+    if (!val) {
+      Vue.nextTick(this.handleScroll);
+    }
   }
 
   private showHideMenu(): void {
