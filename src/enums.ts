@@ -179,6 +179,9 @@ nodePropTypes[NodeProp.PLANNER_ESTIMATE_DIRECTION] = PropType.estimateDirection;
 nodePropTypes[NodeProp.IO_READ_TIME] = PropType.duration;
 nodePropTypes[NodeProp.IO_WRITE_TIME] = PropType.duration;
 
+nodePropTypes[NodeProp.EXCLUSIVE_IO_READ_TIME] = PropType.duration;
+nodePropTypes[NodeProp.EXCLUSIVE_IO_WRITE_TIME] = PropType.duration;
+
 export class WorkerProp {
   // plan property keys
   public static WORKER_NUMBER: string = 'Worker Number';
