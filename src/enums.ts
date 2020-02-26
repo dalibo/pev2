@@ -88,6 +88,8 @@ export class NodeProp {
   public static LOCAL_READ_BLOCKS: string = 'Local Read Blocks';
   public static LOCAL_DIRTIED_BLOCKS: string = 'Local Dirtied Blocks';
   public static LOCAL_WRITTEN_BLOCKS: string = 'Local Written Blocks';
+  public static IO_READ_TIME: string = 'I/O Read Time';
+  public static IO_WRITE_TIME: string = 'I/O Write Time';
 
   // computed by pev
   public static COSTLIEST_NODE: string = '*Costiest Node (by cost)';
@@ -140,6 +142,9 @@ nodePropTypes[NodeProp.ACTUAL_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.ACTUAL_COST] = PropType.cost;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_FACTOR] = PropType.factor;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_DIRECTION] = PropType.estimateDirection;
+
+nodePropTypes[NodeProp.IO_READ_TIME] = PropType.duration;
+nodePropTypes[NodeProp.IO_WRITE_TIME] = PropType.duration;
 
 export class WorkerProp {
   // plan property keys

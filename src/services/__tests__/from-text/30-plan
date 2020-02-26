@@ -1,0 +1,10 @@
+# I/O Timings
+BEGIN; SET track_io_timing = ON; EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) SELECT * FROM pg_class; COMMIT;
+                                               QUERY PLAN
+---------------------------------------------------------------------------------------------------------
+ Seq Scan on pg_class  (cost=0.00..16.95 rows=395 width=265) (actual time=0.003..0.044 rows=395 loops=1)
+   Buffers: shared hit=10 read=3 written=1
+   I/O Timings: read=0.014 write=0.005
+ Planning Time: 0.327 ms
+ Execution Time: 0.105 ms
+(5 lignes)
