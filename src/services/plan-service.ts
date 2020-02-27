@@ -589,6 +589,10 @@ export class PlanService {
           return;
         }
 
+        if (this.parseIOTimings(extraMatches[2], element)) {
+          return;
+        }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, '');
         // try to convert to number
@@ -667,5 +671,34 @@ export class PlanService {
     return _.find(node[NodeProp.WORKERS], (worker) => {
       return worker[WorkerProp.WORKER_NUMBER] === workerNumber;
     });
+  }
+
+  private parseIOTimings(text: string, el: Node): boolean {
+    /*
+     * Groups
+     */
+    const iotimingsRegex = /I\/O Timings:\s+(.*)\s*$/g;
+    const iotimingsMatches = iotimingsRegex.exec(text);
+
+    /*
+     * Groups:
+     * 1: type
+     * 2: info
+     */
+    if (iotimingsMatches) {
+      // Initiate with default value
+      el[NodeProp.IO_READ_TIME] = 0;
+      el[NodeProp.IO_WRITE_TIME] = 0;
+
+      _.each(iotimingsMatches[1].split(/\s+/), (timing) => {
+        const s = timing.split(/=/);
+        const method = s[0];
+        const value = parseFloat(s[1]);
+        const prop = ['I/O', _.capitalize(method), 'Time'].join(' ');
+        el[prop] = value;
+      });
+      return true;
+    }
+    return false;
   }
 }
