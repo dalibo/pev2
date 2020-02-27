@@ -10,13 +10,6 @@ export class PlanService {
 
   private static instance: PlanService;
 
-  private maxRows: number | undefined;
-  private maxCost: number | undefined;
-  private maxDuration: number | undefined;
-  private maxSharedBlocks: number | undefined;
-  private maxTempBlocks: number | undefined;
-  private maxLocalBlocks: number | undefined;
-
   public createPlan(planName: string, planContent: any, planQuery: string): IPlan {
     // remove any extra white spaces in the middle of query
     // (\S) start match after any non-whitespace character => group 1
@@ -42,14 +35,7 @@ export class PlanService {
   public analyzePlan(plan: IPlan) {
     this.processNode(plan.content.Plan);
 
-    this.calculateMaximums(plan.content.Plan);
-
-    plan.content.maxRows = this.maxRows;
-    plan.content.maxCost = this.maxCost;
-    plan.content.maxDuration = this.maxDuration;
-    plan.content.maxSharedBlocks = this.maxSharedBlocks;
-    plan.content.maxTempBlocks = this.maxTempBlocks;
-    plan.content.maxLocalBlocks = this.maxLocalBlocks;
+    this.calculateMaximums(plan.content);
   }
 
   // recursively walk down the plan to compute various metrics
@@ -76,27 +62,29 @@ export class PlanService {
 
   }
 
-  public calculateMaximums(root: IPlan) {
+  public calculateMaximums(content: any) {
     function recurse(nodes: any[]): any[] {
       return _.map(nodes, (node) => [node, recurse(node[NodeProp.PLANS])]);
     }
-    const flat = _.flattenDeep(recurse([root]));
+    const flat = _.flattenDeep(recurse([content.Plan as IPlan]));
 
     const largest = _.maxBy(flat, NodeProp.ACTUAL_ROWS);
     if (largest) {
-      this.maxRows = largest[NodeProp.ACTUAL_ROWS];
+      content.maxRows = largest[NodeProp.ACTUAL_ROWS];
     }
 
     const costliest = _.maxBy(flat, NodeProp.ACTUAL_COST);
     if (costliest) {
       costliest[NodeProp.COSTLIEST_NODE] = true;
-      this.maxCost = costliest[NodeProp.ACTUAL_COST];
+      content.maxCost = costliest[NodeProp.ACTUAL_COST];
+      content.costliest = costliest;
     }
 
     const slowest = _.maxBy(flat, NodeProp.ACTUAL_DURATION);
     if (slowest) {
       slowest[NodeProp.SLOWEST_NODE] = true;
-      this.maxDuration = slowest[NodeProp.ACTUAL_DURATION];
+      content.maxDuration = slowest[NodeProp.ACTUAL_DURATION];
+      content.slowest = slowest;
     }
 
     function sumShared(o: Node) {
@@ -109,7 +97,7 @@ export class PlanService {
       return sumShared(o);
     });
     if (highestShared) {
-      this.maxSharedBlocks = sumShared(highestShared);
+      content.maxSharedBlocks = sumShared(highestShared);
     }
 
     function sumTemp(o: Node) {
@@ -122,7 +110,7 @@ export class PlanService {
       return sumTemp(o);
     });
     if (highestTemp) {
-      this.maxTempBlocks = sumTemp(highestTemp);
+      content.maxTempBlocks = sumTemp(highestTemp);
     }
 
     function sumLocal(o: Node) {
@@ -135,7 +123,7 @@ export class PlanService {
       return sumLocal(o);
     });
     if (highestLocal) {
-      this.maxLocalBlocks = sumLocal(highestLocal);
+      content.maxLocalBlocks = sumLocal(highestLocal);
     }
   }
 
