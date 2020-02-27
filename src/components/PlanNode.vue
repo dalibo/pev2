@@ -212,13 +212,11 @@ export default class PlanNode extends Vue {
 
     this.plannerRowEstimateDirection = this.node[NodeProp.PLANNER_ESTIMATE_DIRECTION];
     this.plannerRowEstimateValue = this.node[NodeProp.PLANNER_ESTIMATE_FACTOR];
-    if (this.node[NodeProp.SLOWEST_NODE]) {
-      this.plan.slowestNode = this;
-    }
-    if (this.node[NodeProp.COSTLIEST_NODE]) {
-      this.plan.costliestNode = this;
-    }
     this.plan.nodeComponents.push(this);
+  }
+
+  private destroyed(): void {
+    _.remove(this.plan.nodeComponents, (cmp) => cmp === this);
   }
 
   private calculateDuration() {

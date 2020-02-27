@@ -37,7 +37,7 @@
     </div>
     <table class="my-1 table-hover">
       <tbody>
-        <tr v-for="row, index in data" :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="showNode(row[1], false, true)">
+        <tr v-for="row, index in flat" :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="showNode(row[1], false, true)">
           <th class="node-type pr-2">
             <template v-for="i in lodash.range(row[0])">
               <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
@@ -46,31 +46,31 @@
           </th>
           <td>
             <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-if="viewOptions.metric == metrics.time">
-              <div class="progress-bar border-left bg-secondary" role="progressbar" :style="'width: ' + row[1].node[nodeProps.ACTUAL_DURATION] / (plan.planStats.executionTime || plan.content.Plan[nodeProps.ACTUAL_TOTAL_TIME]) * 100 + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar border-left bg-secondary" role="progressbar" :style="'width: ' + row[1][nodeProps.ACTUAL_DURATION] / (plan.planStats.executionTime || plan.content.Plan[nodeProps.ACTUAL_TOTAL_TIME]) * 100 + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.rows">
-              <div class="bg-secondary" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.ACTUAL_ROWS] / plan.planStats.maxRows * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-secondary" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.ACTUAL_ROWS] / plan.planStats.maxRows * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
             </div>
             <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.cost">
-              <div class="bg-secondary" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.ACTUAL_COST] / plan.planStats.maxCost * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-secondary" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.ACTUAL_COST] / plan.planStats.maxCost * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
             </div>
             <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.buffers && viewOptions.buffersMetric == buffersMetrics.shared && plan.planStats.maxSharedBlocks">
-              <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.SHARED_HIT_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.SHARED_READ_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.SHARED_DIRTIED_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.SHARED_WRITTEN_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_HIT_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_READ_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_DIRTIED_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_WRITTEN_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
             </div>
             <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.buffers && viewOptions.buffersMetric == buffersMetrics.temp && plan.planStats.maxTempBlocks">
-              <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.TEMP_HIT_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.TEMP_READ_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.TEMP_DIRTIED_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.TEMP_WRITTEN_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_HIT_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_READ_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_DIRTIED_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_WRITTEN_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
             </div>
             <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.buffers && viewOptions.buffersMetric == buffersMetrics.local && plan.planStats.maxLocalBlocks">
-              <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.LOCAL_HIT_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.LOCAL_READ_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.LOCAL_DIRTIED_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1].node[nodeProps.LOCAL_WRITTEN_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_HIT_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_READ_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_DIRTIED_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_WRITTEN_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
             </div>
           </td>
         </tr>
@@ -84,7 +84,7 @@ import * as _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { duration, durationClass, rows } from '@/filters';
 import { BuffersMetric, NodeProp, Metric } from '../enums';
-import PlanNode from '@/components/PlanNode.vue';
+import Node from '@/inode';
 import { IPlan } from '../iplan';
 
 @Component({
@@ -93,10 +93,10 @@ import { IPlan } from '../iplan';
   },
 })
 export default class Diagram extends Vue {
-  @Prop() private data!: any[];
   @Prop() private plan!: IPlan;
   @Prop() private showNode!: () => void;
 
+  private flat: [] = [];
   private lodash = _;
   private nodeProps = NodeProp;
   private metrics = Metric;
@@ -112,6 +112,7 @@ export default class Diagram extends Vue {
     if (savedOptions) {
       _.assignIn(this.viewOptions, JSON.parse(savedOptions));
     }
+    this.flatten(this.flat, 0, this.plan.content.Plan, true, []);
   }
 
   @Watch('viewOptions', {deep: true})
@@ -119,45 +120,42 @@ export default class Diagram extends Vue {
     localStorage.setItem('diagramViewOptions', JSON.stringify(this.viewOptions));
   }
 
-  private tooltip(cmp: PlanNode): string {
+  private tooltip(node: Node): string {
     switch (this.viewOptions.metric) {
       case Metric.time:
-        return this.timeTooltip(cmp);
+        return this.timeTooltip(node);
       case Metric.rows:
-        return this.rowsTooltip(cmp);
+        return this.rowsTooltip(node);
       case Metric.cost:
-        return this.costTooltip(cmp);
+        return this.costTooltip(node);
       case Metric.buffers:
-        return this.buffersTooltip(cmp);
+        return this.buffersTooltip(node);
     }
     return '';
   }
 
-  private timeTooltip(cmp: PlanNode): string {
+  private timeTooltip(node: Node): string {
     return [
       'Duration: ',
-      duration(cmp.node[NodeProp.ACTUAL_DURATION], true),
-      ' | ',
-      cmp.executionTimePercent,
-      '%',
+      duration(node[NodeProp.ACTUAL_DURATION], true),
     ].join('');
   }
 
-  private rowsTooltip(cmp: PlanNode): string {
+  private rowsTooltip(node: Node): string {
     return [
       'Rows: ',
-      rows(cmp.node[NodeProp.ACTUAL_ROWS]),
+      rows(node[NodeProp.ACTUAL_ROWS]),
     ].join('');
   }
 
-  private costTooltip(cmp: PlanNode): string {
+  private costTooltip(node: Node): string {
     return [
       'Cost: ',
-      rows(cmp.node[NodeProp.ACTUAL_COST]),
+      rows(node[NodeProp.ACTUAL_COST]),
     ].join('');
   }
 
-  private buffersTooltip(cmp: PlanNode): string {
+  private buffersTooltip(node: Node): string {
     let text = '';
     let hit;
     let read;
@@ -165,22 +163,22 @@ export default class Diagram extends Vue {
     let dirtied;
     switch (this.viewOptions.buffersMetric) {
       case BuffersMetric.shared:
-        hit = cmp.node[NodeProp.SHARED_HIT_BLOCKS];
-        read = cmp.node[NodeProp.SHARED_READ_BLOCKS];
-        dirtied = cmp.node[NodeProp.SHARED_DIRTIED_BLOCKS];
-        written = cmp.node[NodeProp.SHARED_WRITTEN_BLOCKS];
+        hit = node[NodeProp.SHARED_HIT_BLOCKS];
+        read = node[NodeProp.SHARED_READ_BLOCKS];
+        dirtied = node[NodeProp.SHARED_DIRTIED_BLOCKS];
+        written = node[NodeProp.SHARED_WRITTEN_BLOCKS];
         break;
       case BuffersMetric.temp:
-        hit = cmp.node[NodeProp.TEMP_HIT_BLOCKS];
-        read = cmp.node[NodeProp.TEMP_READ_BLOCKS];
-        dirtied = cmp.node[NodeProp.TEMP_DIRTIED_BLOCKS];
-        written = cmp.node[NodeProp.TEMP_WRITTEN_BLOCKS];
+        hit = node[NodeProp.TEMP_HIT_BLOCKS];
+        read = node[NodeProp.TEMP_READ_BLOCKS];
+        dirtied = node[NodeProp.TEMP_DIRTIED_BLOCKS];
+        written = node[NodeProp.TEMP_WRITTEN_BLOCKS];
         break;
       case BuffersMetric.local:
-        hit = cmp.node[NodeProp.LOCAL_HIT_BLOCKS];
-        read = cmp.node[NodeProp.LOCAL_READ_BLOCKS];
-        dirtied = cmp.node[NodeProp.LOCAL_DIRTIED_BLOCKS];
-        written = cmp.node[NodeProp.LOCAL_WRITTEN_BLOCKS];
+        hit = node[NodeProp.LOCAL_HIT_BLOCKS];
+        read = node[NodeProp.LOCAL_READ_BLOCKS];
+        dirtied = node[NodeProp.LOCAL_DIRTIED_BLOCKS];
+        written = node[NodeProp.LOCAL_WRITTEN_BLOCKS];
         break;
     }
     text += hit ? '<br>Hit: ' + rows(hit) : '';
@@ -203,7 +201,29 @@ export default class Diagram extends Vue {
   }
 
   private nodeType(row: any[]): string {
-    return row[1].node[NodeProp.NODE_TYPE];
+    return row[1][NodeProp.NODE_TYPE];
+  }
+
+  private flatten(output: any[], level: number, node: any, isLast: boolean,
+                  branches: number[]) {
+    // [level, node, isLastSibbling, branches]
+    output.push([level, node, isLast, _.concat([], branches)]);
+    if (!isLast) {
+      branches.push(level);
+    }
+
+    _.each(node.Plans, (subnode) => {
+      this.flatten(
+        output,
+        level + 1,
+        subnode,
+        subnode === _.last(node.Plans),
+        branches,
+      );
+    });
+    if (!isLast) {
+      branches.pop();
+    }
   }
 }
 </script>

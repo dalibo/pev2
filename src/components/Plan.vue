@@ -38,7 +38,7 @@
         </template>
         <template v-else>
           <span class="stat-value" v-html="$options.filters.duration(plan.planStats.maxDuration)"></span>
-          <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showNode(plan.slowestNode, false, true)">
+          <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showSlowestNode">
             <i class="fa fa-thumb-tack text-muted"></i>
           </button>
         </template>
@@ -65,7 +65,7 @@
         </template>
         <template v-else>
           <span>{{plan.planStats.maxCost | cost}}</span>
-          <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showNode(plan.costliestNode, false, true)">
+          <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showCostliestNode">
             <i class="fa fa-thumb-tack text-muted"></i>
           </button>
         </template>
@@ -184,7 +184,7 @@
            class="plan-diagram overflow-auto flex-shrink-0 border-right plan-diagram-left h-100"
         v-if="viewOptions.showDiagram"
       >
-        <diagram :data="flat" :plan="plan" :showNode="showNode" v-if="flat"></diagram>
+        <diagram :plan="plan" :showNode="showNode"></diagram>
       </div>
       <div ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1" v-on:mousedown="menuHidden = true">
         <div class="plan h-100 w-100 d-flex grab-bing">
@@ -310,17 +310,14 @@ export default class Plan extends Vue {
       triggers: content.Triggers || [],
     };
 
-    window.setTimeout(() => {
-      this.showNode(this.$refs.root as PlanNode, true, false);
+    Vue.nextTick(() => {
+      this.showNode(this.rootNode, true, false);
       // build the diagram structure
       // with level and reference to PlanNode components for interaction
       if (!this.plan) {
         return;
       }
-      const components = this.plan.nodeComponents;
-      this.flatten(this.flat, 0, this.rootNode, components, true, []);
-    }, 200);
-
+    });
   }
 
   @Watch('viewOptions', {deep: true})
@@ -348,12 +345,21 @@ export default class Plan extends Vue {
     return this.helpService.getHelpMessage(message);
   }
 
-  private showNode(nodeCmp: PlanNode, shouldCenter: boolean, highlight: boolean) {
+  private showSlowestNode() {
+    this.showNode(this.plan!.content.slowest, true, true);
+  }
+
+  private showCostliestNode() {
+    this.showNode(this.plan!.content.costliest, true, true);
+  }
+
+  private showNode(node: any, shouldCenter: boolean, highlight: boolean) {
+    const cmp = _.find(this.plan!.nodeComponents, (c) => c.node === node);
     const parent = this.$refs.plan;
-    if (!parent) {
+    if (!parent || !cmp) {
       return;
     }
-    const child = nodeCmp.$el.querySelector('.plan-node');
+    const child = cmp.$el.querySelector('.plan-node');
 
     if (child) {
       scrollChildIntoParentView(parent, child, shouldCenter, () => {
@@ -382,30 +388,6 @@ export default class Plan extends Vue {
     const executionTime = this.plan && this.plan.planStats.executionTime || 0;
     const time = trigger.Time;
     return _.round(time / executionTime * 100);
-  }
-
-
-  private flatten(output: any[], level: number, node: Node, components: PlanNode[], isLast: boolean,
-                  branches: number[]) {
-    // [level, node, isLastSibbling, branches]
-    output.push([level, components.shift(), isLast, _.concat([], branches)]);
-    if (!isLast) {
-      branches.push(level);
-    }
-
-    _.each(node.Plans, (subnode) => {
-      this.flatten(
-        output,
-        level + 1,
-        subnode,
-        components,
-        subnode === _.last(node.Plans),
-        branches,
-      );
-    });
-    if (!isLast) {
-      branches.pop();
-    }
   }
 
   private toggleDiagram(): void {
