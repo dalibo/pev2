@@ -649,7 +649,10 @@ export class PlanService {
           value = parseFloat(value);
         }
 
-        const property = _.startCase(info[0]);
+        let property = info[0];
+        if (property.indexOf(' runtime') !== -1 || property.indexOf(' time') !== -1) {
+          property = _.startCase(property);
+        }
         element[property] = value;
       }
     });
