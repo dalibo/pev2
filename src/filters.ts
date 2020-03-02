@@ -1,28 +1,19 @@
 import * as _ from 'lodash';
+import * as moment from 'moment';
+import momentDurationFormatSetup from 'moment-duration-format';
+momentDurationFormatSetup(moment);
 import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
 
 export function duration(value: number, detail: boolean): string {
-  let dur: string = '';
-  let unit: string = '';
   detail = !!detail;
 
-  if (!detail && value < 1) {
-    dur = '<1';
-    unit = 'ms';
-  } else {
-    if (value < 1000) {
-      unit = 'ms';
-    } else if (value < 60000) {
-      value = value / 1000;
-      unit = 's';
-    } else {
-      value = value / 60000;
-      unit = 'min';
-    }
-    dur = parseFloat(value.toPrecision(3)).toLocaleString();
+  if (value < 1) {
+    return !detail ? '<1 ms' : value + 'ms';
+  } else if (value < 1000) {
+    return parseFloat(value.toPrecision(3)).toLocaleString() + 'ms';
   }
-  const compiled = _.template('${dur}&nbsp;<span class="text-muted">${unit}</span>');
-  return compiled({dur, unit});
+  const options = detail ? {} : { largest: 2 };
+  return moment.duration(value).format('w[w] d[d] h[h] m[m] s[s] SSS[ms]', options);
 }
 
 export function cost(value: number): string {
