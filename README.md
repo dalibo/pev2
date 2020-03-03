@@ -12,7 +12,7 @@ This project is a rewrite of the excellent [Postgres Explain Visualizer
 (pev)][pev]. Kudos go to [Alex Tatiyants][atatiyan].
 
 The [pev][pev] project was initialy written in early 2016 but seems to be
-abandonned since then. There was no activity at all for more than 3 years and
+abandoned since then. There was no activity at all for more than 3 years and
 counting though there are several issues open and relevant pull requests
 pending.
 
