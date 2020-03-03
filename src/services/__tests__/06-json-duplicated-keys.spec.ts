@@ -42,8 +42,8 @@ describe('PlanService', () => {
   }
 ]`;
     const json: any = planService.parseJson(source);
-    expect(json[0].Plan.Workers.length).toEqual(2);
-    expect(json[0].Plan.Workers[0]['Sort Method']).toEqual('external merge');
-    expect(json[0].Plan.Workers[0]['Actual Startup Time']).toEqual(1487.846);
+    expect(json.Plan.Workers.length).toEqual(2);
+    expect(json.Plan.Workers[0]['Sort Method']).toEqual('external merge');
+    expect(json.Plan.Workers[0]['Actual Startup Time']).toEqual(1487.846);
   });
 });
