@@ -201,7 +201,9 @@ export class PlanService {
       // continue
     }
 
-    if (isJson || /^(\s*)(\[|\{)\s*\n.*?\1(\]|\})\s*/gms.exec(source)) {
+    if (isJson) {
+      return this.parseJson(source);
+    } else if (/^(\s*)(\[|\{)\s*\n.*?\1(\]|\})\s*/gms.exec(source)) {
       return this.fromJson(source);
     }
     return this.fromText(source);
@@ -235,11 +237,7 @@ export class PlanService {
 
     const useSource: string = sourceLines.slice(firstLineIndex, lastLineIndex + 1).join('\n');
 
-    let planJson = this.parseJson(useSource);
-    if (planJson instanceof Array) {
-      planJson = planJson[0];
-    }
-    return planJson;
+    return this.parseJson(useSource);
   }
 
   // Stream parse JSON as it can contain duplicate keys (workers)
@@ -299,6 +297,9 @@ export class PlanService {
       }
     };
     parser.write(source).close();
+    if (root instanceof Array) {
+      root = root[0];
+    }
     return root;
   }
 
