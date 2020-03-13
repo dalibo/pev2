@@ -27,4 +27,5 @@ export interface IPlanStats {
   maxSharedBlocks?: number;
   maxTempBlocks?: number;
   triggers?: ITrigger[];
+  jitTime?: number;
 }
