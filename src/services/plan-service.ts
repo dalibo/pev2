@@ -419,6 +419,9 @@ export class PlanService {
       );
       const workerMatches = workerRegex.exec(line);
 
+      const jitRegex = /^(\s*)JIT:\s*$/g;
+      const jitMatches = jitRegex.exec(line);
+
       const extraRegex = /^(\s*)(\S.*\S)\s*$/g;
       const extraMatches = extraRegex.exec(line);
 
@@ -549,9 +552,15 @@ export class PlanService {
         root.Triggers = root.Triggers || [];
         root.Triggers.push({
           'Trigger Name': triggerMatches[2],
-          'Time': parseFloat(triggerMatches[3].replace(/(\s*ms)$/, '')),
+          'Time': this.parseTime(triggerMatches[3]),
           'Calls': triggerMatches[4],
         });
+      } else if (jitMatches) {
+        root.JIT = {};
+        const element = {
+          node: root.JIT,
+        };
+        elementsAtDepth.push([1, element]);
       } else if (extraMatches) {
         const prefix = extraMatches[1];
 
@@ -579,6 +588,14 @@ export class PlanService {
         }
 
         if (this.parseIOTimings(extraMatches[2], element)) {
+          return;
+        }
+
+        if (this.parseOptions(extraMatches[2], element)) {
+          return;
+        }
+
+        if (this.parseTiming(extraMatches[2], element)) {
           return;
         }
 
@@ -689,5 +706,57 @@ export class PlanService {
       return true;
     }
     return false;
+  }
+
+  private parseOptions(text: string, el: Node): boolean {
+    // Parses an options block in JIT block
+    // eg. Options: Inlining false, Optimization false, Expressions true, Deforming true
+
+    /*
+     * Groups
+     */
+    const optionsRegex = /^(\s*)Options:\s+(.*)$/g;
+    const optionsMatches = optionsRegex.exec(text);
+
+    if (optionsMatches) {
+      el.Options = {};
+      const options = optionsMatches[2].split(/\s*,\s*/);
+      let matches;
+      _.each(options, (option) => {
+        const reg = /^(\S*)\s+(.*)$/g;
+        matches = reg.exec(option);
+        el.Options[matches![1]] = JSON.parse(matches![2]);
+      });
+      return true;
+    }
+    return false;
+  }
+
+  private parseTiming(text: string, el: Node): boolean {
+    // Parses a timing block in JIT block
+    // eg. Timing: Generation 0.340 ms, Inlining 0.000 ms, Optimization 0.168 ms, Emission 1.907 ms, Total 2.414 ms
+
+    /*
+     * Groups
+     */
+    const timingRegex = /^(\s*)Timing:\s+(.*)$/g;
+    const timingMatches = timingRegex.exec(text);
+
+    if (timingMatches) {
+      el.Timing = {};
+      const timings = timingMatches[2].split(/\s*,\s*/);
+      let matches;
+      _.each(timings, (option) => {
+        const reg = /^(\S*)\s+(.*)$/g;
+        matches = reg.exec(option);
+        el.Timing[matches![1]] = this.parseTime(matches![2]);
+      });
+      return true;
+    }
+    return false;
+  }
+
+  private parseTime(text: string): number {
+    return parseFloat(text.replace(/(\s*ms)$/, ''));
   }
 }
