@@ -3,6 +3,7 @@ export enum Metric {
   rows,
   cost,
   buffers,
+  estimate_factor,
 }
 
 export enum BuffersMetric {
