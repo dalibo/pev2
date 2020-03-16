@@ -28,6 +28,13 @@
           </span>
         </template>
       </div>
+      <div class="d-inline-block border-left px-2" v-if="plan.planStats.jitTime">
+        JIT:
+        <span class="stat-value">
+          <span :class="'mb-0 p-0 px-1 alert ' + planningTimeClass(plan.planStats.jitTime / plan.planStats.executionTime * 100)"
+                 v-html="$options.filters.duration(plan.planStats.jitTime)"></span>
+        </span>
+      </div>
       <div class="d-inline-block border-left px-2">
         Slowest:
         <template v-if="!plan.planStats.maxDuration">
@@ -308,6 +315,7 @@ export default class Plan extends Vue {
       maxSharedBlocks: content.maxSharedBlocks || null,
       maxTempBlocks: content.maxTempBlocks || 0,
       triggers: content.Triggers || [],
+      jitTime: content.JIT && content.JIT.Timing && content.JIT.Timing.Total || null,
     };
 
     Vue.nextTick(() => {
