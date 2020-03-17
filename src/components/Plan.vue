@@ -194,10 +194,15 @@
         <diagram :plan="plan" :showNode="showNode"></diagram>
       </div>
       <div ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1" v-on:mousedown="menuHidden = true">
-        <div class="plan h-100 w-100 d-flex grab-bing">
-          <ul class="node-children">
+        <div class="plan h-100 w-100 d-flex flex-column grab-bing">
+          <ul class="main-plan">
             <li>
               <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" ref="root"/>
+            </li>
+          </ul>
+          <ul class="init-plans">
+            <li v-for="node in plan.initPlans">
+              <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" ref="root"/>
             </li>
           </ul>
         </div>

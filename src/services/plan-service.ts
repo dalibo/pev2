@@ -26,6 +26,7 @@ export class PlanService {
       query: planQuery,
       planStats: {},
       nodeComponents: [],
+      initPlans: [],
     };
 
     this.analyzePlan(plan);
@@ -33,13 +34,13 @@ export class PlanService {
   }
 
   public analyzePlan(plan: IPlan) {
-    this.processNode(plan.content.Plan);
+    this.processNode(plan.content.Plan, plan);
 
     this.calculateMaximums(plan.content);
   }
 
   // recursively walk down the plan to compute various metrics
-  public processNode(node: any) {
+  public processNode(node: any, plan: any) {
     this.calculatePlannerEstimate(node);
 
     _.each(node[NodeProp.PLANS], (child) => {
@@ -53,8 +54,13 @@ export class PlanService {
         }
         child[NodeProp.WORKERS] = workersLaunched || node[NodeProp.WORKERS];
       }
-      this.processNode(child);
+      if (child[NodeProp.PARENT_RELATIONSHIP] === 'InitPlan') {
+        plan.initPlans.push(child);
+      }
+      this.processNode(child, plan);
     });
+
+    _.remove(node[NodeProp.PLANS], (child: any) => child[NodeProp.PARENT_RELATIONSHIP] === 'InitPlan');
 
     // calculate actuals after processing child nodes so that actual duration
     // takes loops into account

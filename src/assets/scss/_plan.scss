@@ -72,25 +72,38 @@ $connector-line: 2px solid darken($line-color, 10%);
     list-style: none;
 
     .twod & {
-      margin: 0;
       padding: 0;
+    }
+  }
+
+  ul.main-plan, ul.node-children {
+    .twod & {
+      display: flex;
+      margin-left: auto;
+      margin-right: auto;
+      padding-top: $connector-height;
+      margin-top: -5px;
+      text-align: center;
+    }
+  }
+
+  ul {
+    .classic &:first-child {
+      padding-left: 0;
+      &>li::after,
+      &>li::before {
+        display: none;
+      }
     }
   }
 
   ul.node-children {
 
-    .twod & {
-      display: flex;
-      margin: auto;
-      padding-top: $connector-height;
-      margin-top: -5px;
-    }
-
     position: relative;
     transition: all 0.5s;
 
     // twod connector
-    .twod & ul.node-children::before {
+    .twod &::before {
       content: '';
       position: absolute;
       top: 0;
@@ -98,14 +111,6 @@ $connector-line: 2px solid darken($line-color, 10%);
       border-left: $connector-line;
       height: $connector-height;
       width: 0;
-    }
-
-    .classic &:first-child {
-      padding-left: 0;
-      &>li::after,
-      &>li::before {
-        display: none;
-      }
     }
 
     > li {
@@ -119,7 +124,6 @@ $connector-line: 2px solid darken($line-color, 10%);
       transition: all 0.5s;
 
       .twod & {
-        text-align: center;
         padding-top: $connector-height;
       }
 
@@ -208,6 +212,24 @@ $connector-line: 2px solid darken($line-color, 10%);
     }
   }
 
+  ul.init-plans {
+    padding-left: 0;
+    display: block;
+
+    .twod & {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    > li {
+      .twod & {
+        margin-left: $padding-sm;
+        margin-right: $padding-sm;
+        margin-bottom: $padding-lg;
+      }
+    }
+  }
+
   .subplan {
     border: 1px solid $line-color;
     border-radius: $border-radius-base;
@@ -223,6 +245,12 @@ $connector-line: 2px solid darken($line-color, 10%);
     .classic & {
       margin-bottom: $padding-sm;
       display: inline-block;
+    }
+
+    .twod & {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
     }
   }
 
