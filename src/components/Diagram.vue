@@ -36,7 +36,12 @@
       </ul>
     </div>
     <table class="my-1 table-hover">
-      <tbody>
+      <tbody v-for="flat, index in plans" class="border">
+        <tr v-if="index > 0">
+          <th class="text-center" colspan="2">
+            {{ flat[0][1][nodeProps.SUBPLAN_NAME] }}
+          </th>
+        </tr>
         <tr v-for="row, index in flat" :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="showNode(row[1], false, true)">
           <th class="node-type pr-2">
             <template v-for="i in lodash.range(row[0])">
@@ -96,7 +101,8 @@ export default class Diagram extends Vue {
   @Prop() private plan!: IPlan;
   @Prop() private showNode!: () => void;
 
-  private flat: [] = [];
+  // The main plan + init plans (all flatten)
+  private plans: any[][] = [[]];
   private lodash = _;
   private nodeProps = NodeProp;
   private metrics = Metric;
@@ -112,7 +118,13 @@ export default class Diagram extends Vue {
     if (savedOptions) {
       _.assignIn(this.viewOptions, JSON.parse(savedOptions));
     }
-    this.flatten(this.flat, 0, this.plan.content.Plan, true, []);
+    this.flatten(this.plans[0], 0, this.plan.content.Plan, true, []);
+
+    _.each(this.plan.initPlans, (initPlan) => {
+      const flat = [] as any[];
+      this.flatten(flat, 0, initPlan, true, []);
+      this.plans.push(flat);
+    });
   }
 
   @Watch('viewOptions', {deep: true})
