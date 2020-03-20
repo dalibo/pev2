@@ -36,19 +36,19 @@
       </ul>
     </div>
     <table class="my-1 table-hover">
-      <tbody v-for="flat, index in plans" class="border">
+      <tbody v-for="flat, index in plans">
         <tr v-if="index > 0">
-          <th class="text-center" colspan="2">
+          <th class="" colspan="2">
             {{ flat[0][1][nodeProps.SUBPLAN_NAME] }}
           </th>
         </tr>
         <tr v-for="row, index in flat" :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="showNode(row[1], false, true)">
-          <th class="node-type pr-2">
+          <td class="node-type pr-2">
             <template v-for="i in lodash.range(row[0])">
               <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
             </template>{{ index !== 0 ? (row[2] ? '└' : '├') : '' }}
             {{ nodeType(row) }}
-          </th>
+          </td>
           <td>
             <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-if="viewOptions.metric == metrics.time">
               <div class="progress-bar border-left bg-secondary" role="progressbar" :style="'width: ' + row[1][nodeProps.ACTUAL_DURATION] / (plan.planStats.executionTime || plan.content.Plan[nodeProps.ACTUAL_TOTAL_TIME]) * 100 + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
