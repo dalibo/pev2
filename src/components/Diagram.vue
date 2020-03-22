@@ -133,17 +133,25 @@ export default class Diagram extends Vue {
   }
 
   private tooltip(node: Node): string {
+    let content = '';
     switch (this.viewOptions.metric) {
       case Metric.time:
-        return this.timeTooltip(node);
+        content += this.timeTooltip(node);
+        break;
       case Metric.rows:
-        return this.rowsTooltip(node);
+        content += this.rowsTooltip(node);
+        break;
       case Metric.cost:
-        return this.costTooltip(node);
+        content += this.costTooltip(node);
+        break;
       case Metric.buffers:
-        return this.buffersTooltip(node);
+        content += this.buffersTooltip(node);
+        break;
     }
-    return '';
+    if (node[NodeProp.CTE_NAME]) {
+      content +=  '<br><em>CTE ' + node[NodeProp.CTE_NAME] + '</em>';
+    }
+    return content;
   }
 
   private timeTooltip(node: Node): string {
