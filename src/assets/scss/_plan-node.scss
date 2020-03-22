@@ -140,18 +140,6 @@ $bg-color: #fff;
     background-size: $progress-height $progress-height;
   }
 
-  @keyframes highlight {
-    0% {
-      background: $bg-color;
-    }
-    20% {
-      background: #ffff99;
-    }
-    100% {
-      background: $bg-color;
-    }
-  }
-
   &.highlight .plan-node-body {
     animation: highlight 1s;
   }

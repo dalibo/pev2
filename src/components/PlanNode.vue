@@ -48,7 +48,10 @@
           <div v-if="node[nodeProps.HASH_CONDITION]"><span class="text-muted">
               on</span> {{node[nodeProps.HASH_CONDITION] | keysToString }}</div>
           <div v-if="node[nodeProps.CTE_NAME]">
-            <span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
+            <a class="text-reset" href v-on:click.prevent="showCTE(node[nodeProps.CTE_NAME])">
+              <i class="fa fa-link text-muted"></i>&nbsp;
+              <span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
+            </a>
           </div>
         </div>
 
@@ -141,7 +144,7 @@
     </div>
     <ul v-if="plans" :class="['node-children', {'collapsed': collapsed}]">
       <li v-for="subnode in plans">
-        <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions"/>
+        <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE"/>
       </li>
     </ul>
   </div>
@@ -173,6 +176,7 @@ export default class PlanNode extends Vue {
   public executionTimePercent: number = NaN;
   @Prop(Object) private plan!: any;
   @Prop(Object) private viewOptions!: any;
+  @Prop() private showCTE!: () => void;
 
   // UI flags
   private showDetails: boolean = false;

@@ -252,6 +252,10 @@ $connector-line: 2px solid darken($line-color, 10%);
       flex-direction: column;
       align-items: center;
     }
+
+    &.highlight {
+      animation: highlight 1s;
+    }
   }
 
   .btn-close {
