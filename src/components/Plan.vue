@@ -46,7 +46,7 @@
         <template v-else>
           <span class="stat-value" v-html="$options.filters.duration(plan.planStats.maxDuration)"></span>
           <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showSlowestNode">
-            <i class="fa fa-thumb-tack text-muted"></i>
+            <i class="fa fa-link text-muted"></i>
           </button>
         </template>
       </div>
@@ -73,7 +73,7 @@
         <template v-else>
           <span>{{plan.planStats.maxCost | cost}}</span>
           <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showCostliestNode">
-            <i class="fa fa-thumb-tack text-muted"></i>
+            <i class="fa fa-link text-muted"></i>
           </button>
         </template>
       </div>
