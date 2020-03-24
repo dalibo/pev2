@@ -36,44 +36,66 @@
       </ul>
     </div>
     <table class="my-1 table-hover">
-      <tbody>
-        <tr v-for="row, index in flat" :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="showNode(row[1], false, true)">
-          <th class="node-type pr-2">
-            <template v-for="i in lodash.range(row[0])">
-              <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
-            </template>{{ index !== 0 ? (row[2] ? '└' : '├') : '' }}
-            {{ nodeType(row) }}
+      <tbody v-for="flat, index in plans">
+        <tr v-if="index === 0 && plans.length > 1">
+          <th colspan="2" class="subplan">
+            Main Query Plan
           </th>
-          <td>
-            <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-if="viewOptions.metric == metrics.time">
-              <div class="progress-bar border-left bg-secondary" role="progressbar" :style="'width: ' + row[1][nodeProps.ACTUAL_DURATION] / (plan.planStats.executionTime || plan.content.Plan[nodeProps.ACTUAL_TOTAL_TIME]) * 100 + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.rows">
-              <div class="bg-secondary" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.ACTUAL_ROWS] / plan.planStats.maxRows * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-            </div>
-            <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.cost">
-              <div class="bg-secondary" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.ACTUAL_COST] / plan.planStats.maxCost * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-            </div>
-            <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.buffers && viewOptions.buffersMetric == buffersMetrics.shared && plan.planStats.maxSharedBlocks">
-              <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_HIT_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_READ_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_DIRTIED_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_WRITTEN_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-            </div>
-            <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.buffers && viewOptions.buffersMetric == buffersMetrics.temp && plan.planStats.maxTempBlocks">
-              <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_HIT_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_READ_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_DIRTIED_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_WRITTEN_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-            </div>
-            <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.buffers && viewOptions.buffersMetric == buffersMetrics.local && plan.planStats.maxLocalBlocks">
-              <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_HIT_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_READ_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_DIRTIED_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-              <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_WRITTEN_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
-            </div>
-          </td>
         </tr>
+        <template v-for="row, index in flat">
+          <tr v-if="row[1][nodeProps.SUBPLAN_NAME]">
+            <td class="subplan pr-2" :class="{'font-weight-bold': lodash.startsWith(row[1][nodeProps.SUBPLAN_NAME], 'CTE')}" colspan="2" @click.prevent="showCTE(row[1][nodeProps.SUBPLAN_NAME])">
+              <template v-for="i in lodash.range(row[0])">
+                <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
+              </template>
+              <template v-if="index !== 0">{{ row[2] ? '└' : '├' }}</template>
+              {{ row[1][nodeProps.SUBPLAN_NAME] }}
+            </td>
+          </tr>
+          <tr :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="showNode(row[1], false, true)">
+            <td class="node-type pr-2">
+              <template v-for="i in lodash.range(row[0])">
+                <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
+              </template>
+              <template v-if="index !== 0">
+                <template v-if="!row[1][nodeProps.SUBPLAN_NAME]">{{ row[2] ? '└' : '├' }}</template>
+                <template v-else>
+                  <template v-if="!row[2]">│</template><template v-else>⠀</template>
+                </template>
+              </template>
+              {{ nodeType(row) }}
+            </td>
+            <td>
+              <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-if="viewOptions.metric == metrics.time">
+                <div class="progress-bar border-left bg-secondary" role="progressbar" :style="'width: ' + row[1][nodeProps.ACTUAL_DURATION] / (plan.planStats.executionTime || plan.content.Plan[nodeProps.ACTUAL_TOTAL_TIME]) * 100 + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.rows">
+                <div class="bg-secondary" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.ACTUAL_ROWS] / plan.planStats.maxRows * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              </div>
+              <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.cost">
+                <div class="bg-secondary" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.ACTUAL_COST] / plan.planStats.maxCost * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              </div>
+              <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.buffers && viewOptions.buffersMetric == buffersMetrics.shared && plan.planStats.maxSharedBlocks">
+                <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_HIT_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+                <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_READ_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+                <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_DIRTIED_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+                <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.SHARED_WRITTEN_BLOCKS] / plan.planStats.maxSharedBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              </div>
+              <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.buffers && viewOptions.buffersMetric == buffersMetrics.temp && plan.planStats.maxTempBlocks">
+                <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_HIT_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+                <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_READ_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+                <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_DIRTIED_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+                <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.TEMP_WRITTEN_BLOCKS] / plan.planStats.maxTempBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              </div>
+              <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.buffers && viewOptions.buffersMetric == buffersMetrics.local && plan.planStats.maxLocalBlocks">
+                <div class="bg-hit" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_HIT_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+                <div class="bg-read" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_READ_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+                <div class="bg-dirtied" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_DIRTIED_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+                <div class="bg-written" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.LOCAL_WRITTEN_BLOCKS] / plan.planStats.maxLocalBlocks * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
+              </div>
+            </td>
+          </tr>
+        </template>
       </tbody>
     </table>
   </div>
@@ -95,8 +117,10 @@ import { IPlan } from '../iplan';
 export default class Diagram extends Vue {
   @Prop() private plan!: IPlan;
   @Prop() private showNode!: () => void;
+  @Prop() private showCTE!: () => void;
 
-  private flat: [] = [];
+  // The main plan + init plans (all flatten)
+  private plans: any[][] = [[]];
   private lodash = _;
   private nodeProps = NodeProp;
   private metrics = Metric;
@@ -112,7 +136,13 @@ export default class Diagram extends Vue {
     if (savedOptions) {
       _.assignIn(this.viewOptions, JSON.parse(savedOptions));
     }
-    this.flatten(this.flat, 0, this.plan.content.Plan, true, []);
+    this.flatten(this.plans[0], 0, this.plan.content.Plan, true, []);
+
+    _.each(this.plan.ctes, (cte) => {
+      const flat = [] as any[];
+      this.flatten(flat, 0, cte, true, []);
+      this.plans.push(flat);
+    });
   }
 
   @Watch('viewOptions', {deep: true})
@@ -121,17 +151,25 @@ export default class Diagram extends Vue {
   }
 
   private tooltip(node: Node): string {
+    let content = '';
     switch (this.viewOptions.metric) {
       case Metric.time:
-        return this.timeTooltip(node);
+        content += this.timeTooltip(node);
+        break;
       case Metric.rows:
-        return this.rowsTooltip(node);
+        content += this.rowsTooltip(node);
+        break;
       case Metric.cost:
-        return this.costTooltip(node);
+        content += this.costTooltip(node);
+        break;
       case Metric.buffers:
-        return this.buffersTooltip(node);
+        content += this.buffersTooltip(node);
+        break;
     }
-    return '';
+    if (node[NodeProp.CTE_NAME]) {
+      content +=  '<br><em>CTE ' + node[NodeProp.CTE_NAME] + '</em>';
+    }
+    return content;
   }
 
   private timeTooltip(node: Node): string {

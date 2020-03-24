@@ -46,7 +46,7 @@
         <template v-else>
           <span class="stat-value" v-html="$options.filters.duration(plan.planStats.maxDuration)"></span>
           <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showSlowestNode">
-            <i class="fa fa-thumb-tack text-muted"></i>
+            <i class="fa fa-link text-muted"></i>
           </button>
         </template>
       </div>
@@ -73,7 +73,7 @@
         <template v-else>
           <span>{{plan.planStats.maxCost | cost}}</span>
           <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showCostliestNode">
-            <i class="fa fa-thumb-tack text-muted"></i>
+            <i class="fa fa-link text-muted"></i>
           </button>
         </template>
       </div>
@@ -191,13 +191,18 @@
            class="plan-diagram overflow-auto flex-shrink-0 border-right plan-diagram-left h-100"
         v-if="viewOptions.showDiagram"
       >
-        <diagram :plan="plan" :showNode="showNode"></diagram>
+        <diagram :plan="plan" :showNode="showNode" :showCTE="showCTE"></diagram>
       </div>
       <div ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1" v-on:mousedown="menuHidden = true">
-        <div class="plan h-100 w-100 d-flex grab-bing">
-          <ul class="node-children">
+        <div class="plan h-100 w-100 d-flex flex-column grab-bing">
+          <ul class="main-plan">
             <li>
-              <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" ref="root"/>
+              <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE" ref="root"/>
+            </li>
+          </ul>
+          <ul class="init-plans">
+            <li v-for="node in plan.ctes">
+              <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE" ref="root"/>
             </li>
           </ul>
         </div>
@@ -363,23 +368,33 @@ export default class Plan extends Vue {
 
   private showNode(node: any, shouldCenter: boolean, highlight: boolean) {
     const cmp = _.find(this.plan!.nodeComponents, (c) => c.node === node);
-    const parent = this.$refs.plan;
-    if (!parent || !cmp) {
+    if (!cmp) {
       return;
     }
-    const child = cmp.$el.querySelector('.plan-node');
+    this.highlightEl(cmp.$el.querySelector('.plan-node'), shouldCenter, highlight);
+  }
 
-    if (child) {
-      scrollChildIntoParentView(parent, child, shouldCenter, () => {
-        if (highlight) {
-          child.classList.add('highlight');
-          setTimeout(() => {
-            child.classList.remove('highlight');
-          }, 1000);
-        }
-      });
-
+  private highlightEl(el: Element | HTMLElement | null, shouldCenter: boolean, highlight: boolean) {
+    if (!el) {
+      return;
     }
+    const parent = this.$refs.plan;
+    scrollChildIntoParentView(parent, el, shouldCenter, () => {
+      if (highlight) {
+        el.classList.add('highlight');
+        setTimeout(() => {
+          el.classList.remove('highlight');
+        }, 1000);
+      }
+    });
+  }
+
+  private showCTE(cteName: string) {
+    const cmp = _.find(this.plan!.nodeComponents, (c) => c.node[NodeProp.SUBPLAN_NAME] === cteName);
+    if (!cmp) {
+      return;
+    }
+    this.highlightEl(cmp.$el, false, true);
   }
 
   private get totalTriggerDurationPercent() {

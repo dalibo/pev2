@@ -135,3 +135,15 @@ $buffers-colors: (
     line-height: .5;
   }
 }
+
+@keyframes highlight {
+  0% {
+    background: $bg-color;
+  }
+  20% {
+    background: #ffff99;
+  }
+  100% {
+    background: $bg-color;
+  }
+}

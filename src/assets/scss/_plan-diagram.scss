@@ -22,14 +22,28 @@
 
   table {
     cursor: pointer;
+    border-collapse: collapse;
   }
-  th {
-    text-transform: uppercase;
-    font-size: $font-size-base;
-    font-weight: 600;
+  tbody {
+    border-bottom: $padding-lg solid transparent;
+  }
+  th, td {
     margin: 0;
     color: $text-color;
-    width: 10%;
     white-space: nowrap;
+
+    &.node-type,
+    &.subplan {
+      font-size: $font-size-sm;
+    }
+    &.node-type {
+      text-transform: uppercase;
+    }
+    &.subplan {
+      font-style: italic;
+    }
+  }
+  th {
+    font-size: $font-size-base;
   }
 }

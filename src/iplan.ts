@@ -9,6 +9,7 @@ export interface IPlan {
   planStats: IPlanStats;
   formattedQuery?: string;
   nodeComponents: PlanNode[];
+  ctes: any[];
 }
 
 export interface ITrigger {
