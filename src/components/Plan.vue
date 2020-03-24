@@ -201,7 +201,7 @@
             </li>
           </ul>
           <ul class="init-plans">
-            <li v-for="node in plan.initPlans">
+            <li v-for="node in plan.ctes">
               <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE" ref="root"/>
             </li>
           </ul>

@@ -125,9 +125,9 @@ export default class Diagram extends Vue {
     }
     this.flatten(this.plans[0], 0, this.plan.content.Plan, true, []);
 
-    _.each(this.plan.initPlans, (initPlan) => {
+    _.each(this.plan.ctes, (cte) => {
       const flat = [] as any[];
-      this.flatten(flat, 0, initPlan, true, []);
+      this.flatten(flat, 0, cte, true, []);
       this.plans.push(flat);
     });
   }

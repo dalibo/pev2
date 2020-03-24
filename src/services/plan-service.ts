@@ -26,7 +26,7 @@ export class PlanService {
       query: planQuery,
       planStats: {},
       nodeComponents: [],
-      initPlans: [],
+      ctes: [],
     };
 
     this.analyzePlan(plan);
@@ -37,6 +37,11 @@ export class PlanService {
     this.processNode(plan.content.Plan, plan);
 
     this.calculateMaximums(plan.content);
+  }
+
+  public isCTE(node: any) {
+    return node[NodeProp.PARENT_RELATIONSHIP] === 'InitPlan' &&
+      _.startsWith(node[NodeProp.SUBPLAN_NAME], 'CTE');
   }
 
   // recursively walk down the plan to compute various metrics
@@ -54,13 +59,13 @@ export class PlanService {
         }
         child[NodeProp.WORKERS] = workersLaunched || node[NodeProp.WORKERS];
       }
-      if (child[NodeProp.PARENT_RELATIONSHIP] === 'InitPlan') {
-        plan.initPlans.push(child);
+      if (this.isCTE(child)) {
+        plan.ctes.push(child);
       }
       this.processNode(child, plan);
     });
 
-    _.remove(node[NodeProp.PLANS], (child: any) => child[NodeProp.PARENT_RELATIONSHIP] === 'InitPlan');
+    _.remove(node[NodeProp.PLANS], (child: any) => this.isCTE(child));
 
     // calculate actuals after processing child nodes so that actual duration
     // takes loops into account
