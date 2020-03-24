@@ -32,9 +32,15 @@
     color: $text-color;
     white-space: nowrap;
 
-    &.node-type {
+    &.node-type,
+    &.subplan {
       font-size: $font-size-sm;
+    }
+    &.node-type {
       text-transform: uppercase;
+    }
+    &.subplan {
+      font-style: italic;
     }
   }
   th {
