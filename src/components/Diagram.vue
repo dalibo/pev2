@@ -37,8 +37,13 @@
     </div>
     <table class="my-1 table-hover">
       <tbody v-for="flat, index in plans">
+        <tr v-if="index === 0 && plans.length > 1">
+          <th colspan="2">
+            Main Plan
+          </th>
+        </tr>
         <tr v-if="index > 0">
-          <th class="" colspan="2">
+          <th colspan="2">
             {{ flat[0][1][nodeProps.SUBPLAN_NAME] }}
           </th>
         </tr>
