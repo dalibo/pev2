@@ -191,7 +191,7 @@
            class="plan-diagram overflow-auto flex-shrink-0 border-right plan-diagram-left h-100"
         v-if="viewOptions.showDiagram"
       >
-        <diagram :plan="plan" :showNode="showNode"></diagram>
+        <diagram :plan="plan" :showNode="showNode" :showCTE="showCTE"></diagram>
       </div>
       <div ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1" v-on:mousedown="menuHidden = true">
         <div class="plan h-100 w-100 d-flex flex-column grab-bing">
@@ -390,7 +390,7 @@ export default class Plan extends Vue {
   }
 
   private showCTE(cteName: string) {
-    const cmp = _.find(this.plan!.nodeComponents, (c) => c.node[NodeProp.SUBPLAN_NAME] === 'CTE ' + cteName);
+    const cmp = _.find(this.plan!.nodeComponents, (c) => c.node[NodeProp.SUBPLAN_NAME] === cteName);
     if (!cmp) {
       return;
     }

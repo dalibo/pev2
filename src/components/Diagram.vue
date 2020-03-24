@@ -43,7 +43,7 @@
           </th>
         </tr>
         <tr v-if="index > 0">
-          <th colspan="2">
+          <th colspan="2" @click.prevent="showCTE(flat[0][1][nodeProps.SUBPLAN_NAME])">
             {{ flat[0][1][nodeProps.SUBPLAN_NAME] }}
           </th>
         </tr>
@@ -105,6 +105,7 @@ import { IPlan } from '../iplan';
 export default class Diagram extends Vue {
   @Prop() private plan!: IPlan;
   @Prop() private showNode!: () => void;
+  @Prop() private showCTE!: () => void;
 
   // The main plan + init plans (all flatten)
   private plans: any[][] = [[]];
