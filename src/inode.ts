@@ -5,7 +5,7 @@ export default class Node {
   constructor(type: string) {
     this[NodeProp.NODE_TYPE] = type;
     // tslint:disable-next-line:max-line-length
-    const scanMatches = /^((?:Parallel\s+)?(?:Seq\sScan|Bitmap\s+Heap\s+Scan|Foreign\s+Scan|Update|Insert|Delete))\son\s(\S+)(?:\s+(\S+))?$/.exec(type);
+    const scanMatches = /^((?:Parallel\s+)?(?:Seq\sScan|Tid\sScan|Bitmap\s+Heap\s+Scan|Foreign\s+Scan|Update|Insert|Delete))\son\s(\S+)(?:\s+(\S+))?$/.exec(type);
     const bitmapMatches = /^(Bitmap\s+Index\s+Scan)\son\s(\S+)$/.exec(type);
     // tslint:disable-next-line:max-line-length
     const indexMatches = /^((?:Parallel\s+)?Index(?:\sOnly)?\sScan(?:\sBackward)?)\susing\s(\S+)\son\s(\S+)(?:\s+(\S+))?$/.exec(type);
