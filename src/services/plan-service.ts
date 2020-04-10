@@ -198,12 +198,42 @@ export class PlanService {
     }
   }
 
-  public fromSource(source: string) {
+  public cleanupSource(source: string) {
+    // Remove frames around, handles |, ║,
+    source = source.replace(/^(\||║|│)(.*)\1\r?\n/gm, '$2\n');
 
-    // remove quotes added by pgAdmin3
+    // Remove separator lines from various types of borders
+    source = source.replace(/^\+-+\+\r?\n/gm, '');
+    source = source.replace(/^(-|─|═)\1+\r?\n/gm, '');
+    source = source.replace(/^(├|╟|╠|╞)(─|═)\2*(┤|╢|╣|╡)\r?\n/gm, '');
+
+    // Remove more horizontal lines
+    source = source.replace(/^\+-+\+\r?\n/gm, '');
+    source = source.replace(/^└(─)+┘\r?\n/gm, '');
+    source = source.replace(/^╚(═)+╝\r?\n/gm, '');
+    source = source.replace(/^┌(─)+┐\r?\n/gm, '');
+    source = source.replace(/^╔(═)+╗\r?\n/gm, '');
+
+    // Remove quotes around lines, both ' and "
     source = source.replace(/^(["'])(.*)\1\r?\n/gm, '$2\n');
-    // remove + character at the end of line added by default psql config
+
+    // Remove "+" line continuations
     source = source.replace(/\s*\+\r?\n/g, '\n');
+
+    // Remove "↵" line continuations
+    source = source.replace(/↵\r?/gm, '\n');
+
+    // Remove "query plan" header
+    source = source.replace(/^\s*QUERY PLAN\s*\r?\n/m, '');
+
+    // Remove rowcount
+    source = source.replace(/^\(\d+ rows?\)(\r?\n|$)/gm, '\n');
+
+    return source;
+  }
+
+  public fromSource(source: string) {
+    source = this.cleanupSource(source);
 
     let isJson = false;
     try {
