@@ -359,7 +359,8 @@ export class PlanService {
       line = line.replace(/"\s*$/, '');
       // Remove any begining "
       line = line.replace(/^\s*"/, '');
-
+      // Replace tabs with 4 spaces
+      line = line.replace(/\t/gm, '    ');
 
       const emptyLineRegex = '^\s*$';
       const headerRegex = '^\\s*(QUERY|---|#).*$';
