@@ -43,7 +43,7 @@
     "axios": "^0.19.2",
     "babel-core": "^6.26.3",
     "husky": "^4.2.2",
-    "jest": "^24.9.0",
+    "jest": "^25.3.0",
     "lint-staged": "^10.0.7",
     "moment-locales-webpack-plugin": "^1.1.0",
     "node-sass": "^4.12.0",
