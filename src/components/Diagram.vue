@@ -4,6 +4,7 @@
       <div class="btn-group btn-group-xs">
         <button class="btn btn-outline-secondary" :class="{'active': viewOptions.metric === metrics.time}" v-on:click="viewOptions.metric = metrics.time">time</button>
         <button class="btn btn-outline-secondary" :class="{'active': viewOptions.metric === metrics.rows}" v-on:click="viewOptions.metric = metrics.rows">rows</button>
+        <button class="btn btn-outline-secondary" :class="{'active': viewOptions.metric === metrics.estimate_factor}" v-on:click="viewOptions.metric = metrics.estimate_factor">estimation</button>
         <button class="btn btn-outline-secondary" :class="{'active': viewOptions.metric === metrics.cost}" v-on:click="viewOptions.metric = metrics.cost">cost</button>
         <button class="btn btn-outline-secondary" :class="{'active': viewOptions.metric === metrics.buffers}" v-on:click="viewOptions.metric = metrics.buffers">buffers</button>
       </div>
@@ -72,6 +73,17 @@
               <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.rows">
                 <div class="bg-secondary" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.ACTUAL_ROWS] / plan.planStats.maxRows * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
               </div>
+              <div class="progress rounded-0 align-items-center bg-transparent justify-content-center" style="height: 10px;" v-if="viewOptions.metric == metrics.estimate_factor">
+                <span class="text-muted small">
+                  <i class="fa fa-fw" :class="{'fa-arrow-down': row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.under}"></i>
+                </span>
+                <div class="progress-bar" :class="[row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.under ? 'bg-secondary' : 'bg-transparent']" role="progressbar" :style="'width: ' + (row[1][nodeProps.PLANNER_ESTIMATE_FACTOR] || 0) / maxEstimateFactor * 100 + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar border-left" role="progressbar" style="width: 1px; height: 5px;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" :class="[row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.over ? 'bg-secondary' : 'bg-transparent']" role="progressbar" :style="'width: ' + (row[1][nodeProps.PLANNER_ESTIMATE_FACTOR] || 0) / maxEstimateFactor * 100 + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                <span class="text-muted small">
+                  <i class="fa fa-fw" :class="{'fa-arrow-up': row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.over}"></i>
+                </span>
+              </div>
               <div class="progress rounded-0 align-items-center bg-transparent" style="height: 5px;" v-else-if="viewOptions.metric == metrics.cost">
                 <div class="bg-secondary" role="progressbar" :style="'width: ' + Math.round(row[1][nodeProps.ACTUAL_COST] / plan.planStats.maxCost * 100) + '%'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="height: 5px;"></div>
               </div>
@@ -104,8 +116,8 @@
 <script lang="ts">
 import * as _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { duration, durationClass, rows } from '@/filters';
-import { BuffersMetric, NodeProp, Metric } from '../enums';
+import { duration, durationClass, rows, factor } from '@/filters';
+import { EstimateDirection, BuffersMetric, NodeProp, Metric } from '../enums';
 import Node from '@/inode';
 import { IPlan } from '../iplan';
 
@@ -125,6 +137,7 @@ export default class Diagram extends Vue {
   private nodeProps = NodeProp;
   private metrics = Metric;
   private buffersMetrics = BuffersMetric;
+  private estimateDirections = EstimateDirection;
 
   private viewOptions: any = {
     metric: Metric.time,
@@ -159,6 +172,9 @@ export default class Diagram extends Vue {
       case Metric.rows:
         content += this.rowsTooltip(node);
         break;
+      case Metric.estimate_factor:
+        content += this.estimateFactorTooltip(node);
+        break;
       case Metric.cost:
         content += this.costTooltip(node);
         break;
@@ -184,6 +200,25 @@ export default class Diagram extends Vue {
       'Rows: ',
       rows(node[NodeProp.ACTUAL_ROWS]),
     ].join('');
+  }
+
+  private estimateFactorTooltip(node: Node): string {
+    const estimateFactor = node[NodeProp.PLANNER_ESTIMATE_FACTOR];
+    const estimateDirection = node[NodeProp.PLANNER_ESTIMATE_DIRECTION];
+    let text = '';
+    switch (estimateDirection) {
+      case EstimateDirection.over:
+        text += '<i class="fa fa-arrow-up"></i> over';
+        break;
+      case EstimateDirection.under:
+        text += '<i class="fa fa-arrow-down"></i> under';
+        break;
+      default:
+        text += 'Correctly';
+    }
+    text += ' estimated';
+    text += estimateFactor ? ' by <b>' + factor(estimateFactor) + '</b>' : '';
+    return text;
   }
 
   private costTooltip(node: Node): string {
@@ -262,6 +297,15 @@ export default class Diagram extends Vue {
     if (!isLast) {
       branches.pop();
     }
+  }
+
+  private get maxEstimateFactor(): number {
+    const max = _.max(_.map(this.plans, (plan) => {
+      return _.max(_.map(plan, (row) => {
+        return row[1][NodeProp.PLANNER_ESTIMATE_FACTOR];
+      }));
+    }));
+    return max * 2 || 1;
   }
 }
 </script>
