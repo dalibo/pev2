@@ -148,7 +148,8 @@ export class PlanService {
         node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
       }
 
-      node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);
+      const duration = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);
+      node[NodeProp.ACTUAL_DURATION] = duration > 0 ? duration : 0;
     }
 
     if (node[NodeProp.TOTAL_COST]) {
