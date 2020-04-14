@@ -7,10 +7,10 @@ import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
 export function duration(value: number, detail: boolean): string {
   detail = !!detail;
 
-  if (value < 1) {
-    return !detail ? '<1 ms' : value + 'ms';
+  if (value < 1 && !detail) {
+    return '<1 ms';
   } else if (value < 1000) {
-    return parseFloat(value.toPrecision(3)).toLocaleString() + 'ms';
+    return parseFloat(value.toPrecision(3)).toLocaleString()  + 'ms';
   }
   const options = detail ? {} : { largest: 2 };
   return moment.duration(value).format('w[w] d[d] h[h] m[m] s[s] SSS[ms]', options);
