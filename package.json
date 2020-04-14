@@ -28,6 +28,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
+    "splitpanes": "^2.2.1",
     "tippy.js": "^6.0.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",

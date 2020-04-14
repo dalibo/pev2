@@ -187,26 +187,29 @@
       </div>
     </div>
     <div v-else class="overflow-hidden flex-grow-1 flex-shrink-1 d-flex">
-      <div ref="diagram"
-           class="plan-diagram overflow-auto flex-shrink-0 border-right plan-diagram-left h-100"
-        v-if="viewOptions.showDiagram"
-      >
-        <diagram :plan="plan" :showNode="showNode" :showCTE="showCTE"></diagram>
-      </div>
-      <div ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1" v-on:mousedown="menuHidden = true">
-        <div class="plan h-100 w-100 d-flex flex-column grab-bing">
-          <ul class="main-plan">
-            <li>
-              <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE" ref="root"/>
-            </li>
-          </ul>
-          <ul class="init-plans">
-            <li v-for="node in plan.ctes">
-              <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE" ref="root"/>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <splitpanes class="default-theme" @resize="viewOptions.diagramWidth = $event[0].size">
+        <pane ref="diagram"
+          :size="viewOptions.diagramWidth"
+          class="plan-diagram overflow-auto h-100"
+          v-if="viewOptions.showDiagram"
+        >
+          <diagram :plan="plan" :showNode="showNode" :showCTE="showCTE"></diagram>
+        </pane>
+        <pane ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1" v-on:mousedown="menuHidden = true">
+          <div class="plan h-100 w-100 d-flex flex-column grab-bing">
+            <ul class="main-plan">
+              <li>
+                <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE" ref="root"/>
+              </li>
+            </ul>
+            <ul class="init-plans">
+              <li v-for="node in plan.ctes">
+                <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE" ref="root"/>
+              </li>
+            </ul>
+          </div>
+        </pane>
+      </splitpanes>
     </div>
   </div>
 </template>
@@ -214,6 +217,8 @@
 <script lang="ts">
 import * as _ from 'lodash';
 import tippy from 'tippy.js';
+import { Splitpanes, Pane } from 'splitpanes';
+import 'splitpanes/dist/splitpanes.css';
 
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
@@ -236,6 +241,8 @@ Vue.component('tippy', TippyComponent);
   components: {
     PlanNode,
     Diagram,
+    Splitpanes,
+    Pane,
   },
   directives: {
   },
@@ -248,7 +255,7 @@ Vue.component('tippy', TippyComponent);
 })
 export default class Plan extends Vue {
   public $refs!: {
-    plan: HTMLElement,
+    plan: InstanceType<typeof Pane>,
     root: PlanNode,
   };
 
@@ -276,6 +283,7 @@ export default class Plan extends Vue {
     viewMode: ViewMode.FULL,
     orientation: Orientation.TWOD,
     showDiagram: true,
+    diagramWidth: 20,
   };
 
   private highlightTypes = HighlightType;
@@ -290,7 +298,7 @@ export default class Plan extends Vue {
   }
 
   private handleScroll(): void {
-    const el: Element = this.$refs.plan as Element;
+    const el: Element = this.$refs.plan.$el as Element;
     const scroll = new Dragscroll(el);
   }
 
@@ -378,7 +386,7 @@ export default class Plan extends Vue {
     if (!el) {
       return;
     }
-    const parent = this.$refs.plan;
+    const parent = this.$refs.plan.$el;
     scrollChildIntoParentView(parent, el, shouldCenter, () => {
       if (highlight) {
         el.classList.add('highlight');
