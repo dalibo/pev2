@@ -3,10 +3,9 @@
   &.plan-diagram-top {
     max-height: 30%;
   }
-  &.plan-diagram-left {
-    table tr td:nth-child(2) {
-      min-width: 200px;
-    }
+  // make sure diagram right column takes as much width as possible
+  table tr td:nth-child(2) {
+    width: 90%;
   }
   font-family: $font-family-sans-serif;
 
