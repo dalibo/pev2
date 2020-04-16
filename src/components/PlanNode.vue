@@ -321,7 +321,7 @@ export default class PlanNode extends Vue {
   }
 
   private get shouldShowRowsRemoved(): boolean {
-    return this.rowsRemovedPercent > 90;
+    return !!this.rowsRemovedClass;
   }
 
   @Watch('viewOptions.highlightType')
@@ -415,10 +415,12 @@ export default class PlanNode extends Vue {
 
   private get rowsRemovedClass() {
     let c;
-    const i = this.rowsRemovedPercent;
-    if (i > 95) {
+    // high percent of rows removed is relevant only when duration is high
+    // as well
+    const i = this.rowsRemovedPercent * this.executionTimePercent;
+    if (i > 2000) {
       c = 4;
-    } else if (i > 90) {
+    } else if (i > 500) {
       c = 3;
     }
     if (c) {
