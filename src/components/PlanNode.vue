@@ -321,7 +321,7 @@ export default class PlanNode extends Vue {
   }
 
   private get shouldShowRowsRemoved(): boolean {
-    return !!this.rowsRemovedClass;
+    return !!this.rowsRemovedClass && this.viewOptions.viewMode === ViewMode.FULL && !this.collapsed;
   }
 
   @Watch('viewOptions.highlightType')
