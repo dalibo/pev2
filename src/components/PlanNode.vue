@@ -90,7 +90,7 @@
           <span>
             <b><span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercent }}%</span></b> rows removed by filter
             <span class="text-muted">
-              ({{ rowsRemoved + node[nodeProps.ACTUAL_ROWS] | rows }} scanned &rarr; {{ node[nodeProps.ACTUAL_ROWS] | rows }} returned)
+              ({{ tilde }}{{ rowsRemoved + node[nodeProps.ACTUAL_ROWS] | rows }} scanned &rarr; {{ tilde }}{{ node[nodeProps.ACTUAL_ROWS] | rows }} returned)
             </span>
           </span>
         </div>
@@ -467,6 +467,14 @@ export default class PlanNode extends Vue {
 
   private get isNeverExecuted(): boolean {
     return this.plan.planStats.executionTime && !this.node[NodeProp.ACTUAL_LOOPS];
+  }
+
+  private get hasSeveralLoops(): boolean {
+    return this.node[NodeProp.ACTUAL_LOOPS] > 1;
+  }
+
+  private get tilde(): string {
+    return this.hasSeveralLoops ? '~' : '';
   }
 }
 </script>
