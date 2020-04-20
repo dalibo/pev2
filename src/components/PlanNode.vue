@@ -462,7 +462,8 @@ export default class PlanNode extends Vue {
   }
 
   private shouldShowProp(key: string, value: any): boolean {
-    return value || nodePropTypes[key] === PropType.increment;
+    return value || nodePropTypes[key] === PropType.increment ||
+      key === NodeProp.ACTUAL_ROWS;
   }
 
   private get isNeverExecuted(): boolean {
