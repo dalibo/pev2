@@ -88,7 +88,7 @@
 
         <div v-if="shouldShowRowsRemoved">
           <span>
-            <b><span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercent }}%</span></b> rows removed by filter
+            <b><span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercent == 100 ? '>99' : rowsRemovedPercent }}%</span></b> rows removed by filter
             <span class="text-muted">
               ({{ tilde }}{{ rowsRemoved + node[nodeProps.ACTUAL_ROWS] | rows }} scanned &rarr; {{ tilde }}{{ node[nodeProps.ACTUAL_ROWS] | rows }} returned)
             </span>
