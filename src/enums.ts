@@ -54,6 +54,8 @@ export class NodeProp {
   public static NODE_TYPE: string = 'Node Type';
   public static ACTUAL_ROWS: string = 'Actual Rows';
   public static PLAN_ROWS: string = 'Plan Rows';
+  public static ROWS_REMOVED_BY_FILTER: string = 'Rows Removed by Filter';
+  public static ROWS_REMOVED_BY_JOIN_FILTER: string = 'Rows Removed by Join Filter';
   public static ACTUAL_STARTUP_TIME: string = 'Actual Startup Time';
   public static ACTUAL_TOTAL_TIME: string = 'Actual Total Time';
   public static ACTUAL_LOOPS: string = 'Actual Loops';
@@ -134,6 +136,8 @@ nodePropTypes[NodeProp.TOTAL_COST] = PropType.cost;
 nodePropTypes[NodeProp.PARALLEL_AWARE] = PropType.boolean;
 nodePropTypes[NodeProp.WORKERS] = PropType.json;
 nodePropTypes[NodeProp.SORT_SPACE_USED] = PropType.space;
+nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER] = PropType.rows;
+nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows;
 
 nodePropTypes[NodeProp.COSTLIEST_NODE] = PropType.boolean;
 nodePropTypes[NodeProp.LARGEST_NODE] = PropType.boolean;

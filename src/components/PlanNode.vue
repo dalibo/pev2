@@ -86,6 +86,15 @@
           </span>
         </div>
 
+        <div v-if="shouldShowRowsRemoved">
+          <span>
+            <b><span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercent == 100 ? '>99' : rowsRemovedPercent }}%</span></b> rows removed by filter
+            <span class="text-muted">
+              ({{ tilde }}{{ rowsRemoved + node[nodeProps.ACTUAL_ROWS] | rows }} scanned &rarr; {{ tilde }}{{ node[nodeProps.ACTUAL_ROWS] | rows }} returned)
+            </span>
+          </span>
+        </div>
+
         <div v-if="shouldShowPlannerEstimate() && plannerRowEstimateDirection != estimateDirections.none && plannerRowEstimateValue">
           <span v-if="plannerRowEstimateDirection === estimateDirections.over"><strong><i class="fa fa-arrow-up"></i> over</strong> estimated rows</span>
           <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong><i class="fa fa-arrow-down"></i> under</strong> estimated rows</span>
@@ -190,6 +199,8 @@ export default class PlanNode extends Vue {
   private plans: any[] = [];
   private plannerRowEstimateValue?: number;
   private plannerRowEstimateDirection?: EstimateDirection;
+  private rowsRemoved: number = NaN;
+  private rowsRemovedPercent: number = NaN;
 
   // required for custom change detection
   private currentCompactView?: boolean;
@@ -211,6 +222,7 @@ export default class PlanNode extends Vue {
     this.calculateBar();
     this.calculateDuration();
     this.calculateCost();
+    this.calculateRowsRemoved();
 
     this.plans = this.node[NodeProp.PLANS];
 
@@ -233,6 +245,19 @@ export default class PlanNode extends Vue {
   private calculateCost() {
     const planCost = this.plan.content.Plan[NodeProp.TOTAL_COST];
     this.costPercent = _.round((this.node[NodeProp.ACTUAL_COST] / planCost) * 100);
+  }
+
+  private calculateRowsRemoved() {
+    const rowsRemovedKey = _.find(
+      _.keys(this.node),
+      (key) => key === NodeProp.ROWS_REMOVED_BY_FILTER || key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER,
+    );
+    if (rowsRemovedKey) {
+      const removed = this.node[rowsRemovedKey];
+      this.rowsRemoved = removed;
+      const actual = this.node[NodeProp.ACTUAL_ROWS];
+      this.rowsRemovedPercent = _.floor(removed / (removed + actual) * 100);
+    }
   }
 
   // create an array of node propeties so that they can be displayed in the view
@@ -293,6 +318,10 @@ export default class PlanNode extends Vue {
     }
 
     return true;
+  }
+
+  private get shouldShowRowsRemoved(): boolean {
+    return !!this.rowsRemovedClass && this.viewOptions.viewMode === ViewMode.FULL && !this.collapsed;
   }
 
   @Watch('viewOptions.highlightType')
@@ -384,6 +413,22 @@ export default class PlanNode extends Vue {
     return false;
   }
 
+  private get rowsRemovedClass() {
+    let c;
+    // high percent of rows removed is relevant only when duration is high
+    // as well
+    const i = this.rowsRemovedPercent * this.executionTimePercent;
+    if (i > 2000) {
+      c = 4;
+    } else if (i > 500) {
+      c = 3;
+    }
+    if (c) {
+      return 'c-' + c;
+    }
+    return false;
+  }
+
   private toggleCollapsed() {
     this.collapsed = !this.collapsed;
   }
@@ -417,11 +462,20 @@ export default class PlanNode extends Vue {
   }
 
   private shouldShowProp(key: string, value: any): boolean {
-    return value || nodePropTypes[key] === PropType.increment;
+    return value || nodePropTypes[key] === PropType.increment ||
+      key === NodeProp.ACTUAL_ROWS;
   }
 
   private get isNeverExecuted(): boolean {
     return this.plan.planStats.executionTime && !this.node[NodeProp.ACTUAL_LOOPS];
+  }
+
+  private get hasSeveralLoops(): boolean {
+    return this.node[NodeProp.ACTUAL_LOOPS] > 1;
+  }
+
+  private get tilde(): string {
+    return this.hasSeveralLoops ? '~' : '';
   }
 }
 </script>
