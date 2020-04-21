@@ -147,14 +147,6 @@
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
         </div>
       </div>
-      <div class="form-check mr-2 pl-2 border-left">
-        <input id="showCost" type="checkbox" v-model="viewOptions.showCost" class="form-check-input" :disabled="rootNode[nodeProps.TOTAL_COST] === undefined">
-        <label for="showCost" class="form-check-label">Cost</label>
-      </div>
-      <div class="form-check mr-2">
-        <input id="showPlannerEstimate" type="checkbox" v-model="viewOptions.showPlannerEstimate" class="form-check-input">
-        <label for="showPlannerEstimate" class="form-check-label">Estimations</label>
-      </div>
     </div>
 
 
@@ -276,8 +268,6 @@ export default class Plan extends Vue {
   private viewOptions: any = {
     menuHidden: true,
     showHighlightBar: false,
-    showPlannerEstimate: false,
-    showCost: false,
     showPlanStats: true,
     highlightType: HighlightType.NONE,
     viewMode: ViewMode.FULL,
