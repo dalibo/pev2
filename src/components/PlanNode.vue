@@ -77,7 +77,7 @@
           </span>
         </div>
 
-        <div v-if="shouldShowCost && node[nodeProps.ACTUAL_COST]">
+        <div v-if="shouldShowCost">
           <span>
             Cost:
             <span :class="'p-0 px-1 alert ' + costClass">{{node[nodeProps.ACTUAL_COST] | cost}}</span>
@@ -95,7 +95,7 @@
           </span>
         </div>
 
-        <div v-if="shouldShowPlannerEstimate() && plannerRowEstimateDirection != estimateDirections.none && plannerRowEstimateValue">
+        <div v-if="shouldShowPlannerEstimate">
           <span v-if="plannerRowEstimateDirection === estimateDirections.over"><strong><i class="fa fa-arrow-up"></i> over</strong> estimated rows</span>
           <span v-if="plannerRowEstimateDirection === estimateDirections.under"><strong><i class="fa fa-arrow-down"></i> under</strong> estimated rows</span>
           <span v-if="plannerRowEstimateValue != Infinity"> by
@@ -284,28 +284,21 @@ export default class PlanNode extends Vue {
     return nodeName.toUpperCase();
   }
 
-  private shouldShowPlannerEstimate() {
-    if (this.viewOptions.showPlannerEstimate && this.showDetails) {
-      return true;
-    }
-
-    if (this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) {
+  private get shouldShowPlannerEstimate() {
+    if ((this.collapsed && !this.showDetails) || this.viewOptions.viewMode === ViewMode.DOT) {
       return false;
     }
-
-    return this.viewOptions.showPlannerEstimate;
+    return (this.estimationClass || this.showDetails) &&
+      this.plannerRowEstimateDirection !== EstimateDirection.none &&
+      this.plannerRowEstimateValue;
   }
 
   private get shouldShowCost() {
-    if (this.viewOptions.showCost && this.showDetails) {
-      return true;
-    }
-
-    if (this.collapsed || this.viewOptions.viewMode === ViewMode.DOT) {
+    if ((this.collapsed && !this.showDetails) || this.viewOptions.viewMode === ViewMode.DOT) {
       return false;
     }
 
-    return this.viewOptions.showCost;
+    return this.node[NodeProp.ACTUAL_COST] && (this.costClass || this.showDetails);
   }
 
   private shouldShowNodeBarLabel(): boolean {
