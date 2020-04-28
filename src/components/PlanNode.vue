@@ -75,10 +75,10 @@
           </div>
 
           <div>
-            <span v-if="durationClass" :class="'p-0 px-1 d-inline-block mb-1 mr-1 text-nowrap alert ' + durationClass">Slow</span>
-            <span v-if="costClass" :class="'p-0 px-1 d-inline-block mb-1 mr-1 text-nowrap alert ' + costClass">Expensive</span>
-            <span v-if="estimationClass" :class="'p-0 px-1 d-inline-block mb-1 mr-1 text-nowrap alert ' + estimationClass">Bad est.</span>
-            <span v-if="rowsRemovedClass" :class="'p-0 px-1 d-inline-block mb-1 mr-1 text-nowrap alert ' + rowsRemovedClass">Rows removed</span>
+            <span v-if="durationClass" :class="'p-0  d-inline-block mb-1 mr-1 text-nowrap alert ' + durationClass" title="Slow"><i class="fa fa-fw fa-clock"></i></span>
+            <span v-if="costClass" :class="'p-0  d-inline-block mb-1 mr-1 text-nowrap alert ' + costClass" title="Cost is high"><i class="fa fa-fw fa-dollar-sign"></i></span>
+            <span v-if="estimationClass" :class="'p-0  d-inline-block mb-1 mr-1 text-nowrap alert ' + estimationClass" title="Bad estimation for number of rows"><i class="fa fa-fw fa-thumbs-down"></i></span>
+            <span v-if="rowsRemovedClass" :class="'p-0  d-inline-block mb-1 mr-1 text-nowrap alert ' + rowsRemovedClass" title="High number of rows removed"><i class="fa fa-fw fa-filter"></i></span>
           </div>
         </div>
 
