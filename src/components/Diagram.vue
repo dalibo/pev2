@@ -50,7 +50,9 @@
                 <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
               </template>
               <template v-if="index !== 0">{{ row[2] ? '└' : '├' }}</template>
-              {{ row[1][nodeProps.SUBPLAN_NAME] }}
+              <span class="font-italic">
+                {{ row[1][nodeProps.SUBPLAN_NAME] }}
+              </span>
             </td>
           </tr>
           <tr :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="showNode(row[1], false, true)">
