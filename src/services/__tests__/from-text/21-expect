@@ -22,7 +22,7 @@
         "Actual Rows": 1,
         "Actual Loops": 1,
         "Parent Relationship": "InitPlan",
-        "Subplan Name": "   InitPlan 2 (returns $1)",
+        "Subplan Name": "InitPlan 2 (returns $1)",
         "Plans": [
           {
             "Node Type": "Limit",
@@ -34,7 +34,7 @@
             "Actual Rows": 1,
             "Actual Loops": 1,
             "Parent Relationship": "InitPlan",
-            "Subplan Name": "           InitPlan 1 (returns $0)",
+            "Subplan Name": "InitPlan 1 (returns $0)",
             "Plans": [
               {
                 "Node Type": "Index Scan",

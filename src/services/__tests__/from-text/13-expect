@@ -21,7 +21,7 @@
         "Actual Rows": 1,
         "Actual Loops": 1,
         "Parent Relationship": "InitPlan",
-        "Subplan Name": "   InitPlan"
+        "Subplan Name": "InitPlan"
       },
       {
         "Node Type": "Seq Scan",
@@ -35,7 +35,7 @@
         "Actual Rows": 1,
         "Actual Loops": 226,
         "Parent Relationship": "SubPlan",
-        "Subplan Name": "   SubPlan",
+        "Subplan Name": "SubPlan",
         "Filter": "(relname = $1)"
       }
     ]
