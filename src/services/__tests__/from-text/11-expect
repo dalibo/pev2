@@ -19,7 +19,7 @@
         "Actual Rows": 1,
         "Actual Loops": 1,
         "Parent Relationship": "InitPlan",
-        "Subplan Name": "   InitPlan"
+        "Subplan Name": "InitPlan"
       }
     ]
   },

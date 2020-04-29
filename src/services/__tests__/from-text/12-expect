@@ -16,7 +16,7 @@
         "Total Cost": 8.27,
         "Plan Rows": 1,
         "Parent Relationship": "SubPlan",
-        "Subplan Name": "   SubPlan",
+        "Subplan Name": "SubPlan",
         "Index Cond": "(relname = $0)"
       }
     ]

@@ -363,6 +363,11 @@ export class PlanService {
       // Replace tabs with 4 spaces
       line = line.replace(/\t/gm, '    ');
 
+      const indentationRegex = /^\s*/;
+      const depth = line.match(indentationRegex)![0].length;
+      // remove indentation
+      line = line.replace(indentationRegex, '');
+
       const emptyLineRegex = '^\s*$';
       const headerRegex = '^\\s*(QUERY|---|#).*$';
       const prefixRegex = '^(\\s*->\\s*|\\s*)';
@@ -499,24 +504,23 @@ export class PlanService {
           node: newNode,
           subelementType: 'subnode',
         };
-        const prefixLength = prefix.split('->')[0].length;
 
         if (0 === elementsAtDepth.length) {
-          elementsAtDepth.push([prefixLength, element]);
+          elementsAtDepth.push([depth, element]);
           root.Plan = newNode;
           return;
         }
 
         // Remove elements from elementsAtDepth for deeper levels
         _.remove(elementsAtDepth, (e) => {
-          return e[0] >= prefixLength;
+          return e[0] >= depth;
         });
 
         // ! is for non-null assertion
         // Prevents the "Object is possibly 'undefined'" linting error
         const previousElement = _.last(elementsAtDepth)![1];
 
-        elementsAtDepth.push([prefixLength, element]);
+        elementsAtDepth.push([depth, element]);
 
         if (!previousElement.node[NodeProp.PLANS]) {
           previousElement.node[NodeProp.PLANS] = [];
@@ -534,28 +538,26 @@ export class PlanService {
         const prefix = subMatches[1];
         const type = subMatches[2];
         // Remove elements from elementsAtDepth for deeper levels
-        _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
+        _.remove(elementsAtDepth, (e) => e[0] >= depth);
         const previousElement = _.last(elementsAtDepth)![1];
         const element = {
           node: previousElement.node,
           subelementType: type.toLowerCase(),
           name: subMatches[0],
         };
-        const prefixLength = prefix.length;
-        elementsAtDepth.push([prefixLength, element]);
+        elementsAtDepth.push([depth, element]);
       } else if (cteMatches) {
         const prefix = cteMatches[1];
         const cteName = cteMatches[2];
         // Remove elements from elementsAtDepth for deeper levels
-        _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
+        _.remove(elementsAtDepth, (e) => e[0] >= depth);
         const previousElement = _.last(elementsAtDepth)![1];
         const element = {
           node: previousElement.node,
           subelementType: 'initplan',
           name: 'CTE ' + cteName,
         };
-        const prefixLength = prefix.length;
-        elementsAtDepth.push([prefixLength, element]);
+        elementsAtDepth.push([depth, element]);
       } else if (workerMatches) {
         const prefix = workerMatches[1];
         const workerNumber = parseInt(workerMatches[2], 0);
@@ -591,7 +593,7 @@ export class PlanService {
       } else if (triggerMatches) {
         const prefix = triggerMatches[1];
         // Remove elements from elementsAtDepth for deeper levels
-        _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
+        _.remove(elementsAtDepth, (e) => e[0] >= depth);
         root.Triggers = root.Triggers || [];
         root.Triggers.push({
           'Trigger Name': triggerMatches[2],
@@ -613,7 +615,7 @@ export class PlanService {
         }
 
         // Remove elements from elementsAtDepth for deeper levels
-        _.remove(elementsAtDepth, (e) => e[0] >= prefix.length);
+        _.remove(elementsAtDepth, (e) => e[0] >= depth);
 
         let element;
         if (elementsAtDepth.length === 0) {

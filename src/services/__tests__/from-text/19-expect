@@ -209,7 +209,7 @@
                 "Actual Rows": 1,
                 "Actual Loops": 11341,
                 "Parent Relationship": "SubPlan",
-                "Subplan Name": "              SubPlan 1",
+                "Subplan Name": "SubPlan 1",
                 "Plans": [
                   {
                     "Node Type": "Bitmap Heap Scan",
