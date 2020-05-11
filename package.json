@@ -16,7 +16,9 @@
     "lint": "vue-cli-service lint",
     "build": "vue-cli-service build --target lib --name pev2 ./src/components/Plan.vue",
     "build-app": "vue-cli-service build --dest dist-app",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
@@ -33,7 +35,8 @@
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.2.2",
-    "vue-tippy": "^4.0.3"
+    "vue-tippy": "^4.0.3",
+    "snyk": "^1.319.2"
   },
   "devDependencies": {
     "@types/jest": "^25.1.2",
@@ -94,5 +97,6 @@
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     }
-  }
+  },
+  "snyk": true
 }
