@@ -19,16 +19,7 @@
               {{ getNodeName() }}
             </h4>
             <span v-if="viewOptions.viewMode === viewModes.FULL">
-              <span class="node-duration" v-if="node[nodeProps.EXCLUSIVE_DURATION]">
-                <span :class="'p-0 px-1 rounded alert ' + durationClass"
-                      v-html="formattedProp('EXCLUSIVE_DURATION')">
-                </span>
-                <template v-if="executionTimePercent !== Infinity">
-                  |
-                  <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
-                </template>
-              </span>
-              <span class="node-duration text-warning" v-else-if="isNeverExecuted">
+              <span class="node-duration text-warning" v-if="isNeverExecuted">
                 Never executed
               </span>
             </span>
@@ -107,6 +98,15 @@
         <div class="card-body tab-content" v-if="showDetails">
           <div class="tab-pane" :class="{'show active': activeTab === 'general' }">
             <!-- general -->
+            <div v-if="node[nodeProps.EXCLUSIVE_DURATION]">
+              <i class="fa fa-fw fa-clock text-muted"></i>
+              <b>Timing:</b>&nbsp;
+              <span :class="'p-0 px-1 rounded alert ' + durationClass" v-html="formattedProp('EXCLUSIVE_DURATION')"></span>
+              <template v-if="executionTimePercent !== Infinity">
+                |
+                <strong>{{executionTimePercent}}</strong><span class="text-muted">%</span>
+              </template>
+            </div>
             <div>
               <b>Rows:</b> <span class="px-1">{{ formattedProp('ACTUAL_ROWS') }}</span> <span class="text-muted">(Planned: {{ formattedProp('PLAN_ROWS') }})</span>
               <span v-if="plannerRowEstimateDirection !== estimateDirections.none && shouldShowPlannerEstimate">
