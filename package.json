@@ -33,7 +33,7 @@
     "splitpanes": "^2.2.1",
     "tippy.js": "^6.0.0",
     "vue": "^2.6.10",
-    "vue-class-component": "^7.1.0",
+    "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.2.2",
     "vue-tippy": "^4.0.3",
     "snyk": "^1.319.2"
