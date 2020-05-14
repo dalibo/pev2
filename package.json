@@ -31,7 +31,7 @@
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "splitpanes": "^2.2.1",
-    "tippy.js": "^6.0.0",
+    "tippy.js": "^6.2.3",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.2.2",
