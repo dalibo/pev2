@@ -28,7 +28,7 @@
     "clarinet": "^0.12.3",
     "core-js": "^3.6.5",
     "lodash": "^4.17.15",
-    "moment": "^2.25.3",
+    "moment": "^2.26.0",
     "moment-duration-format": "^2.3.2",
     "splitpanes": "^2.2.1",
     "tippy.js": "^6.2.3",
