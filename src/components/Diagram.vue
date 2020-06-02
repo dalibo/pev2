@@ -46,10 +46,12 @@
         <template v-for="row, index in flat">
           <tr v-if="row[1][nodeProps.SUBPLAN_NAME]">
             <td class="subplan pr-2" :class="{'font-weight-bold': lodash.startsWith(row[1][nodeProps.SUBPLAN_NAME], 'CTE')}" colspan="2" @click.prevent="showCTE(row[1][nodeProps.SUBPLAN_NAME])">
-              <template v-for="i in lodash.range(row[0])">
-                <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
-              </template>
-              <template v-if="index !== 0">{{ row[2] ? '└' : '├' }}</template>
+              <span class="tree-lines">
+                <template v-for="i in lodash.range(row[0])">
+                  <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
+                </template>
+                <template v-if="index !== 0">{{ row[2] ? '└' : '├' }}</template>
+              </span>
               <span class="font-italic">
                 {{ row[1][nodeProps.SUBPLAN_NAME] }}
               </span>
@@ -57,15 +59,17 @@
           </tr>
           <tr :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="showNode(row[1], false, true)">
             <td class="node-type pr-2">
-              <template v-for="i in lodash.range(row[0])">
-                <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
-              </template>
-              <template v-if="index !== 0">
-                <template v-if="!row[1][nodeProps.SUBPLAN_NAME]">{{ row[2] ? '└' : '├' }}</template>
-                <template v-else>
-                  <template v-if="!row[2]">│</template><template v-else>⠀</template>
+              <span class="tree-lines">
+                <template v-for="i in lodash.range(row[0])">
+                  <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
                 </template>
-              </template>
+                <template v-if="index !== 0">
+                  <template v-if="!row[1][nodeProps.SUBPLAN_NAME]">{{ row[2] ? '└' : '├' }}</template>
+                  <template v-else>
+                    <template v-if="!row[2]">│</template><template v-else>⠀</template>
+                  </template>
+                </template>
+              </span>
               {{ nodeType(row) }}
             </td>
             <td>
