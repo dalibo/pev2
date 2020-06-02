@@ -35,8 +35,7 @@
     "vue": "^2.6.10",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",
-    "vue-tippy": "^4.0.3",
-    "snyk": "^1.320.3"
+    "vue-tippy": "^4.0.3"
   },
   "devDependencies": {
     "@types/jest": "^25.1.2",
@@ -53,6 +52,7 @@
     "node-sass": "^4.12.0",
     "prettier": "2.0.5",
     "sass-loader": "^8.0.0",
+    "snyk": "^1.334.0",
     "ts-jest": "^25.2.0",
     "typescript": "^3.6.3",
     "vue-jest": "^3.0.5",
