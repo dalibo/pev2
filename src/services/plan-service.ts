@@ -91,6 +91,11 @@ export class PlanService {
       content.costliest = costliest;
     }
 
+    const totalCostliest = _.maxBy(flat, NodeProp.TOTAL_COST);
+    if (totalCostliest) {
+      content.maxTotalCost = totalCostliest[NodeProp.TOTAL_COST];
+    }
+
     const slowest = _.maxBy(flat, NodeProp.ACTUAL_DURATION);
     if (slowest) {
       slowest[NodeProp.SLOWEST_NODE] = true;

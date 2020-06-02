@@ -243,8 +243,8 @@ export default class PlanNode extends Vue {
   }
 
   private calculateCost() {
-    const planCost = this.plan.content.Plan[NodeProp.TOTAL_COST];
-    this.costPercent = _.round((this.node[NodeProp.ACTUAL_COST] / planCost) * 100);
+    const maxTotalCost = this.plan.content.maxTotalCost;
+    this.costPercent = _.round((this.node[NodeProp.ACTUAL_COST] / maxTotalCost) * 100);
   }
 
   private calculateRowsRemoved() {
