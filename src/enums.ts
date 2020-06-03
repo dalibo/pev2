@@ -107,12 +107,9 @@ export enum NodeProp {
   OUTPUT = 'Output',
 
   // computed by pev
-  COSTLIEST_NODE = '*Costiest Node (by cost)',
-  LARGEST_NODE = '*Largest Node (by rows)',
-  SLOWEST_NODE = '*Slowest Node (by duration)',
-
   EXCLUSIVE_DURATION = '*Duration (exclusive)',
   EXCLUSIVE_COST = '*Cost (exclusive)',
+
   PLANNER_ESTIMATE_FACTOR = '*Planner Row Estimate Factor',
   PLANNER_ESTIMATE_DIRECTION = '*Planner Row Estimate Direction',
 
@@ -167,12 +164,9 @@ nodePropTypes[NodeProp.SORT_SPACE_USED] = PropType.space;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows;
 
-nodePropTypes[NodeProp.COSTLIEST_NODE] = PropType.boolean;
-nodePropTypes[NodeProp.LARGEST_NODE] = PropType.boolean;
-nodePropTypes[NodeProp.SLOWEST_NODE] = PropType.boolean;
-
 nodePropTypes[NodeProp.EXCLUSIVE_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.EXCLUSIVE_COST] = PropType.cost;
+
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_FACTOR] = PropType.factor;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_DIRECTION] = PropType.estimateDirection;
 
