@@ -108,6 +108,7 @@
               </template>
             </div>
             <div>
+              <i class="fa fa-fw fa-align-justify text-muted"></i>
               <b>Rows:</b> <span class="px-1">{{ formattedProp('ACTUAL_ROWS') }}</span> <span class="text-muted">(Planned: {{ formattedProp('PLAN_ROWS') }})</span>
               <span v-if="plannerRowEstimateDirection !== estimateDirections.none && shouldShowPlannerEstimate">
                 |
@@ -120,6 +121,7 @@
               </span>
             </div>
             <div v-if="rowsRemoved">
+              <i class="fa fa-fw fa-filter text-muted"></i>
               <b>
                 Rows removed by filter:
               </b>
@@ -129,9 +131,11 @@
               </span>
             </div>
             <div>
+              <i class="fa fa-fw fa-dollar-sign text-muted"></i>
               <b>Cost:</b> <span :class="'p-0 px-1 mr-1 alert ' + costClass">{{ formattedProp('EXCLUSIVE_COST') }}</span> <span class="text-muted">(Total: {{ formattedProp('TOTAL_COST') }})</span>
             </div>
             <div v-if="node[nodeProps.ACTUAL_LOOPS] > 1">
+              <i class="fa fa-fw fa-undo text-muted"></i>
               <b>Loops:</b> <span class="px-1">{{ formattedProp('ACTUAL_LOOPS') }}
               </span>            </div>
             <!-- general tab -->
