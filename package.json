@@ -23,7 +23,7 @@
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/dragscroll": "0.0.0",
-    "@types/lodash": "^4.14.151",
+    "@types/lodash": "^4.14.154",
     "@types/moment-duration-format": "^2.2.2",
     "bootstrap": "^4.5.0",
     "clarinet": "^0.12.3",
