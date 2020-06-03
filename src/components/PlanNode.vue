@@ -197,10 +197,10 @@
           </div>
           <div class="tab-pane" :class="{'show active': activeTab === 'workers' }" v-if="workersCount">
 
+            <!-- workers tab -->
             <div v-if="lodash.isNumber(workersCount) && !lodash.isNaN(workersCount) && viewOptions.viewMode === viewModes.FULL">
               <b>Workers: </b> <span class="px-1">{{ workersCount }}</span>
             </div>
-            <!-- workers tab -->
             <div class="accordion" v-if="lodash.isArray(node[nodeProps.WORKERS])">
               <template v-for="(worker, index) in node[nodeProps.WORKERS]">
                 <div class="card">
