@@ -314,6 +314,59 @@ export default class PlanNode extends Vue {
   private colorService = new ColorService();
   private lodash = _;
 
+  // Returns the list of properties that have already been displayed either in
+  // the main panel or in other detailed tabs.
+  private notMiscProperties: string[] = [
+      NodeProp.NODE_TYPE,
+      NodeProp.CTE_NAME,
+      NodeProp.EXCLUSIVE_DURATION,
+      NodeProp.EXCLUSIVE_COST,
+      NodeProp.TOTAL_COST,
+      NodeProp.PLAN_ROWS,
+      NodeProp.ACTUAL_ROWS,
+      NodeProp.ACTUAL_LOOPS,
+      NodeProp.OUTPUT,
+      NodeProp.WORKERS,
+      NodeProp.WORKERS_PLANNED,
+      NodeProp.WORKERS_LAUNCHED,
+      NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS,
+      NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS,
+      NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS,
+      NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS,
+      NodeProp.EXCLUSIVE_TEMP_HIT_BLOCKS,
+      NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS,
+      NodeProp.EXCLUSIVE_TEMP_DIRTIED_BLOCKS,
+      NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS,
+      NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS,
+      NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS,
+      NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS,
+      NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS,
+      NodeProp.SHARED_HIT_BLOCKS,
+      NodeProp.SHARED_READ_BLOCKS,
+      NodeProp.SHARED_DIRTIED_BLOCKS,
+      NodeProp.SHARED_WRITTEN_BLOCKS,
+      NodeProp.TEMP_HIT_BLOCKS,
+      NodeProp.TEMP_READ_BLOCKS,
+      NodeProp.TEMP_DIRTIED_BLOCKS,
+      NodeProp.TEMP_WRITTEN_BLOCKS,
+      NodeProp.LOCAL_HIT_BLOCKS,
+      NodeProp.LOCAL_READ_BLOCKS,
+      NodeProp.LOCAL_DIRTIED_BLOCKS,
+      NodeProp.LOCAL_WRITTEN_BLOCKS,
+      NodeProp.PLANNER_ESTIMATE_FACTOR,
+      NodeProp.PLANNER_ESTIMATE_DIRECTION,
+      NodeProp.SUBPLAN_NAME,
+      NodeProp.GROUP_KEY,
+      NodeProp.HASH_CONDITION,
+      NodeProp.JOIN_TYPE,
+      NodeProp.INDEX_NAME,
+      NodeProp.HASH_CONDITION,
+      NodeProp.EXCLUSIVE_IO_READ_TIME,
+      NodeProp.EXCLUSIVE_IO_WRITE_TIME,
+      NodeProp.IO_READ_TIME, // Exclusive value already shown in IO tab
+      NodeProp.IO_WRITE_TIME, // Exclusive value already shown in IO tab
+  ];
+
   private created(): void {
     this.calculateProps();
     this.calculateBar();
@@ -552,8 +605,11 @@ export default class PlanNode extends Vue {
   }
 
   private shouldShowProp(key: string, value: any): boolean {
-    return value || nodePropTypes[key] === PropType.increment ||
-      key === NodeProp.ACTUAL_ROWS;
+
+    return (value ||
+            nodePropTypes[key] === PropType.increment ||
+            key === NodeProp.ACTUAL_ROWS) &&
+           this.notMiscProperties.indexOf(key) === -1;
   }
 
   private get isNeverExecuted(): boolean {
