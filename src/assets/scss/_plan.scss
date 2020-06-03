@@ -254,8 +254,8 @@ $connector-line: 2px solid darken($line-color, 10%);
       align-items: center;
     }
 
-    &.highlight {
-      animation: highlight 1s;
+    &.flash {
+      animation: flash 1s;
     }
   }
 

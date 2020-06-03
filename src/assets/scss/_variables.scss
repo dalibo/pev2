@@ -50,6 +50,7 @@ $main-color-dark: $blue;
 
 $highlight-color: $blue;
 $highlight-color-dark: $dark-blue;
+$flash-color: #ffff99;
 
 $alert-color: #FB4418;
 
@@ -136,12 +137,12 @@ $buffers-colors: (
   }
 }
 
-@keyframes highlight {
+@keyframes flash {
   0% {
     background: $bg-color;
   }
   20% {
-    background: #ffff99;
+    background: $flash-color;
   }
   100% {
     background: $bg-color;

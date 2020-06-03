@@ -185,7 +185,7 @@
           class="plan-diagram overflow-auto h-100"
           v-if="viewOptions.showDiagram"
         >
-          <diagram :plan="plan" :showNode="showNode" :showCTE="showCTE"></diagram>
+          <diagram :plan="plan" :centerNode="centerNode" :showCTE="showCTE" :highlightNode="highlightNode"></diagram>
         </pane>
         <pane ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1" v-on:mousedown="menuHidden = true">
           <div class="plan h-100 w-100 d-flex flex-column grab-bing">
@@ -218,7 +218,7 @@ import Diagram from '@/components/Diagram.vue';
 import { HelpService, scrollChildIntoParentView } from '@/services/help-service';
 import { PlanService } from '@/services/plan-service';
 import { cost, duration, durationClass, rows } from '@/filters';
-import { HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
+import { CenterMode, HighlightMode, HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
 import { IPlan } from '../iplan';
 import Node from '../inode';
 
@@ -322,7 +322,7 @@ export default class Plan extends Vue {
     };
 
     Vue.nextTick(() => {
-      this.showNode(this.rootNode, true, false);
+      this.centerNode(this.rootNode, CenterMode.visible, HighlightMode.flash);
       // build the diagram structure
       // with level and reference to PlanNode components for interaction
       if (!this.plan) {
@@ -357,34 +357,45 @@ export default class Plan extends Vue {
   }
 
   private showSlowestNode() {
-    this.showNode(this.plan!.content.slowest, true, true);
+    this.centerNode(this.plan!.content.slowest, CenterMode.center, HighlightMode.flash);
   }
 
   private showCostliestNode() {
-    this.showNode(this.plan!.content.costliest, true, true);
+    this.centerNode(this.plan!.content.costliest, CenterMode.center, HighlightMode.flash);
   }
 
-  private showNode(node: any, shouldCenter: boolean, highlight: boolean) {
+  private centerNode(node: any, centerMode: CenterMode, highlightMode: HighlightMode) {
     const cmp = _.find(this.plan!.nodeComponents, (c) => c.node === node);
     if (!cmp) {
       return;
     }
-    this.highlightEl(cmp.$el.querySelector('.plan-node'), shouldCenter, highlight);
+    this.highlightEl(cmp.$el.querySelector('.plan-node'), centerMode, highlightMode);
   }
 
-  private highlightEl(el: Element | HTMLElement | null, shouldCenter: boolean, highlight: boolean) {
+  private highlightEl(el: Element | HTMLElement | null, centerMode: CenterMode, highlightMode: HighlightMode) {
     if (!el) {
       return;
     }
     const parent = this.$refs.plan.$el;
-    scrollChildIntoParentView(parent, el, shouldCenter, () => {
-      if (highlight) {
-        el.classList.add('highlight');
-        setTimeout(() => {
-          el.classList.remove('highlight');
-        }, 1000);
-      }
-    });
+    if (centerMode !== CenterMode.none) {
+      scrollChildIntoParentView(parent, el, centerMode === CenterMode.center, () => {
+        if (highlightMode === HighlightMode.flash) {
+          el.classList.add('flash');
+          setTimeout(() => {
+            el.classList.remove('flash');
+          }, 1000);
+        }
+      });
+    }
+  }
+
+  private highlightNode(node: any, highlight: boolean) {
+    const cmp = _.find(this.plan!.nodeComponents, (c) => c.node === node);
+    if (!cmp) {
+      return;
+    }
+    const el = cmp.$el.querySelector('.plan-node');
+    el!.classList.toggle('highlight', highlight);
   }
 
   private showCTE(cteName: string) {
@@ -392,7 +403,7 @@ export default class Plan extends Vue {
     if (!cmp) {
       return;
     }
-    this.highlightEl(cmp.$el, false, true);
+    this.highlightEl(cmp.$el, CenterMode.visible, HighlightMode.flash);
   }
 
   private get totalTriggerDurationPercent() {

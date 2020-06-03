@@ -49,6 +49,17 @@ export class Orientation {
   public static CLASSIC: string = 'classic';
 }
 
+export enum CenterMode {
+  center,
+  visible,
+  none,
+}
+
+export enum HighlightMode {
+  flash,
+  highlight,
+}
+
 export class NodeProp {
   // plan property keys
   public static NODE_TYPE: string = 'Node Type';

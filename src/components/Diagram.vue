@@ -57,7 +57,7 @@
               </span>
             </td>
           </tr>
-          <tr :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="showNode(row[1], false, true)">
+          <tr :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="centerNode(row[1], centerModes.center, highlightModes.none)" @mouseover="highlightNode(row[1], true)" @mouseout="highlightNode(row[1], false)">
             <td class="node-type pr-2">
               <span class="tree-lines">
                 <template v-for="i in lodash.range(row[0])">
@@ -123,7 +123,7 @@
 import * as _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { duration, durationClass, rows, factor } from '@/filters';
-import { EstimateDirection, BuffersMetric, NodeProp, Metric } from '../enums';
+import { EstimateDirection, CenterMode, BuffersMetric, HighlightMode, NodeProp, Metric } from '../enums';
 import Node from '@/inode';
 import { IPlan } from '../iplan';
 
@@ -134,8 +134,9 @@ import { IPlan } from '../iplan';
 })
 export default class Diagram extends Vue {
   @Prop() private plan!: IPlan;
-  @Prop() private showNode!: () => void;
+  @Prop() private centerNode!: () => void;
   @Prop() private showCTE!: () => void;
+  @Prop() private highlightNode!: () => void;
 
   // The main plan + init plans (all flatten)
   private plans: any[][] = [[]];
@@ -144,6 +145,8 @@ export default class Diagram extends Vue {
   private metrics = Metric;
   private buffersMetrics = BuffersMetric;
   private estimateDirections = EstimateDirection;
+  private centerModes = CenterMode;
+  private highlightModes = HighlightMode;
 
   private viewOptions: any = {
     metric: Metric.time,
