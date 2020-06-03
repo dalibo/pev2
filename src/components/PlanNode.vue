@@ -201,7 +201,7 @@
               <b>Workers: </b> <span class="px-1">{{ workersCount }}</span>
             </div>
             <!-- workers tab -->
-            <div class="accordion" :id="'accordion-' + _uid" v-if="lodash.isArray(node[nodeProps.WORKERS])">
+            <div class="accordion" v-if="lodash.isArray(node[nodeProps.WORKERS])">
               <template v-for="(worker, index) in node[nodeProps.WORKERS]">
                 <div class="card">
                   <div class="card-header p-0">
@@ -212,7 +212,7 @@
                     </button>
                   </div>
 
-                  <div :id="'collapse-' + _uid + '-' + index" class="collapse" :data-parent="'#accordion-' + _uid">
+                  <div :id="'collapse-' + _uid + '-' + index" class="collapse">
                     <div class="card-body p-0">
                       <table class="table table-sm prop-list mb-0">
                         <tr v-for="(value, key) in worker" v-if="shouldShowProp(key, value)">
