@@ -234,7 +234,7 @@ ul.node-children.collapsed {
   .plan-node {
     display: block;
     .plan-node-body {
-      height: 0;
+      height: $compact-width / 3;
       * {
         display: none;
       }
