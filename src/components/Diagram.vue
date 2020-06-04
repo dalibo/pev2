@@ -36,7 +36,7 @@
         </li>
       </ul>
     </div>
-    <table class="my-1 table-hover">
+    <table class="my-1">
       <tbody v-for="flat, index in plans">
         <tr v-if="index === 0 && plans.length > 1">
           <th colspan="2" class="subplan">
@@ -57,7 +57,15 @@
               </span>
             </td>
           </tr>
-          <tr :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="centerNode(row[1], centerModes.center, highlightModes.none)" @mouseover="highlightNode(row[1], true)" @mouseout="highlightNode(row[1], false)">
+          <tr
+            :class="{'highlight': row[1] === highlightedNode}"
+            :content="tooltip(row[1])"
+            v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}"
+            @click.prevent="centerNode(row[1], centerModes.center, highlightModes.none)"
+            @mouseover="eventBus.$emit('mouseovernode', row[1])"
+            @mouseout="eventBus.$emit('mouseoutnode', row[1])"
+          >
+
             <td class="node-type pr-2">
               <span class="tree-lines">
                 <template v-for="i in lodash.range(row[0])">
@@ -136,7 +144,7 @@ export default class Diagram extends Vue {
   @Prop() private plan!: IPlan;
   @Prop() private centerNode!: () => void;
   @Prop() private showCTE!: () => void;
-  @Prop() private highlightNode!: () => void;
+  @Prop() private eventBus!: InstanceType<typeof Vue>;
 
   // The main plan + init plans (all flatten)
   private plans: any[][] = [[]];
@@ -147,6 +155,7 @@ export default class Diagram extends Vue {
   private estimateDirections = EstimateDirection;
   private centerModes = CenterMode;
   private highlightModes = HighlightMode;
+  private highlightedNode: Node | null = null;
 
   private viewOptions: any = {
     metric: Metric.time,
@@ -165,6 +174,8 @@ export default class Diagram extends Vue {
       this.flatten(flat, 0, cte, true, []);
       this.plans.push(flat);
     });
+    this.eventBus.$on('mouseovernode', (node: Node) => { this.highlightedNode = node; });
+    this.eventBus.$on('mouseoutnode', () => { this.highlightedNode = null; });
   }
 
   @Watch('viewOptions', {deep: true})

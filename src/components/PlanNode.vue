@@ -9,7 +9,10 @@
       <div class="collapse-handle" v-if="hasChildren">
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
-      <div class="plan-node-body">
+      <div class="plan-node-body"
+           @mouseover="eventBus.$emit('mouseovernode', node)"
+           @mouseout="eventBus.$emit('mouseoutnode', node)"
+      >
         <header title="view node details" v-on:click.stop="showDetails = !showDetails">
           <h4>
             {{ getNodeName() }}
@@ -153,7 +156,7 @@
     </div>
     <ul v-if="plans" :class="['node-children', {'collapsed': collapsed}]">
       <li v-for="subnode in plans">
-        <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE"/>
+        <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE" :eventBus="eventBus"/>
       </li>
     </ul>
   </div>
@@ -186,6 +189,7 @@ export default class PlanNode extends Vue {
   @Prop(Object) private plan!: any;
   @Prop(Object) private viewOptions!: any;
   @Prop() private showCTE!: () => void;
+  @Prop() private eventBus!: InstanceType<typeof Vue>;
 
   // UI flags
   private showDetails: boolean = false;

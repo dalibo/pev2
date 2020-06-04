@@ -48,6 +48,7 @@ $border-radius-lg: 6px;
 $main-color: $blue;
 $main-color-dark: $blue;
 
+$plan-node-bg: $white;
 $highlight-color: $blue;
 $highlight-color-dark: $dark-blue;
 $flash-color: #ffffbb;
@@ -139,12 +140,12 @@ $buffers-colors: (
 
 @keyframes flash {
   0% {
-    background: $bg-color;
+    background: $plan-node-bg;
   }
   20% {
     background: $flash-color;
   }
   100% {
-    background: $bg-color;
+    background: $plan-node-bg;
   }
 }

@@ -43,6 +43,10 @@
     font-size: $font-size-base;
   }
 
+  tr.highlight {
+    background-color: $flash-color;
+  }
+
   .tree-lines {
     font-family: $font-family-mono;
   }

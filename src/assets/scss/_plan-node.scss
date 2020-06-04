@@ -27,8 +27,7 @@ $bg-color: #fff;
     border: 1px solid $line-color;
     border-radius: $border-radius-base;
     padding: $padding-base $padding-lg;
-    background-color: $bg-color;
-    background-color: white;
+    background-color: $plan-node-bg;
     box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
     cursor: auto;
   }
@@ -68,7 +67,8 @@ $bg-color: #fff;
   }
 
   //hovers
-  &:hover {
+  &:hover,
+  &.highlight {
     .plan-node-body,
     .workers > div {
       border-color: $highlight-color;
