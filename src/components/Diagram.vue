@@ -45,7 +45,12 @@
         </tr>
         <template v-for="row, index in flat">
           <tr v-if="row[1][nodeProps.SUBPLAN_NAME]">
-            <td class="subplan pr-2" :class="{'font-weight-bold': lodash.startsWith(row[1][nodeProps.SUBPLAN_NAME], 'CTE')}" colspan="2" @click.prevent="showCTE(row[1][nodeProps.SUBPLAN_NAME])">
+            <td
+              class="subplan pr-2"
+              :class="{'font-weight-bold': lodash.startsWith(row[1][nodeProps.SUBPLAN_NAME], 'CTE')}"
+              colspan="2"
+              @click.prevent="eventBus.$emit('clickcte', row[1][nodeProps.SUBPLAN_NAME])"
+            >
               <span class="tree-lines">
                 <template v-for="i in lodash.range(row[0])">
                   <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
@@ -61,7 +66,7 @@
             :class="{'highlight': row[1] === highlightedNode}"
             :content="tooltip(row[1])"
             v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}"
-            @click.prevent="centerNode(row[1], centerModes.center, highlightModes.none)"
+            @click.prevent="eventBus.$emit('clicknode', row[1])"
             @mouseover="eventBus.$emit('mouseovernode', row[1])"
             @mouseout="eventBus.$emit('mouseoutnode', row[1])"
           >
@@ -142,8 +147,6 @@ import { IPlan } from '../iplan';
 })
 export default class Diagram extends Vue {
   @Prop() private plan!: IPlan;
-  @Prop() private centerNode!: () => void;
-  @Prop() private showCTE!: () => void;
   @Prop() private eventBus!: InstanceType<typeof Vue>;
 
   // The main plan + init plans (all flatten)

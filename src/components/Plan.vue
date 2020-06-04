@@ -187,8 +187,6 @@
         >
           <diagram
             :plan="plan"
-            :centerNode="centerNode"
-            :showCTE="showCTE"
             :eventBus="eventBus"
           >
           </diagram>
@@ -197,12 +195,12 @@
           <div class="plan h-100 w-100 d-flex flex-column grab-bing">
             <ul class="main-plan">
               <li>
-                <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE" :eventBus="eventBus" ref="root"/>
+                <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root"/>
               </li>
             </ul>
             <ul class="init-plans">
               <li v-for="node in plan.ctes">
-                <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE" :eventBus="eventBus" ref="root"/>
+                <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root"/>
               </li>
             </ul>
           </div>
@@ -295,6 +293,8 @@ export default class Plan extends Vue {
     this.handleScroll();
     this.eventBus.$on('mouseovernode', this.onMouseOverNode);
     this.eventBus.$on('mouseoutnode', this.onMouseOutNode);
+    this.eventBus.$on('clicknode', this.centerNode);
+    this.eventBus.$on('clickcte', this.centerCTE);
   }
 
   private handleScroll(): void {
@@ -408,7 +408,7 @@ export default class Plan extends Vue {
     el!.classList.toggle('highlight', highlight);
   }
 
-  private showCTE(cteName: string) {
+  private centerCTE(cteName: string) {
     const cmp = _.find(this.plan!.nodeComponents, (c) => c.node[NodeProp.SUBPLAN_NAME] === cteName);
     if (!cmp) {
       return;
