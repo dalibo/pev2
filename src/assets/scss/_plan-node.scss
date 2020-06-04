@@ -27,8 +27,7 @@ $bg-color: #fff;
     border: 1px solid $line-color;
     border-radius: $border-radius-base;
     padding: $padding-base $padding-lg;
-    background-color: $bg-color;
-    background-color: white;
+    background-color: $plan-node-bg;
     box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
     cursor: auto;
   }
@@ -41,10 +40,6 @@ $bg-color: #fff;
     margin-bottom: $padding-base;
     overflow: hidden;
     cursor: pointer;
-
-    &:hover {
-      background-color: $gray-lightest;
-    }
 
     h4 {
       font-size: $font-size-base;
@@ -68,10 +63,17 @@ $bg-color: #fff;
   }
 
   //hovers
-  &:hover {
+  &:hover,
+  &.highlight {
     .plan-node-body,
     .workers > div {
       border-color: $highlight-color;
+    }
+  }
+  &.highlight {
+    .plan-node-body,
+    .workers > div {
+      background-color: $flash-color;
     }
   }
 
@@ -140,8 +142,8 @@ $bg-color: #fff;
     background-size: $progress-height $progress-height;
   }
 
-  &.highlight .plan-node-body {
-    animation: highlight 1s;
+  &.flash .plan-node-body {
+    animation: flash 1s;
   }
 
   .workers {

@@ -9,7 +9,10 @@
       <div class="collapse-handle" v-if="hasChildren">
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
-      <div class="plan-node-body">
+      <div class="plan-node-body"
+           @mouseover="eventBus.$emit('mouseovernode', node)"
+           @mouseout="eventBus.$emit('mouseoutnode', node)"
+      >
         <header title="view node details" v-on:click.stop="showDetails = !showDetails">
           <h4>
             {{ getNodeName() }}
@@ -48,7 +51,7 @@
           <div v-if="node[nodeProps.HASH_CONDITION]"><span class="text-muted">
               on</span> {{node[nodeProps.HASH_CONDITION] | keysToString }}</div>
           <div v-if="node[nodeProps.CTE_NAME]">
-            <a class="text-reset" href v-on:click.prevent="showCTE('CTE ' + node[nodeProps.CTE_NAME])">
+            <a class="text-reset" href v-on:click.prevent="eventBus.$emit('clickcte', 'CTE ' + node[nodeProps.CTE_NAME])">
               <i class="fa fa-link text-muted"></i>&nbsp;
               <span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
             </a>
@@ -153,7 +156,7 @@
     </div>
     <ul v-if="plans" :class="['node-children', {'collapsed': collapsed}]">
       <li v-for="subnode in plans">
-        <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions" :showCTE="showCTE"/>
+        <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus"/>
       </li>
     </ul>
   </div>
@@ -185,7 +188,7 @@ export default class PlanNode extends Vue {
   public executionTimePercent: number = NaN;
   @Prop(Object) private plan!: any;
   @Prop(Object) private viewOptions!: any;
-  @Prop() private showCTE!: () => void;
+  @Prop() private eventBus!: InstanceType<typeof Vue>;
 
   // UI flags
   private showDetails: boolean = false;

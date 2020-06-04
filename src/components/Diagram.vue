@@ -36,7 +36,7 @@
         </li>
       </ul>
     </div>
-    <table class="my-1 table-hover">
+    <table class="my-1">
       <tbody v-for="flat, index in plans">
         <tr v-if="index === 0 && plans.length > 1">
           <th colspan="2" class="subplan">
@@ -45,7 +45,12 @@
         </tr>
         <template v-for="row, index in flat">
           <tr v-if="row[1][nodeProps.SUBPLAN_NAME]">
-            <td class="subplan pr-2" :class="{'font-weight-bold': lodash.startsWith(row[1][nodeProps.SUBPLAN_NAME], 'CTE')}" colspan="2" @click.prevent="showCTE(row[1][nodeProps.SUBPLAN_NAME])">
+            <td
+              class="subplan pr-2"
+              :class="{'font-weight-bold': lodash.startsWith(row[1][nodeProps.SUBPLAN_NAME], 'CTE')}"
+              colspan="2"
+              @click.prevent="eventBus.$emit('clickcte', row[1][nodeProps.SUBPLAN_NAME])"
+            >
               <span class="tree-lines">
                 <template v-for="i in lodash.range(row[0])">
                   <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
@@ -57,7 +62,15 @@
               </span>
             </td>
           </tr>
-          <tr :content="tooltip(row[1])" v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}" @click.prevent="showNode(row[1], false, true)">
+          <tr
+            :class="{'highlight': row[1] === highlightedNode}"
+            :content="tooltip(row[1])"
+            v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}"
+            @click.prevent="eventBus.$emit('clicknode', row[1])"
+            @mouseover="eventBus.$emit('mouseovernode', row[1])"
+            @mouseout="eventBus.$emit('mouseoutnode', row[1])"
+          >
+
             <td class="node-type pr-2">
               <span class="tree-lines">
                 <template v-for="i in lodash.range(row[0])">
@@ -123,7 +136,7 @@
 import * as _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { duration, durationClass, rows, factor } from '@/filters';
-import { EstimateDirection, BuffersMetric, NodeProp, Metric } from '../enums';
+import { EstimateDirection, CenterMode, BuffersMetric, HighlightMode, NodeProp, Metric } from '../enums';
 import Node from '@/inode';
 import { IPlan } from '../iplan';
 
@@ -134,8 +147,7 @@ import { IPlan } from '../iplan';
 })
 export default class Diagram extends Vue {
   @Prop() private plan!: IPlan;
-  @Prop() private showNode!: () => void;
-  @Prop() private showCTE!: () => void;
+  @Prop() private eventBus!: InstanceType<typeof Vue>;
 
   // The main plan + init plans (all flatten)
   private plans: any[][] = [[]];
@@ -144,6 +156,9 @@ export default class Diagram extends Vue {
   private metrics = Metric;
   private buffersMetrics = BuffersMetric;
   private estimateDirections = EstimateDirection;
+  private centerModes = CenterMode;
+  private highlightModes = HighlightMode;
+  private highlightedNode: Node | null = null;
 
   private viewOptions: any = {
     metric: Metric.time,
@@ -162,6 +177,8 @@ export default class Diagram extends Vue {
       this.flatten(flat, 0, cte, true, []);
       this.plans.push(flat);
     });
+    this.eventBus.$on('mouseovernode', (node: Node) => { this.highlightedNode = node; });
+    this.eventBus.$on('mouseoutnode', () => { this.highlightedNode = null; });
   }
 
   @Watch('viewOptions', {deep: true})
