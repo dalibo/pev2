@@ -43,8 +43,15 @@
     font-size: $font-size-base;
   }
 
+  tr {
+    border: solid transparent;
+    border-width: 0 2px;
+  }
+
   tr.highlight {
     background-color: $flash-color;
+    border-left-color: $highlight-color;
+    border-right-color: $highlight-color;
   }
 
   .tree-lines {
