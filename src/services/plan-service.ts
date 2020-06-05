@@ -70,6 +70,7 @@ export class PlanService {
     // calculate actuals after processing child nodes so that actual duration
     // takes loops into account
     this.calculateActuals(node);
+    this.calculateExclusives(node);
 
   }
 
@@ -104,10 +105,10 @@ export class PlanService {
     }
 
     function sumShared(o: Node) {
-      return o[NodeProp.SHARED_HIT_BLOCKS] +
-        o[NodeProp.SHARED_READ_BLOCKS] +
-        o[NodeProp.SHARED_DIRTIED_BLOCKS] +
-        o[NodeProp.SHARED_WRITTEN_BLOCKS];
+      return o[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS];
     }
     const highestShared = _.maxBy(flat, (o) => {
       return sumShared(o);
@@ -117,10 +118,10 @@ export class PlanService {
     }
 
     function sumTemp(o: Node) {
-      return o[NodeProp.TEMP_HIT_BLOCKS] +
-        o[NodeProp.TEMP_READ_BLOCKS] +
-        o[NodeProp.TEMP_DIRTIED_BLOCKS] +
-        o[NodeProp.TEMP_WRITTEN_BLOCKS];
+      return o[NodeProp.EXCLUSIVE_TEMP_HIT_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_TEMP_DIRTIED_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS];
     }
     const highestTemp = _.maxBy(flat, (o) => {
       return sumTemp(o);
@@ -130,10 +131,10 @@ export class PlanService {
     }
 
     function sumLocal(o: Node) {
-      return o[NodeProp.LOCAL_HIT_BLOCKS] +
-        o[NodeProp.LOCAL_READ_BLOCKS] +
-        o[NodeProp.LOCAL_DIRTIED_BLOCKS] +
-        o[NodeProp.LOCAL_WRITTEN_BLOCKS];
+      return o[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS];
     }
     const highestLocal = _.maxBy(flat, (o) => {
       return sumLocal(o);
@@ -811,5 +812,34 @@ export class PlanService {
 
   private parseTime(text: string): number {
     return parseFloat(text.replace(/(\s*ms)$/, ''));
+  }
+
+  private calculateExclusives(node: Node) {
+    // Caculate inclusive value for the current node for the given property
+    const properties: Array<keyof typeof NodeProp> = [
+      'SHARED_HIT_BLOCKS',
+      'SHARED_READ_BLOCKS',
+      'SHARED_DIRTIED_BLOCKS',
+      'SHARED_WRITTEN_BLOCKS',
+      'TEMP_HIT_BLOCKS',
+      'TEMP_READ_BLOCKS',
+      'TEMP_DIRTIED_BLOCKS',
+      'TEMP_WRITTEN_BLOCKS',
+      'LOCAL_HIT_BLOCKS',
+      'LOCAL_READ_BLOCKS',
+      'LOCAL_DIRTIED_BLOCKS',
+      'LOCAL_WRITTEN_BLOCKS',
+    ];
+    _.each(properties, (property) => {
+      const sum = _.sumBy(
+        node[NodeProp.PLANS],
+        (child: Node) => {
+
+          return child[NodeProp[property]];
+        },
+      );
+      const exclusivePropertyString = 'EXCLUSIVE_' + property as keyof typeof NodeProp;
+      node[NodeProp[exclusivePropertyString]] = node[NodeProp[property]] - sum;
+    });
   }
 }
