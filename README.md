@@ -8,7 +8,7 @@ To use the explain vizualizer you can choose one of the following options:
 
 ### Local installation
 
-You can download `pev2.zip` for the [latest released
+You can download `pev2.tar.gz` for the [latest released
 version](https://github.com/dalibo/pev2/releases/latest) of PEV2.
 Simply extract the archive and launch `index.html` in your browser.
 
