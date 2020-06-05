@@ -87,9 +87,7 @@ export class PlanService {
 
     const costliest = _.maxBy(flat, NodeProp.EXCLUSIVE_COST);
     if (costliest) {
-      costliest[NodeProp.COSTLIEST_NODE] = true;
       content.maxCost = costliest[NodeProp.EXCLUSIVE_COST];
-      content.costliest = costliest;
     }
 
     const totalCostliest = _.maxBy(flat, NodeProp.TOTAL_COST);
@@ -99,9 +97,7 @@ export class PlanService {
 
     const slowest = _.maxBy(flat, NodeProp.EXCLUSIVE_DURATION);
     if (slowest) {
-      slowest[NodeProp.SLOWEST_NODE] = true;
       content.maxDuration = slowest[NodeProp.EXCLUSIVE_DURATION];
-      content.slowest = slowest;
     }
 
     function sumShared(o: Node) {
@@ -650,6 +646,10 @@ export class PlanService {
           return;
         }
 
+        if (this.parseSettings(extraMatches[2], element)) {
+          return;
+        }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, '');
         // try to convert to number
@@ -812,6 +812,27 @@ export class PlanService {
 
   private parseTime(text: string): number {
     return parseFloat(text.replace(/(\s*ms)$/, ''));
+  }
+
+  private parseSettings(text: string, el: Node): boolean {
+    // Parses a settings block
+    // eg. Timing: Generation 0.340 ms, Inlining 0.000 ms, Optimization 0.168 ms, Emission 1.907 ms, Total 2.414 ms
+
+    const settingsRegex = /^(\s*)Settings:\s*(.*)$/g;
+    const settingsMatches = settingsRegex.exec(text);
+
+    if (settingsMatches) {
+      el.Settings = {};
+      const settings = settingsMatches[2].split(/\s*,\s*/);
+      let matches;
+      _.each(settings, (option) => {
+        const reg = /^(\S*)\s+=\s+(.*)$/g;
+        matches = reg.exec(option);
+        el.Settings[matches![1]] = matches![2].replace(/'/g, '');
+      });
+      return true;
+    }
+    return false;
   }
 
   private calculateExclusives(node: Node) {

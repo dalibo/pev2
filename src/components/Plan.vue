@@ -35,48 +35,6 @@
                  v-html="$options.filters.duration(plan.planStats.jitTime)"></span>
         </span>
       </div>
-      <div class="d-inline-block border-left px-2">
-        Slowest:
-        <template v-if="!plan.planStats.maxDuration">
-          <span class="text-muted">
-            N/A
-            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing slowest')"></i>
-          </span>
-        </template>
-        <template v-else>
-          <span class="stat-value" v-html="$options.filters.duration(plan.planStats.maxDuration)"></span>
-          <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showSlowestNode">
-            <i class="fa fa-link text-muted"></i>
-          </button>
-        </template>
-      </div>
-      <div class="d-inline-block border-left px-2">
-        Largest:
-        <template v-if="!plan.planStats.maxRows">
-          <span class="text-muted">
-            N/A
-            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('no rows')"></i>
-          </span>
-        </template>
-        <template v-else>
-          <span class="stat-value">{{plan.planStats.maxRows | rows}} <span class="text-muted">rows</span></span>
-        </template>
-      </div>
-      <div class="d-inline-block border-left px-2">
-        Costliest:
-        <template v-if="!plan.planStats.maxCost">
-          <span class="text-muted">
-            N/A
-            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing costliest')"></i>
-          </span>
-        </template>
-        <template v-else>
-          <span>{{plan.planStats.maxCost | cost}}</span>
-          <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showCostliestNode">
-            <i class="fa fa-link text-muted"></i>
-          </button>
-        </template>
-      </div>
       <div class="d-inline-block border-left px-2 position-relative">
         <span class="stat-label">Triggers: </span>
         <template v-if="plan.planStats.triggers.length">
@@ -110,6 +68,29 @@
         <span v-else class="text-muted">
           N/A
         </span>
+      </div>
+      <div class="d-inline-block border-left px-2 position-relative" v-if="plan.planStats.settings">
+        <span class="stat-label">Settings: <span class="badge badge-secondary">{{ lodash.keys(plan.planStats.settings).length }}</span></span>
+        <button @click.prevent="showSettings = !showSettings" class="bg-transparent border-0 p-0 m-0 pl-1">
+          <i class="fa fa-caret-down text-muted"></i>
+        </button>
+        <div class="plan-triggers-container text-left" v-if="showSettings">
+          <button class="btn btn-close float-right" v-on:click="showSettings = false">
+            <i class="fa fa-times"></i>
+          </button>
+          <h3>Settings</h3>
+          <em class="text-muted d-block pb-2">
+          Configuration parameters affecting query planning with value different from the built-in default value.
+          </em>
+          <table class="table table-sm table-striped mb-0">
+            <tbody>
+              <tr v-for="(value, key) in plan.planStats.settings">
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <button @click="showHideSource" :class="['btn btn-sm ml-auto p-0 px-2', {'text-primary': showSource}]" title="View source">
         <i class="fa fa-code p-0"></i>
@@ -263,6 +244,7 @@ export default class Plan extends Vue {
   private menuHidden: boolean = true;
   private validationMessage: string = '';
   private showTriggers: boolean = false;
+  private showSettings: boolean = false;
   private showSource: boolean = false;
   private sourceTabActive: string = 'plan';
 
@@ -329,6 +311,7 @@ export default class Plan extends Vue {
       maxTempBlocks: content.maxTempBlocks || 0,
       triggers: content.Triggers || [],
       jitTime: content.JIT && content.JIT.Timing && content.JIT.Timing.Total || null,
+      settings: content.Settings,
     };
 
     Vue.nextTick(() => {
