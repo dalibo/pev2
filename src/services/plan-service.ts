@@ -176,12 +176,12 @@ export class PlanService {
 
   // recursive function to get the sum of actual durations of a a node children
   public childrenDuration(node: Node, duration: number) {
-    _.each(node[NodeProp.PLANS], (subPlan) => {
+    _.each(node[NodeProp.PLANS], (child) => {
       // Subtract sub plans duration from this node except for InitPlans
       // (ie. CTE)
-      if (subPlan[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan') {
-        duration += subPlan[NodeProp.ACTUAL_DURATION] || 0; // Duration may not be set
-        duration = this.childrenDuration(subPlan, duration);
+      if (child[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan') {
+        duration += child[NodeProp.ACTUAL_DURATION] || 0; // Duration may not be set
+        duration = this.childrenDuration(child, duration);
       }
     });
     return duration;
