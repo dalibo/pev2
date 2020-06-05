@@ -70,7 +70,7 @@ $bg-color: #fff;
       border-color: $highlight-color;
     }
   }
-  &.highlight {
+  &.highlight:not(:hover) {
     .plan-node-body,
     .workers > div {
       background-color: $flash-color;
