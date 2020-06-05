@@ -29,4 +29,5 @@ export interface IPlanStats {
   maxTempBlocks?: number;
   triggers?: ITrigger[];
   jitTime?: number;
+  settings?: {[key: string]: string};
 }
