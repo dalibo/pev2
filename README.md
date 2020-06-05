@@ -75,11 +75,11 @@ add the following in you header (or load them with your favorite bundler).
 
 ```html
 <link
-  href="https://unpkg.com/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+  href="https://unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css"
   rel="stylesheet"
 />
 <link
-  href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.css"
+  href="https://unpkg.com/@fortawesome/fontawesome-free@5.13.0/css/all.css"
   rel="stylesheet"
 />
 ```
