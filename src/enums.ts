@@ -60,68 +60,69 @@ export enum HighlightMode {
   highlight,
 }
 
-export class NodeProp {
+export enum NodeProp {
   // plan property keys
-  public static NODE_TYPE: string = 'Node Type';
-  public static ACTUAL_ROWS: string = 'Actual Rows';
-  public static PLAN_ROWS: string = 'Plan Rows';
-  public static ROWS_REMOVED_BY_FILTER: string = 'Rows Removed by Filter';
-  public static ROWS_REMOVED_BY_JOIN_FILTER: string = 'Rows Removed by Join Filter';
-  public static ACTUAL_STARTUP_TIME: string = 'Actual Startup Time';
-  public static ACTUAL_TOTAL_TIME: string = 'Actual Total Time';
-  public static ACTUAL_LOOPS: string = 'Actual Loops';
-  public static STARTUP_COST: string = 'Startup Cost';
-  public static TOTAL_COST: string = 'Total Cost';
-  public static PLANS: string = 'Plans';
-  public static RELATION_NAME: string = 'Relation Name';
-  public static SCHEMA: string = 'Schema';
-  public static ALIAS: string = 'Alias';
-  public static GROUP_KEY: string = 'Group Key';
-  public static SORT_KEY: string = 'Sort Key';
-  public static SORT_METHOD: string = 'Sort Method';
-  public static SORT_SPACE_TYPE: string = 'Sort Space Type';
-  public static SORT_SPACE_USED: string = 'Sort Space Used';
-  public static JOIN_TYPE: string = 'Join Type';
-  public static INDEX_NAME: string = 'Index Name';
-  public static HASH_CONDITION: string = 'Hash Cond';
-  public static PARENT_RELATIONSHIP: string = 'Parent Relationship';
-  public static SUBPLAN_NAME: string = 'Subplan Name';
-  public static PARALLEL_AWARE: string = 'Parallel Aware';
-  public static WORKERS: string = 'Workers';
-  public static WORKERS_PLANNED: string = 'Workers Planned';
-  public static WORKERS_LAUNCHED: string = 'Workers Launched';
-  public static SHARED_HIT_BLOCKS: string = 'Shared Hit Blocks';
-  public static SHARED_READ_BLOCKS: string = 'Shared Read Blocks';
-  public static SHARED_DIRTIED_BLOCKS: string = 'Shared Dirtied Blocks';
-  public static SHARED_WRITTEN_BLOCKS: string = 'Shared Written Blocks';
-  public static TEMP_HIT_BLOCKS: string = 'Temp Hit Blocks';
-  public static TEMP_READ_BLOCKS: string = 'Temp Read Blocks';
-  public static TEMP_DIRTIED_BLOCKS: string = 'Temp Dirtied Blocks';
-  public static TEMP_WRITTEN_BLOCKS: string = 'Temp Written Blocks';
-  public static LOCAL_HIT_BLOCKS: string = 'Local Hit Blocks';
-  public static LOCAL_READ_BLOCKS: string = 'Local Read Blocks';
-  public static LOCAL_DIRTIED_BLOCKS: string = 'Local Dirtied Blocks';
-  public static LOCAL_WRITTEN_BLOCKS: string = 'Local Written Blocks';
-  public static IO_READ_TIME: string = 'I/O Read Time';
-  public static IO_WRITE_TIME: string = 'I/O Write Time';
+  NODE_TYPE = 'Node Type',
+  ACTUAL_ROWS = 'Actual Rows',
+  PLAN_ROWS = 'Plan Rows',
+  ROWS_REMOVED_BY_FILTER = 'Rows Removed by Filter',
+  ROWS_REMOVED_BY_JOIN_FILTER = 'Rows Removed by Join Filter',
+  ACTUAL_STARTUP_TIME = 'Actual Startup Time',
+  ACTUAL_TOTAL_TIME = 'Actual Total Time',
+  ACTUAL_LOOPS = 'Actual Loops',
+  STARTUP_COST = 'Startup Cost',
+  TOTAL_COST = 'Total Cost',
+  PLANS = 'Plans',
+  RELATION_NAME = 'Relation Name',
+  SCHEMA = 'Schema',
+  ALIAS = 'Alias',
+  GROUP_KEY = 'Group Key',
+  SORT_KEY = 'Sort Key',
+  SORT_METHOD = 'Sort Method',
+  SORT_SPACE_TYPE = 'Sort Space Type',
+  SORT_SPACE_USED = 'Sort Space Used',
+  JOIN_TYPE = 'Join Type',
+  INDEX_NAME = 'Index Name',
+  HASH_CONDITION = 'Hash Cond',
+  PARENT_RELATIONSHIP = 'Parent Relationship',
+  SUBPLAN_NAME = 'Subplan Name',
+  PARALLEL_AWARE = 'Parallel Aware',
+  WORKERS = 'Workers',
+  WORKERS_PLANNED = 'Workers Planned',
+  WORKERS_LAUNCHED = 'Workers Launched',
+  SHARED_HIT_BLOCKS = 'Shared Hit Blocks',
+  SHARED_READ_BLOCKS = 'Shared Read Blocks',
+  SHARED_DIRTIED_BLOCKS = 'Shared Dirtied Blocks',
+  SHARED_WRITTEN_BLOCKS = 'Shared Written Blocks',
+  TEMP_HIT_BLOCKS = 'Temp Hit Blocks',
+  TEMP_READ_BLOCKS = 'Temp Read Blocks',
+  TEMP_DIRTIED_BLOCKS = 'Temp Dirtied Blocks',
+  TEMP_WRITTEN_BLOCKS = 'Temp Written Blocks',
+  LOCAL_HIT_BLOCKS = 'Local Hit Blocks',
+  LOCAL_READ_BLOCKS = 'Local Read Blocks',
+  LOCAL_DIRTIED_BLOCKS = 'Local Dirtied Blocks',
+  LOCAL_WRITTEN_BLOCKS = 'Local Written Blocks',
+  IO_READ_TIME = 'I/O Read Time',
+  IO_WRITE_TIME = 'I/O Write Time',
+  OUTPUT = 'Output',
 
   // computed by pev
-  public static COSTLIEST_NODE: string = '*Costiest Node (by cost)';
-  public static LARGEST_NODE: string = '*Largest Node (by rows)';
-  public static SLOWEST_NODE: string = '*Slowest Node (by duration)';
+  COSTLIEST_NODE = '*Costiest Node (by cost)',
+  LARGEST_NODE = '*Largest Node (by rows)',
+  SLOWEST_NODE = '*Slowest Node (by duration)',
 
-  public static ACTUAL_DURATION: string = '*Actual Duration';
-  public static ACTUAL_COST: string = '*Actual Cost';
-  public static PLANNER_ESTIMATE_FACTOR: string = '*Planner Row Estimate Factor';
-  public static PLANNER_ESTIMATE_DIRECTION: string = '*Planner Row Estimate Direction';
+  ACTUAL_DURATION = '*Actual Duration',
+  ACTUAL_COST = '*Actual Cost',
+  PLANNER_ESTIMATE_FACTOR = '*Planner Row Estimate Factor',
+  PLANNER_ESTIMATE_DIRECTION = '*Planner Row Estimate Direction',
 
-  public static CTE_SCAN: string = 'CTE Scan';
-  public static CTE_NAME: string = 'CTE Name';
-  public static FUNCTION_NAME: string = 'Function Name';
+  CTE_SCAN = 'CTE Scan',
+  CTE_NAME = 'CTE Name',
+  FUNCTION_NAME = 'Function Name',
 
-  public static ARRAY_INDEX_KEY: string = 'arrayIndex';
+  ARRAY_INDEX_KEY = 'arrayIndex',
 
-  public static PEV_PLAN_TAG: string = 'plan_';
+  PEV_PLAN_TAG = 'plan_',
 }
 
 export enum PropType {
