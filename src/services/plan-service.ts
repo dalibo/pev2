@@ -85,10 +85,10 @@ export class PlanService {
       content.maxRows = largest[NodeProp.ACTUAL_ROWS];
     }
 
-    const costliest = _.maxBy(flat, NodeProp.ACTUAL_COST);
+    const costliest = _.maxBy(flat, NodeProp.EXCLUSIVE_COST);
     if (costliest) {
       costliest[NodeProp.COSTLIEST_NODE] = true;
-      content.maxCost = costliest[NodeProp.ACTUAL_COST];
+      content.maxCost = costliest[NodeProp.EXCLUSIVE_COST];
       content.costliest = costliest;
     }
 
@@ -97,10 +97,10 @@ export class PlanService {
       content.maxTotalCost = totalCostliest[NodeProp.TOTAL_COST];
     }
 
-    const slowest = _.maxBy(flat, NodeProp.ACTUAL_DURATION);
+    const slowest = _.maxBy(flat, NodeProp.EXCLUSIVE_DURATION);
     if (slowest) {
       slowest[NodeProp.SLOWEST_NODE] = true;
-      content.maxDuration = slowest[NodeProp.ACTUAL_DURATION];
+      content.maxDuration = slowest[NodeProp.EXCLUSIVE_DURATION];
       content.slowest = slowest;
     }
 
@@ -147,30 +147,30 @@ export class PlanService {
   // actual duration and actual cost are calculated by subtracting child values from the total
   public calculateActuals(node: any) {
     if (!_.isUndefined(node[NodeProp.ACTUAL_TOTAL_TIME])) {
-      node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
+      node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
       // unless the current node is a child of a gather node
       if (!node[NodeProp.WORKERS]) {
-        node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
+        node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.EXCLUSIVE_DURATION] * node[NodeProp.ACTUAL_LOOPS];
       }
 
-      const duration = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);
-      node[NodeProp.ACTUAL_DURATION] = duration > 0 ? duration : 0;
+      const duration = node[NodeProp.EXCLUSIVE_DURATION] - this.childrenDuration(node, 0);
+      node[NodeProp.EXCLUSIVE_DURATION] = duration > 0 ? duration : 0;
     }
 
     if (node[NodeProp.TOTAL_COST]) {
-      node[NodeProp.ACTUAL_COST] = node[NodeProp.TOTAL_COST];
+      node[NodeProp.EXCLUSIVE_COST] = node[NodeProp.TOTAL_COST];
     }
 
 
     _.each(node[NodeProp.PLANS], (subPlan) => {
       if (subPlan[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan' && subPlan[NodeProp.TOTAL_COST]) {
-        node[NodeProp.ACTUAL_COST] = node[NodeProp.ACTUAL_COST] - subPlan[NodeProp.TOTAL_COST];
+        node[NodeProp.EXCLUSIVE_COST] = node[NodeProp.EXCLUSIVE_COST] - subPlan[NodeProp.TOTAL_COST];
       }
     });
 
-    if (node[NodeProp.ACTUAL_COST] < 0) {
-      node[NodeProp.ACTUAL_COST] = 0;
+    if (node[NodeProp.EXCLUSIVE_COST] < 0) {
+      node[NodeProp.EXCLUSIVE_COST] = 0;
     }
   }
 
@@ -180,7 +180,7 @@ export class PlanService {
       // Subtract sub plans duration from this node except for InitPlans
       // (ie. CTE)
       if (child[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan') {
-        duration += child[NodeProp.ACTUAL_DURATION] || 0; // Duration may not be set
+        duration += child[NodeProp.EXCLUSIVE_DURATION] || 0; // Duration may not be set
         duration = this.childrenDuration(child, duration);
       }
     });

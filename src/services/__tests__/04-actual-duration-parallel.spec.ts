@@ -81,8 +81,8 @@ describe('PlanService', () => {
   const r: any = planService.fromSource(source);
   const plan: IPlan = planService.createPlan('', r, '');
   it('doesn\'t not multiply by number of loops', () => {
-    expect(plan.content.Plan.Plans[0].Plans[0]['*Actual Duration']).toEqual(400.681);
-    expect(plan.content.Plan.Plans[0]['*Actual Duration']).toEqual(2020.558 - 400.681);
+    expect(plan.content.Plan.Plans[0].Plans[0]['*Duration (exclusive)']).toEqual(400.681);
+    expect(plan.content.Plan.Plans[0]['*Duration (exclusive)']).toEqual(2020.558 - 400.681);
   });
 });
 

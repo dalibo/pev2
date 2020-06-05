@@ -111,8 +111,8 @@ export enum NodeProp {
   LARGEST_NODE = '*Largest Node (by rows)',
   SLOWEST_NODE = '*Slowest Node (by duration)',
 
-  ACTUAL_DURATION = '*Actual Duration',
-  ACTUAL_COST = '*Actual Cost',
+  EXCLUSIVE_DURATION = '*Duration (exclusive)',
+  EXCLUSIVE_COST = '*Cost (exclusive)',
   PLANNER_ESTIMATE_FACTOR = '*Planner Row Estimate Factor',
   PLANNER_ESTIMATE_DIRECTION = '*Planner Row Estimate Direction',
 
@@ -171,8 +171,8 @@ nodePropTypes[NodeProp.COSTLIEST_NODE] = PropType.boolean;
 nodePropTypes[NodeProp.LARGEST_NODE] = PropType.boolean;
 nodePropTypes[NodeProp.SLOWEST_NODE] = PropType.boolean;
 
-nodePropTypes[NodeProp.ACTUAL_DURATION] = PropType.duration;
-nodePropTypes[NodeProp.ACTUAL_COST] = PropType.cost;
+nodePropTypes[NodeProp.EXCLUSIVE_DURATION] = PropType.duration;
+nodePropTypes[NodeProp.EXCLUSIVE_COST] = PropType.cost;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_FACTOR] = PropType.factor;
 nodePropTypes[NodeProp.PLANNER_ESTIMATE_DIRECTION] = PropType.estimateDirection;
 

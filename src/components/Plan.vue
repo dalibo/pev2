@@ -142,7 +142,7 @@
         <label class="mr-2 text-muted">Graph metric:</label>
         <div class="btn-group btn-group-xs">
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
-          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!rootNode[nodeProps.ACTUAL_DURATION]">duration</button>
+          <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!rootNode[nodeProps.EXCLUSIVE_DURATION]">duration</button>
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="rootNode[nodeProps.ACTUAL_ROWS] === undefined">rows</button>
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
         </div>
@@ -440,7 +440,7 @@ export default class Plan extends Vue {
     if (this.plan) {
       return [
         'Duration: ',
-        duration(cmp.node[NodeProp.ACTUAL_DURATION], true),
+        duration(cmp.node[NodeProp.EXCLUSIVE_DURATION], true),
         ' | ',
         cmp.executionTimePercent,
         '%',

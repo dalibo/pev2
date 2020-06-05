@@ -18,9 +18,9 @@
             {{ getNodeName() }}
           </h4>
           <span v-if="viewOptions.viewMode === viewModes.FULL">
-            <span class="node-duration" v-if="node[nodeProps.ACTUAL_DURATION]">
+            <span class="node-duration" v-if="node[nodeProps.EXCLUSIVE_DURATION]">
               <span :class="'p-0 px-1 rounded alert ' + durationClass"
-                v-html="$options.filters.duration(node[nodeProps.ACTUAL_DURATION])">
+                v-html="$options.filters.duration(node[nodeProps.EXCLUSIVE_DURATION])">
               </span>
               <template v-if="executionTimePercent !== Infinity">
                 |
@@ -83,7 +83,7 @@
         <div v-if="shouldShowCost">
           <span>
             Cost:
-            <span :class="'p-0 px-1 alert ' + costClass">{{node[nodeProps.ACTUAL_COST] | cost}}</span>
+            <span :class="'p-0 px-1 alert ' + costClass">{{node[nodeProps.EXCLUSIVE_COST] | cost}}</span>
             |
             <span>{{ costPercent }}<span class="text-muted">%</span></span>
           </span>
@@ -242,12 +242,12 @@ export default class PlanNode extends Vue {
     // use the first node total time if plan execution time is not available
     const executionTime = this.plan.planStats.executionTime || this.plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME];
     this.executionTimePercent = _.round(
-      (this.node[NodeProp.ACTUAL_DURATION] / executionTime) * 100);
+      (this.node[NodeProp.EXCLUSIVE_DURATION] / executionTime) * 100);
   }
 
   private calculateCost() {
     const maxTotalCost = this.plan.content.maxTotalCost;
-    this.costPercent = _.round((this.node[NodeProp.ACTUAL_COST] / maxTotalCost) * 100);
+    this.costPercent = _.round((this.node[NodeProp.EXCLUSIVE_COST] / maxTotalCost) * 100);
   }
 
   private calculateRowsRemoved() {
@@ -301,7 +301,7 @@ export default class PlanNode extends Vue {
       return false;
     }
 
-    return this.node[NodeProp.ACTUAL_COST] && (this.costClass || this.showDetails);
+    return this.node[NodeProp.EXCLUSIVE_COST] && (this.costClass || this.showDetails);
   }
 
   private shouldShowNodeBarLabel(): boolean {
@@ -328,7 +328,7 @@ export default class PlanNode extends Vue {
     }
     switch (this.viewOptions.highlightType) {
       case HighlightType.DURATION:
-        value = (this.node[NodeProp.ACTUAL_DURATION]);
+        value = (this.node[NodeProp.EXCLUSIVE_DURATION]);
         if (value === undefined) {
           this.highlightValue = null;
           break;
@@ -346,7 +346,7 @@ export default class PlanNode extends Vue {
         this.highlightValue = this.$options.filters.rows(value);
         break;
       case HighlightType.COST:
-        value = (this.node[NodeProp.ACTUAL_COST]);
+        value = (this.node[NodeProp.EXCLUSIVE_COST]);
         if (value === undefined) {
           this.highlightValue = null;
           break;
