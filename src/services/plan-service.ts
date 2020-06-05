@@ -87,9 +87,7 @@ export class PlanService {
 
     const costliest = _.maxBy(flat, NodeProp.EXCLUSIVE_COST);
     if (costliest) {
-      costliest[NodeProp.COSTLIEST_NODE] = true;
       content.maxCost = costliest[NodeProp.EXCLUSIVE_COST];
-      content.costliest = costliest;
     }
 
     const totalCostliest = _.maxBy(flat, NodeProp.TOTAL_COST);
@@ -99,9 +97,7 @@ export class PlanService {
 
     const slowest = _.maxBy(flat, NodeProp.EXCLUSIVE_DURATION);
     if (slowest) {
-      slowest[NodeProp.SLOWEST_NODE] = true;
       content.maxDuration = slowest[NodeProp.EXCLUSIVE_DURATION];
-      content.slowest = slowest;
     }
 
     function sumShared(o: Node) {

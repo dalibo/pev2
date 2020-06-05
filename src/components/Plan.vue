@@ -35,48 +35,6 @@
                  v-html="$options.filters.duration(plan.planStats.jitTime)"></span>
         </span>
       </div>
-      <div class="d-inline-block border-left px-2">
-        Slowest:
-        <template v-if="!plan.planStats.maxDuration">
-          <span class="text-muted">
-            N/A
-            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing slowest')"></i>
-          </span>
-        </template>
-        <template v-else>
-          <span class="stat-value" v-html="$options.filters.duration(plan.planStats.maxDuration)"></span>
-          <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showSlowestNode">
-            <i class="fa fa-link text-muted"></i>
-          </button>
-        </template>
-      </div>
-      <div class="d-inline-block border-left px-2">
-        Largest:
-        <template v-if="!plan.planStats.maxRows">
-          <span class="text-muted">
-            N/A
-            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('no rows')"></i>
-          </span>
-        </template>
-        <template v-else>
-          <span class="stat-value">{{plan.planStats.maxRows | rows}} <span class="text-muted">rows</span></span>
-        </template>
-      </div>
-      <div class="d-inline-block border-left px-2">
-        Costliest:
-        <template v-if="!plan.planStats.maxCost">
-          <span class="text-muted">
-            N/A
-            <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing costliest')"></i>
-          </span>
-        </template>
-        <template v-else>
-          <span>{{plan.planStats.maxCost | cost}}</span>
-          <button class="bg-transparent border-0 p-0 m-0 pl-1" @click.prevent="showCostliestNode">
-            <i class="fa fa-link text-muted"></i>
-          </button>
-        </template>
-      </div>
       <div class="d-inline-block border-left px-2 position-relative">
         <span class="stat-label">Triggers: </span>
         <template v-if="plan.planStats.triggers.length">
