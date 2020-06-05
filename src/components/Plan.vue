@@ -87,8 +87,8 @@
             <i class="fa fa-caret-down text-muted"></i>
           </button>
           <div class="plan-triggers-container text-left" v-if="showTriggers">
-            <button class="btn btn-close pull-right" v-on:click="showTriggers = false">
-              <i class="fa fa-close"></i>
+            <button class="btn btn-close float-right" v-on:click="showTriggers = false">
+              <i class="fa fa-times"></i>
             </button>
             <h3>Triggers</h3>
             <div v-for="(trigger, index) in plan.planStats.triggers">
