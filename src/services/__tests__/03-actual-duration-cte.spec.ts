@@ -17,7 +17,7 @@ Total runtime: 1001.133 ms
   const r: any = planService.fromSource(source);
   const plan: IPlan = planService.createPlan('', r, '');
   it('doesn\'t not include CTE duration', () => {
-    expect(plan.content.Plan['*Actual Duration'] - 0.002 < 0).toBeTruthy();
+    expect(plan.content.Plan['*Duration (exclusive)'] - 0.002 < 0).toBeTruthy();
   });
 });
 
