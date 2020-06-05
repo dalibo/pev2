@@ -754,8 +754,8 @@ export class PlanService {
         const s = timing.split(/=/);
         const method = s[0];
         const value = parseFloat(s[1]);
-        const prop = ['I/O', _.capitalize(method), 'Time'].join(' ');
-        el[prop] = value;
+        const prop = 'IO_' + _.upperCase(method) + '_TIME' as keyof typeof NodeProp;
+        el[NodeProp[prop]] = value;
       });
       return true;
     }
@@ -829,6 +829,8 @@ export class PlanService {
       'LOCAL_READ_BLOCKS',
       'LOCAL_DIRTIED_BLOCKS',
       'LOCAL_WRITTEN_BLOCKS',
+      'IO_READ_TIME',
+      'IO_WRITE_TIME',
     ];
     _.each(properties, (property) => {
       const sum = _.sumBy(

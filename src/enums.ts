@@ -129,6 +129,9 @@ export enum NodeProp {
   EXCLUSIVE_LOCAL_DIRTIED_BLOCKS = '*Local Dirtied Blocks (exclusive)',
   EXCLUSIVE_LOCAL_WRITTEN_BLOCKS = '*Local Written Blocks (exclusive)',
 
+  EXCLUSIVE_IO_READ_TIME = '*I/O Read Time (exclusive)',
+  EXCLUSIVE_IO_WRITE_TIME = '*I/O Write Time (exclusive)',
+
   CTE_SCAN = 'CTE Scan',
   CTE_NAME = 'CTE Name',
   FUNCTION_NAME = 'Function Name',
