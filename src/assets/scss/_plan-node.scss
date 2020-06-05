@@ -26,10 +26,26 @@ $bg-color: #fff;
     position: relative;
     border: 1px solid $line-color;
     border-radius: $border-radius-base;
-    padding: $padding-base $padding-lg;
     background-color: $plan-node-bg;
     box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
     cursor: auto;
+
+    &.card {
+      .card-body, .card-header {
+        padding: $padding-base $padding-lg;
+      }
+
+      .card-header .card-header-tabs {
+        margin-right: 0;
+        margin-left: 0;
+        margin-bottom: -$padding-base;
+        margin-top: $padding-base;
+
+        .nav-link {
+          padding: $padding-base / 2 $padding-lg;
+        }
+      }
+    }
   }
 
   &.parallel .plan-node-body {
@@ -80,7 +96,6 @@ $bg-color: #fff;
   .node-description {
     text-align: left;
     font-style: italic;
-    padding-top: $padding-lg;
     word-break: normal;
 
     .node-type {
@@ -219,7 +234,7 @@ ul.node-children.collapsed {
   .plan-node {
     display: block;
     .plan-node-body {
-      height: 0;
+      height: $compact-width / 3;
       * {
         display: none;
       }
