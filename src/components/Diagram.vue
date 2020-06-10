@@ -63,6 +63,7 @@
             </td>
           </tr>
           <tr
+            class="no-focus-outline"
             :class="{'highlight': row[1] === highlightedNode}"
             :content="tooltip(row[1])"
             v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}"

@@ -30,6 +30,13 @@ $bg-color: #fff;
     box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
     cursor: auto;
 
+    .header.card-body {
+      cursor: pointer;
+      &:hover {
+        background-color: $gray-lightest;
+      }
+    }
+
     &.card {
       .card-body, .card-header {
         padding: $padding-base $padding-lg;
@@ -55,7 +62,6 @@ $bg-color: #fff;
   header {
     margin-bottom: $padding-base;
     overflow: hidden;
-    cursor: pointer;
 
     h4 {
       font-size: $font-size-base;
