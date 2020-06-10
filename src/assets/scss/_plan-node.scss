@@ -57,6 +57,10 @@ $bg-color: #fff;
     overflow: hidden;
     cursor: pointer;
 
+    &:hover {
+      background-color: $gray-lightest;
+    }
+
     h4 {
       font-size: $font-size-base;
       float: left;
