@@ -14,10 +14,16 @@
            @mouseout="eventBus.$emit('mouseoutnode', node)"
       >
         <div class="card-body">
-          <header title="view node details" v-on:click.stop="showDetails = !showDetails">
+          <header title="view node details" class="mb-0" v-on:click.stop="showDetails = !showDetails">
             <h4>
               {{ getNodeName() }}
             </h4>
+            <div class="float-right">
+              <span v-if="durationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + durationClass" title="Slow"><i class="fa fa-fw fa-clock"></i></span>
+              <span v-if="costClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + costClass" title="Cost is high"><i class="fa fa-fw fa-dollar-sign"></i></span>
+              <span v-if="estimationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + estimationClass" title="Bad estimation for number of rows"><i class="fa fa-fw fa-thumbs-down"></i></span>
+              <span v-if="rowsRemovedClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + rowsRemovedClass" title="High number of rows removed"><i class="fa fa-fw fa-filter"></i></span>
+            </div>
             <span v-if="viewOptions.viewMode === viewModes.FULL">
               <span class="node-duration text-warning" v-if="isNeverExecuted">
                 Never executed
@@ -65,12 +71,6 @@
             </span>
           </div>
 
-          <div>
-            <span v-if="durationClass" :class="'p-0  d-inline-block mb-1 mr-1 text-nowrap alert ' + durationClass" title="Slow"><i class="fa fa-fw fa-clock"></i></span>
-            <span v-if="costClass" :class="'p-0  d-inline-block mb-1 mr-1 text-nowrap alert ' + costClass" title="Cost is high"><i class="fa fa-fw fa-dollar-sign"></i></span>
-            <span v-if="estimationClass" :class="'p-0  d-inline-block mb-1 mr-1 text-nowrap alert ' + estimationClass" title="Bad estimation for number of rows"><i class="fa fa-fw fa-thumbs-down"></i></span>
-            <span v-if="rowsRemovedClass" :class="'p-0  d-inline-block mb-1 mr-1 text-nowrap alert ' + rowsRemovedClass" title="High number of rows removed"><i class="fa fa-fw fa-filter"></i></span>
-          </div>
         </div>
 
         <div v-if="showDetails" class="card-header border-top">
