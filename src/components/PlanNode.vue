@@ -13,11 +13,12 @@
            @mouseover="eventBus.$emit('mouseovernode', node)"
            @mouseout="eventBus.$emit('mouseoutnode', node)"
       >
-        <div class="card-body">
-          <header class="mb-0 no-focus-outline" v-on:click.stop="showDetails = !showDetails"
+        <div class="card-body header no-focus-outline"
+            v-on:click.stop="showDetails = !showDetails"
             :content="(showDetails ? 'Hide' : 'View') + ' node details'"
             v-tippy="{arrow: true}"
-          >
+        >
+          <header class="mb-0">
             <h4>
               {{ getNodeName() }}
             </h4>
