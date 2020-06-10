@@ -330,3 +330,7 @@ $connector-line: 2px solid darken($line-color, 10%);
     transition: none !important;
   }
 }
+
+.no-focus-outline:focus {
+  outline: none;
+}
