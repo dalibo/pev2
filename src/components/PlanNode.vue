@@ -127,10 +127,10 @@
             <div v-if="rowsRemoved">
               <i class="fa fa-fw fa-filter text-muted"></i>
               <b>
-                Rows removed by filter:
+                {{ nodeProps[rowsRemovedProp] }}:
               </b>
               <span>
-                <span class="px-1">{{ formattedProp('ROWS_REMOVED_BY_FILTER') || formattedProp('ROWS_REMOVED_BY_JOIN_FILTER') }}</span>|
+                <span class="px-1">{{ formattedProp(rowsRemovedProp) }}</span>|
                 <span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercent == 100 ? '>99' : rowsRemovedPercent }}%</span>
               </span>
             </div>
@@ -401,13 +401,20 @@ export default class PlanNode extends Vue {
     this.costPercent = _.round((this.node[NodeProp.EXCLUSIVE_COST] / maxTotalCost) * 100);
   }
 
-  private calculateRowsRemoved() {
-    const rowsRemovedKey = _.find(
-      _.keys(this.node),
+  private get rowsRemovedProp() {
+    const nodeKey = Object.keys(this.node).find(
       (key) => key === NodeProp.ROWS_REMOVED_BY_FILTER || key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER,
     );
-    if (rowsRemovedKey) {
-      const removed = this.node[rowsRemovedKey];
+    type NodePropStrings = keyof typeof NodeProp;
+    return Object.keys(NodeProp).find((prop) => NodeProp[prop as NodePropStrings] === nodeKey);
+  }
+
+  private calculateRowsRemoved() {
+    const rowsRemovedProp = this.rowsRemovedProp;
+
+    if (rowsRemovedProp) {
+      type NodePropStrings = keyof typeof NodeProp;
+      const removed = this.node[NodeProp[rowsRemovedProp as NodePropStrings]];
       this.rowsRemoved = removed;
       const actual = this.node[NodeProp.ACTUAL_ROWS];
       this.rowsRemovedPercent = _.floor(removed / (removed + actual) * 100);
