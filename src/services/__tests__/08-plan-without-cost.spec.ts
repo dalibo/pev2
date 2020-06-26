@@ -16,7 +16,7 @@ Seq Scan on pg_class (actual time=0.013..0.181 rows=645 loops=1)
 
 
 describe('PlanService', () => {
-  test('Can parse plan without analyze nor costs', () => {
+  test('Cannot parse plan without analyze nor costs', () => {
     const planService = new PlanService();
     const source = `
 Bitmap Heap Scan on a
@@ -27,6 +27,6 @@ Bitmap Heap Scan on a
          ->  Bitmap Index Scan on a_pkey
                Index Cond: (id = 4711)
 `;
-    const r: any = planService.fromSource(source);
+    expect(() => { planService.fromText(source); }).toThrow();
   });
 });

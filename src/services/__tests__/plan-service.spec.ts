@@ -229,4 +229,29 @@ Result  (cost=0.31..0.32 rows=1 width=4)
     expect(r.Plan.Plans[0]['Shared Hit Blocks']).toEqual(16230);
     expect(r.Plan.Plans[0]['Shared Read Blocks']).toEqual(67104);
   });
+
+  test('doesn\'t parse delete target tables as nodes', () => {
+    const planService = new PlanService();
+    const source = `
+Delete on stock  (cost=1748.14..26203.41 rows=1159930 width=12) (actual time=19.228..19.228 rows=0 loops=1)
+  Delete on stock_2001
+  Delete on stock_2002
+  ->  Merge Join  (cost=1748.14..5240.68 rows=231986 width=12) (actual time=6.337..6.337 rows=0 loops=1)
+        Merge Cond: (tannee.annee = stock_2001.annee)
+        ->  Sort  (cost=179.78..186.16 rows=2550 width=10) (actual time=0.032..0.032 rows=1 loops=1)
+              Sort Key: tannee.annee
+              Sort Method: quicksort  Memory: 25kB
+              ->  Seq Scan on tannee  (cost=0.00..35.50 rows=2550 width=10) (actual time=0.020..0.021 rows=1 loops=1)
+        ->  Sort  (cost=1568.36..1613.85 rows=18195 width=10) (actual time=6.301..6.301 rows=1 loops=1)
+              Sort Key: stock_2001.annee
+              Sort Method: quicksort  Memory: 1621kB
+              ->  Seq Scan on stock_2001  (cost=0.00..280.95 rows=18195 width=10) (actual time=0.015..3.241 rows=18195 loops=1)
+  ->  Merge Join  (cost=1748.14..5240.68 rows=231986 width=12) (actual time=3.002..3.003 rows=0 loops=1)
+        Merge Cond: (tannee.annee = stock_2002.annee)
+Planning Time: 0.550 ms
+Execution Time: 19.475 ms
+`;
+    const r: any = planService.fromSource(source);
+    expect(r.Plan.Plans[1]['Node Type']).toBe('Merge Join');
+  });
 });
