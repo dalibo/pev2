@@ -5,6 +5,9 @@ momentDurationFormatSetup(moment);
 import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
 
 export function duration(value: number, detail: boolean): string {
+  if (value === undefined) {
+    return 'N/A';
+  }
   detail = !!detail;
 
   if (value < 1 && !detail) {
@@ -17,11 +20,17 @@ export function duration(value: number, detail: boolean): string {
 }
 
 export function cost(value: number): string {
+  if (!value) {
+    return 'N/A';
+  }
   value = parseFloat(value.toPrecision(3));
   return value.toLocaleString();
 }
 
 export function rows(value: number): string {
+  if (value === undefined) {
+    return 'N/A';
+  }
   return value.toLocaleString();
 }
 
