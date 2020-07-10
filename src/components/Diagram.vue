@@ -136,7 +136,7 @@
 <script lang="ts">
 import * as _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { duration, durationClass, rows, factor } from '@/filters';
+import { blocks, duration, durationClass, rows, factor } from '@/filters';
 import { EstimateDirection, CenterMode, BuffersMetric, HighlightMode, NodeProp, Metric } from '../enums';
 import Node from '@/inode';
 import { IPlan } from '../iplan';
@@ -278,10 +278,10 @@ export default class Diagram extends Vue {
         written = node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS];
         break;
     }
-    text += hit ? '<br>Hit: ' + rows(hit) : '';
-    text += read ? '<br>Read: ' + rows(read) : '';
-    text += dirtied ? '<br>Dirtied: ' + rows(dirtied) : '';
-    text += written ? '<br>Written: ' + rows(written) : '';
+    text += hit ? '<br>Hit: ' + blocks(hit) : '';
+    text += read ? '<br>Read: ' + blocks(read) : '';
+    text += dirtied ? '<br>Dirtied: ' + blocks(dirtied) : '';
+    text += written ? '<br>Written: ' + blocks(written) : '';
     text = text ? text : ' N/A';
     switch (this.viewOptions.buffersMetric) {
       case BuffersMetric.shared:
