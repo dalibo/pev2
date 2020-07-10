@@ -172,24 +172,24 @@
               </tr>
               <tr>
                 <th>Shared</th>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_SHARED_HIT_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_SHARED_READ_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_SHARED_DIRTIED_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_SHARED_WRITTEN_BLOCKS') || '-' }}</td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_SHARED_HIT_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_SHARED_READ_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_SHARED_DIRTIED_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_SHARED_WRITTEN_BLOCKS') || '-'"></td>
               </tr>
               <tr>
                 <th>Temp</th>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_TEMP_HIT_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_TEMP_READ_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_TEMP_DIRTIED_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-' }}</td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_HIT_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_READ_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_DIRTIED_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'"></td>
               </tr>
               <tr>
                 <th>Local</th>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_LOCAL_HIT_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_LOCAL_READ_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_LOCAL_DIRTIED_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_LOCAL_WRITTEN_BLOCKS') || '-' }}</td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_LOCAL_HIT_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_LOCAL_READ_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_LOCAL_DIRTIED_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_LOCAL_WRITTEN_BLOCKS') || '-'"></td>
               </tr>
             </table>
             <!-- iobuffer tab -->

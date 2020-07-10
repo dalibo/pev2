@@ -321,6 +321,9 @@ $connector-line: 2px solid darken($line-color, 10%);
   }
 }
 
+.tippy-popper .tippy-tooltip {
+  text-align: left;
+}
 .tippy-popper .text-muted {
   color: inherit !important;
 }
