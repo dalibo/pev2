@@ -3,6 +3,10 @@ import * as moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
 momentDurationFormatSetup(moment);
 import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
+import hljs from 'highlight.js/lib/core';
+import 'highlight.js/styles/default.css';
+import * as langPgsql from 'highlight.js/lib/languages/pgsql';
+hljs.registerLanguage('pgsql', langPgsql);
 
 export function duration(value: number, detail: boolean): string {
   if (value === undefined) {
@@ -122,4 +126,8 @@ export function durationClass(i: number): string {
     return 'c-' + c;
   }
   return '';
+}
+
+export function pgsql(text: string) {
+  return hljs.highlight('pgsql', text).value;
 }

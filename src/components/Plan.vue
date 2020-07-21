@@ -150,7 +150,7 @@
           </div>
           <div :class="['tab-pane fade show', {'active': sourceTabActive == 'query'}]">
             <div v-if="planQuery" class="bg-dark">
-              <pre class="small p-2 text-white mb-0"><code>{{ planQuery }}</code></pre>
+              <pre class="small p-2 text-white mb-0"><code v-html="$options.filters.pgsql(planQuery)"></code></pre>
             </div>
             <div v-else class="text-white p-2">
               No query provided for this plan
@@ -202,7 +202,7 @@ import PlanNode from '@/components/PlanNode.vue';
 import Diagram from '@/components/Diagram.vue';
 import { HelpService, scrollChildIntoParentView } from '@/services/help-service';
 import { PlanService } from '@/services/plan-service';
-import { cost, duration, durationClass, rows } from '@/filters';
+import { cost, duration, durationClass, pgsql, rows } from '@/filters';
 import { CenterMode, HighlightMode, HighlightType, NodeProp, Orientation, ViewMode } from '../enums';
 import { IPlan } from '../iplan';
 import Node from '../inode';
@@ -227,6 +227,7 @@ Vue.component('tippy', TippyComponent);
     cost,
     duration,
     durationClass,
+    pgsql,
     rows,
   },
 })
