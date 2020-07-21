@@ -163,7 +163,7 @@
       <splitpanes class="default-theme" @resize="viewOptions.diagramWidth = $event[0].size">
         <pane ref="diagram"
           :size="viewOptions.diagramWidth"
-          class="plan-diagram overflow-auto h-100"
+          class="plan-diagram h-100"
           v-if="viewOptions.showDiagram"
         >
           <diagram
