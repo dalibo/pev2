@@ -650,5 +650,4 @@ export default class PlanNode extends Vue {
 <style lang="scss">
 @import '../assets/scss/variables';
 @import '../assets/scss/plan-node';
-@import '../assets/scss/highlight';
 </style>
