@@ -4,9 +4,12 @@ import momentDurationFormatSetup from 'moment-duration-format';
 momentDurationFormatSetup(moment);
 import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
 import hljs from 'highlight.js/lib/core';
-import 'highlight.js/styles/default.css';
+import 'highlight.js/styles/github.css';
 import * as langPgsql from 'highlight.js/lib/languages/pgsql';
 hljs.registerLanguage('pgsql', langPgsql);
+
+import * as langJson from 'highlight.js/lib/languages/json';
+hljs.registerLanguage('json', langJson);
 
 export function duration(value: number, detail: boolean): string {
   if (value === undefined) {
@@ -130,4 +133,8 @@ export function durationClass(i: number): string {
 
 export function pgsql(text: string) {
   return hljs.highlight('pgsql', text).value;
+}
+
+export function json(text: string) {
+  return hljs.highlight('json', text).value;
 }
