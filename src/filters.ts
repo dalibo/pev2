@@ -78,7 +78,7 @@ export function blocks(value: number): string {
   if (!value) {
     return '';
   }
-  return value.toLocaleString() + '&nbsp;<span class="text-muted">|</span>&nbsp;<small>' +
+  return value.toLocaleString() + '<br><small>' +
     formatBytes(value * 8 * 1024) + '</small>';
 }
 

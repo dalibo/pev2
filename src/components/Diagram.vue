@@ -38,7 +38,7 @@
         </ul>
       </div>
     </div>
-    <div class="overflow-auto">
+    <div class="overflow-auto h-100">
       <table class="my-1">
         <tbody v-for="flat, index in plans">
           <tr v-if="index === 0 && plans.length > 1">
@@ -285,11 +285,17 @@ export default class Diagram extends Vue {
         written = node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS];
         break;
     }
-    text += hit ? '<br>Hit: ' + blocks(hit) : '';
-    text += read ? '<br>Read: ' + blocks(read) : '';
-    text += dirtied ? '<br>Dirtied: ' + blocks(dirtied) : '';
-    text += written ? '<br>Written: ' + blocks(written) : '';
-    text = text ? text : ' N/A';
+    text += '<table class="table text-white table-sm table-borderless mb-0">';
+    text += hit ? '<tr><td>Hit:</td><td class="text-right">' + blocks(hit) + '</td></tr>' : '';
+    text += read ? '<tr><td>Read:</td><td class="text-right">' + blocks(read) + '</td></tr>' : '';
+    text += dirtied ? '<tr><td>Dirtied:</td><td class="text-right">' + blocks(dirtied) + '</td></tr>' : '';
+    text += written ? '<tr><td>Written:</td><td class="text-right">' + blocks(written) + '</td></tr>' : '';
+    text += '</table>';
+
+    if (!hit && !read && !dirtied && ! written) {
+      text = ' N/A';
+    }
+
     switch (this.viewOptions.buffersMetric) {
       case BuffersMetric.shared:
         text = 'Shared Blocks:' + text;
