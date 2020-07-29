@@ -117,37 +117,7 @@
             <i class="fa fa-cog p-0"></i> Settings
           </button>
         </div>
-        <div class="form-inline small border-bottom py-1" v-if="plan && !viewOptions.menuHidden">
-          <div class="btn-group btn-group-xs ml-auto mr-2">
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.FULL}" v-on:click="viewOptions.viewMode = viewModes.FULL">full</button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.COMPACT}" v-on:click="viewOptions.viewMode = viewModes.COMPACT">compact</button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.DOT}" v-on:click="viewOptions.viewMode = viewModes.DOT">dot</button>
-          </div>
-          <div class="btn-group btn-group-xs mr-2">
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.TWOD}" v-on:click="viewOptions.orientation = orientations.TWOD">
-              <i class="fa fa-sitemap"></i>
-              2D
-            </button>
-            <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.CLASSIC}" v-on:click="viewOptions.orientation = orientations.CLASSIC">
-              <i class="fa fa-list"></i>
-              classic
-            </button>
-          </div>
-          <div class="form-check mr-2 border-left pl-2">
-            <input id="showDiagram" type="checkbox" v-model="viewOptions.showDiagram" class="form-check-input">
-            <label for="showDiagram" class="form-check-label"><i class="fa fa-align-left"></i> Diagram</label>
-          </div>
-          <div class="form-group mr-2 pl-2 border-left">
-            <label class="mr-2 text-muted">Graph metric:</label>
-            <div class="btn-group btn-group-xs">
-              <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
-              <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!rootNode[nodeProps.EXCLUSIVE_DURATION]">duration</button>
-              <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="rootNode[nodeProps.ACTUAL_ROWS] === undefined">rows</button>
-              <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
-            </div>
-          </div>
-        </div>
-        <div class="h-100">
+        <div class="h-100 d-flex">
           <splitpanes class="default-theme" @resize="viewOptions.diagramWidth = $event[0].size">
             <pane ref="diagram"
               :size="viewOptions.diagramWidth"
@@ -175,6 +145,50 @@
               </div>
             </pane>
           </splitpanes>
+          <div class="small p-2 border-left" v-if="plan && !viewOptions.menuHidden">
+            <div class="text-right clearfix">
+              <button type="button" class="close" aria-label="Close" @click="viewOptions.menuHidden = true">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="form-check">
+              <input id="showDiagram" type="checkbox" v-model="viewOptions.showDiagram" class="form-check-input">
+              <label for="showDiagram" class="form-check-label"><i class="fa fa-align-left"></i> Diagram</label>
+            </div>
+            <hr>
+            <label class="text-uppercase">Density</label>
+            <div class="form-group">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.FULL}" v-on:click="viewOptions.viewMode = viewModes.FULL">full</button>
+                <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.COMPACT}" v-on:click="viewOptions.viewMode = viewModes.COMPACT">compact</button>
+                <button class="btn btn-outline-secondary" :class="{'active': viewOptions.viewMode == viewModes.DOT}" v-on:click="viewOptions.viewMode = viewModes.DOT">dot</button>
+              </div>
+            </div>
+            <hr>
+            <label class="text-uppercase">Orientation</label>
+            <div class="form-group">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.TWOD}" v-on:click="viewOptions.orientation = orientations.TWOD">
+                  <i class="fa fa-sitemap"></i>
+                  2D
+                </button>
+                <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.CLASSIC}" v-on:click="viewOptions.orientation = orientations.CLASSIC">
+                  <i class="fa fa-list"></i>
+                  classic
+                </button>
+              </div>
+            </div>
+            <hr>
+            <label class="text-uppercase">Graph metric</label>
+            <div class="form-group">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.NONE}" v-on:click="viewOptions.highlightType = highlightTypes.NONE">none</button>
+                <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.DURATION}" v-on:click="viewOptions.highlightType = highlightTypes.DURATION" :disabled="!rootNode[nodeProps.EXCLUSIVE_DURATION]">duration</button>
+                <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.ROWS}" v-on:click="viewOptions.highlightType = highlightTypes.ROWS" :disabled="rootNode[nodeProps.ACTUAL_ROWS] === undefined">rows</button>
+                <button class="btn btn-outline-secondary" :class="{'active': viewOptions.highlightType === highlightTypes.COST}" v-on:click="viewOptions.highlightType = highlightTypes.COST">cost</button>
+              </div>
+            </div>
+          </div>
         </div>
         <!-- end Plan tab -->
       </div>
