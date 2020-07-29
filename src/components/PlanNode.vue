@@ -135,7 +135,7 @@
                 <span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercent == 100 ? '>99' : rowsRemovedPercent }}%</span>
               </span>
             </div>
-            <div v-if="node[nodeProps.HEAP_FETCHES] !== 0">
+            <div v-if="node[nodeProps.HEAP_FETCHES]">
               <i class="fa fa-fw fa-exchange-alt text-muted"></i>
               <b>Heap Fetches:</b>&nbsp;
               <span :class="'p-0 px-1 rounded alert ' + heapFetchesClass" v-html="formattedProp('HEAP_FETCHES')"></span>
