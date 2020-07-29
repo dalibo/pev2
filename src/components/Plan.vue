@@ -130,7 +130,7 @@
               >
               </diagram>
             </pane>
-            <pane ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1" v-on:mousedown="menuHidden = true">
+            <pane ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1">
               <div class="plan h-100 w-100 d-flex flex-column grab-bing">
                 <ul class="main-plan">
                   <li>
