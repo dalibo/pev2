@@ -118,7 +118,7 @@
           </button>
         </div>
         <div class="h-100 d-flex">
-          <splitpanes class="default-theme" @resize="viewOptions.diagramWidth = $event[0].size">
+          <splitpanes class="default-theme overflow-hidden" @resize="viewOptions.diagramWidth = $event[0].size">
             <pane ref="diagram"
               :size="viewOptions.diagramWidth"
               class="plan-diagram h-100"
