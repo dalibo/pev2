@@ -322,6 +322,7 @@ export default class Plan extends Vue {
       maxDuration: content.maxDuration || null,
       maxSharedBlocks: content.maxSharedBlocks || null,
       maxTempBlocks: content.maxTempBlocks || 0,
+      maxLocalBlocks: content.maxLocalBlocks || 0,
       triggers: content.Triggers || [],
       jitTime: content.JIT && content.JIT.Timing && content.JIT.Timing.Total || null,
       settings: content.Settings,
