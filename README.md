@@ -6,7 +6,7 @@ A VueJS component to show a graphical vizualization of a PostgreSQL execution pl
 
 To use the explain vizualizer you can choose one of the following options:
 
-### Local installation
+### Local installation using release archive
 
 You can download `pev2.tar.gz` for the [latest released
 version](https://github.com/dalibo/pev2/releases/latest) of PEV2.
@@ -14,14 +14,9 @@ Simply extract the archive and launch `index.html` in your browser.
 
 _This should also work offline._
 
-### Online app
+### Local installation using docker
 
-[dalibo.github.io/pev2][demo]
-
-This demo is hosted on `github.io` and works in the browser only. The plans are
-not stored in any backend.
-
-It runs the latest of the code from the `master` branch.
+See [CONTRIBUTING](https://github.com/dalibo/pev2/blob/master/CONTRIBUTING.md).
 
 ### Dalibo service
 
