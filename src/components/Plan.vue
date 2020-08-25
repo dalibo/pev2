@@ -9,7 +9,7 @@
           <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'raw' }" @click.prevent="setActiveTab('raw')" href>Raw</a>
         </li>
         <li class="nav-item p-1">
-          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'query', 'disabled': !planQuery }" @click.prevent="setActiveTab('query')" href>Query</a>
+          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'query', 'disabled': !queryText }" @click.prevent="setActiveTab('query')" href>Query</a>
         </li>
       </ul>
     </div>
@@ -196,7 +196,7 @@
         <pre class="small p-2 mb-0"><code v-html="$options.filters.json(planSource)"></code></pre>
       </div>
       <div class="tab-pane h-100 overflow-auto" :class="{'show active': activeTab === 'query' }">
-        <pre class="small p-2 mb-0"><code v-html="$options.filters.pgsql(planQuery)"></code></pre>
+        <pre class="small p-2 mb-0"><code v-html="$options.filters.pgsql(queryText)"></code></pre>
       </div>
     </div>
   </div>
@@ -251,6 +251,7 @@ export default class Plan extends Vue {
 
   @Prop(String) private planSource!: string;
   @Prop(String) private planQuery!: string;
+  private queryText!: string;
   private plan!: IPlan | null;
   private rootNode!: any;
   private flat: any[] = [];
@@ -312,7 +313,8 @@ export default class Plan extends Vue {
       return;
     }
     this.rootNode = planJson.Plan;
-    this.plan = this.planService.createPlan('', planJson, this.planQuery);
+    this.queryText = planJson['Query Text'] || this.planQuery;
+    this.plan = this.planService.createPlan('', planJson, this.queryText);
     const content = this.plan.content;
     this.plan.planStats = {
       executionTime: content['Execution Time'] || content['Total Runtime'] || null,
