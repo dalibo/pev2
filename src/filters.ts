@@ -3,8 +3,18 @@ import * as moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
 momentDurationFormatSetup(moment);
 import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
+import hljs from 'highlight.js/lib/core';
+import 'highlight.js/styles/github.css';
+import * as langPgsql from 'highlight.js/lib/languages/pgsql';
+hljs.registerLanguage('pgsql', langPgsql);
+
+import * as langJson from 'highlight.js/lib/languages/json';
+hljs.registerLanguage('json', langJson);
 
 export function duration(value: number, detail: boolean): string {
+  if (value === undefined) {
+    return 'N/A';
+  }
   detail = !!detail;
 
   if (value < 1 && !detail) {
@@ -17,11 +27,17 @@ export function duration(value: number, detail: boolean): string {
 }
 
 export function cost(value: number): string {
+  if (!value) {
+    return 'N/A';
+  }
   value = parseFloat(value.toPrecision(3));
   return value.toLocaleString();
 }
 
 export function rows(value: number): string {
+  if (value === undefined) {
+    return 'N/A';
+  }
   return value.toLocaleString();
 }
 
@@ -53,9 +69,17 @@ export function formatBytes(bytes: number, decimals = 2) {
   const dm = decimals < 0 ? 0 : decimals;
   const units = ['Bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const compiled = _.template('${value}&nbsp;<span class="text-muted">${unit}</span>');
+  const compiled = _.template('${value}&nbsp;${unit}');
   const value = parseFloat((bytes / Math.pow(k, i)).toFixed(dm)).toLocaleString();
   return compiled({value, unit: units[i]});
+}
+
+export function blocks(value: number): string {
+  if (!value) {
+    return '';
+  }
+  return value.toLocaleString() + '<br><small>' +
+    formatBytes(value * 8 * 1024) + '</small>';
 }
 
 export function formatNodeProp(key: string, value: any, detail: boolean): string {
@@ -83,6 +107,8 @@ export function formatNodeProp(key: string, value: any, detail: boolean): string
       return JSON.stringify(value, null, 2);
     } else if (nodePropTypes[key] === PropType.space) {
       return space(value);
+    } else if (nodePropTypes[key] === PropType.blocks) {
+      return blocks(value);
     }
   }
   return value;
@@ -103,4 +129,12 @@ export function durationClass(i: number): string {
     return 'c-' + c;
   }
   return '';
+}
+
+export function pgsql(text: string) {
+  return hljs.highlight('pgsql', text).value;
+}
+
+export function json(text: string) {
+  return hljs.highlight('json', text).value;
 }

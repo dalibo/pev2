@@ -70,6 +70,7 @@ export class PlanService {
     // calculate actuals after processing child nodes so that actual duration
     // takes loops into account
     this.calculateActuals(node);
+    this.calculateExclusives(node);
 
   }
 
@@ -84,11 +85,9 @@ export class PlanService {
       content.maxRows = largest[NodeProp.ACTUAL_ROWS];
     }
 
-    const costliest = _.maxBy(flat, NodeProp.ACTUAL_COST);
+    const costliest = _.maxBy(flat, NodeProp.EXCLUSIVE_COST);
     if (costliest) {
-      costliest[NodeProp.COSTLIEST_NODE] = true;
-      content.maxCost = costliest[NodeProp.ACTUAL_COST];
-      content.costliest = costliest;
+      content.maxCost = costliest[NodeProp.EXCLUSIVE_COST];
     }
 
     const totalCostliest = _.maxBy(flat, NodeProp.TOTAL_COST);
@@ -96,18 +95,16 @@ export class PlanService {
       content.maxTotalCost = totalCostliest[NodeProp.TOTAL_COST];
     }
 
-    const slowest = _.maxBy(flat, NodeProp.ACTUAL_DURATION);
+    const slowest = _.maxBy(flat, NodeProp.EXCLUSIVE_DURATION);
     if (slowest) {
-      slowest[NodeProp.SLOWEST_NODE] = true;
-      content.maxDuration = slowest[NodeProp.ACTUAL_DURATION];
-      content.slowest = slowest;
+      content.maxDuration = slowest[NodeProp.EXCLUSIVE_DURATION];
     }
 
     function sumShared(o: Node) {
-      return o[NodeProp.SHARED_HIT_BLOCKS] +
-        o[NodeProp.SHARED_READ_BLOCKS] +
-        o[NodeProp.SHARED_DIRTIED_BLOCKS] +
-        o[NodeProp.SHARED_WRITTEN_BLOCKS];
+      return o[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS];
     }
     const highestShared = _.maxBy(flat, (o) => {
       return sumShared(o);
@@ -117,10 +114,10 @@ export class PlanService {
     }
 
     function sumTemp(o: Node) {
-      return o[NodeProp.TEMP_HIT_BLOCKS] +
-        o[NodeProp.TEMP_READ_BLOCKS] +
-        o[NodeProp.TEMP_DIRTIED_BLOCKS] +
-        o[NodeProp.TEMP_WRITTEN_BLOCKS];
+      return o[NodeProp.EXCLUSIVE_TEMP_HIT_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_TEMP_DIRTIED_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS];
     }
     const highestTemp = _.maxBy(flat, (o) => {
       return sumTemp(o);
@@ -130,10 +127,10 @@ export class PlanService {
     }
 
     function sumLocal(o: Node) {
-      return o[NodeProp.LOCAL_HIT_BLOCKS] +
-        o[NodeProp.LOCAL_READ_BLOCKS] +
-        o[NodeProp.LOCAL_DIRTIED_BLOCKS] +
-        o[NodeProp.LOCAL_WRITTEN_BLOCKS];
+      return o[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] +
+        o[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS];
     }
     const highestLocal = _.maxBy(flat, (o) => {
       return sumLocal(o);
@@ -146,41 +143,41 @@ export class PlanService {
   // actual duration and actual cost are calculated by subtracting child values from the total
   public calculateActuals(node: any) {
     if (!_.isUndefined(node[NodeProp.ACTUAL_TOTAL_TIME])) {
-      node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
+      node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
       // unless the current node is a child of a gather node
       if (!node[NodeProp.WORKERS]) {
-        node[NodeProp.ACTUAL_DURATION] = node[NodeProp.ACTUAL_DURATION] * node[NodeProp.ACTUAL_LOOPS];
+        node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.EXCLUSIVE_DURATION] * node[NodeProp.ACTUAL_LOOPS];
       }
 
-      const duration = node[NodeProp.ACTUAL_DURATION] - this.childrenDuration(node, 0);
-      node[NodeProp.ACTUAL_DURATION] = duration > 0 ? duration : 0;
+      const duration = node[NodeProp.EXCLUSIVE_DURATION] - this.childrenDuration(node, 0);
+      node[NodeProp.EXCLUSIVE_DURATION] = duration > 0 ? duration : 0;
     }
 
     if (node[NodeProp.TOTAL_COST]) {
-      node[NodeProp.ACTUAL_COST] = node[NodeProp.TOTAL_COST];
+      node[NodeProp.EXCLUSIVE_COST] = node[NodeProp.TOTAL_COST];
     }
 
 
     _.each(node[NodeProp.PLANS], (subPlan) => {
       if (subPlan[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan' && subPlan[NodeProp.TOTAL_COST]) {
-        node[NodeProp.ACTUAL_COST] = node[NodeProp.ACTUAL_COST] - subPlan[NodeProp.TOTAL_COST];
+        node[NodeProp.EXCLUSIVE_COST] = node[NodeProp.EXCLUSIVE_COST] - subPlan[NodeProp.TOTAL_COST];
       }
     });
 
-    if (node[NodeProp.ACTUAL_COST] < 0) {
-      node[NodeProp.ACTUAL_COST] = 0;
+    if (node[NodeProp.EXCLUSIVE_COST] < 0) {
+      node[NodeProp.EXCLUSIVE_COST] = 0;
     }
   }
 
   // recursive function to get the sum of actual durations of a a node children
   public childrenDuration(node: Node, duration: number) {
-    _.each(node[NodeProp.PLANS], (subPlan) => {
+    _.each(node[NodeProp.PLANS], (child) => {
       // Subtract sub plans duration from this node except for InitPlans
       // (ie. CTE)
-      if (subPlan[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan') {
-        duration += subPlan[NodeProp.ACTUAL_DURATION] || 0; // Duration may not be set
-        duration = this.childrenDuration(subPlan, duration);
+      if (child[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan') {
+        duration += child[NodeProp.EXCLUSIVE_DURATION] || 0; // Duration may not be set
+        duration = this.childrenDuration(child, duration);
       }
     });
     return duration;
@@ -426,7 +423,7 @@ export class PlanService {
           nonCapturingGroupOpen + estimationRegex + nonCapturingGroupClose +
           '|' +
           nonCapturingGroupOpen + openParenthesisRegex + actualRegex + closeParenthesisRegex + nonCapturingGroupClose +
-        nonCapturingGroupClose + '*' +
+        nonCapturingGroupClose +
         '\\s*$',
         'gm',
       );
@@ -649,6 +646,10 @@ export class PlanService {
           return;
         }
 
+        if (this.parseSettings(extraMatches[2], element)) {
+          return;
+        }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, '');
         // try to convert to number
@@ -753,8 +754,8 @@ export class PlanService {
         const s = timing.split(/=/);
         const method = s[0];
         const value = parseFloat(s[1]);
-        const prop = ['I/O', _.capitalize(method), 'Time'].join(' ');
-        el[prop] = value;
+        const prop = 'IO_' + _.upperCase(method) + '_TIME' as keyof typeof NodeProp;
+        el[NodeProp[prop]] = value;
       });
       return true;
     }
@@ -811,5 +812,57 @@ export class PlanService {
 
   private parseTime(text: string): number {
     return parseFloat(text.replace(/(\s*ms)$/, ''));
+  }
+
+  private parseSettings(text: string, el: Node): boolean {
+    // Parses a settings block
+    // eg. Timing: Generation 0.340 ms, Inlining 0.000 ms, Optimization 0.168 ms, Emission 1.907 ms, Total 2.414 ms
+
+    const settingsRegex = /^(\s*)Settings:\s*(.*)$/g;
+    const settingsMatches = settingsRegex.exec(text);
+
+    if (settingsMatches) {
+      el.Settings = {};
+      const settings = settingsMatches[2].split(/\s*,\s*/);
+      let matches;
+      _.each(settings, (option) => {
+        const reg = /^(\S*)\s+=\s+(.*)$/g;
+        matches = reg.exec(option);
+        el.Settings[matches![1]] = matches![2].replace(/'/g, '');
+      });
+      return true;
+    }
+    return false;
+  }
+
+  private calculateExclusives(node: Node) {
+    // Caculate inclusive value for the current node for the given property
+    const properties: Array<keyof typeof NodeProp> = [
+      'SHARED_HIT_BLOCKS',
+      'SHARED_READ_BLOCKS',
+      'SHARED_DIRTIED_BLOCKS',
+      'SHARED_WRITTEN_BLOCKS',
+      'TEMP_HIT_BLOCKS',
+      'TEMP_READ_BLOCKS',
+      'TEMP_DIRTIED_BLOCKS',
+      'TEMP_WRITTEN_BLOCKS',
+      'LOCAL_HIT_BLOCKS',
+      'LOCAL_READ_BLOCKS',
+      'LOCAL_DIRTIED_BLOCKS',
+      'LOCAL_WRITTEN_BLOCKS',
+      'IO_READ_TIME',
+      'IO_WRITE_TIME',
+    ];
+    _.each(properties, (property) => {
+      const sum = _.sumBy(
+        node[NodeProp.PLANS],
+        (child: Node) => {
+
+          return child[NodeProp[property]];
+        },
+      );
+      const exclusivePropertyString = 'EXCLUSIVE_' + property as keyof typeof NodeProp;
+      node[NodeProp[exclusivePropertyString]] = node[NodeProp[property]] - sum;
+    });
   }
 }

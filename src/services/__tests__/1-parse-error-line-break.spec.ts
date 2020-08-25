@@ -1,4 +1,5 @@
 import { PlanService } from '@/services/plan-service';
+import { IPlan } from '@/iplan';
 
 describe('PlanService', () => {
   test('Can`t parse plan with line break', () => {
@@ -18,7 +19,9 @@ Nested Loop Left Join  (cost=11.95..28.52 rows=5 width=157) (actual time=0.010..
 here is a line break
 Planning Time: 1.110 ms
 Execution Time: 0.170 ms`;
-    expect(() => { planService.fromText(source); }).toThrow();
+    const r: any = planService.fromSource(source);
+    const plan: IPlan = planService.createPlan('', r, '');
+    expect(plan.content['Planning Time']).toBe(1.11);
   });
 
 });

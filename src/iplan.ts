@@ -27,6 +27,8 @@ export interface IPlanStats {
   maxDuration?: number;
   maxSharedBlocks?: number;
   maxTempBlocks?: number;
+  maxLocalBlocks?: number;
   triggers?: ITrigger[];
   jitTime?: number;
+  settings?: {[key: string]: string};
 }

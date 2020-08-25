@@ -49,9 +49,6 @@ export const HELP_MESSAGES: IHelpMessage = {
   'MISSING EXECUTION TIME': `Execution time (or Total runtime) not available for this plan. Make sure you
     use EXPLAIN ANALYZE.`,
   'MISSING PLANNING TIME': 'Planning time not available for this plan.',
-  'MISSING SLOWEST': 'Could not compute durations. Make sure you use EXPLAIN ANALYZE.',
-  'NO ROWS': 'No rows returned',
-  'MISSING COSTLIEST': 'No cost info available. Considering using COSTS ON.',
   'WORKERS PLANNED NOT LAUNCHED': `Less workers than planned were launched.
 Consider modifying max_parallel_workers or max_parallel_workers_per_gather.`,
 };
