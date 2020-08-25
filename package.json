@@ -32,7 +32,7 @@
     "highlight.js": "^10.1.1",
     "jquery": "^3.5.1",
     "lodash": "^4.17.19",
-    "moment": "^2.26.0",
+    "moment": "^2.27.0",
     "moment-duration-format": "^2.3.2",
     "popper.js": "^1.16.1",
     "splitpanes": "^2.2.1",
