@@ -27,6 +27,7 @@
               <span v-if="costClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + costClass" title="Cost is high"><i class="fa fa-fw fa-dollar-sign"></i></span>
               <span v-if="estimationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + estimationClass" title="Bad estimation for number of rows"><i class="fa fa-fw fa-thumbs-down"></i></span>
               <span v-if="rowsRemovedClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + rowsRemovedClass" title="High number of rows removed"><i class="fa fa-fw fa-filter"></i></span>
+              <span v-if="heapFetchesClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + heapFetchesClass" title="Heap Fetches number is high"><i class="fa fa-fw fa-exchange-alt"></i></span>
             </div>
             <span v-if="viewOptions.viewMode === viewModes.FULL">
               <span class="node-duration text-warning" v-if="isNeverExecuted">
@@ -113,7 +114,7 @@
             </div>
             <div>
               <i class="fa fa-fw fa-align-justify text-muted"></i>
-              <b>Rows:</b> <span class="px-1">{{ formattedProp('ACTUAL_ROWS') }}</span> <span class="text-muted">(Planned: {{ formattedProp('PLAN_ROWS') }})</span>
+              <b>Rows:</b> <span class="px-1">{{ formattedProp('ACTUAL_ROWS') }}</span> <span class="text-muted" v-if="node[nodeProps.PLAN_ROWS]">(Planned: {{ formattedProp('PLAN_ROWS') }})</span>
               <span v-if="plannerRowEstimateDirection !== estimateDirections.none && shouldShowPlannerEstimate">
                 |
                 <span v-if="plannerRowEstimateDirection === estimateDirections.over"><i class="fa fa-arrow-up"></i> over</span>
@@ -134,14 +135,26 @@
                 <span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercent == 100 ? '>99' : rowsRemovedPercent }}%</span>
               </span>
             </div>
-            <div>
+            <div v-if="node[nodeProps.HEAP_FETCHES]">
+              <i class="fa fa-fw fa-exchange-alt text-muted"></i>
+              <b>Heap Fetches:</b>&nbsp;
+              <span :class="'p-0 px-1 rounded alert ' + heapFetchesClass" v-html="formattedProp('HEAP_FETCHES')"></span>
+              &nbsp;
+              <i class="fa fa-fw fa-info-circle text-muted" v-if="heapFetchesClass"
+                content="Visibility map may be out-of-date. Consider using VACUUM or change autovacuum settings."
+                v-tippy="{arrow: true}"
+              ></i>
+              </span>
+            </div>
+            <div v-if="node[nodeProps.EXCLUSIVE_COST]">
               <i class="fa fa-fw fa-dollar-sign text-muted"></i>
               <b>Cost:</b> <span :class="'p-0 px-1 mr-1 alert ' + costClass">{{ formattedProp('EXCLUSIVE_COST') }}</span> <span class="text-muted">(Total: {{ formattedProp('TOTAL_COST') }})</span>
             </div>
             <div v-if="node[nodeProps.ACTUAL_LOOPS] > 1">
               <i class="fa fa-fw fa-undo text-muted"></i>
               <b>Loops:</b> <span class="px-1">{{ formattedProp('ACTUAL_LOOPS') }}
-              </span>            </div>
+              </span>
+            </div>
             <!-- general tab -->
           </div>
           <div class="tab-pane" :class="{'show active': activeTab === 'iobuffer' }">
@@ -172,24 +185,24 @@
               </tr>
               <tr>
                 <th>Shared</th>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_SHARED_HIT_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_SHARED_READ_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_SHARED_DIRTIED_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_SHARED_WRITTEN_BLOCKS') || '-' }}</td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_SHARED_HIT_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_SHARED_READ_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_SHARED_DIRTIED_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_SHARED_WRITTEN_BLOCKS') || '-'"></td>
               </tr>
               <tr>
                 <th>Temp</th>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_TEMP_HIT_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_TEMP_READ_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_TEMP_DIRTIED_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-' }}</td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_HIT_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_READ_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_DIRTIED_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'"></td>
               </tr>
               <tr>
                 <th>Local</th>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_LOCAL_HIT_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_LOCAL_READ_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_LOCAL_DIRTIED_BLOCKS') || '-' }}</td>
-                <td class="text-right">{{ formattedProp('EXCLUSIVE_LOCAL_WRITTEN_BLOCKS') || '-' }}</td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_LOCAL_HIT_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_LOCAL_READ_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_LOCAL_DIRTIED_BLOCKS') || '-'"></td>
+                <td class="text-right" v-html="formattedProp('EXCLUSIVE_LOCAL_WRITTEN_BLOCKS') || '-'"></td>
               </tr>
             </table>
             <!-- iobuffer tab -->
@@ -369,6 +382,7 @@ export default class PlanNode extends Vue {
       NodeProp.EXCLUSIVE_IO_WRITE_TIME,
       NodeProp.IO_READ_TIME, // Exclusive value already shown in IO tab
       NodeProp.IO_WRITE_TIME, // Exclusive value already shown in IO tab
+      NodeProp.HEAP_FETCHES,
   ];
 
   private created(): void {
@@ -583,6 +597,26 @@ export default class PlanNode extends Vue {
     return false;
   }
 
+  private get heapFetchesClass() {
+    let c;
+    const i = this.node[NodeProp.HEAP_FETCHES] /
+      (this.node[NodeProp.ACTUAL_ROWS] +
+       (this.node[NodeProp.ROWS_REMOVED_BY_FILTER] || 0) +
+       (this.node[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] || 0)
+      ) * 100;
+    if (i > 90) {
+      c = 4;
+    } else if (i > 40) {
+      c = 3;
+    } else if (i > 10) {
+      c = 2;
+    }
+    if (c) {
+      return 'c-' + c;
+    }
+    return false;
+  }
+
   private toggleCollapsed() {
     this.collapsed = !this.collapsed;
   }
@@ -650,5 +684,4 @@ export default class PlanNode extends Vue {
 <style lang="scss">
 @import '../assets/scss/variables';
 @import '../assets/scss/plan-node';
-@import '../assets/scss/highlight';
 </style>

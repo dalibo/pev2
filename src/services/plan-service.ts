@@ -423,7 +423,7 @@ export class PlanService {
           nonCapturingGroupOpen + estimationRegex + nonCapturingGroupClose +
           '|' +
           nonCapturingGroupOpen + openParenthesisRegex + actualRegex + closeParenthesisRegex + nonCapturingGroupClose +
-        nonCapturingGroupClose + '*' +
+        nonCapturingGroupClose +
         '\\s*$',
         'gm',
       );

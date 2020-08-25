@@ -105,6 +105,7 @@ export enum NodeProp {
   IO_READ_TIME = 'I/O Read Time',
   IO_WRITE_TIME = 'I/O Write Time',
   OUTPUT = 'Output',
+  HEAP_FETCHES = 'Heap Fetches',
 
   // computed by pev
   EXCLUSIVE_DURATION = '*Duration (exclusive)',
@@ -148,6 +149,7 @@ export enum PropType {
   json,
   space,
   increment,
+  blocks,
 }
 
 export const nodePropTypes: any = {};
@@ -163,6 +165,7 @@ nodePropTypes[NodeProp.WORKERS] = PropType.json;
 nodePropTypes[NodeProp.SORT_SPACE_USED] = PropType.space;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows;
+nodePropTypes[NodeProp.HEAP_FETCHES] = PropType.rows;
 
 nodePropTypes[NodeProp.EXCLUSIVE_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.EXCLUSIVE_COST] = PropType.cost;
@@ -175,6 +178,19 @@ nodePropTypes[NodeProp.IO_WRITE_TIME] = PropType.duration;
 
 nodePropTypes[NodeProp.EXCLUSIVE_IO_READ_TIME] = PropType.duration;
 nodePropTypes[NodeProp.EXCLUSIVE_IO_WRITE_TIME] = PropType.duration;
+
+nodePropTypes[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_TEMP_HIT_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_TEMP_DIRTIED_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] = PropType.blocks;
+nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] = PropType.blocks;
 
 export class WorkerProp {
   // plan property keys

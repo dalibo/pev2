@@ -10,7 +10,7 @@
         <div class="text-muted">
           For best results, use <code>EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)</code>
           <br>
-          <em>psql</em> users can export the plan to a file using <code>psql -qAt -f explain.sql > analyze.json</code>
+          <em>psql</em> users can export the plan to a file using <code>psql -XqAt -f explain.sql > analyze.json</code>
         </div>
         <div class="dropdown ml-auto">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
