@@ -40,7 +40,7 @@
     "vue": "^2.6.10",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",
-    "vue-tippy": "^4.0.3"
+    "vue-tippy": "^4.7.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
