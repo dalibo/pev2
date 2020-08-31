@@ -322,3 +322,7 @@ $connector-line: 2px solid darken($line-color, 10%);
 .no-focus-outline:focus {
   outline: none;
 }
+
+.table-nonfluid {
+  width: auto !important;
+}

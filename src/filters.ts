@@ -82,6 +82,13 @@ export function blocks(value: number): string {
     formatBytes(value * 8 * 1024) + '</small>';
 }
 
+export function percent(value: number): string {
+  if (isNaN(value)) {
+    return '-';
+  }
+  return _.round(value * 100) + '%';
+}
+
 export function formatNodeProp(key: string, value: any, detail: boolean): string {
   if (_.has(nodePropTypes, key)) {
     if (nodePropTypes[key] === PropType.duration) {
@@ -122,8 +129,6 @@ export function durationClass(i: number): string {
     c = 3;
   } else if (i > 10) {
     c = 2;
-  } else {
-    c = 1;
   }
   if (c) {
     return 'c-' + c;

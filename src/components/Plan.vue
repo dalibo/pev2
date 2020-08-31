@@ -11,6 +11,9 @@
         <li class="nav-item p-1">
           <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'query', 'disabled': !queryText }" @click.prevent="setActiveTab('query')" href>Query</a>
         </li>
+        <li class="nav-item p-1">
+          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'stats' }" @click.prevent="setActiveTab('stats')" href>Stats</a>
+        </li>
       </ul>
     </div>
 
@@ -60,7 +63,7 @@
             <span class="stat-label">Triggers: </span>
             <template v-if="plan.planStats.triggers.length">
               <span class="stat-value">
-                <span :class="'mb-0 p-0 px-1 alert ' + durationClass(totalTriggerDurationPercent)" v-html="$options.filters.duration(triggersTotalDuration)"></span>
+                <span :class="'mb-0 p-0 px-1 alert ' + $options.filters.durationClass(totalTriggerDurationPercent)" v-html="$options.filters.duration(triggersTotalDuration)"></span>
               </span>
               <button @click.prevent="showTriggers = !showTriggers" class="bg-transparent border-0 p-0 m-0 pl-1">
                 <i class="fa fa-caret-down text-muted"></i>
@@ -75,7 +78,7 @@
                   <br>
                   <span class="text-muted">Called</span> {{ trigger['Calls'] }}<span class="text-muted">&times</span>
                   <span class="float-right">
-                    <span :class="'p-0 px-1 alert ' + durationClass(triggerDurationPercent(trigger))" v-html="$options.filters.duration(trigger.Time)"></span>
+                    <span :class="'p-0 px-1 alert ' + $options.filters.durationClass(triggerDurationPercent(trigger))" v-html="$options.filters.duration(trigger.Time)"></span>
                     | {{ triggerDurationPercent(trigger) }}<span class="text-muted">%</span>
                   </span>
                   <br>
@@ -198,6 +201,12 @@
       <div class="tab-pane h-100 overflow-auto" :class="{'show active': activeTab === 'query' }">
         <pre class="small p-2 mb-0"><code v-html="$options.filters.pgsql(queryText)"></code></pre>
       </div>
+      <div class="tab-pane h-100 overflow-auto" :class="{'show active': activeTab === 'stats' }">
+        <stats
+          :plan="plan"
+        >
+        </stats>
+      </div>
     </div>
   </div>
 </template>
@@ -211,6 +220,7 @@ import 'splitpanes/dist/splitpanes.css';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
 import Diagram from '@/components/Diagram.vue';
+import Stats from '@/components/Stats.vue';
 import { HelpService, scrollChildIntoParentView } from '@/services/help-service';
 import { PlanService } from '@/services/plan-service';
 import { cost, duration, durationClass, json, pgsql, rows } from '@/filters';
@@ -227,10 +237,11 @@ Vue.component('tippy', TippyComponent);
 @Component({
   name: 'plan',
   components: {
-    PlanNode,
     Diagram,
-    Splitpanes,
     Pane,
+    PlanNode,
+    Splitpanes,
+    Stats,
   },
   directives: {
   },
@@ -434,23 +445,6 @@ export default class Plan extends Vue {
       ].join('');
     }
     return '';
-  }
-
-  private durationClass(i: number) {
-    let c;
-    if (i > 90) {
-      c = 4;
-    } else if (i > 40) {
-      c = 3;
-    } else if (i > 10) {
-      c = 2;
-    } else {
-      c = 1;
-    }
-    if (c) {
-      return 'c-' + c;
-    }
-    return false;
   }
 
   private planningTimeClass(percent: number) {
