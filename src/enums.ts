@@ -140,16 +140,17 @@ export enum NodeProp {
 }
 
 export enum PropType {
-  duration,
-  boolean,
-  rows,
-  cost,
-  factor,
-  estimateDirection,
-  json,
-  space,
-  increment,
   blocks,
+  boolean,
+  cost,
+  duration,
+  estimateDirection,
+  factor,
+  increment,
+  json,
+  list,
+  rows,
+  space,
 }
 
 export const nodePropTypes: any = {};
@@ -166,6 +167,7 @@ nodePropTypes[NodeProp.SORT_SPACE_USED] = PropType.space;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.HEAP_FETCHES] = PropType.rows;
+nodePropTypes[NodeProp.OUTPUT] = PropType.list;
 
 nodePropTypes[NodeProp.EXCLUSIVE_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.EXCLUSIVE_COST] = PropType.cost;
