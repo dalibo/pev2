@@ -207,9 +207,7 @@
             </table>
             <!-- iobuffer tab -->
           </div>
-          <div class="tab-pane" :class="{'show active': activeTab === 'output' }">
-            <!-- output tab -->
-            {{ formattedProp('OUTPUT') }}
+          <div class="tab-pane overflow-auto" :class="{'show active': activeTab === 'output' }" v-html="formattedProp('OUTPUT')" style="max-height: 200px">
             <!-- output tab -->
           </div>
           <div class="tab-pane" :class="{'show active': activeTab === 'workers' }" v-if="workersCount">
@@ -676,7 +674,11 @@ export default class PlanNode extends Vue {
   // returns the formatted prop
   private formattedProp(propName: keyof typeof NodeProp) {
     const property = NodeProp[propName];
-    return this.$options!.filters!.formatNodeProp(property, this.node[property], true);
+    const value = this.node[property];
+    if (!value) {
+      return '';
+    }
+    return this.$options!.filters!.formatNodeProp(property, value, true);
   }
 }
 </script>
