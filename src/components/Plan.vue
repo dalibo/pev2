@@ -198,7 +198,7 @@
       <div class="tab-pane h-100 overflow-auto" :class="{'show active': activeTab === 'raw' }">
         <pre class="small p-2 mb-0"><code v-html="$options.filters.json(planSource)"></code></pre>
       </div>
-      <div class="tab-pane h-100 overflow-auto" :class="{'show active': activeTab === 'query' }">
+      <div class="tab-pane h-100 overflow-auto" :class="{'show active': activeTab === 'query' }" v-if="queryText">
         <pre class="small p-2 mb-0"><code v-html="$options.filters.pgsql(queryText)"></code></pre>
       </div>
       <div class="tab-pane h-100 overflow-auto" :class="{'show active': activeTab === 'stats' }">
@@ -262,7 +262,7 @@ export default class Plan extends Vue {
 
   @Prop(String) private planSource!: string;
   @Prop(String) private planQuery!: string;
-  private queryText!: string;
+  private queryText!: string | null = null;
   private plan!: IPlan | null;
   private rootNode!: any;
   private flat: any[] = [];
