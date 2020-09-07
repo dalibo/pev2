@@ -262,7 +262,7 @@ export default class Plan extends Vue {
 
   @Prop(String) private planSource!: string;
   @Prop(String) private planQuery!: string;
-  private queryText!: string | null = null;
+  private queryText!: string;
   private plan!: IPlan | null;
   private rootNode!: any;
   private flat: any[] = [];
