@@ -611,6 +611,11 @@ export class PlanService {
       } else if (extraMatches) {
         const prefix = extraMatches[1];
 
+        const info = extraMatches[2].split(/: (.+)/).filter((x) => x);
+        if (!info[1]) {
+          return;
+        }
+
         // Remove elements from elementsAtDepth for deeper levels
         _.remove(elementsAtDepth, (e) => e[0] >= depth);
 
@@ -619,16 +624,6 @@ export class PlanService {
           element = root;
         } else {
           element = _.last(elementsAtDepth)![1].node;
-        }
-
-        if (element['Query Text']) {
-          element['Query Text'] += '\n' + line;
-          return;
-        }
-
-        const info = extraMatches[2].split(/: (.+)/).filter((x) => x);
-        if (!info[1]) {
-          return;
         }
 
         if (this.parseSort(extraMatches[2], element)) {
