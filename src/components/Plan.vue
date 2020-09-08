@@ -22,7 +22,7 @@
       <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
         <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
       </div>
-      <div class="tab-pane h-100 overflow-hidden" :class="{'show active': activeTab === 'plan' }" v-if="!validationMessage">
+      <div class="tab-pane h-100 d-flex flex-column" :class="{'show active': activeTab === 'plan' }" v-if="!validationMessage">
         <!-- Plan tab -->
         <div class="plan-stats d-flex border-bottom border-top form-inline" v-if="plan">
           <div class="d-inline-block px-2">
@@ -120,7 +120,7 @@
             <i class="fa fa-cog p-0"></i> Settings
           </button>
         </div>
-        <div class="h-100 d-flex">
+        <div class="h-100 d-flex overflow-hidden">
           <splitpanes class="default-theme overflow-hidden" @resize="viewOptions.diagramWidth = $event[0].size">
             <pane ref="diagram"
               :size="viewOptions.diagramWidth"
