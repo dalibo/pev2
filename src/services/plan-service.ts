@@ -350,9 +350,38 @@ export class PlanService {
     return root;
   }
 
-  public fromText(text: string) {
-
+  public splitIntoLines(text: string): string[] {
+    // Splits source into lines, while fixing (well, trying to fix)
+    // cases where input has been force-wrapped to some length.
+    const out: string[] = [];
     const lines = text.split(/\r?\n/);
+    const countChar = (str: string, ch: RegExp) => (str.match(ch) || []).length;
+
+    _.each(lines, (line: string) => {
+      if (countChar(line, /\)/g) > countChar(line, /\(/g)) {
+        // if there more closing parenthesis this means that it's the
+        // continuation of a previous line
+        out[out.length - 1] += line;
+      } else if (line.match(/^(?:Total\s+runtime|Planning\s+time|Execution\s+time|Time|Filter|Output)/i)) {
+        out.push(line);
+      } else if (
+        line.match(/^\S/) || // doesn't start with a blank space (allowed only for the first node)
+        line.match(/^\s*\(/) // first non-blank character is an opening parenthesis
+      ) {
+        if (0 < out.length) {
+          out[out.length - 1] += line;
+        } else {
+          out.push(line);
+        }
+      } else {
+        out.push(line);
+      }
+    });
+    return out;
+  }
+
+  public fromText(text: string) {
+    const lines = this.splitIntoLines(text);
 
     const root: any = {};
     root.Plan = null;
