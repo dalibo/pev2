@@ -1,0 +1,9 @@
+                                     QUERY PLAN                                     
+-------------------------------------------------------------------
+-----------------
+ Result  (cost=0.00..0.01 rows=1 width=4) (actual time=0.006..0.008
+ rows=1 loops=1)
+ Planning Time: 0.048 ms
+ Execution Time: 0.035 ms
+(3 rows)
+
