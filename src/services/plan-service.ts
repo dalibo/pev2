@@ -230,7 +230,10 @@ export class PlanService {
     source = source.replace(/^\s*QUERY PLAN\s*\r?\n/m, '');
 
     // Remove rowcount
-    source = source.replace(/^\(\d+ rows?\)(\r?\n|$)/gm, '\n');
+    // example: (8 rows)
+    // Note: can be translated
+    // example: (8 lignes)
+    source = source.replace(/^\(\d+\s+[a-z]*s?\)(\r?\n|$)/gm, '\n');
 
     return source;
   }
