@@ -56,6 +56,11 @@
           </tbody>
         </template>
       </template>
+      <tbody v-if="!perTable.length">
+        <tr>
+          <td colspan="3" class="text-center font-italic">No tables used</td>
+        </tr>
+      </tbody>
     </sorted-table>
     <h6>Per node type stats</h6>
     <sorted-table
@@ -124,6 +129,11 @@
             </span>
           </td>
           <td class="text-right">{{ value.timePercent | percent }}</td>
+        </tr>
+      </tbody>
+      <tbody v-if="!perIndex.length">
+        <tr>
+          <td colspan="3" class="text-center font-italic">No index used</td>
         </tr>
       </tbody>
     </sorted-table>
