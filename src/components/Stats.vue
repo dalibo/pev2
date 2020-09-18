@@ -1,95 +1,132 @@
 <template>
   <div class="p-2 small">
     <h6 class="mt-2">Per table stats</h6>
-    <table class="table table-nonfluid table-sm table-bordered align-top">
+    <sorted-table
+      :values="perTable"
+      ascIcon="<span> ▲</span>"
+      descIcon="<span> ▼</span>"
+      class="table table-nonfluid table-sm table-bordered align-top"
+      sort="time"
+      dir="desc"
+    >
       <thead class="thead-dark">
         <tr>
-          <th>Relation Name</th>
-          <th class="text-right">Count</th>
-          <th class="text-right" colspan="2">Time</th>
+          <th scope="col">
+            <sort-link name="name" class="text-white">Table</sort-link>
+          </th>
+          <th scope="col" class="text-right">
+            <sort-link name="count" class="text-white">Count</sort-link>
+          </th>
+          <th scope="col" colspan="2" class="text-right">
+            <sort-link name="time" class="text-white">Time</sort-link>
+          </th>
         </tr>
       </thead>
-      <template
-        v-for="nodesPerTable, relationName in lodash.groupBy(lodash.sortBy(lodash.filter(nodes, function(n) { return n[nodeProps.RELATION_NAME] != undefined }), nodeProps.RELATION_NAME), nodeProps.RELATION_NAME)"
-      >
-        <thead class="thead-light">
-          <tr>
-            <th>
-              {{ relationName }}
-            </th>
-            <th class="text-right">{{ nodesPerTable.length }}</th>
-            <th class="text-right">
-              <span class="alert p-0 px-1" :class="$options.filters.durationClass(durationPercent(nodesPerTable) * 100)">
-                {{ lodash.sumBy(nodesPerTable, nodeProps.EXCLUSIVE_DURATION) | duration(true) }}
-              </span>
-            </th>
-            <th class="text-right">
-              {{ durationPercent(nodesPerTable) | percent }}
-            </th>
-          </tr>
-        </thead>
-        <tr
-          v-for="nodesPerType, nodeType in lodash.groupBy(lodash.sortBy(nodesPerTable, nodeProps.NODE_TYPE), nodeProps.NODE_TYPE)"
-          class="font-italic text-muted"
-          style="font-size: smaller"
-        >
-          <td class="pl-3">{{ nodeType.toUpperCase() }}</td>
-          <td class="text-right">{{ nodesPerType.length }}</td>
+      <template slot="body" slot-scope="sort">
+        <template v-for="value in sort.values">
+          <thead class="thead-light">
+            <tr>
+              <th>{{ value.name }}</th>
+              <th class="text-right">{{ value.count }}</th>
+              <th class="text-right">
+                <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
+                  {{ value.time | duration(true) }}
+                </span>
+              </th>
+              <th class="text-right">{{ value.timePercent | percent }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="nodesPerType, nodeType in lodash.groupBy(lodash.sortBy(value.nodes, nodeProps.NODE_TYPE), nodeProps.NODE_TYPE)"
+              class="font-italic text-muted"
+              style="font-size: smaller"
+              >
+              <td class="pl-3">{{ nodeType.toUpperCase() }}</td>
+              <td class="text-right">{{ nodesPerType.length }}</td>
+              <td class="text-right">
+                <span class="px-1">
+                  {{ lodash.sumBy(nodesPerType, nodeProps.EXCLUSIVE_DURATION) | duration(true) }}
+                </span>
+              </td>
+              <td class="text-right">
+                {{ lodash.sumBy(nodesPerType, nodeProps.EXCLUSIVE_DURATION) / lodash.sumBy(value.nodes, nodeProps.EXCLUSIVE_DURATION) | percent  }}
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </template>
+    </sorted-table>
+    <h6>Per node type stats</h6>
+    <sorted-table
+      :values="perNodeType"
+      ascIcon="<span> ▲</span>"
+      descIcon="<span> ▼</span>"
+      class="table table-nonfluid table-sm table-bordered align-top"
+      sort="time"
+      dir="desc"
+    >
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">
+            <sort-link name="name" class="text-white">Node Type</sort-link>
+          </th>
+          <th scope="col" class="text-right">
+            <sort-link name="count" class="text-white">Count</sort-link>
+          </th>
+          <th scope="col" colspan="2" class="text-right">
+            <sort-link name="time" class="text-white">Time</sort-link>
+          </th>
+        </tr>
+      </thead>
+      <tbody slot="body" slot-scope="sort">
+        <tr v-for="value in sort.values" :key="value.name">
+          <td>{{ value.name }}</td>
+          <td class="text-right">{{ value.count }}</td>
           <td class="text-right">
-            <span class="px-1">
-              {{ lodash.sumBy(nodesPerType, nodeProps.EXCLUSIVE_DURATION) | duration(true) }}
+            <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
+              {{ value.time | duration(true) }}
             </span>
           </td>
-          <td class="text-right">
-            {{ lodash.sumBy(nodesPerType, nodeProps.EXCLUSIVE_DURATION) / lodash.sumBy(nodesPerTable, nodeProps.EXCLUSIVE_DURATION) | percent  }}
-          </td>
+          <td class="text-right">{{ value.timePercent | percent }}</td>
         </tr>
-      </template>
-    </table>
-    <h6>Per node type stats</h6>
-    <table class="table table-nonfluid table-sm table-bordered">
-      <thead class="thead-dark">
-        <tr>
-          <th>Node Type</th>
-          <th class="text-right">Count</th>
-          <th class="text-right" colspan="2">Time</th>
-        </tr>
-      </thead>
-      <tr v-for="nodesPerType, nodeType in lodash.groupBy(lodash.sortBy(nodes, nodeProps.NODE_TYPE), nodeProps.NODE_TYPE)">
-        <td>{{ nodeType.toUpperCase() }}</td>
-        <td class="text-right">{{ nodesPerType.length }}</td>
-        <td class="text-right">
-          <span class="alert p-0 px-1" :class="$options.filters.durationClass(durationPercent(nodesPerType) * 100)">
-            {{ lodash.sumBy(nodesPerType, nodeProps.EXCLUSIVE_DURATION) | duration(true) }}
-          </span>
-        </td>
-        <td class="text-right">
-          {{ durationPercent(nodesPerType) | percent }}
-        </td>
-      </tr>
-    </table>
+      </tbody>
+    </sorted-table>
     <h6>Per index stats</h6>
-    <table class="table table-nonfluid table-sm table-bordered">
+    <sorted-table
+      :values="perIndex"
+      ascIcon="<span> ▲</span>"
+      descIcon="<span> ▼</span>"
+      class="table table-nonfluid table-sm table-bordered align-top"
+      sort="time"
+      dir="desc"
+    >
       <thead class="thead-dark">
         <tr>
-          <th>Index Name</th>
-          <th class="text-right">Count</th>
-          <th class="text-right" colspan="2">Time</th>
+          <th scope="col">
+            <sort-link name="name" class="text-white">Index Name</sort-link>
+          </th>
+          <th scope="col" class="text-right">
+            <sort-link name="count" class="text-white">Count</sort-link>
+          </th>
+          <th scope="col" colspan="2" class="text-right">
+            <sort-link name="time" class="text-white">Time</sort-link>
+          </th>
         </tr>
       </thead>
-      <tr v-for="nodesPerIndex, indexName in lodash.groupBy(lodash.sortBy(lodash.filter(nodes, function(n) { return n[nodeProps.INDEX_NAME] != undefined }), nodeProps.INDEX_NAME), nodeProps.INDEX_NAME)">
-        <td>{{ indexName }}</td>
-        <td class="text-right">{{ nodesPerIndex.length }}</td>
-        <td class="text-right">
-          <span class="alert p-0 px-1" :class="$options.filters.durationClass(durationPercent(nodesPerIndex) * 100)">
-            {{ lodash.sumBy(nodesPerIndex, nodeProps.EXCLUSIVE_DURATION) | duration(true) }}
-          </span>
-        </td>
-        <td class="text-right">
-          {{ durationPercent(nodesPerIndex) | percent }}
-        </td>
-      </tr>
-    </table>
+      <tbody slot="body" slot-scope="sort">
+        <tr v-for="value in sort.values" :key="value.name">
+          <td>{{ value.name }}</td>
+          <td class="text-right">{{ value.count }}</td>
+          <td class="text-right">
+            <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
+              {{ value.time | duration(true) }}
+            </span>
+          </td>
+          <td class="text-right">{{ value.timePercent | percent }}</td>
+        </tr>
+      </tbody>
+    </sorted-table>
   </div>
 </template>
 
@@ -100,12 +137,17 @@ import Node from '@/inode';
 import { IPlan } from '../iplan';
 import { NodeProp } from '../enums';
 import { duration, durationClass, percent } from '@/filters';
+import { SortedTable, SortLink } from 'vue-sorted-table';
 
 @Component({
   filters: {
     duration,
     durationClass,
     percent,
+  },
+  components: {
+    SortedTable,
+    SortLink,
   },
 })
 export default class Stats extends Vue {
@@ -139,6 +181,55 @@ export default class Stats extends Vue {
 
   private durationPercent(nodes: Node[]) {
     return _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION) / this.executionTime;
+  }
+
+  private get perTable() {
+    const tables: {[key: string]: Node[]} = _.groupBy(
+      _.filter(this.nodes, (n) => n[NodeProp.RELATION_NAME] !== undefined),
+      NodeProp.RELATION_NAME,
+    );
+    const values: any[] = [];
+    _.each(tables, (nodes, tableName) => {
+      values.push({
+        name: tableName,
+        count: nodes.length,
+        time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
+        timePercent: this.durationPercent(nodes),
+        nodes,
+      });
+    });
+    return values;
+  }
+
+  private get perNodeType() {
+    const nodeTypes: {[key: string]: Node[]} = _.groupBy(this.nodes, NodeProp.NODE_TYPE);
+    const values: any[] = [];
+    _.each(nodeTypes, (nodes, nodeType) => {
+      values.push({
+        name: nodeType,
+        count: nodes.length,
+        time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
+        timePercent: this.durationPercent(nodes),
+      });
+    });
+    return values;
+  }
+
+  private get perIndex() {
+    const indexes: {[key: string]: Node[]} = _.groupBy(
+      _.filter(this.nodes, (n) => n[NodeProp.INDEX_NAME] !== undefined),
+      NodeProp.INDEX_NAME,
+    );
+    const values: any[] = [];
+    _.each(indexes, (nodes, indexName) => {
+      values.push({
+        name: indexName,
+        count: nodes.length,
+        time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
+        timePercent: this.durationPercent(nodes),
+      });
+    });
+    return values;
   }
 }
 </script>
