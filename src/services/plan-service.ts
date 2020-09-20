@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import {EstimateDirection, NodeProp, WorkerProp} from '@/enums';
+import {BufferLocation, EstimateDirection, NodeProp, WorkerProp} from '@/enums';
 import { IPlan } from '@/iplan';
 import Node from '@/inode';
 import Worker from '@/iworker';
@@ -100,6 +100,10 @@ export class PlanService {
       content.maxDuration = slowest[NodeProp.EXCLUSIVE_DURATION];
     }
 
+    if (!content.maxBlocks) {
+      content.maxBlocks = {};
+    }
+
     function sumShared(o: Node) {
       return o[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] +
         o[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] +
@@ -109,21 +113,19 @@ export class PlanService {
     const highestShared = _.maxBy(flat, (o) => {
       return sumShared(o);
     });
-    if (highestShared) {
-      content.maxSharedBlocks = sumShared(highestShared);
+    if (highestShared && sumShared(highestShared)) {
+      content.maxBlocks[BufferLocation.shared] = sumShared(highestShared);
     }
 
     function sumTemp(o: Node) {
-      return o[NodeProp.EXCLUSIVE_TEMP_HIT_BLOCKS] +
-        o[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] +
-        o[NodeProp.EXCLUSIVE_TEMP_DIRTIED_BLOCKS] +
+      return o[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] +
         o[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS];
     }
     const highestTemp = _.maxBy(flat, (o) => {
       return sumTemp(o);
     });
-    if (highestTemp) {
-      content.maxTempBlocks = sumTemp(highestTemp);
+    if (highestTemp && sumTemp(highestTemp)) {
+      content.maxBlocks[BufferLocation.temp] = sumTemp(highestTemp);
     }
 
     function sumLocal(o: Node) {
@@ -135,8 +137,8 @@ export class PlanService {
     const highestLocal = _.maxBy(flat, (o) => {
       return sumLocal(o);
     });
-    if (highestLocal) {
-      content.maxLocalBlocks = sumLocal(highestLocal);
+    if (highestLocal && sumLocal(highestLocal)) {
+      content.maxBlocks[BufferLocation.local] = sumLocal(highestLocal);
     }
   }
 
@@ -881,9 +883,7 @@ export class PlanService {
       'SHARED_READ_BLOCKS',
       'SHARED_DIRTIED_BLOCKS',
       'SHARED_WRITTEN_BLOCKS',
-      'TEMP_HIT_BLOCKS',
       'TEMP_READ_BLOCKS',
-      'TEMP_DIRTIED_BLOCKS',
       'TEMP_WRITTEN_BLOCKS',
       'LOCAL_HIT_BLOCKS',
       'LOCAL_READ_BLOCKS',

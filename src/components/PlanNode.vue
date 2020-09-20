@@ -192,9 +192,9 @@
               </tr>
               <tr>
                 <th>Temp</th>
-                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_HIT_BLOCKS') || '-'"></td>
+                <td class="text-right bg-hatched"></td>
                 <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_READ_BLOCKS') || '-'"></td>
-                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_DIRTIED_BLOCKS') || '-'"></td>
+                <td class="text-right bg-hatched"></td>
                 <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'"></td>
               </tr>
               <tr>
@@ -348,9 +348,7 @@ export default class PlanNode extends Vue {
       NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS,
       NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS,
       NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS,
-      NodeProp.EXCLUSIVE_TEMP_HIT_BLOCKS,
       NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS,
-      NodeProp.EXCLUSIVE_TEMP_DIRTIED_BLOCKS,
       NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS,
       NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS,
       NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS,
@@ -360,9 +358,7 @@ export default class PlanNode extends Vue {
       NodeProp.SHARED_READ_BLOCKS,
       NodeProp.SHARED_DIRTIED_BLOCKS,
       NodeProp.SHARED_WRITTEN_BLOCKS,
-      NodeProp.TEMP_HIT_BLOCKS,
       NodeProp.TEMP_READ_BLOCKS,
-      NodeProp.TEMP_DIRTIED_BLOCKS,
       NodeProp.TEMP_WRITTEN_BLOCKS,
       NodeProp.LOCAL_HIT_BLOCKS,
       NodeProp.LOCAL_READ_BLOCKS,
