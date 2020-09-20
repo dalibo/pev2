@@ -6,12 +6,6 @@ export enum Metric {
   estimate_factor,
 }
 
-export enum BuffersMetric {
-  shared,
-  temp,
-  local,
-}
-
 export enum BufferLocation {
   shared = 'Shared',
   temp = 'Temp',
@@ -94,9 +88,7 @@ export enum NodeProp {
   SHARED_READ_BLOCKS = 'Shared Read Blocks',
   SHARED_DIRTIED_BLOCKS = 'Shared Dirtied Blocks',
   SHARED_WRITTEN_BLOCKS = 'Shared Written Blocks',
-  TEMP_HIT_BLOCKS = 'Temp Hit Blocks',
   TEMP_READ_BLOCKS = 'Temp Read Blocks',
-  TEMP_DIRTIED_BLOCKS = 'Temp Dirtied Blocks',
   TEMP_WRITTEN_BLOCKS = 'Temp Written Blocks',
   LOCAL_HIT_BLOCKS = 'Local Hit Blocks',
   LOCAL_READ_BLOCKS = 'Local Read Blocks',
@@ -118,9 +110,7 @@ export enum NodeProp {
   EXCLUSIVE_SHARED_READ_BLOCKS = '*Shared Read Blocks (exclusive)',
   EXCLUSIVE_SHARED_DIRTIED_BLOCKS = '*Shared Dirtied Blocks (exclusive)',
   EXCLUSIVE_SHARED_WRITTEN_BLOCKS = '*Shared Written Blocks (exclusive)',
-  EXCLUSIVE_TEMP_HIT_BLOCKS = '*Temp Hit Blocks (exclusive)',
   EXCLUSIVE_TEMP_READ_BLOCKS = '*Temp Read Blocks (exclusive)',
-  EXCLUSIVE_TEMP_DIRTIED_BLOCKS = '*Temp Dirtied Blocks (exclusive)',
   EXCLUSIVE_TEMP_WRITTEN_BLOCKS = '*Temp Written Blocks (exclusive)',
   EXCLUSIVE_LOCAL_HIT_BLOCKS = '*Local Hit Blocks (exclusive)',
   EXCLUSIVE_LOCAL_READ_BLOCKS = '*Local Read Blocks (exclusive)',
@@ -185,9 +175,7 @@ nodePropTypes[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] = PropType.blocks;
 nodePropTypes[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] = PropType.blocks;
 nodePropTypes[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] = PropType.blocks;
 nodePropTypes[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] = PropType.blocks;
-nodePropTypes[NodeProp.EXCLUSIVE_TEMP_HIT_BLOCKS] = PropType.blocks;
 nodePropTypes[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] = PropType.blocks;
-nodePropTypes[NodeProp.EXCLUSIVE_TEMP_DIRTIED_BLOCKS] = PropType.blocks;
 nodePropTypes[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] = PropType.blocks;
 nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] = PropType.blocks;
 nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] = PropType.blocks;
