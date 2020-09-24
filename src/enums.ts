@@ -158,6 +158,7 @@ nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.HEAP_FETCHES] = PropType.rows;
 nodePropTypes[NodeProp.OUTPUT] = PropType.list;
+nodePropTypes[NodeProp.SORT_KEY] = PropType.list;
 
 nodePropTypes[NodeProp.EXCLUSIVE_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.EXCLUSIVE_COST] = PropType.cost;
