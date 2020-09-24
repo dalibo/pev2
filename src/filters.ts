@@ -93,7 +93,7 @@ export function list(value: string[] | string): string {
   if (typeof value === 'string') {
     value = value.split(/\s*,\s*/);
   }
-  const compiled = _.template('<% _.forEach(lines, function(line) { %><li>￭ <%- line %></li><% }); %>');
+  const compiled = _.template('<% _.forEach(lines, function(line) { %><li><%- line %></li><% }); %>');
   return '<ul class="list-unstyled">' + compiled({lines: value}) + '</ul>';
 }
 
