@@ -892,7 +892,7 @@ export class PlanService {
         node[NodeProp.PLANS],
         (child: Node) => {
 
-          return child[NodeProp[property]];
+          return child[NodeProp[property]] || 0;
         },
       );
       const exclusivePropertyString = 'EXCLUSIVE_' + property as keyof typeof NodeProp;
