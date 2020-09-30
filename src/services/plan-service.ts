@@ -29,14 +29,9 @@ export class PlanService {
       ctes: [],
     };
 
-    this.analyzePlan(plan);
-    return plan;
-  }
-
-  public analyzePlan(plan: IPlan) {
     this.processNode(plan.content.Plan, plan);
-
     this.calculateMaximums(plan.content);
+    return plan;
   }
 
   public isCTE(node: any) {
