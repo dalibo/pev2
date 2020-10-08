@@ -670,6 +670,10 @@ export class PlanService {
           return;
         }
 
+        if (this.parseWAL(extraMatches[2], element)) {
+          return;
+        }
+
         if (this.parseIOTimings(extraMatches[2], element)) {
           return;
         }
@@ -767,6 +771,35 @@ export class PlanService {
     return _.find(node[NodeProp.WORKERS], (worker) => {
       return worker[WorkerProp.WORKER_NUMBER] === workerNumber;
     });
+  }
+
+  private parseWAL(text: string, el: Node): boolean {
+    const WALRegex = /WAL:\s+(.*)\s*$/g;
+    const WALMatches = WALRegex.exec(text);
+
+    if (WALMatches) {
+      // Initiate with default value
+      _.each(['Records', 'Bytes', 'FPI'], (type) => {
+        el['WAL ' + type] = 0;
+      });
+      _.each(WALMatches[1].split(/\s+/), (t) => {
+        const s = t.split(/=/);
+        const type = s[0];
+        const value = parseInt(s[1], 0);
+        let typeCaps;
+        switch (type) {
+          case 'fpi':
+            typeCaps = 'FPI';
+            break;
+          default:
+            typeCaps = _.capitalize(type);
+        }
+        el['WAL ' + typeCaps] = value;
+      });
+      return true;
+    }
+
+    return false;
   }
 
   private parseIOTimings(text: string, el: Node): boolean {
