@@ -98,6 +98,9 @@ export enum NodeProp {
   IO_WRITE_TIME = 'I/O Write Time',
   OUTPUT = 'Output',
   HEAP_FETCHES = 'Heap Fetches',
+  WAL_RECORDS = 'WAL Records',
+  WAL_BYTES = 'WAL Bytes',
+  WAL_FPI = 'WAL FPI',
 
   // computed by pev
   EXCLUSIVE_DURATION = '*Duration (exclusive)',
@@ -159,6 +162,9 @@ nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.HEAP_FETCHES] = PropType.rows;
 nodePropTypes[NodeProp.OUTPUT] = PropType.list;
 nodePropTypes[NodeProp.SORT_KEY] = PropType.list;
+nodePropTypes[NodeProp.WAL_RECORDS] = PropType.rows;
+nodePropTypes[NodeProp.WAL_BYTES] = PropType.bytes;
+nodePropTypes[NodeProp.WAL_FPI] = PropType.rows;
 
 nodePropTypes[NodeProp.EXCLUSIVE_DURATION] = PropType.duration;
 nodePropTypes[NodeProp.EXCLUSIVE_COST] = PropType.cost;
