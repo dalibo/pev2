@@ -69,7 +69,7 @@ export function formatBytes(value: number, decimals = 2) {
   const dm = decimals < 0 ? 0 : decimals;
   const units = ['Bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(value) / Math.log(k));
-  const compiled = _.template('${value}&nbsp;${unit}');
+  const compiled = _.template('${value} ${unit}');
   const valueString = parseFloat((value / Math.pow(k, i)).toFixed(dm)).toLocaleString();
   return compiled({value: valueString, unit: units[i]});
 }
