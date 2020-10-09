@@ -143,7 +143,7 @@ export enum PropType {
   json,
   list,
   rows,
-  space,
+  bytes,
 }
 
 export const nodePropTypes: any = {};
@@ -156,7 +156,7 @@ nodePropTypes[NodeProp.STARTUP_COST] = PropType.cost;
 nodePropTypes[NodeProp.TOTAL_COST] = PropType.cost;
 nodePropTypes[NodeProp.PARALLEL_AWARE] = PropType.boolean;
 nodePropTypes[NodeProp.WORKERS] = PropType.json;
-nodePropTypes[NodeProp.SORT_SPACE_USED] = PropType.space;
+nodePropTypes[NodeProp.SORT_SPACE_USED] = PropType.bytes;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.HEAP_FETCHES] = PropType.rows;
