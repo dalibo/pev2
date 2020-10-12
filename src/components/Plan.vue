@@ -275,6 +275,7 @@ export default class Plan extends Vue {
   private showTriggers: boolean = false;
   private showSettings: boolean = false;
   private activeTab: string = '';
+  private highlightTimeout!: number;
 
   private helpService = new HelpService();
   private lodash = _;
@@ -400,12 +401,20 @@ export default class Plan extends Vue {
   }
 
   private highlightNode(node: any, highlight: boolean) {
-    const cmp = _.find(this.plan!.nodeComponents, (c) => c.node === node);
-    if (!cmp) {
-      return;
+    const highlighted = this.$el.querySelector('.plan-node.highlight');
+    if (highlighted) {
+      highlighted.classList.remove('highlight');
     }
-    const el = cmp.$el.querySelector('.plan-node');
-    el!.classList.toggle('highlight', highlight);
+
+    window.clearTimeout(this.highlightTimeout);
+    this.highlightTimeout = window.setTimeout((() => {
+      const cmp = _.find(this.plan!.nodeComponents, (c) => c.node === node);
+      if (!cmp) {
+        return;
+      }
+      const el = cmp.$el.querySelector('.plan-node');
+      el!.classList.toggle('highlight', highlight);
+    }).bind(this), 50);
   }
 
   private centerCTE(cteName: string) {
