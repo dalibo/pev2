@@ -137,7 +137,7 @@
                         >
                       </diagram>
                 </pane>
-                <pane ref="plan" class="plan d-flex flex-column flex-grow-1 grab-bing">
+                <pane ref="plan" class="plan d-flex flex-column flex-grow-1 grab-bing overflow-auto">
                   <ul class="main-plan p-2 mb-0">
                     <li>
                       <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root"/>
