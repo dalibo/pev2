@@ -1,6 +1,6 @@
 <template>
-  <div class="d-flex flex-column h-100">
-    <div class="">
+  <div class="">
+    <div class="flex-shrink-0">
       <div class="form-group text-center my-1">
         <div class="btn-group btn-group-xs">
           <button class="btn btn-outline-secondary" :class="{'active': viewOptions.metric === metrics.time}" v-on:click="viewOptions.metric = metrics.time">time</button>
@@ -49,7 +49,7 @@
         </ul>
       </div>
     </div>
-    <div class="overflow-auto h-100">
+    <div class="overflow-auto flex-grow-1">
       <table class="my-1" v-if="dataAvailable">
         <tbody v-for="flat, index in plans">
           <tr v-if="index === 0 && plans.length > 1">

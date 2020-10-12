@@ -15,10 +15,10 @@ $bg-color: #fff;
   .twod & {
     width: 240px;
   }
-  .twod.plan-container.compact & {
+  .twod.compact & {
     width: 140px;
   }
-  .twod.plan-container.dot & {
+  .twod.dot & {
     width: $compact-width;
   }
 
