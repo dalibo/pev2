@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="d-flex flex-column vh-100">
-    <div class="navbar container">
+    <div class="navbar container flex-shrink-0">
       <router-link tag="a" class="btn btn-secondary ml-auto" to="/">
         New Plan
       </router-link>

@@ -1,5 +1,5 @@
 <template>
-  <div :class="['plan-container d-flex flex-column overflow-hidden flex-grow-1 bg-light', viewOptions.viewMode, viewOptions.orientation]">
+  <div class="plan-container d-flex flex-column overflow-hidden flex-grow-1 bg-light">
     <div>
       <ul class="nav nav-pills">
         <li class="nav-item p-1">
@@ -18,14 +18,15 @@
     </div>
 
 
-    <div class="tab-content flex-grow-1 overflow-hidden">
-      <div v-if="validationMessage" class="h-100 w-100 d-flex justify-content-center">
+    <div class="tab-content flex-grow-1 d-flex overflow-hidden">
+      <div v-if="validationMessage" class="flex-grow-1 d-flex justify-content-center">
         <div class="alert alert-danger align-self-center">{{validationMessage}}</div>
       </div>
-      <div class="tab-pane h-100" :class="{'show active': activeTab === 'plan' }" v-if="!validationMessage">
+      <div class="tab-pane flex-grow-1 overflow-hidden" :class="{'show active d-flex': activeTab === 'plan' }" v-if="!validationMessage">
         <!-- Plan tab -->
-        <div class="d-flex flex-column h-100">
-          <div class="plan-stats d-flex border-bottom border-top form-inline" v-if="plan">
+        <div class="d-flex flex-column flex-grow-1 overflow-hidden"
+           :class="[viewOptions.viewMode, viewOptions.orientation]">
+          <div class="plan-stats flex-shrink-0 d-flex border-bottom border-top form-inline" v-if="plan">
             <div class="d-inline-block px-2">
               Execution time:
               <template v-if="!plan.planStats.executionTime">
@@ -121,34 +122,35 @@
               <i class="fa fa-cog p-0"></i> Settings
             </button>
           </div>
-          <div class="h-100 d-flex overflow-hidden">
-            <splitpanes class="default-theme overflow-hidden" @resize="viewOptions.diagramWidth = $event[0].size">
-              <pane ref="diagram"
-                :size="viewOptions.diagramWidth"
-                class="plan-diagram h-100"
-                v-if="viewOptions.showDiagram"
-              >
-                <diagram
-                  :plan="plan"
-                  :eventBus="eventBus"
-                >
-                </diagram>
-              </pane>
-              <pane ref="plan" class="overflow-auto flex-grow-1 flex-shrink-1 p-1">
-                <div class="plan h-100 w-100 d-flex flex-column grab-bing">
-                  <ul class="main-plan">
+          <div class="flex-grow-1 d-flex overflow-hidden">
+            <div class="flex-grow-1 overflow-hidden">
+              <splitpanes class="default-theme" @resize="viewOptions.diagramWidth = $event[0].size">
+                <pane ref="diagram"
+                      :size="viewOptions.diagramWidth"
+                      class="d-flex"
+                      v-if="viewOptions.showDiagram"
+                      >
+                      <diagram
+                        :plan="plan"
+                        :eventBus="eventBus"
+                        class="d-flex flex-column flex-grow-1 overflow-hidden plan-diagram"
+                        >
+                      </diagram>
+                </pane>
+                <pane ref="plan" class="plan d-flex flex-column flex-grow-1 grab-bing">
+                  <ul class="main-plan p-2 mb-0">
                     <li>
                       <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root"/>
                     </li>
                   </ul>
-                  <ul class="init-plans">
+                  <ul class="init-plans p-2 mb-0" v-if="plan.ctes.length">
                     <li v-for="node in plan.ctes">
                       <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root"/>
                     </li>
                   </ul>
-                </div>
-              </pane>
-            </splitpanes>
+                </pane>
+              </splitpanes>
+            </div>
             <div class="small p-2 border-left" v-if="plan && !viewOptions.menuHidden">
               <div class="text-right clearfix">
                 <button type="button" class="close" aria-label="Close" @click="viewOptions.menuHidden = true">
@@ -197,13 +199,13 @@
         <!-- end Plan tab -->
         </div>
       </div>
-      <div class="tab-pane h-100 overflow-auto" :class="{'show active': activeTab === 'raw' }">
+      <div class="tab-pane flex-grow-1 overflow-auto" :class="{'show active': activeTab === 'raw' }">
         <pre class="small p-2 mb-0"><code v-html="$options.filters.json(planSource)"></code></pre>
       </div>
-      <div class="tab-pane h-100 overflow-auto" :class="{'show active': activeTab === 'query' }" v-if="queryText">
+      <div class="tab-pane flex-grow-1 overflow-auto" :class="{'show active': activeTab === 'query' }" v-if="queryText">
         <pre class="small p-2 mb-0"><code v-html="$options.filters.pgsql(queryText)"></code></pre>
       </div>
-      <div class="tab-pane h-100 overflow-auto" :class="{'show active': activeTab === 'stats' }">
+      <div class="tab-pane flex-grow-1 overflow-auto" :class="{'show active': activeTab === 'stats' }">
         <stats
           :plan="plan"
         >
