@@ -135,15 +135,16 @@ export enum NodeProp {
 export enum PropType {
   blocks,
   boolean,
+  bytes,
   cost,
   duration,
   estimateDirection,
   factor,
   increment,
   json,
+  kilobytes,
   list,
   rows,
-  bytes,
 }
 
 export const nodePropTypes: any = {};
@@ -156,7 +157,7 @@ nodePropTypes[NodeProp.STARTUP_COST] = PropType.cost;
 nodePropTypes[NodeProp.TOTAL_COST] = PropType.cost;
 nodePropTypes[NodeProp.PARALLEL_AWARE] = PropType.boolean;
 nodePropTypes[NodeProp.WORKERS] = PropType.json;
-nodePropTypes[NodeProp.SORT_SPACE_USED] = PropType.bytes;
+nodePropTypes[NodeProp.SORT_SPACE_USED] = PropType.kilobytes;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.HEAP_FETCHES] = PropType.rows;
