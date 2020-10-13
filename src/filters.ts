@@ -60,8 +60,12 @@ export function truncate(text: string, length: number, clamp: string): string {
     return text.length > length ? text.slice(0, length) + clamp : text;
 }
 
-export function bytes(value: number): string {
+export function kilobytes(value: number): string {
   return formatBytes(value * 1024);
+}
+
+export function bytes(value: number): string {
+  return formatBytes(value);
 }
 
 export function formatBytes(value: number, decimals = 2) {
@@ -122,6 +126,8 @@ export function formatNodeProp(key: string, value: any, detail: boolean): string
       return JSON.stringify(value, null, 2);
     } else if (nodePropTypes[key] === PropType.bytes) {
       return bytes(value);
+    } else if (nodePropTypes[key] === PropType.kilobytes) {
+      return kilobytes(value);
     } else if (nodePropTypes[key] === PropType.blocks) {
       return blocks(value);
     } else if (nodePropTypes[key] === PropType.list) {
