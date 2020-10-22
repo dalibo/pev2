@@ -101,6 +101,8 @@ export enum NodeProp {
   WAL_RECORDS = 'WAL Records',
   WAL_BYTES = 'WAL Bytes',
   WAL_FPI = 'WAL FPI',
+  FULL_SORT_GROUPS = 'Full-sort Groups',
+  PRE_SORTED_GROUPS = 'Pre-sorted Groups',
 
   // computed by pev
   EXCLUSIVE_DURATION = '*Duration (exclusive)',
@@ -196,3 +198,14 @@ export class WorkerProp {
 }
 
 nodePropTypes[WorkerProp.WORKER_NUMBER] = PropType.increment;
+
+export enum SortGroups {
+  GROUP_COUNT = 'Group Count',
+  SORT_METHODS_USED = 'Sort Methods Used',
+  SORT_SPACE_MEMORY = 'Sort Space Memory',
+}
+
+export enum SortSpaceMemory {
+  AVERAGE_SORT_SPACE_USED = 'Average Sort Space Used',
+  PEAK_SORT_SPACE_USED = 'Peak Sort Space Used',
+}
