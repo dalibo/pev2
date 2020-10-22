@@ -720,14 +720,10 @@ export class PlanService {
   }
 
   private parseSortKey(text: string, el: Node): boolean {
-    /*
-     * Groups
-     * 1: Keys
-     */
-    const sortRegex = /^\s*Sort Key:\s+(.*)/g;
+    const sortRegex = /^\s*((?:Sort|Presorted) Key):\s+(.*)/g;
     const sortMatches = sortRegex.exec(text);
     if (sortMatches) {
-      el[NodeProp.SORT_KEY] = _.map(splitBalanced(sortMatches[1], ','), _.trim);
+      el[sortMatches[1]] = _.map(splitBalanced(sortMatches[2], ','), _.trim);
       return true;
     }
     return false;

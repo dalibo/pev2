@@ -103,6 +103,7 @@ export enum NodeProp {
   WAL_FPI = 'WAL FPI',
   FULL_SORT_GROUPS = 'Full-sort Groups',
   PRE_SORTED_GROUPS = 'Pre-sorted Groups',
+  PRESORTED_KEY = 'Presorted Key',
 
   // computed by pev
   EXCLUSIVE_DURATION = '*Duration (exclusive)',
@@ -165,6 +166,7 @@ nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.HEAP_FETCHES] = PropType.rows;
 nodePropTypes[NodeProp.OUTPUT] = PropType.list;
 nodePropTypes[NodeProp.SORT_KEY] = PropType.list;
+nodePropTypes[NodeProp.PRESORTED_KEY] = PropType.list;
 nodePropTypes[NodeProp.WAL_RECORDS] = PropType.rows;
 nodePropTypes[NodeProp.WAL_BYTES] = PropType.bytes;
 nodePropTypes[NodeProp.WAL_FPI] = PropType.rows;
