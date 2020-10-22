@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import {BufferLocation, EstimateDirection, NodeProp, WorkerProp} from '@/enums';
+import {BufferLocation, EstimateDirection, SortGroups, NodeProp, SortSpaceMemory, WorkerProp} from '@/enums';
 import { IPlan } from '@/iplan';
 import Node from '@/inode';
 import Worker from '@/iworker';
@@ -690,6 +690,10 @@ export class PlanService {
           return;
         }
 
+        if (this.parseSortGroups(extraMatches[2], element)) {
+          return;
+        }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, '');
         // try to convert to number
@@ -899,6 +903,34 @@ export class PlanService {
         matches = reg.exec(option);
         el.Settings[matches![1]] = matches![2].replace(/'/g, '');
       });
+      return true;
+    }
+    return false;
+  }
+
+  private parseSortGroups(text: string, el: Node): boolean {
+    // Parses a Full-sort Groups block
+    // eg. Full-sort Groups: 312500  Sort Method: quicksort  Average Memory: 26kB  Peak Memory: 26kB
+    const sortGroupsRegex = /^\s*(Full-sort|Pre-sorted) Groups:\s+([0-9]*)\s+Sort Method[s]*:\s+(.*)\s+Average Memory:\s+(\S*)kB\s+Peak Memory:\s+(\S*)kB.*$/g;
+    const matches = sortGroupsRegex.exec(text);
+
+    if (matches) {
+      const groups: {[key in SortGroups]: any} = {
+        [SortGroups.GROUP_COUNT]: parseInt(matches[2], 0),
+        [SortGroups.SORT_METHODS_USED]: _.map(matches[3].split(','), _.trim),
+        [SortGroups.SORT_SPACE_MEMORY]: {
+          [SortSpaceMemory.AVERAGE_SORT_SPACE_USED]: parseInt(matches[4], 0),
+          [SortSpaceMemory.PEAK_SORT_SPACE_USED]: parseInt(matches[5], 0),
+        },
+      };
+
+      if (matches[1] === 'Full-sort') {
+        el[NodeProp.FULL_SORT_GROUPS] = groups;
+      } else if (matches[1] === 'Pre-sorted') {
+        el[NodeProp.PRE_SORTED_GROUPS] = groups;
+      } else {
+        throw new Error('Unsupported sort groups method');
+      }
       return true;
     }
     return false;
