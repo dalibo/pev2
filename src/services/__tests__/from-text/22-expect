@@ -11,7 +11,10 @@
         "Startup Cost": 265935.63,
         "Total Cost": 269372.16,
         "Plan Rows": 1374614,
-        "Sort Key": "latitude_decimal, longitude_decimal",
+        "Sort Key": [
+          "latitude_decimal",
+          "longitude_decimal"
+        ],
         "Plans": [
           {
             "Node Type": "Seq Scan",

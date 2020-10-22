@@ -18,7 +18,9 @@
         "Actual Total Time": 1352.373,
         "Actual Rows": 50,
         "Actual Loops": 1,
-        "Sort Key": "s.last_updated_date",
+        "Sort Key": [
+           "s.last_updated_date"
+        ],
         "Sort Method": "top-N heapsort",
         "Sort Space Used": "50",
         "Sort Space Type": "Memory",
@@ -161,7 +163,9 @@
                         "Actual Total Time": 0.029,
                         "Actual Rows": 1,
                         "Actual Loops": 22035,
-                        "Sort Key": "mu2.update_date",
+                        "Sort Key": [
+                          "mu2.update_date"
+                        ],
                         "Sort Method": "quicksort",
                         "Sort Space Used": "25",
                         "Sort Space Type": "Memory",

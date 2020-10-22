@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import {BufferLocation, EstimateDirection, SortGroups, NodeProp, SortSpaceMemory, WorkerProp} from '@/enums';
+import {splitBalanced} from '@/services/help-service';
 import { IPlan } from '@/iplan';
 import Node from '@/inode';
 import Worker from '@/iworker';
@@ -694,6 +695,10 @@ export class PlanService {
           return;
         }
 
+        if (this.parseSortKey(extraMatches[2], element)) {
+          return;
+        }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, '');
         // try to convert to number
@@ -712,6 +717,20 @@ export class PlanService {
       throw new Error('Unable to parse plan');
     }
     return root;
+  }
+
+  private parseSortKey(text: string, el: Node): boolean {
+    /*
+     * Groups
+     * 1: Keys
+     */
+    const sortRegex = /^\s*Sort Key:\s+(.*)/g;
+    const sortMatches = sortRegex.exec(text);
+    if (sortMatches) {
+      el[NodeProp.SORT_KEY] = _.map(splitBalanced(sortMatches[1], ','), _.trim);
+      return true;
+    }
+    return false;
   }
 
   private parseSort(text: string, el: Node | Worker): boolean {

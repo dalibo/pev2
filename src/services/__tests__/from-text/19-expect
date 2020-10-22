@@ -8,7 +8,10 @@
     "Actual Total Time": 984.898,
     "Actual Rows": 705,
     "Actual Loops": 1,
-    "Sort Key": "gp.idx_gabinetu, (COALESCE(z.godz_otwarcia, gp.godz_otwarcia))",
+    "Sort Key": [
+      "gp.idx_gabinetu",
+      "(COALESCE(z.godz_otwarcia, gp.godz_otwarcia))"
+    ],
     "Sort Method": "quicksort",
     "Sort Space Used": "124",
     "Sort Space Type": "Memory",
@@ -60,7 +63,9 @@
                     "Actual Total Time": 0.059,
                     "Actual Rows": 11,
                     "Actual Loops": 1,
-                    "Sort Key": "(date_part('dow'::text, (($1 + s.s))::timestamp without time zone))",
+                    "Sort Key": [
+                      "(date_part('dow'::text, (($1 + s.s))::timestamp without time zone))"
+                    ],
                     "Sort Method": "quicksort",
                     "Sort Space Used": "25",
                     "Sort Space Type": "Memory",
@@ -88,7 +93,9 @@
                     "Actual Total Time": 561.202,
                     "Actual Rows": 173693,
                     "Actual Loops": 1,
-                    "Sort Key": "((gp.dzien_tygodnia)::double precision)",
+                    "Sort Key": [
+                      "((gp.dzien_tygodnia)::double precision)"
+                    ],
                     "Sort Method": "external sort",
                     "Sort Space Used": "11312",
                     "Sort Space Type": "Disk",

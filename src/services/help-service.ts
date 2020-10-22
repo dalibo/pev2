@@ -184,3 +184,46 @@ if (!Element.prototype.closest) {
     return null;
   };
 }
+
+/*
+ * Split a string, ensuring balanced parenthesis and balanced quotes.
+ */
+export function splitBalanced(input: string, split: string) {
+  // Build the pattern from params with defaults:
+  const pattern = '([\\s\\S]*?)(e)?(?:(o)|(c)|(t)|(sp)|$)'
+    .replace('sp', split)
+    .replace('o', '[\\(\\{\\[]')
+    .replace('c', '[\\)\\}\\]]')
+    .replace('t', '[\'\"]')
+    .replace('e', '[\\\\]');
+  const r = new RegExp(pattern, 'gi');
+  const stack: any[] = [];
+  let buffer: any[] = [];
+  const results: string[] = [];
+  input.replace(r, ($0, $1, $e, $o, $c, $t, $s, i) => {
+    if ($e) { // Escape
+      buffer.push($1, $s || $o || $c || $t);
+      return '';
+    } else if ($o) { // Open
+      stack.push($o);
+    } else if ($c) {// Close
+      stack.pop();
+    } else if ($t) { // Toggle
+      if (stack[stack.length - 1] !== $t) {
+        stack.push($t);
+      } else {
+        stack.pop();
+      }
+    } else { // Split (if no stack) or EOF
+      if ($s ? !stack.length : !$1) {
+        buffer.push($1);
+        results.push(buffer.join(''));
+        buffer = [];
+        return '';
+      }
+    }
+    buffer.push($0);
+    return '';
+  });
+  return results;
+}
