@@ -8,7 +8,9 @@
           "t.a",
           "t.b"
         ],
-        "Presorted Key": "t.a",
+        "Presorted Key": [
+          "t.a"
+        ],
         "Full-sort Groups": {
           "Group Count": 1,
           "Sort Methods Used": [
