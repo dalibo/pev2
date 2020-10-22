@@ -42,7 +42,7 @@
 import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 import router from '../router';
-import { planData } from '../App.vue';
+import { setPlanData } from '../main.ts';
 
 @Component
 export default class App extends Vue {
@@ -74,9 +74,7 @@ export default class App extends Vue {
   }
 
   private submitPlan(): void {
-    planData[0] = this.planInput;
-    planData[1] = this.queryInput;
-    router.push({ path: 'plan' });
+    setPlanData(this.planInput, this.queryInput);
   }
 
   private loadSample(sample: string[]): void {
