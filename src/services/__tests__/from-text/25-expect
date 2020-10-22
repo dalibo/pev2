@@ -10,7 +10,17 @@
         "Startup Cost": 11787.13,
         "Total Cost": 11816.6,
         "Plan Rows": 11787,
-        "Sort Key": "t.user_id, i.email, t.enabled, t.admin, t.abonnement, t.actu, t.first_sbsc, t.thematique, t.creation_date",
+        "Sort Key": [
+          "t.user_id",
+          "i.email",
+          "t.enabled",
+          "t.admin",
+          "t.abonnement",
+          "t.actu",
+          "t.first_sbsc",
+          "t.thematique",
+          "t.creation_date"
+        ],
         "Plans": [
           {
             "Node Type": "Hash Join",

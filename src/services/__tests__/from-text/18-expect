@@ -34,7 +34,11 @@
             "Actual Total Time": 0.018,
             "Actual Rows": 1,
             "Actual Loops": 5570,
-            "Sort Key": "status, date_registration, visit",
+            "Sort Key": [
+              "status",
+              "date_registration",
+              "visit"
+            ],
             "Plans": [
               {
                 "Node Type": "Index Scan",
@@ -74,7 +78,11 @@
             "Actual Loops": 0,
             "Actual Rows": 0,
             "Actual Total Time": 0,
-            "Sort Key": "status, date_registration, visit",
+            "Sort Key": [
+              "status",
+              "date_registration",
+              "visit"
+            ],
             "Plans": [
               {
                 "Node Type": "Index Scan",

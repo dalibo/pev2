@@ -8,7 +8,9 @@
     "Actual Total Time": 102386.84,
     "Actual Rows": 24935,
     "Actual Loops": 1,
-    "Sort Key": "ak.artikelnr_list",
+    "Sort Key": [
+      "ak.artikelnr_list"
+    ],
     "Sort Method": "quicksort",
     "Sort Space Used": "3536",
     "Sort Space Type": "Memory",

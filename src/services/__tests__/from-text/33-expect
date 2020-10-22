@@ -4,7 +4,10 @@
     "Plans": [
       {
         "Node Type": "Incremental Sort",
-        "Sort Key": "t.a, t.b",
+        "Sort Key": [
+          "t.a",
+          "t.b"
+        ],
         "Presorted Key": "t.a",
         "Full-sort Groups": {
           "Group Count": 1,
@@ -30,7 +33,9 @@
         "Plans": [
           {
             "Node Type": "Sort",
-            "Sort Key": "t.a",
+            "Sort Key": [
+              "t.a"
+            ],
             "Sort Method": "quicksort",
             "Sort Space Used": "678",
             "Sort Space Type": "Memory",

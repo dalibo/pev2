@@ -8,7 +8,9 @@
     "Actual Total Time": 0.537,
     "Actual Rows": 352,
     "Actual Loops": 1,
-    "Sort Key": "relallvisible",
+    "Sort Key": [
+      "relallvisible"
+    ],
     "Sort Method": "quicksort",
     "Sort Space Used": "118",
     "Sort Space Type": "Memory",
