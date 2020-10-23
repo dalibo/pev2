@@ -683,7 +683,7 @@ export default class PlanNode extends Vue {
   private formattedProp(propName: keyof typeof NodeProp) {
     const property = NodeProp[propName];
     const value = this.node[property];
-    if (!value) {
+    if (value === undefined) {
       return '';
     }
     return this.$options!.filters!.formatNodeProp(property, value, true);
