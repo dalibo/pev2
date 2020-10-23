@@ -45,7 +45,8 @@
             <div v-if="node[nodeProps.GROUP_KEY]">
               <span class="text-muted">by</span> {{node[nodeProps.GROUP_KEY] | keysToString | truncate(250, '…') }}</div>
             <div v-if="node[nodeProps.SORT_KEY]">
-              <span class="text-muted">by</span> {{node[nodeProps.SORT_KEY] | keysToString | truncate(250, '…') }}</div>
+              <span class="text-muted">by</span><span v-html="'&nbsp;' + $options.filters.truncate($options.filters.sortKeys(node[nodeProps.SORT_KEY], node[nodeProps.PRESORTED_KEY]), 250, '…')"></span>
+            </div>
             <div v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] | keysToString | truncate(250, '…') }}
               <span class="text-muted">join</span></div>
             <div v-if="node[nodeProps.INDEX_NAME]"><span class="text-muted">
@@ -283,7 +284,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { HelpService } from '@/services/help-service';
 import { ColorService } from '@/services/color-service';
-import { cost, duration, factor, formatNodeProp, keysToString, truncate, rows } from '@/filters';
+import { cost, duration, factor, formatNodeProp, keysToString, sortKeys, truncate, rows } from '@/filters';
 import { EstimateDirection, HighlightType, NodeProp, nodePropTypes, Orientation,
          PropType, ViewMode, WorkerProp } from '@/enums';
 import * as _ from 'lodash';
@@ -296,6 +297,7 @@ import * as _ from 'lodash';
     factor,
     formatNodeProp,
     keysToString,
+    sortKeys,
     truncate,
     rows,
   },

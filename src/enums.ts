@@ -148,6 +148,7 @@ export enum PropType {
   kilobytes,
   list,
   rows,
+  sortGroups,
 }
 
 export const nodePropTypes: any = {};
@@ -194,6 +195,9 @@ nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] = PropType.blocks;
 nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] = PropType.blocks;
 nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] = PropType.blocks;
 
+nodePropTypes[NodeProp.FULL_SORT_GROUPS] = PropType.sortGroups;
+nodePropTypes[NodeProp.PRE_SORTED_GROUPS] = PropType.sortGroups;
+
 export class WorkerProp {
   // plan property keys
   public static WORKER_NUMBER: string = 'Worker Number';
@@ -201,7 +205,7 @@ export class WorkerProp {
 
 nodePropTypes[WorkerProp.WORKER_NUMBER] = PropType.increment;
 
-export enum SortGroups {
+export enum SortGroupsProp {
   GROUP_COUNT = 'Group Count',
   SORT_METHODS_USED = 'Sort Methods Used',
   SORT_SPACE_MEMORY = 'Sort Space Memory',
