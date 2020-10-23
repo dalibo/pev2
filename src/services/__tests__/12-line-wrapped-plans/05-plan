@@ -1,0 +1,35 @@
+                                                                          QUERY PLA
+N                                                                           
+-----------------------------------------------------------------------------------
+----------------------------------------------------------------------------
+ Gather  (cost=1048.76..30335.69 rows=50000 width=457) (actual time=16.449..7326.94
+1 rows=1000000 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   Buffers: shared hit=153 read=16929 dirtied=16329 written=478
+   ->  Hash Join  (cost=48.76..24335.69 rows=20833 width=457) (actual time=8.070..6
+055.501 rows=333333 loops=3)
+         Hash Cond: (pgbench_accounts_2.bid = pgbench_branches.bid)
+         Buffers: shared hit=153 read=16929 dirtied=16329 written=478
+         ->  Parallel Append  (cost=0.00..23170.00 rows=416667 width=97) (actual ti
+me=2.817..4221.754 rows=333333 loops=3)
+               Buffers: shared read=16920 dirtied=16329 written=478
+               ->  Parallel Seq Scan on pgbench_accounts_2  (cost=0.00..7034.57 row
+s=138957 width=97) (actual time=0.917..2549.397 rows=333497 loops=1)
+                     Buffers: shared read=5645 dirtied=5449 written=96
+               ->  Parallel Seq Scan on pgbench_accounts_1  (cost=0.00..7029.60 row
+s=138860 width=97) (actual time=1.003..2273.576 rows=333263 loops=1)
+                     Buffers: shared read=5641 dirtied=5450 written=48
+               ->  Parallel Seq Scan on pgbench_accounts_3  (cost=0.00..7022.50 row
+s=138850 width=97) (actual time=2.193..830.177 rows=111080 loops=3)
+                     Buffers: shared read=5634 dirtied=5430 written=334
+         ->  Hash  (cost=48.64..48.64 rows=10 width=364) (actual time=4.995..4.997 
+rows=10 loops=3)
+               Buckets: 1024  Batches: 1  Memory Usage: 9kB
+               Buffers: shared hit=26 read=9
+               ->  Index Scan using pgbench_branches_pkey on pgbench_branches  (cos
+t=0.14..48.64 rows=10 width=364) (actual time=0.284..4.932 rows=10 loops=3)
+                     Buffers: shared hit=26 read=9
+ Planning Time: 25.266 ms
+ Execution Time: 9321.807 ms
+(22 lignes)

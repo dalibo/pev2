@@ -60,18 +60,22 @@ export function truncate(text: string, length: number, clamp: string): string {
     return text.length > length ? text.slice(0, length) + clamp : text;
 }
 
-export function space(value: number): string {
+export function kilobytes(value: number): string {
   return formatBytes(value * 1024);
 }
 
-export function formatBytes(bytes: number, decimals = 2) {
+export function bytes(value: number): string {
+  return formatBytes(value);
+}
+
+export function formatBytes(value: number, decimals = 2) {
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
   const units = ['Bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const compiled = _.template('${value}&nbsp;${unit}');
-  const value = parseFloat((bytes / Math.pow(k, i)).toFixed(dm)).toLocaleString();
-  return compiled({value, unit: units[i]});
+  const i = Math.floor(Math.log(value) / Math.log(k));
+  const compiled = _.template('${value} ${unit}');
+  const valueString = parseFloat((value / Math.pow(k, i)).toFixed(dm)).toLocaleString();
+  return compiled({value: valueString, unit: units[i]});
 }
 
 export function blocks(value: number): string {
@@ -80,6 +84,21 @@ export function blocks(value: number): string {
   }
   return value.toLocaleString() + '<br><small>' +
     formatBytes(value * 8 * 1024) + '</small>';
+}
+
+export function percent(value: number): string {
+  if (isNaN(value)) {
+    return '-';
+  }
+  return _.round(value * 100) + '%';
+}
+
+export function list(value: string[] | string): string {
+  if (typeof value === 'string') {
+    value = value.split(/\s*,\s*/);
+  }
+  const compiled = _.template('<% _.forEach(lines, function(line) { %><li><%- line %></li><% }); %>');
+  return '<ul class="list-unstyled">' + compiled({lines: value}) + '</ul>';
 }
 
 export function formatNodeProp(key: string, value: any, detail: boolean): string {
@@ -105,10 +124,14 @@ export function formatNodeProp(key: string, value: any, detail: boolean): string
       }
     } else if (nodePropTypes[key] === PropType.json) {
       return JSON.stringify(value, null, 2);
-    } else if (nodePropTypes[key] === PropType.space) {
-      return space(value);
+    } else if (nodePropTypes[key] === PropType.bytes) {
+      return bytes(value);
+    } else if (nodePropTypes[key] === PropType.kilobytes) {
+      return kilobytes(value);
     } else if (nodePropTypes[key] === PropType.blocks) {
       return blocks(value);
+    } else if (nodePropTypes[key] === PropType.list) {
+      return list(value);
     }
   }
   return value;
@@ -122,8 +145,6 @@ export function durationClass(i: number): string {
     c = 3;
   } else if (i > 10) {
     c = 2;
-  } else {
-    c = 1;
   }
   if (c) {
     return 'c-' + c;

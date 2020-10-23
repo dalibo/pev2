@@ -63,13 +63,22 @@ $connector-line: 2px solid darken($line-color, 10%);
 
   ul.main-plan, ul.node-children {
     .twod & {
-      display: flex;
       margin-left: auto;
       margin-right: auto;
-      padding-top: $connector-height;
-      margin-top: -5px;
       text-align: center;
     }
+  }
+  ul.node-children {
+    .twod & {
+      display: flex;
+      padding-top: $connector-height;
+      margin-top: -5px;
+    }
+  }
+
+  ul.init-plans {
+      /* Makes sure there a space at the bottom of CTE on Safari */
+      -webkit-flex: none;
   }
 
   ul {
@@ -321,4 +330,15 @@ $connector-line: 2px solid darken($line-color, 10%);
 
 .no-focus-outline:focus {
   outline: none;
+}
+
+.table-nonfluid {
+  width: auto !important;
+}
+
+.more-info[title] {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: $gray;
+  cursor: help;
 }

@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import {EstimateDirection, NodeProp, WorkerProp} from '@/enums';
+import {BufferLocation, EstimateDirection, NodeProp, WorkerProp} from '@/enums';
 import { IPlan } from '@/iplan';
 import Node from '@/inode';
 import Worker from '@/iworker';
@@ -29,14 +29,9 @@ export class PlanService {
       ctes: [],
     };
 
-    this.analyzePlan(plan);
-    return plan;
-  }
-
-  public analyzePlan(plan: IPlan) {
     this.processNode(plan.content.Plan, plan);
-
     this.calculateMaximums(plan.content);
+    return plan;
   }
 
   public isCTE(node: any) {
@@ -100,6 +95,10 @@ export class PlanService {
       content.maxDuration = slowest[NodeProp.EXCLUSIVE_DURATION];
     }
 
+    if (!content.maxBlocks) {
+      content.maxBlocks = {};
+    }
+
     function sumShared(o: Node) {
       return o[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] +
         o[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] +
@@ -109,21 +108,19 @@ export class PlanService {
     const highestShared = _.maxBy(flat, (o) => {
       return sumShared(o);
     });
-    if (highestShared) {
-      content.maxSharedBlocks = sumShared(highestShared);
+    if (highestShared && sumShared(highestShared)) {
+      content.maxBlocks[BufferLocation.shared] = sumShared(highestShared);
     }
 
     function sumTemp(o: Node) {
-      return o[NodeProp.EXCLUSIVE_TEMP_HIT_BLOCKS] +
-        o[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] +
-        o[NodeProp.EXCLUSIVE_TEMP_DIRTIED_BLOCKS] +
+      return o[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] +
         o[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS];
     }
     const highestTemp = _.maxBy(flat, (o) => {
       return sumTemp(o);
     });
-    if (highestTemp) {
-      content.maxTempBlocks = sumTemp(highestTemp);
+    if (highestTemp && sumTemp(highestTemp)) {
+      content.maxBlocks[BufferLocation.temp] = sumTemp(highestTemp);
     }
 
     function sumLocal(o: Node) {
@@ -135,8 +132,8 @@ export class PlanService {
     const highestLocal = _.maxBy(flat, (o) => {
       return sumLocal(o);
     });
-    if (highestLocal) {
-      content.maxLocalBlocks = sumLocal(highestLocal);
+    if (highestLocal && sumLocal(highestLocal)) {
+      content.maxBlocks[BufferLocation.local] = sumLocal(highestLocal);
     }
   }
 
@@ -230,7 +227,10 @@ export class PlanService {
     source = source.replace(/^\s*QUERY PLAN\s*\r?\n/m, '');
 
     // Remove rowcount
-    source = source.replace(/^\(\d+ rows?\)(\r?\n|$)/gm, '\n');
+    // example: (8 rows)
+    // Note: can be translated
+    // example: (8 lignes)
+    source = source.replace(/^\(\d+\s+[a-z]*s?\)(\r?\n|$)/gm, '\n');
 
     return source;
   }
@@ -347,9 +347,38 @@ export class PlanService {
     return root;
   }
 
-  public fromText(text: string) {
-
+  public splitIntoLines(text: string): string[] {
+    // Splits source into lines, while fixing (well, trying to fix)
+    // cases where input has been force-wrapped to some length.
+    const out: string[] = [];
     const lines = text.split(/\r?\n/);
+    const countChar = (str: string, ch: RegExp) => (str.match(ch) || []).length;
+
+    _.each(lines, (line: string) => {
+      if (countChar(line, /\)/g) > countChar(line, /\(/g)) {
+        // if there more closing parenthesis this means that it's the
+        // continuation of a previous line
+        out[out.length - 1] += line;
+      } else if (line.match(/^(?:Total\s+runtime|Planning\s+time|Execution\s+time|Time|Filter|Output)/i)) {
+        out.push(line);
+      } else if (
+        line.match(/^\S/) || // doesn't start with a blank space (allowed only for the first node)
+        line.match(/^\s*\(/) // first non-blank character is an opening parenthesis
+      ) {
+        if (0 < out.length) {
+          out[out.length - 1] += line;
+        } else {
+          out.push(line);
+        }
+      } else {
+        out.push(line);
+      }
+    });
+    return out;
+  }
+
+  public fromText(text: string) {
+    const lines = this.splitIntoLines(text);
 
     const root: any = {};
     root.Plan = null;
@@ -611,11 +640,6 @@ export class PlanService {
       } else if (extraMatches) {
         const prefix = extraMatches[1];
 
-        const info = extraMatches[2].split(/: (.+)/).filter((x) => x);
-        if (!info[1]) {
-          return;
-        }
-
         // Remove elements from elementsAtDepth for deeper levels
         _.remove(elementsAtDepth, (e) => e[0] >= depth);
 
@@ -626,11 +650,27 @@ export class PlanService {
           element = _.last(elementsAtDepth)![1].node;
         }
 
+        // if no node have been found yet and a 'Query Text' has been found
+        // there the line is the part of the query
+        if (!element.Plan && element['Query Text']) {
+          element['Query Text'] += '\n' + line;
+          return;
+        }
+
+        const info = extraMatches[2].split(/: (.+)/).filter((x) => x);
+        if (!info[1]) {
+          return;
+        }
+
         if (this.parseSort(extraMatches[2], element)) {
           return;
         }
 
         if (this.parseBuffers(extraMatches[2], element)) {
+          return;
+        }
+
+        if (this.parseWAL(extraMatches[2], element)) {
           return;
         }
 
@@ -731,6 +771,35 @@ export class PlanService {
     return _.find(node[NodeProp.WORKERS], (worker) => {
       return worker[WorkerProp.WORKER_NUMBER] === workerNumber;
     });
+  }
+
+  private parseWAL(text: string, el: Node): boolean {
+    const WALRegex = /WAL:\s+(.*)\s*$/g;
+    const WALMatches = WALRegex.exec(text);
+
+    if (WALMatches) {
+      // Initiate with default value
+      _.each(['Records', 'Bytes', 'FPI'], (type) => {
+        el['WAL ' + type] = 0;
+      });
+      _.each(WALMatches[1].split(/\s+/), (t) => {
+        const s = t.split(/=/);
+        const type = s[0];
+        const value = parseInt(s[1], 0);
+        let typeCaps;
+        switch (type) {
+          case 'fpi':
+            typeCaps = 'FPI';
+            break;
+          default:
+            typeCaps = _.capitalize(type);
+        }
+        el['WAL ' + typeCaps] = value;
+      });
+      return true;
+    }
+
+    return false;
   }
 
   private parseIOTimings(text: string, el: Node): boolean {
@@ -842,9 +911,7 @@ export class PlanService {
       'SHARED_READ_BLOCKS',
       'SHARED_DIRTIED_BLOCKS',
       'SHARED_WRITTEN_BLOCKS',
-      'TEMP_HIT_BLOCKS',
       'TEMP_READ_BLOCKS',
-      'TEMP_DIRTIED_BLOCKS',
       'TEMP_WRITTEN_BLOCKS',
       'LOCAL_HIT_BLOCKS',
       'LOCAL_READ_BLOCKS',
@@ -858,7 +925,7 @@ export class PlanService {
         node[NodeProp.PLANS],
         (child: Node) => {
 
-          return child[NodeProp[property]];
+          return child[NodeProp[property]] || 0;
         },
       );
       const exclusivePropertyString = 'EXCLUSIVE_' + property as keyof typeof NodeProp;

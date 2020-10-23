@@ -158,6 +158,7 @@
             <!-- general tab -->
           </div>
           <div class="tab-pane" :class="{'show active': activeTab === 'iobuffer' }">
+            <!-- iobuffer tab -->
             <div v-if="node[nodeProps.EXCLUSIVE_IO_READ_TIME] || node[nodeProps.EXCLUSIVE_IO_WRITE_TIME]" class="mb-2">
               <b>
                 I/O Timings:
@@ -171,7 +172,6 @@
                 {{ formattedProp('EXCLUSIVE_IO_WRITE_TIME') }}
               </span>
             </div>
-            <!-- iobuffer tab -->
             <b>
               Blocks:
             </b>
@@ -192,9 +192,9 @@
               </tr>
               <tr>
                 <th>Temp</th>
-                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_HIT_BLOCKS') || '-'"></td>
+                <td class="text-right bg-hatched"></td>
                 <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_READ_BLOCKS') || '-'"></td>
-                <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_DIRTIED_BLOCKS') || '-'"></td>
+                <td class="text-right bg-hatched"></td>
                 <td class="text-right" v-html="formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'"></td>
               </tr>
               <tr>
@@ -205,11 +205,18 @@
                 <td class="text-right" v-html="formattedProp('EXCLUSIVE_LOCAL_WRITTEN_BLOCKS') || '-'"></td>
               </tr>
             </table>
+            <div v-if="node[nodeProps.WAL_RECORDS] || node[nodeProps.WAL_BYTES]" class="mb-2">
+              <b>
+                <span class="more-info" title="Write-Ahead Logging">WAL</span>:
+              </b>
+              {{ formattedProp('WAL_RECORDS') }} records <small>({{ formattedProp('WAL_BYTES') }})</small>
+              <span v-if="node[nodeProps.WAL_FPI]"> -
+              <span class="more-info" title="WAL Full Page Images">FPI</span>: {{ formattedProp('WAL_FPI') }}
+              </span>
+            </div>
             <!-- iobuffer tab -->
           </div>
-          <div class="tab-pane" :class="{'show active': activeTab === 'output' }">
-            <!-- output tab -->
-            {{ formattedProp('OUTPUT') }}
+          <div class="tab-pane overflow-auto" :class="{'show active': activeTab === 'output' }" v-html="formattedProp('OUTPUT')" style="max-height: 200px">
             <!-- output tab -->
           </div>
           <div class="tab-pane" :class="{'show active': activeTab === 'workers' }" v-if="workersCount">
@@ -350,9 +357,7 @@ export default class PlanNode extends Vue {
       NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS,
       NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS,
       NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS,
-      NodeProp.EXCLUSIVE_TEMP_HIT_BLOCKS,
       NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS,
-      NodeProp.EXCLUSIVE_TEMP_DIRTIED_BLOCKS,
       NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS,
       NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS,
       NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS,
@@ -362,9 +367,7 @@ export default class PlanNode extends Vue {
       NodeProp.SHARED_READ_BLOCKS,
       NodeProp.SHARED_DIRTIED_BLOCKS,
       NodeProp.SHARED_WRITTEN_BLOCKS,
-      NodeProp.TEMP_HIT_BLOCKS,
       NodeProp.TEMP_READ_BLOCKS,
-      NodeProp.TEMP_DIRTIED_BLOCKS,
       NodeProp.TEMP_WRITTEN_BLOCKS,
       NodeProp.LOCAL_HIT_BLOCKS,
       NodeProp.LOCAL_READ_BLOCKS,
@@ -383,6 +386,9 @@ export default class PlanNode extends Vue {
       NodeProp.IO_READ_TIME, // Exclusive value already shown in IO tab
       NodeProp.IO_WRITE_TIME, // Exclusive value already shown in IO tab
       NodeProp.HEAP_FETCHES,
+      NodeProp.WAL_RECORDS,
+      NodeProp.WAL_BYTES,
+      NodeProp.WAL_FPI,
   ];
 
   private created(): void {
@@ -676,7 +682,11 @@ export default class PlanNode extends Vue {
   // returns the formatted prop
   private formattedProp(propName: keyof typeof NodeProp) {
     const property = NodeProp[propName];
-    return this.$options!.filters!.formatNodeProp(property, this.node[property], true);
+    const value = this.node[property];
+    if (!value) {
+      return '';
+    }
+    return this.$options!.filters!.formatNodeProp(property, value, true);
   }
 }
 </script>

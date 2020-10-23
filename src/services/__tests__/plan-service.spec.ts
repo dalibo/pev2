@@ -71,7 +71,7 @@ describe('PlanService', () => {
 -----------------------------------------------------------
  Seq Scan on tenk1  (cost=0.00..333.00 rows=10000 width=148)
 (1 row)`;
-    const r: any = planService.fromText(planText);
+    const r: any = planService.fromSource(planText);
     expect(r.Plan['Plan Rows']).toEqual(10000);
   });
 
@@ -99,7 +99,7 @@ Nested Loop Left Join  (cost=11.95..28.52 rows=5 width=157) (actual time=0.010..
 Planning Time: 1.110 ms
 Execution Time: 0.170 ms`;
     // tslint:enable:max-line-length
-    const r: any = planService.fromText(planText);
+    const r: any = planService.fromSource(planText);
     expect(r.Plan['Plan Rows']).toEqual(5);
     expect(r['Execution Time']).toEqual(0.17);
   });
@@ -176,7 +176,7 @@ Sort  (cost=55235.15..55247.04 rows=4758 width=1128) (actual time=132.733..133.6
 Planning time: 2.040 ms
 Execution time: 136.448 ms`;
     // tslint:enable:max-line-length
-    const r: any = planService.fromText(planText);
+    const r: any = planService.fromSource(planText);
     expect(r['Execution Time']).toEqual(136.448);
   });
 

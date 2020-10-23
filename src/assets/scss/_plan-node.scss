@@ -15,10 +15,10 @@ $bg-color: #fff;
   .twod & {
     width: 240px;
   }
-  .twod.plan-container.compact & {
+  .twod.compact & {
     width: 140px;
   }
-  .twod.plan-container.dot & {
+  .twod.dot & {
     width: $compact-width;
   }
 
@@ -156,11 +156,7 @@ $bg-color: #fff;
   }
 
   &.never-executed .plan-node-body {
-    $color: $gray-lightest;
-    $angle: 45deg;
-    $progress-height: 1rem !default;
-    background-image: linear-gradient($angle, $color 25%, transparent 25%, transparent 50%, $color 50%, $color 75%, transparent 75%, transparent);
-    background-size: $progress-height $progress-height;
+    @extend %bg-hatched;
   }
 
   &.flash .plan-node-body {
