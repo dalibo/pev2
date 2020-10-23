@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import {BufferLocation, EstimateDirection, SortGroups, NodeProp, SortSpaceMemory, WorkerProp} from '@/enums';
+import {BufferLocation, EstimateDirection, SortGroupsProp, NodeProp, SortSpaceMemory, WorkerProp} from '@/enums';
 import {splitBalanced} from '@/services/help-service';
 import { IPlan } from '@/iplan';
 import Node from '@/inode';
@@ -930,10 +930,10 @@ export class PlanService {
     const matches = sortGroupsRegex.exec(text);
 
     if (matches) {
-      const groups: {[key in SortGroups]: any} = {
-        [SortGroups.GROUP_COUNT]: parseInt(matches[2], 0),
-        [SortGroups.SORT_METHODS_USED]: _.map(matches[3].split(','), _.trim),
-        [SortGroups.SORT_SPACE_MEMORY]: {
+      const groups: {[key in SortGroupsProp]: any} = {
+        [SortGroupsProp.GROUP_COUNT]: parseInt(matches[2], 0),
+        [SortGroupsProp.SORT_METHODS_USED]: _.map(matches[3].split(','), _.trim),
+        [SortGroupsProp.SORT_SPACE_MEMORY]: {
           [SortSpaceMemory.AVERAGE_SORT_SPACE_USED]: parseInt(matches[4], 0),
           [SortSpaceMemory.PEAK_SORT_SPACE_USED]: parseInt(matches[5], 0),
         },

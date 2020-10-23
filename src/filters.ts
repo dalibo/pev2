@@ -55,6 +55,16 @@ export function keysToString(value: any): string {
   return value.join(', ');
 }
 
+export function sortKeys(sort: string[], presort: string[] | undefined): string {
+  return _.map(sort, (v) => {
+    let result = v;
+    if (presort) {
+      result += (presort.indexOf(v) !== -1 ? '&nbsp;<span class="text-muted">(presort)</span>' : '');
+    }
+    return result;
+  }).join(', ');
+}
+
 export function truncate(text: string, length: number, clamp: string): string {
     clamp = clamp || '...';
     return text.length > length ? text.slice(0, length) + clamp : text;
@@ -101,6 +111,18 @@ export function list(value: string[] | string): string {
   return '<ul class="list-unstyled">' + compiled({lines: value}) + '</ul>';
 }
 
+import { Vue } from 'vue-property-decorator';
+import SortGroup from '@/components/SortGroup.vue';
+export function sortGroups(value: any): string {
+  const v = new Vue({
+    ...SortGroup,
+    propsData: {
+      sortGroup: value,
+    },
+  });
+  return v.$mount().$el.outerHTML;
+}
+
 export function formatNodeProp(key: string, value: any, detail: boolean): string {
   if (_.has(nodePropTypes, key)) {
     if (nodePropTypes[key] === PropType.duration) {
@@ -132,6 +154,8 @@ export function formatNodeProp(key: string, value: any, detail: boolean): string
       return blocks(value);
     } else if (nodePropTypes[key] === PropType.list) {
       return list(value);
+    } else if (nodePropTypes[key] === PropType.sortGroups) {
+      return sortGroups(value);
     }
   }
   return value;
