@@ -140,12 +140,20 @@
                 <pane ref="plan" class="plan d-flex flex-column flex-grow-1 grab-bing overflow-auto">
                   <ul class="main-plan p-2 mb-0">
                     <li>
-                      <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root"/>
+                      <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root">
+                        <template v-slot:nodelink="{ nodeIndex }">
+                          <slot name="nodelink" v-bind:nodeIndex="nodeIndex"></slot>
+                        </template>
+                      </plan-node>
                     </li>
                   </ul>
                   <ul class="init-plans p-2 mb-0" v-if="plan.ctes.length">
                     <li v-for="node in plan.ctes">
-                      <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root"/>
+                      <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root">
+                        <template v-slot:nodelink="{ nodeIndex }">
+                          <slot name="nodelink" v-bind:nodeIndex="nodeIndex"></slot>
+                        </template>
+                      </plan-node>
                     </li>
                   </ul>
                 </pane>

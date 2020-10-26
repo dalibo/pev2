@@ -21,7 +21,11 @@
           <header class="mb-0">
             <h4>
               {{ getNodeName() }}
-              <span class="text-muted font-weight-normal small">#{{ plan.nodeComponents.indexOf(currentCmp) }}</span>
+              <slot name="nodelink" v-bind:nodeIndex="nodeIndex">
+                <span class="text-muted font-weight-normal small">
+                  #{{ nodeIndex }}
+                </span>
+              </slot>
             </h4>
             <div class="float-right">
               <span v-if="durationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + durationClass" title="Slow"><i class="fa fa-fw fa-clock"></i></span>
@@ -275,7 +279,11 @@
     </div>
     <ul v-if="plans" :class="['node-children', {'collapsed': collapsed}]">
       <li v-for="subnode in plans">
-        <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus"/>
+        <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus">
+          <template v-slot:nodelink="{ nodeIndex }">
+            <slot name="nodelink" v-bind:nodeIndex="nodeIndex"></slot>
+          </template>
+        </plan-node>
       </li>
     </ul>
   </div>
@@ -309,8 +317,6 @@ export default class PlanNode extends Vue {
   @Prop(Object) private plan!: any;
   @Prop(Object) private viewOptions!: any;
   @Prop() private eventBus!: InstanceType<typeof Vue>;
-
-  private currentCmp;
 
   // UI flags
   private showDetails: boolean = false;
@@ -412,7 +418,6 @@ export default class PlanNode extends Vue {
     this.plannerRowEstimateDirection = this.node[NodeProp.PLANNER_ESTIMATE_DIRECTION];
     this.plannerRowEstimateValue = this.node[NodeProp.PLANNER_ESTIMATE_FACTOR];
     this.plan.nodeComponents.push(this);
-    this.currentCmp = this;
   }
 
   private destroyed(): void {
@@ -464,6 +469,10 @@ export default class PlanNode extends Vue {
 
   private getNodeTypeDescription() {
     return this.helpService.getNodeTypeDescription(this.node[NodeProp.NODE_TYPE]);
+  }
+
+  private get nodeIndex(): number {
+    return this.plan.nodeComponents.indexOf(this);
   }
 
   private getNodeName(): string {
