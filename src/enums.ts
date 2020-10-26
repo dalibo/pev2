@@ -50,8 +50,9 @@ export enum CenterMode {
 }
 
 export enum HighlightMode {
-  flash,
-  highlight,
+  flash = 1,
+  highlight = 2,
+  showdetails = 4,
 }
 
 export enum NodeProp {
