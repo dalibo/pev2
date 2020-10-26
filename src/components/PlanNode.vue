@@ -21,6 +21,7 @@
           <header class="mb-0">
             <h4>
               {{ getNodeName() }}
+              <span class="text-muted font-weight-normal small">#{{ plan.nodeComponents.indexOf(currentCmp) }}</span>
             </h4>
             <div class="float-right">
               <span v-if="durationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + durationClass" title="Slow"><i class="fa fa-fw fa-clock"></i></span>
@@ -307,6 +308,8 @@ export default class PlanNode extends Vue {
   @Prop(Object) private viewOptions!: any;
   @Prop() private eventBus!: InstanceType<typeof Vue>;
 
+  private currentCmp;
+
   // UI flags
   private showDetails: boolean = false;
   private collapsed: boolean = false;
@@ -391,6 +394,10 @@ export default class PlanNode extends Vue {
       NodeProp.WAL_FPI,
   ];
 
+  public setShowDetails(showDetails: boolean): void {
+    this.showDetails = showDetails;
+  }
+
   private created(): void {
     this.calculateProps();
     this.calculateBar();
@@ -403,6 +410,7 @@ export default class PlanNode extends Vue {
     this.plannerRowEstimateDirection = this.node[NodeProp.PLANNER_ESTIMATE_DIRECTION];
     this.plannerRowEstimateValue = this.node[NodeProp.PLANNER_ESTIMATE_FACTOR];
     this.plan.nodeComponents.push(this);
+    this.currentCmp = this;
   }
 
   private destroyed(): void {

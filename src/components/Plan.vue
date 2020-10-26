@@ -266,6 +266,7 @@ export default class Plan extends Vue {
 
   @Prop(String) private planSource!: string;
   @Prop(String) private planQuery!: string;
+  @Prop(Number) private zoomTo!: number;
   private queryText!: string;
   private plan!: IPlan | null;
   private rootNode!: any;
@@ -345,7 +346,19 @@ export default class Plan extends Vue {
     };
 
     Vue.nextTick(() => {
-      this.centerNode(this.rootNode, CenterMode.visible, HighlightMode.flash);
+      let node;
+      let highlightMode = HighlightMode.flash;
+      if (this.zoomTo) {
+        const cmp = this.plan!.nodeComponents[this.zoomTo];
+        node = cmp ? cmp.node : undefined;
+        // tslint:disable-next-line:no-bitwise
+        highlightMode = HighlightMode.highlight | HighlightMode.showdetails;
+      } else {
+        node = this.rootNode;
+      }
+      if (node) {
+        this.centerNode(node, CenterMode.visible, highlightMode);
+      }
       // build the diagram structure
       // with level and reference to PlanNode components for interaction
       if (!this.plan) {
@@ -381,6 +394,10 @@ export default class Plan extends Vue {
       return;
     }
     this.highlightEl(cmp.$el.querySelector('.plan-node'), centerMode, highlightMode);
+    // tslint:disable-next-line:no-bitwise
+    if (highlightMode & HighlightMode.showdetails) {
+      cmp.setShowDetails(true);
+    }
   }
 
   private highlightEl(el: Element | HTMLElement | null, centerMode: CenterMode, highlightMode: HighlightMode) {
@@ -390,11 +407,16 @@ export default class Plan extends Vue {
     const parent = this.$refs.plan.$el;
     if (centerMode !== CenterMode.none) {
       scrollChildIntoParentView(parent, el, centerMode === CenterMode.center, () => {
-        if (highlightMode === HighlightMode.flash) {
+        // tslint:disable-next-line:no-bitwise
+        if (highlightMode & HighlightMode.flash) {
           el.classList.add('flash');
           setTimeout(() => {
             el.classList.remove('flash');
           }, 1000);
+        }
+        // tslint:disable-next-line:no-bitwise
+        if (highlightMode & HighlightMode.highlight) {
+          el.classList.add('highlight');
         }
       });
     }
