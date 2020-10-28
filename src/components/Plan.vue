@@ -354,19 +354,14 @@ export default class Plan extends Vue {
     };
 
     Vue.nextTick(() => {
-      let node;
+      let node = 0;
       let highlightMode = HighlightMode.flash;
       if (this.zoomTo) {
-        const cmp = this.plan!.nodeComponents[this.zoomTo];
-        node = cmp ? cmp.node : undefined;
+        node = this.zoomTo;
         // tslint:disable-next-line:no-bitwise
         highlightMode = HighlightMode.highlight | HighlightMode.showdetails;
-      } else {
-        node = this.rootNode;
       }
-      if (node) {
-        this.centerNode(node, CenterMode.visible, highlightMode);
-      }
+      this.centerNode(node, CenterMode.visible, highlightMode);
       // build the diagram structure
       // with level and reference to PlanNode components for interaction
       if (!this.plan) {
@@ -388,23 +383,14 @@ export default class Plan extends Vue {
     return this.helpService.getHelpMessage(message);
   }
 
-  private showSlowestNode() {
-    this.centerNode(this.plan!.content.slowest, CenterMode.center, HighlightMode.flash);
-  }
-
-  private showCostliestNode() {
-    this.centerNode(this.plan!.content.costliest, CenterMode.center, HighlightMode.flash);
-  }
-
-  private centerNode(node: any, centerMode: CenterMode, highlightMode: HighlightMode) {
-    const cmp = _.find(this.plan!.nodeComponents, (c) => c.node === node);
-    if (!cmp) {
-      return;
-    }
-    this.highlightEl(cmp.$el.querySelector('.plan-node'), centerMode, highlightMode);
-    // tslint:disable-next-line:no-bitwise
-    if (highlightMode & HighlightMode.showdetails) {
-      cmp.setShowDetails(true);
+  private centerNode(nodeId: number, centerMode: CenterMode, highlightMode: HighlightMode) {
+    const cmp = this.findPlanNode((o: PlanNode) => o.node.nodeId === nodeId);
+    if (cmp) {
+      this.highlightEl(cmp.$el.querySelector('.plan-node'), centerMode, highlightMode);
+      // tslint:disable-next-line:no-bitwise
+      if (highlightMode & HighlightMode.showdetails) {
+        cmp.setShowDetails(true);
+      }
     }
   }
 
@@ -430,7 +416,7 @@ export default class Plan extends Vue {
     }
   }
 
-  private highlightNode(node: any, highlight: boolean) {
+  private highlightNode(nodeId: number, highlight: boolean) {
     const highlighted = this.$el.querySelector('.plan-node.highlight');
     if (highlighted) {
       highlighted.classList.remove('highlight');
@@ -438,17 +424,16 @@ export default class Plan extends Vue {
 
     window.clearTimeout(this.highlightTimeout);
     this.highlightTimeout = window.setTimeout((() => {
-      const cmp = _.find(this.plan!.nodeComponents, (c) => c.node === node);
-      if (!cmp) {
-        return;
+      const cmp = this.findPlanNode((o: PlanNode) => o.node.nodeId === nodeId);
+      if (cmp) {
+        const el = cmp.$el.querySelector('.plan-node');
+        el!.classList.toggle('highlight', highlight);
       }
-      const el = cmp.$el.querySelector('.plan-node');
-      el!.classList.toggle('highlight', highlight);
     }).bind(this), 50);
   }
 
   private centerCTE(cteName: string) {
-    const cmp = _.find(this.plan!.nodeComponents, (c) => c.node[NodeProp.SUBPLAN_NAME] === cteName);
+    const cmp = this.findPlanNode((c) => c.node[NodeProp.SUBPLAN_NAME] === cteName);
     if (!cmp) {
       return;
     }
@@ -510,16 +495,31 @@ export default class Plan extends Vue {
     return _.sumBy(this.plan.planStats.triggers, (o) => o.Time);
   }
 
-  private onMouseOverNode(node: any) {
-    this.highlightNode(node, true);
+  private onMouseOverNode(nodeId: number) {
+    this.highlightNode(nodeId, true);
   }
 
-  private onMouseOutNode(node: any) {
-    this.highlightNode(node, false);
+  private onMouseOutNode(nodeId: number) {
+    this.highlightNode(nodeId, false);
   }
 
   private setActiveTab(tab: string) {
     this.activeTab = tab;
+  }
+
+  private findPlanNode(predicate: (o: PlanNode) => boolean): PlanNode | null {
+    let found = null;
+    this.$refs.plan.$children.some(function iter(child: Vue): boolean | undefined {
+      if (child instanceof PlanNode) {
+        if (predicate(child)) {
+          found = child;
+          return true;
+        }
+        return child.$children.some(iter);
+      }
+    });
+
+    return found;
   }
 }
 </script>

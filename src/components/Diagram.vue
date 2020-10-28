@@ -78,12 +78,12 @@
             </tr>
             <tr
               class="no-focus-outline"
-              :class="{'highlight': row[1] === highlightedNode}"
+              :class="{'highlight': row[1].nodeId === highlightedNode}"
               :content="tooltip(row[1])"
               v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}"
-              @click.prevent="eventBus.$emit('clicknode', row[1])"
-              @mouseover="eventBus.$emit('mouseovernode', row[1])"
-              @mouseout="eventBus.$emit('mouseoutnode', row[1])"
+              @click.prevent="eventBus.$emit('clicknode', row[1].nodeId)"
+              @mouseover="eventBus.$emit('mouseovernode', row[1].nodeId)"
+              @mouseout="eventBus.$emit('mouseoutnode', row[1].nodeId)"
               >
 
               <td class="node-type pr-2">

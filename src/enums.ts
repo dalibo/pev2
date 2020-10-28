@@ -107,6 +107,7 @@ export enum NodeProp {
   PRESORTED_KEY = 'Presorted Key',
 
   // computed by pev
+  NODE_ID = 'nodeId',
   EXCLUSIVE_DURATION = '*Duration (exclusive)',
   EXCLUSIVE_COST = '*Cost (exclusive)',
 
