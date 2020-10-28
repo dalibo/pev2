@@ -82,8 +82,8 @@
               :content="tooltip(row[1])"
               v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}"
               @click.prevent="eventBus.$emit('clicknode', row[1].nodeId)"
-              @mouseover="eventBus.$emit('mouseovernode', row[1].nodeId)"
-              @mouseout="eventBus.$emit('mouseoutnode', row[1].nodeId)"
+              @mouseenter="eventBus.$emit('mouseovernode', row[1].nodeId)"
+              @mouseleave="eventBus.$emit('mouseoutnode', row[1].nodeId)"
               >
 
               <td class="node-index">

@@ -10,8 +10,8 @@
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
       <div class="plan-node-body card"
-           @mouseover="eventBus.$emit('mouseovernode', node.nodeId)"
-           @mouseout="eventBus.$emit('mouseoutnode', node.nodeId)"
+           @mouseenter="eventBus.$emit('mouseovernode', node.nodeId)"
+           @mouseleave="eventBus.$emit('mouseoutnode', node.nodeId)"
       >
         <div class="card-body header no-focus-outline"
             v-on:click.stop="showDetails = !showDetails"
