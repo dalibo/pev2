@@ -9,6 +9,7 @@ import clarinet from 'clarinet';
 export class PlanService {
 
   private static instance: PlanService;
+  private nodeId: number = 0;
 
   public createPlan(planName: string, planContent: any, planQuery: string): IPlan {
     // remove any extra white spaces in the middle of query
@@ -25,10 +26,10 @@ export class PlanService {
       content: planContent,
       query: planQuery,
       planStats: {},
-      nodeComponents: [],
       ctes: [],
     };
 
+    this.nodeId = 0;
     this.processNode(plan.content.Plan, plan);
     this.calculateMaximums(plan.content);
     return plan;
@@ -41,6 +42,7 @@ export class PlanService {
 
   // recursively walk down the plan to compute various metrics
   public processNode(node: any, plan: any) {
+    node.nodeId = this.nodeId++;
     this.calculatePlannerEstimate(node);
 
     _.each(node[NodeProp.PLANS], (child) => {

@@ -10,8 +10,8 @@
         <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
       </div>
       <div class="plan-node-body card"
-           @mouseover="eventBus.$emit('mouseovernode', node)"
-           @mouseout="eventBus.$emit('mouseoutnode', node)"
+           @mouseover="eventBus.$emit('mouseovernode', node.nodeId)"
+           @mouseout="eventBus.$emit('mouseoutnode', node.nodeId)"
       >
         <div class="card-body header no-focus-outline"
             v-on:click.stop="showDetails = !showDetails"
@@ -21,9 +21,9 @@
           <header class="mb-0">
             <h4>
               {{ getNodeName() }}
-              <slot name="nodelink" v-bind:nodeIndex="nodeIndex">
+              <slot name="nodelink" v-bind:nodeIndex="node.nodeId">
                 <span class="text-muted font-weight-normal small">
-                  #{{ nodeIndex }}
+                  #{{ node.nodeId }}
                 </span>
               </slot>
             </h4>
@@ -280,7 +280,7 @@
       <li v-for="subnode in plans">
         <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus">
           <template v-slot:nodelink="{ nodeIndex }">
-            <slot name="nodelink" v-bind:nodeIndex="nodeIndex"></slot>
+            <slot name="nodelink" v-bind:nodeIndex="node.nodeId"></slot>
           </template>
         </plan-node>
       </li>
@@ -398,6 +398,7 @@ export default class PlanNode extends Vue {
       NodeProp.WAL_RECORDS,
       NodeProp.WAL_BYTES,
       NodeProp.WAL_FPI,
+      NodeProp.NODE_ID,
   ];
 
   public setShowDetails(showDetails: boolean): void {
@@ -415,11 +416,6 @@ export default class PlanNode extends Vue {
 
     this.plannerRowEstimateDirection = this.node[NodeProp.PLANNER_ESTIMATE_DIRECTION];
     this.plannerRowEstimateValue = this.node[NodeProp.PLANNER_ESTIMATE_FACTOR];
-    this.plan.nodeComponents.push(this);
-  }
-
-  private destroyed(): void {
-    _.remove(this.plan.nodeComponents, (cmp) => cmp === this);
   }
 
   private calculateDuration() {
@@ -467,10 +463,6 @@ export default class PlanNode extends Vue {
 
   private getNodeTypeDescription() {
     return this.helpService.getNodeTypeDescription(this.node[NodeProp.NODE_TYPE]);
-  }
-
-  private get nodeIndex(): number {
-    return this.plan.nodeComponents.indexOf(this);
   }
 
   private getNodeName(): string {

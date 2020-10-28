@@ -104,6 +104,7 @@ export enum NodeProp {
   WAL_FPI = 'WAL FPI',
 
   // computed by pev
+  NODE_ID = 'nodeId',
   EXCLUSIVE_DURATION = '*Duration (exclusive)',
   EXCLUSIVE_COST = '*Cost (exclusive)',
 

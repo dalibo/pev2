@@ -1,4 +1,6 @@
 export class HelpService {
+  public nodeId = 0;
+
   public getNodeTypeDescription(nodeType: string) {
     return NODE_DESCRIPTIONS[nodeType.toUpperCase()];
   }

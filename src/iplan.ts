@@ -9,7 +9,6 @@ export interface IPlan {
   createdOn: Date;
   planStats: IPlanStats;
   formattedQuery?: string;
-  nodeComponents: PlanNode[];
   ctes: any[];
 }
 
