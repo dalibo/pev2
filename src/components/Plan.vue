@@ -141,8 +141,8 @@
                   <ul class="main-plan p-2 mb-0">
                     <li>
                       <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root">
-                        <template v-slot:nodelink="{ nodeIndex }">
-                          <slot name="nodelink" v-bind:nodeIndex="nodeIndex"></slot>
+                        <template v-slot:nodelink="{ node }">
+                          <slot name="nodelink" v-bind:node="node"></slot>
                         </template>
                       </plan-node>
                     </li>
@@ -150,8 +150,8 @@
                   <ul class="init-plans p-2 mb-0" v-if="plan.ctes.length">
                     <li v-for="node in plan.ctes">
                       <plan-node :node="node" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root">
-                        <template v-slot:nodelink="{ nodeIndex }">
-                          <slot name="nodelink" v-bind:nodeIndex="nodeIndex"></slot>
+                        <template v-slot:nodelink="{ node }">
+                          <slot name="nodelink" v-bind:node="node"></slot>
                         </template>
                       </plan-node>
                     </li>
