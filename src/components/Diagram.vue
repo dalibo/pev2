@@ -53,7 +53,7 @@
       <table class="my-1" v-if="dataAvailable">
         <tbody v-for="flat, index in plans">
           <tr v-if="index === 0 && plans.length > 1">
-            <th colspan="2" class="subplan">
+            <th colspan="3" class="subplan">
               Main Query Plan
             </th>
           </tr>
@@ -62,7 +62,7 @@
               <td
                 class="subplan pr-2"
                 :class="{'font-weight-bold': lodash.startsWith(row[1][nodeProps.SUBPLAN_NAME], 'CTE')}"
-                colspan="2"
+                colspan="3"
                 @click.prevent="eventBus.$emit('clickcte', row[1][nodeProps.SUBPLAN_NAME])"
                 >
                 <span class="tree-lines">
@@ -86,6 +86,11 @@
               @mouseout="eventBus.$emit('mouseoutnode', row[1].nodeId)"
               >
 
+              <td class="node-index">
+                <span class="small text-muted">
+                  #{{ row[1].nodeId }}
+                </span>
+              </td>
               <td class="node-type pr-2">
                 <span class="tree-lines">
                   <template v-for="i in lodash.range(row[0])">

@@ -4,7 +4,7 @@
     max-height: 30%;
   }
   // make sure diagram right column takes as much width as possible
-  table tr td:nth-child(2) {
+  table tr td:nth-child(3) {
     width: 90%;
   }
   font-family: $font-family-sans-serif;
@@ -31,6 +31,7 @@
     color: $text-color;
     white-space: nowrap;
 
+    &.node-index,
     &.node-type,
     &.subplan {
       font-size: $font-size-sm;
