@@ -59,7 +59,7 @@
             <div v-if="node[nodeProps.HASH_CONDITION]"><span class="text-muted">
                 on</span> {{node[nodeProps.HASH_CONDITION] | keysToString }}</div>
             <div v-if="node[nodeProps.CTE_NAME]">
-              <a class="text-reset" href v-on:click.prevent="eventBus.$emit('clickcte', 'CTE ' + node[nodeProps.CTE_NAME])">
+              <a class="text-reset" href v-on:click.stop.prevent="eventBus.$emit('clickcte', 'CTE ' + node[nodeProps.CTE_NAME])">
                 <i class="fa fa-link text-muted"></i>&nbsp;
                 <span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
               </a>
