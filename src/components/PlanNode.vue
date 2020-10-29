@@ -21,7 +21,7 @@
           <header class="mb-0">
             <h4>
               {{ getNodeName() }}
-              <slot name="nodelink" v-bind:node="node">
+              <slot name="nodeindex" v-bind:node="node">
                 <span class="text-muted font-weight-normal small">
                   #{{ node.nodeId }}
                 </span>
@@ -279,8 +279,8 @@
     <ul v-if="plans" :class="['node-children', {'collapsed': collapsed}]">
       <li v-for="subnode in plans">
         <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus">
-          <template v-slot:nodelink="{ node }">
-            <slot name="nodelink" v-bind:node="node"></slot>
+          <template v-slot:nodeindex="{ node }">
+            <slot name="nodeindex" v-bind:node="node"></slot>
           </template>
         </plan-node>
       </li>
