@@ -20,12 +20,10 @@
         >
           <header class="mb-0">
             <h4>
-              {{ getNodeName() }}
               <slot name="nodeindex" v-bind:node="node">
-                <span class="text-muted font-weight-normal small">
-                  #{{ node.nodeId }}
-                </span>
+                <span class="text-muted font-weight-normal small">#{{ node.nodeId }}</span>
               </slot>
+              {{ getNodeName() }}
             </h4>
             <div class="float-right">
               <span v-if="durationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + durationClass" title="Slow"><i class="fa fa-fw fa-clock"></i></span>
