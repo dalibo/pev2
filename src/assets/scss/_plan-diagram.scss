@@ -21,10 +21,11 @@
 
   table {
     cursor: pointer;
-    border-collapse: collapse;
   }
-  tbody {
-    border-bottom: $padding-lg solid transparent;
+  tbody::after {
+    content: '';
+    display: block;
+    height: $padding-lg;
   }
   th, td {
     margin: 0;
