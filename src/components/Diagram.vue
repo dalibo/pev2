@@ -87,9 +87,11 @@
               >
 
               <td class="node-index">
-                <span class="small text-muted">
-                  #{{ row[1].nodeId }}
-                </span>
+                <slot name="nodeindex" v-bind:node="row[1]">
+                  <span class="small text-muted">
+                    #{{ row[1].nodeId }}
+                  </span>
+                </slot>
               </td>
               <td class="node-type pr-2">
                 <span class="tree-lines">
