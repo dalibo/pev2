@@ -50,7 +50,7 @@
       </div>
     </div>
     <div class="overflow-auto flex-grow-1">
-      <table class="my-1" v-if="dataAvailable">
+      <table class="m-1" v-if="dataAvailable">
         <tbody v-for="flat, index in plans">
           <tr v-if="index === 0 && plans.length > 1">
             <th colspan="3" class="subplan">
