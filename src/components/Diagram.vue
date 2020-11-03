@@ -59,10 +59,11 @@
           </tr>
           <template v-for="row, index in flat">
             <tr v-if="row[1][nodeProps.SUBPLAN_NAME]">
+              <td></td>
               <td
                 class="subplan pr-2"
                 :class="{'font-weight-bold': lodash.startsWith(row[1][nodeProps.SUBPLAN_NAME], 'CTE')}"
-                colspan="3"
+                colspan="2"
                 @click.prevent="eventBus.$emit('clickcte', row[1][nodeProps.SUBPLAN_NAME])"
                 >
                 <span class="tree-lines">
