@@ -135,6 +135,9 @@
                         :eventBus="eventBus"
                         class="d-flex flex-column flex-grow-1 overflow-hidden plan-diagram"
                         >
+                        <template v-slot:nodeindex="{ node }">
+                          <slot name="nodeindex" v-bind:node="node"></slot>
+                        </template>
                       </diagram>
                 </pane>
                 <pane ref="plan" class="plan d-flex flex-column flex-grow-1 grab-bing overflow-auto">
