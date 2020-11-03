@@ -90,12 +90,7 @@ $bg-color: #fff;
     .plan-node-body,
     .workers > div {
       border-color: $highlight-color;
-    }
-  }
-  &.highlight:not(:hover) {
-    .plan-node-body,
-    .workers > div {
-      background-color: $flash-color;
+      box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.4);
     }
   }
 
