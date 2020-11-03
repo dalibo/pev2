@@ -30,7 +30,7 @@ export class PlanService {
       ctes: [],
     };
 
-    this.nodeId = 0;
+    this.nodeId = 1;
     this.processNode(plan.content.Plan, plan);
     this.calculateMaximums(plan.content);
     return plan;
