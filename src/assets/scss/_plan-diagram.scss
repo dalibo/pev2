@@ -46,8 +46,15 @@
   }
 
   tr.highlight {
-    outline: 1px solid $highlight-color;
     box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.4);
+  }
+  tr.selected {
+    outline: 1px solid $highlight-color;
+    box-shadow: 0px 0px 5px 2px rgba($highlight-color,0.4);
+  }
+  tr.highlight,
+  tr.selected {
+    background-color: white;
   }
 
   .tree-lines {

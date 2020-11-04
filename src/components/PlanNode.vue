@@ -1,7 +1,7 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': isNeverExecuted, 'parallel': workersCount}]">
+    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': isNeverExecuted, 'parallel': workersCount, 'selected': selected}]">
       <div class="workers text-muted py-0 px-1" v-if="workersCount">
         <div v-for="index in workersCountReversed" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;'">
         </div>
@@ -312,6 +312,7 @@ import * as _ from 'lodash';
 export default class PlanNode extends Vue {
   @Prop(Object) public node!: any;
   public executionTimePercent: number = NaN;
+  public selected: boolean = false;
   @Prop(Object) private plan!: any;
   @Prop(Object) private viewOptions!: any;
   @Prop() private eventBus!: InstanceType<typeof Vue>;
