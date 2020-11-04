@@ -125,12 +125,13 @@
           <div class="flex-grow-1 d-flex overflow-hidden">
             <div class="flex-grow-1 overflow-hidden">
               <splitpanes class="default-theme" @resize="viewOptions.diagramWidth = $event[0].size">
-                <pane ref="diagram"
+                <pane
                       :size="viewOptions.diagramWidth"
                       class="d-flex"
                       v-if="viewOptions.showDiagram"
                       >
                       <diagram
+                        ref="diagram"
                         :plan="plan"
                         :eventBus="eventBus"
                         class="d-flex flex-column flex-grow-1 overflow-hidden plan-diagram"
@@ -273,6 +274,7 @@ export default class Plan extends Vue {
   public $refs!: {
     plan: InstanceType<typeof Pane>,
     root: PlanNode,
+    diagram: InstanceType<typeof Diagram>,
   };
 
   @Prop(String) private planSource!: string;
@@ -311,6 +313,12 @@ export default class Plan extends Vue {
 
   private planService = new PlanService();
   private nodeProps = NodeProp;
+
+  private selectedNode: number | null = null;
+
+  public selectNode(nodeId: number) {
+    this.selectedNode = nodeId;
+  }
 
   private mounted(): void {
     this.handleScroll();
@@ -370,6 +378,8 @@ export default class Plan extends Vue {
       if (!this.plan) {
         return;
       }
+
+      this.selectNode(4);
     });
   }
 
@@ -523,6 +533,20 @@ export default class Plan extends Vue {
     });
 
     return found;
+  }
+
+  @Watch('selectedNode')
+  private onSelectedNodeChange(newVal: number, oldVal: number) {
+    let cmp = this.findPlanNode((o: PlanNode) => o.node.nodeId === newVal);
+    if (cmp) {
+      cmp.selected = true;
+    }
+    this.$refs.diagram.selected = newVal;
+
+    cmp = this.findPlanNode((o: PlanNode) => o.node.nodeId === oldVal);
+    if (cmp) {
+      cmp.selected = false;
+    }
   }
 }
 </script>

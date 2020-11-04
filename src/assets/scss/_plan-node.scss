@@ -89,8 +89,15 @@ $bg-color: #fff;
   &.highlight {
     .plan-node-body,
     .workers > div {
-      border-color: $highlight-color;
       box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.4);
+    }
+  }
+
+  &.selected {
+    .plan-node-body,
+    .workers > div {
+      border-color: $highlight-color;
+      box-shadow: 0px 0px 5px 2px rgba($highlight-color,0.4);
     }
   }
 

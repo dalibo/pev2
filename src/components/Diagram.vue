@@ -79,10 +79,10 @@
             </tr>
             <tr
               class="no-focus-outline"
-              :class="{'highlight': row[1].nodeId === highlightedNode}"
+              :class="{'selected': row[1].nodeId === selected, 'highlight': row[1].nodeId === highlightedNode}"
               :content="tooltip(row[1])"
               v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}"
-              @click.prevent="eventBus.$emit('clicknode', row[1].nodeId)"
+              @click.stop="eventBus.$emit('clicknode', row[1].nodeId)"
               @mouseenter="eventBus.$emit('mouseovernode', row[1].nodeId)"
               @mouseleave="eventBus.$emit('mouseoutnode', row[1].nodeId)"
               >
@@ -174,6 +174,7 @@ import { IPlan } from '../iplan';
   },
 })
 export default class Diagram extends Vue {
+  public selected: number | null = null;
   @Prop() private plan!: IPlan;
   @Prop() private eventBus!: InstanceType<typeof Vue>;
 
