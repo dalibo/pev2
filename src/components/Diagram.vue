@@ -59,12 +59,11 @@
           </tr>
           <template v-for="row, index in flat">
             <tr v-if="row[1][nodeProps.SUBPLAN_NAME]">
-              <td></td>
+              <td v-if="!isCTE(row[1])"></td>
               <td
                 class="subplan pr-2"
-                :class="{'font-weight-bold': lodash.startsWith(row[1][nodeProps.SUBPLAN_NAME], 'CTE')}"
-                colspan="2"
-                @click.prevent="eventBus.$emit('clickcte', row[1][nodeProps.SUBPLAN_NAME])"
+                :class="{'font-weight-bold': isCTE(row[1])}"
+                :colspan="isCTE(row[1]) ? 3 : 2"
                 >
                 <span class="tree-lines">
                   <template v-for="i in lodash.range(row[0])">
@@ -72,9 +71,12 @@
                   </template>
                   <template v-if="index !== 0">{{ row[2] ? '└' : '├' }}</template>
                 </span>
-                <span class="font-italic">
+                <a class="font-italic text-reset"
+                  href
+                  @click.prevent="eventBus.$emit('clickcte', row[1][nodeProps.SUBPLAN_NAME])"
+                >
                   {{ row[1][nodeProps.SUBPLAN_NAME] }}
-                </span>
+                </a>
               </td>
             </tr>
             <tr
@@ -375,6 +377,10 @@ export default class Diagram extends Vue {
       return this.viewOptions.buffersMetric;
     }
     return true;
+  }
+
+  private isCTE(node): booean {
+    return _.startsWith(node[NodeProp.SUBPLAN_NAME], 'CTE');
   }
 }
 </script>
