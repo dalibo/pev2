@@ -82,17 +82,12 @@
               :class="{'selected': row[1].nodeId === selected, 'highlight': row[1].nodeId === highlightedNode}"
               :content="tooltip(row[1])"
               v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}"
-              @click.stop="eventBus.$emit('clicknode', row[1].nodeId)"
               @mouseenter="eventBus.$emit('mouseovernode', row[1].nodeId)"
               @mouseleave="eventBus.$emit('mouseoutnode', row[1].nodeId)"
               >
 
               <td class="node-index">
-                <slot name="nodeindex" v-bind:node="row[1]">
-                  <span class="small text-muted">
-                    #{{ row[1].nodeId }}
-                  </span>
-                </slot>
+                <a class="font-weight-normal small" :href="'#/node/' + row[1].nodeId" @click>#{{row[1].nodeId}}</a>
               </td>
               <td class="node-type pr-2">
                 <span class="tree-lines">

@@ -318,6 +318,7 @@ export default class Plan extends Vue {
 
   public selectNode(nodeId: number) {
     this.selectedNode = nodeId;
+    this.centerNode(nodeId, CenterMode.visible, HighlightMode.highlight);
   }
 
   private mounted(): void {
@@ -365,7 +366,7 @@ export default class Plan extends Vue {
     };
 
     Vue.nextTick(() => {
-      let node = 0;
+      let node = 1;
       let highlightMode = HighlightMode.flash;
       if (this.zoomTo) {
         node = this.zoomTo;
@@ -378,9 +379,21 @@ export default class Plan extends Vue {
       if (!this.plan) {
         return;
       }
-
-      this.selectNode(4);
     });
+
+    window.addEventListener('hashchange', this.onHashChange);
+  }
+
+  private beforeDestroy(): void {
+    window.removeEventListener('hashchange', this.onHashChange);
+  }
+
+  private onHashChange(): void {
+    const reg = /#\/node\/([0-9]*)/;
+    const matches = reg.exec(window.location.hash);
+    if (matches) {
+      this.selectNode(parseInt(matches[1], 0));
+    }
   }
 
   @Watch('viewOptions', {deep: true})
