@@ -1,4 +1,5 @@
 <template>
+  <main-layout>
   <div class="container">
     <h2>
       Disclaimer
@@ -66,4 +67,17 @@
       <b>pev2</b> is brought to you by <a href="https://dalibo.com">Dalibo</a>
     </div>
   </div>
+  </main-layout>
 </template>
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import MainLayout from '../layouts/Main.vue';
+
+@Component({
+  components: {
+    MainLayout,
+  }
+})
+export default class About extends Vue {
+}
+</script>

@@ -1,4 +1,5 @@
 <template>
+  <main-layout>
   <div class="container">
     <div class="alert alert-warning">
       This is the demo application for <a href="https://github.com/dalibo/pev2">PEV2</a>. It is serverless and doesn't store your plans.
@@ -36,16 +37,21 @@
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
+  </main-layout>
 </template>
 
 <script lang="ts">
 import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
-import router from '../router';
+import MainLayout from '../layouts/Main.vue';
 import { setPlanData } from '../main.ts';
 
-@Component
-export default class App extends Vue {
+@Component({
+  components: {
+    MainLayout,
+  }
+})
+export default class Home extends Vue {
   private samples: any[] = [
     ['Example 1 (JSON)', 'plan_1.json', 'plan_1.sql'],
     ['Example 1 (plain text)', 'plan_1.txt', 'plan_1.sql'],
