@@ -325,7 +325,6 @@ export default class Plan extends Vue {
     this.handleScroll();
     this.eventBus.$on('mouseovernode', this.onMouseOverNode);
     this.eventBus.$on('mouseoutnode', this.onMouseOutNode);
-    this.eventBus.$on('clicknode', this.centerNode);
     this.eventBus.$on('clickcte', this.centerCTE);
   }
 
