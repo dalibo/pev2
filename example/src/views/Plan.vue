@@ -1,10 +1,6 @@
 <template>
   <main-layout>
-  <plan v-if="planSource" :plan-source="planSource" :plan-query="planQuery" ref="plan">
-    <template v-slot:nodeindex="{ node }">
-      <a class="font-weight-normal small" href @click.stop.prevent="selectNode(node.nodeId)">#{{node.nodeId}}</a>
-    </template>
-  </plan>
+  <plan v-if="planSource" :plan-source="planSource" :plan-query="planQuery" ref="plan"></plan>
   </main-layout>
 </template>
 
@@ -24,21 +20,5 @@ import { planData } from '../main';
 export default class App extends Vue {
   private planSource: any | any[] = planData[0];
   private planQuery: string = planData[1];
-
-  private mounted(): void {
-    document.body.addEventListener("click", this.unselectNode);
-  }
-
-  private beforeDestroy(): void {
-    document.body.removeEventListener("click", this.unselectNode);
-  }
-
-  private unselectNode() {
-    this.$refs.plan.selectNode(null);
-  }
-
-  private selectNode(nodeId: number) {
-    this.$refs.plan.selectNode(nodeId);
-  }
 }
 </script>

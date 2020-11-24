@@ -20,9 +20,7 @@
         >
           <header class="mb-0">
             <h4>
-              <slot name="nodeindex" v-bind:node="node">
-                <span class="text-muted font-weight-normal small">#{{ node.nodeId }}</span>
-              </slot>
+              <a class="font-weight-normal small" :href="'#/node/' + node.nodeId" @click.stop>#{{node.nodeId}}</a>
               {{ getNodeName() }}
             </h4>
             <div class="float-right">
