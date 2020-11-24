@@ -1,21 +1,39 @@
 import Vue from 'vue';
-import App, { planData } from './App.vue';
-import router from './router';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.css';
+import Home from './views/Home.vue';
+import Plan from './views/Plan.vue';
+import About from './views/About.vue';
+
+const routes = {
+  '/': Home,
+  '/plan': Plan,
+  '/about': About,
+};
+
+export const planData: any[] = ['', ''];
 
 Vue.config.productionTip = false;
 
-export function setPlanData (plan, query) {
+export function setPlanData(plan, query) {
   planData[0] = plan;
   planData[1] = query;
-  router.push({ path: 'plan' });
-};
+  app.currentRoute = '/plan';
+}
 
 global.setPlanData = setPlanData;
 
-new Vue({
-  router,
-  render: (h) => h(App),
+const app = new Vue({
+  data: {
+    currentRoute: '/',
+  },
+  computed: {
+    ViewComponent() {
+      return routes[this.currentRoute];
+    },
+  },
+  render(h) {
+    return h(this.ViewComponent);
+  },
 }).$mount('#app');
