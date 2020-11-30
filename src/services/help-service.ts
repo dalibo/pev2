@@ -62,7 +62,7 @@ interface EaseInOutQuadOptions {
   duration: number;
 }
 
-export function scrollChildIntoParentView(parent: Element, child: Element, shouldCenter: boolean, done: () => void) {
+export function scrollChildIntoParentView(parent: Element, child: Element, shouldCenter: boolean, done?: () => void) {
   // Where is the parent on page
   const parentRect = parent.getBoundingClientRect();
   // Where is the child
@@ -83,9 +83,10 @@ export function scrollChildIntoParentView(parent: Element, child: Element, shoul
     // try to put the child in the middle of parent horizontaly
     scrollLeft = childRect.left + parent.scrollLeft - parentRect.left
       - parentRect.width / 2 + childRect.width / 2;
-    scrollTop = childRect.top + parent.scrollTop - parentRect.top - 20;
+    scrollTop = childRect.top + parent.scrollTop - parentRect.top
+      - parentRect.height / 2 + childRect.height / 2;
     smoothScroll({element: parent, to: {scrollTop, scrollLeft}, duration: 400, done});
-  } else {
+  } else if (done) {
     done();
   }
 }
