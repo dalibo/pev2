@@ -87,17 +87,24 @@ $bg-color: #fff;
   //hovers
   &:hover,
   &.highlight {
-    .plan-node-body,
+    $hover-color: rgba(0,0,0,0.4);
+    .plan-node-body {
+      box-shadow: 1px 1px 5px 0px $hover-color;
+    }
     .workers > div {
-      box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.4);
+      border-color: rgba($hover-color, 0.2);
     }
   }
 
+
   &.selected {
-    .plan-node-body,
-    .workers > div {
+    .plan-node-body {
       border-color: $highlight-color;
       box-shadow: 0px 0px 5px 2px rgba($highlight-color,0.4);
+    }
+
+    .workers > div {
+      border-color: rgba($highlight-color, 0.2);
     }
   }
 
