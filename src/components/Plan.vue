@@ -378,6 +378,7 @@ export default class Plan extends Vue {
       if (!this.plan) {
         return;
       }
+      this.onHashChange();
     });
 
     window.addEventListener('hashchange', this.onHashChange);
