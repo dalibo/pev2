@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="diagram">
     <div class="flex-shrink-0">
       <div class="form-group text-center my-1">
         <div class="btn-group btn-group-xs">
@@ -80,10 +80,9 @@
               </td>
             </tr>
             <tr
-              class="no-focus-outline"
+              class="no-focus-outline node"
               :class="{'selected': row[1].nodeId === selected, 'highlight': row[1].nodeId === highlightedNode}"
-              :content="tooltip(row[1])"
-              v-tippy="{arrow: true, animation: 'fade', delay: [200, 0]}"
+              :data-tippy-content="getTooltipContent(row[1])"
               @mouseenter="eventBus.$emit('mouseovernode', row[1].nodeId)"
               @mouseleave="eventBus.$emit('mouseoutnode', row[1].nodeId)"
               >
@@ -164,6 +163,8 @@ import { blocks, duration, durationClass, rows, factor } from '@/filters';
 import { EstimateDirection, CenterMode, BufferLocation, HighlightMode, NodeProp, Metric } from '../enums';
 import Node from '@/inode';
 import { IPlan } from '../iplan';
+import tippy, {createSingleton, Instance, CreateSingletonInstance} from 'tippy.js';
+import 'tippy.js/dist/tippy.css'; // optional for styling
 
 @Component({
   filters: {
@@ -185,6 +186,8 @@ export default class Diagram extends Vue {
   private centerModes = CenterMode;
   private highlightModes = HighlightMode;
   private highlightedNode: Node | null = null;
+  private tippyInstances: Instance[] = [];
+  private tippySingleton!: CreateSingletonInstance;
 
   private viewOptions: any = {
     metric: Metric.time,
@@ -214,12 +217,28 @@ export default class Diagram extends Vue {
     }
   }
 
+  private mounted(): void {
+    this.loadTooltips();
+  }
+
   @Watch('viewOptions', {deep: true})
   private onViewOptionsChanged(val: any, oldVal: any) {
     localStorage.setItem('diagramViewOptions', JSON.stringify(this.viewOptions));
+    Vue.nextTick(this.loadTooltips);
   }
 
-  private tooltip(node: Node): string {
+  private loadTooltips(): void {
+    if (this.tippySingleton) {
+      this.tippySingleton.destroy();
+    }
+    _.each(this.tippyInstances, (instance) => {
+      instance.destroy();
+    });
+    this.tippyInstances = tippy('.diagram tr.node');
+    this.tippySingleton = createSingleton(this.tippyInstances, { delay: 100, allowHTML: true });
+  }
+
+  private getTooltipContent(node: Node): string {
     let content = '';
     switch (this.viewOptions.metric) {
       case Metric.time:
@@ -379,7 +398,7 @@ export default class Diagram extends Vue {
     return true;
   }
 
-  private isCTE(node): booean {
+  private isCTE(node: Node): boolean {
     return _.startsWith(node[NodeProp.SUBPLAN_NAME], 'CTE');
   }
 }
