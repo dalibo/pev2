@@ -49,7 +49,7 @@
         </ul>
       </div>
     </div>
-    <div class="overflow-auto flex-grow-1">
+    <div class="overflow-auto flex-grow-1" ref="container">
       <table class="m-1" v-if="dataAvailable">
         <tbody v-for="flat, index in plans">
           <tr v-if="index === 0 && plans.length > 1">
@@ -85,6 +85,7 @@
               :data-tippy-content="getTooltipContent(row[1])"
               @mouseenter="eventBus.$emit('mouseovernode', row[1].nodeId)"
               @mouseleave="eventBus.$emit('mouseoutnode', row[1].nodeId)"
+              :ref="'node_' + row[1].nodeId"
               >
 
               <td class="node-index">
@@ -161,6 +162,7 @@ import * as _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { blocks, duration, durationClass, rows, factor } from '@/filters';
 import { EstimateDirection, CenterMode, BufferLocation, HighlightMode, NodeProp, Metric } from '../enums';
+import { scrollChildIntoParentView } from '@/services/help-service';
 import Node from '@/inode';
 import { IPlan } from '../iplan';
 import tippy, {createSingleton, Instance, CreateSingletonInstance} from 'tippy.js';
@@ -400,6 +402,13 @@ export default class Diagram extends Vue {
 
   private isCTE(node: Node): boolean {
     return _.startsWith(node[NodeProp.SUBPLAN_NAME], 'CTE');
+  }
+
+  @Watch('selected')
+  private onSelectedNodeChange(newVal: number) {
+    const el = (this.$refs['node_' + newVal] as Element[])[0] as Element;
+    const parent = this.$refs.container as Element;
+    scrollChildIntoParentView(parent, el, false);
   }
 }
 </script>
