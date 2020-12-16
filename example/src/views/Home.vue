@@ -53,18 +53,18 @@ import { setPlanData } from '../main.ts';
 })
 export default class Home extends Vue {
   private samples: any[] = [
-    ['Example 1 (JSON)', 'plan_1.json', 'plan_1.sql'],
+    ['Example 1 (JSON)', 'plan_1_.txt', 'plan_1.sql'],
     ['Example 1 (plain text)', 'plan_1.txt', 'plan_1.sql'],
-    ['Example 2', 'plan_2.json', 'plan_2.sql'],
-    ['Example 3', 'plan_3.json', 'plan_3.sql'],
-    ['Example 4', 'plan_4.json'],
-    ['Example 5', 'plan_5.json', 'plan_5.sql'],
+    ['Example 2', 'plan_2.txt', 'plan_2.sql'],
+    ['Example 3', 'plan_3.txt', 'plan_3.sql'],
+    ['Example 4', 'plan_4.txt'],
+    ['Example 5', 'plan_5.txt', 'plan_5.sql'],
     ['With subplan', 'plan_6.txt'],
     ['With CTE', 'plan_7.txt'],
-    ['Very large plan', 'plan_8.json'],
-    ['With trigger', 'plan_trigger.json', 'plan_trigger.sql'],
+    ['Very large plan', 'plan_8.txt'],
+    ['With trigger', 'plan_trigger_.txt', 'plan_trigger.sql'],
     ['With trigger (plain text)', 'plan_trigger.txt', 'plan_trigger_2.sql'],
-    ['Parallel (verbose)', 'plan_parallel.json'],
+    ['Parallel (verbose)', 'plan_parallel.txt'],
     ['Parallel (4 workers)', 'plan_parallel2.txt', 'plan_parallel2.sql'],
   ];
   private planInput: string = '';
@@ -86,13 +86,15 @@ export default class Home extends Vue {
   }
 
   private loadSample(sample: string[]): void {
-    axios.get('samples/' + sample[1]).then((response) => {
-      this.planInput = response.request.responseText;
-    });
-    if (sample[2]) {
-      axios.get('samples/' + sample[2]).then((response) => {
-        this.queryInput = response.request.responseText;
+    import('raw-loader!../../samples/' + sample[1])
+      .then((data) => {
+        this.planInput = data.default;
       });
+    if (sample[2]) {
+      import('raw-loader!../../samples/' + sample[2])
+        .then((data) => {
+          this.queryInput = data.default;
+        });
     } else {
       this.queryInput = '';
     }
