@@ -268,9 +268,9 @@ export default class Diagram extends Vue {
   private timeTooltip(node: Node): string {
     return [
       'Duration: <br>Exclusive: ',
-      duration(node[NodeProp.EXCLUSIVE_DURATION], true),
+      duration(node[NodeProp.EXCLUSIVE_DURATION]),
       ', Total: ',
-      duration(node[NodeProp.ACTUAL_TOTAL_TIME], true),
+      duration(node[NodeProp.ACTUAL_TOTAL_TIME]),
     ].join('');
   }
 
