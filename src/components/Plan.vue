@@ -486,19 +486,6 @@ export default class Plan extends Vue {
     this.viewOptions.showDiagram = !this.viewOptions.showDiagram;
   }
 
-  private timelineTooltip(cmp: PlanNode): string {
-    if (this.plan) {
-      return [
-        'Duration: ',
-        duration(cmp.node[NodeProp.EXCLUSIVE_DURATION]),
-        ' | ',
-        cmp.executionTimePercent,
-        '%',
-      ].join('');
-    }
-    return '';
-  }
-
   private planningTimeClass(percent: number) {
     let c;
     if (percent > 90) {
