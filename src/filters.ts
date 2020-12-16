@@ -11,19 +11,14 @@ hljs.registerLanguage('pgsql', langPgsql);
 import * as langJson from 'highlight.js/lib/languages/json';
 hljs.registerLanguage('json', langJson);
 
-export function duration(value: number, detail: boolean): string {
+export function duration(value: number): string {
   if (value === undefined) {
     return 'N/A';
   }
-  detail = !!detail;
-
-  if (value < 1 && !detail) {
-    return '<1 ms';
-  } else if (value < 1000) {
+  if (value < 1000) {
     return parseFloat(value.toPrecision(3)).toLocaleString()  + 'ms';
   }
-  const options = detail ? {} : { largest: 2 };
-  return moment.duration(value).format('w[w] d[d] h[h] m[m] s[s] SSS[ms]', options);
+  return moment.duration(value).format('w[w] d[d] h[h] m[m] s[s] SSS[ms]', { largest: 2 });
 }
 
 export function cost(value: number): string {
@@ -123,10 +118,10 @@ export function sortGroups(value: any): string {
   return v.$mount().$el.outerHTML;
 }
 
-export function formatNodeProp(key: string, value: any, detail: boolean): string {
+export function formatNodeProp(key: string, value: any): string {
   if (_.has(nodePropTypes, key)) {
     if (nodePropTypes[key] === PropType.duration) {
-      return duration(value, detail);
+      return duration(value);
     } else if (nodePropTypes[key] === PropType.boolean) {
       return value ? 'yes' : 'no';
     } else if (nodePropTypes[key] === PropType.cost) {

@@ -694,7 +694,7 @@ export default class PlanNode extends Vue {
     if (value === undefined) {
       return '';
     }
-    return this.$options!.filters!.formatNodeProp(property, value, true);
+    return this.$options!.filters!.formatNodeProp(property, value);
   }
 }
 </script>

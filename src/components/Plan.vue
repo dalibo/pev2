@@ -490,7 +490,7 @@ export default class Plan extends Vue {
     if (this.plan) {
       return [
         'Duration: ',
-        duration(cmp.node[NodeProp.EXCLUSIVE_DURATION], true),
+        duration(cmp.node[NodeProp.EXCLUSIVE_DURATION]),
         ' | ',
         cmp.executionTimePercent,
         '%',
