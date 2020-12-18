@@ -23,7 +23,7 @@
   "dependencies": {
     "@types/dragscroll": "0.0.0",
     "@types/highlight.js": "^9.12.4",
-    "@types/lodash": "^4.14.155",
+    "@types/lodash": "^4.14.165",
     "@types/moment-duration-format": "^2.2.2",
     "bootstrap": "^4.5.0",
     "clarinet": "^0.12.3",
