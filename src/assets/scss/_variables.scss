@@ -163,3 +163,8 @@ $buffers-colors: (
 .bg-hatched {
   @extend %bg-hatched;
 }
+
+.border-dashed {
+  border-style: dashed !important;
+  background-color: transparent !important;
+}

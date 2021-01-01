@@ -128,6 +128,8 @@ export enum NodeProp {
   EXCLUSIVE_IO_READ_TIME = '*I/O Read Time (exclusive)',
   EXCLUSIVE_IO_WRITE_TIME = '*I/O Write Time (exclusive)',
 
+  WORKERS_PLANNED_BY_GATHER = '*Workers Planned By Gather',
+
   CTE_SCAN = 'CTE Scan',
   CTE_NAME = 'CTE Name',
   FUNCTION_NAME = 'Function Name',

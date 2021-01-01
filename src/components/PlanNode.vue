@@ -1,9 +1,11 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': isNeverExecuted, 'parallel': workersCount, 'selected': selected}]">
-      <div class="workers text-muted py-0 px-1" v-if="workersCount">
-        <div v-for="index in workersCountReversed" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;'">
+    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': isNeverExecuted, 'parallel': workersPlannedCount, 'selected': selected}]">
+      <div class="workers text-muted py-0 px-1" v-if="workersPlannedCount">
+        <div v-for="index in workersPlannedCountReversed" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;'"
+             :class="{'border-dashed': index >= workersLaunchedCount}">
+          {{ index }}
         </div>
       </div>
       <div class="collapse-handle" v-if="hasChildren">
@@ -95,7 +97,7 @@
               <a class="nav-link" :class="{'active' : activeTab === 'output', 'disabled': !node[nodeProps.OUTPUT] }" @click.prevent="setActiveTab('output')" href>Output</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" :class="{'active' : activeTab === 'workers', 'disabled': !workersCount  }" @click.prevent="setActiveTab('workers')" href>Workers</a>
+              <a class="nav-link" :class="{'active' : activeTab === 'workers', 'disabled': !(node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER]) }" @click.prevent="setActiveTab('workers')" href>Workers</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" :class="{'active' : activeTab === 'misc' }" @click.prevent="setActiveTab('misc')" href>Misc</a>
@@ -221,12 +223,24 @@
           <div class="tab-pane overflow-auto" :class="{'show active': activeTab === 'output' }" v-html="formattedProp('OUTPUT')" style="max-height: 200px">
             <!-- output tab -->
           </div>
-          <div class="tab-pane" :class="{'show active': activeTab === 'workers' }" v-if="workersCount">
-
+          <div class="tab-pane" :class="{'show active': activeTab === 'workers' }" v-if="node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER]">
             <!-- workers tab -->
-            <div v-if="lodash.isNumber(workersCount) && !lodash.isNaN(workersCount) && viewOptions.viewMode === viewModes.FULL">
-              <b>Workers: </b> <span class="px-1">{{ workersCount }}</span>
+            <div v-if="(node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER]) && viewOptions.viewMode === viewModes.FULL">
+              <b>Workers planned: </b> <span class="px-1">{{ node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER] }}</span>
+              <em v-if="!node[nodeProps.WORKERS_PLANNED] && !node[nodeProps.WORKERS] && (!plan.isVerbose || !plan.isAnalyze)" class="text-warning">
+                <i class="fa fa-exclamation-triangle cursor-help" :title="getHelpMessage('fuzzy needs verbose')"></i>
+              </em>
             </div>
+            <div v-if="node[nodeProps.WORKERS_LAUNCHED] && viewOptions.viewMode === viewModes.FULL">
+              <b>Workers launched: </b> <span class="px-1">{{ node[nodeProps.WORKERS_LAUNCHED] }}</span>
+            </div>
+            <div v-if="!workersLaunchedCount && node[nodeProps.WORKERS_PLANNED_BY_GATHER]" class="text-muted">
+              <em>
+                Detailed information is not available.
+                  <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('workers detailed info missing')"></i>
+              </em>
+            </div>
+
             <div class="accordion" v-if="lodash.isArray(node[nodeProps.WORKERS])">
               <template v-for="(worker, index) in node[nodeProps.WORKERS]">
                 <div class="card">
@@ -250,10 +264,6 @@
                   </div>
                 </div>
               </template>
-            </div>
-            <div v-else class="font-italic">
-              <strong>Workers</strong>: Detailed information not available.
-              Consider using <code>EXPLAIN VERBOSE</code>.
             </div>
             <!-- workers tab -->
           </div>
@@ -639,15 +649,20 @@ export default class PlanNode extends Vue {
     return !!this.plans;
   }
 
-  private get workersCount(): number {
+  private get workersLaunchedCount(): number {
     if (_.isArray(this.node[NodeProp.WORKERS])) {
       return this.node[NodeProp.WORKERS].length;
     }
     return parseInt(this.node[NodeProp.WORKERS], 0);
   }
 
-  private get workersCountReversed(): number[] {
-    return [...Array(this.workersCount).keys()].slice().reverse();
+  private get workersPlannedCount(): number {
+    return this.node[NodeProp.WORKERS_PLANNED_BY_GATHER];
+  }
+
+  private get workersPlannedCountReversed(): number[] {
+    const workersPlanned = this.node[NodeProp.WORKERS_PLANNED_BY_GATHER];
+    return [...Array(workersPlanned).keys()].slice().reverse();
   }
 
   private get isParallelAware(): boolean {
