@@ -18,6 +18,6 @@ describe('PlanService', () => {
     const r: any = planService.fromSource(source);
     const plan: IPlan = planService.createPlan('', r, '');
     const aggregateNode = plan.content.Plan.Plans[0].Plans[0].Plans[0];
-    expect(aggregateNode.Workers).toEqual(12);
+    expect(aggregateNode['*Workers Planned By Gather']).toEqual(12);
   });
 });

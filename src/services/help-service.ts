@@ -53,6 +53,8 @@ export const HELP_MESSAGES: IHelpMessage = {
   'MISSING PLANNING TIME': 'Planning time not available for this plan.',
   'WORKERS PLANNED NOT LAUNCHED': `Less workers than planned were launched.
 Consider modifying max_parallel_workers or max_parallel_workers_per_gather.`,
+  'WORKERS DETAILED INFO MISSING': `Consider using EXPLAIN (ANALYZE, VERBOSE)`,
+  'FUZZY NEEDS VERBOSE': `Information may not be accurate. Use EXPLAIN VERBOSE mode.`,
 };
 
 interface EaseInOutQuadOptions {
