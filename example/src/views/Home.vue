@@ -41,7 +41,6 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 import MainLayout from '../layouts/Main.vue';
 import { setPlanData } from '../main.ts';
