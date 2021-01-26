@@ -38,7 +38,7 @@
     "tippy.js": "^6.2.4",
     "vue": "^2.6.10",
     "vue-class-component": "^7.2.5",
-    "vue-property-decorator": "^8.4.2",
+    "vue-property-decorator": "^8.5.1",
     "vue-sorted-table": "^1.2.0",
     "vue-tippy": "^4.7.1"
   },
