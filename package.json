@@ -36,7 +36,7 @@
     "popper.js": "^1.16.1",
     "splitpanes": "^2.3.6",
     "tippy.js": "^6.2.4",
-    "vue": "^2.6.10",
+    "vue": "^2.6.12",
     "vue-class-component": "^7.2.5",
     "vue-property-decorator": "^8.5.1",
     "vue-sorted-table": "^1.2.0",
