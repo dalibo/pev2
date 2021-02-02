@@ -8,7 +8,10 @@
     "Actual Total Time": 0.532,
     "Actual Rows": 0,
     "Actual Loops": 1,
-    "Sort Key": "n.nspname, c.relname",
+    "Sort Key": [
+        "n.nspname",
+        "c.relname"
+    ],
     "Sort Method": "quicksort",
     "Sort Space Used": "25",
     "Sort Space Type": "Memory",
