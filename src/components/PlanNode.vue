@@ -39,23 +39,29 @@
             </span>
           </header>
 
-          <div v-if="viewOptions.viewMode === viewModes.FULL" class="font-italic text-left">
-            <div v-if="node[nodeProps.RELATION_NAME]">
+          <div v-if="viewOptions.viewMode === viewModes.FULL" class="text-left text-monospace">
+            <div v-if="node[nodeProps.RELATION_NAME]" :class="{'line-clamp-2': !showDetails}">
               <span class="text-muted">on </span>
               <span v-if="node[nodeProps.SCHEMA]">{{node[nodeProps.SCHEMA]}}.</span>{{node[nodeProps.RELATION_NAME]}}
-              <span v-if="node[nodeProps.ALIAS]"> ({{node[nodeProps.ALIAS]}})</span>
+              <span v-if="node[nodeProps.ALIAS]">
+                <span class="text-muted"> as</span>
+                {{node[nodeProps.ALIAS]}}
+              </span>
             </div>
-            <div v-if="node[nodeProps.GROUP_KEY]">
-              <span class="text-muted">by</span> {{node[nodeProps.GROUP_KEY] | keysToString | truncate(250, '…') }}</div>
-            <div v-if="node[nodeProps.SORT_KEY]">
-              <span class="text-muted">by</span><span v-html="'&nbsp;' + $options.filters.truncate($options.filters.sortKeys(node[nodeProps.SORT_KEY], node[nodeProps.PRESORTED_KEY]), 250, '…')"></span>
+            <div v-if="node[nodeProps.GROUP_KEY]" :class="{'line-clamp-2': !showDetails}">
+              <span class="text-muted">by</span> <span v-html="$options.filters.keysToString(node[nodeProps.GROUP_KEY])"></span></div>
+            <div v-if="node[nodeProps.SORT_KEY]" :class="{'line-clamp-2': !showDetails}">
+              <span class="text-muted">by</span> <span v-html="$options.filters.sortKeys(node[nodeProps.SORT_KEY], node[nodeProps.PRESORTED_KEY])"></span>
             </div>
-            <div v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] | keysToString | truncate(250, '…') }}
+            <div v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] }}
               <span class="text-muted">join</span></div>
-            <div v-if="node[nodeProps.INDEX_NAME]"><span class="text-muted">
-                using</span> {{node[nodeProps.INDEX_NAME] | keysToString }}</div>
-            <div v-if="node[nodeProps.HASH_CONDITION]"><span class="text-muted">
-                on</span> {{node[nodeProps.HASH_CONDITION] | keysToString }}</div>
+            <div v-if="node[nodeProps.INDEX_NAME]" :class="{'line-clamp-2': !showDetails}">
+              <span class="text-muted">using </span>
+              <span v-html="$options.filters.keysToString(node[nodeProps.INDEX_NAME])"></span>
+            </div>
+            <div v-if="node[nodeProps.HASH_CONDITION]" :class="{'line-clamp-2': !showDetails}">
+              <span class="text-muted">on </span>
+              <span v-html="$options.filters.keysToString(node[nodeProps.HASH_CONDITION])"></span></div>
             <div v-if="node[nodeProps.CTE_NAME]">
               <a class="text-reset" href v-on:click.stop.prevent="eventBus.$emit('clickcte', 'CTE ' + node[nodeProps.CTE_NAME])">
                 <i class="fa fa-search text-muted"></i>&nbsp;
@@ -220,7 +226,7 @@
             </div>
             <!-- iobuffer tab -->
           </div>
-          <div class="tab-pane overflow-auto" :class="{'show active': activeTab === 'output' }" v-html="formattedProp('OUTPUT')" style="max-height: 200px">
+          <div class="tab-pane overflow-auto text-monospace" :class="{'show active': activeTab === 'output' }" v-html="formattedProp('OUTPUT')" style="max-height: 200px">
             <!-- output tab -->
           </div>
           <div class="tab-pane" :class="{'show active': activeTab === 'workers' }" v-if="node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER]">
