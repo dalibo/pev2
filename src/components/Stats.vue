@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 small">
+  <div class="p-2 small stats">
     <h6 class="mt-2">Per table stats</h6>
     <sorted-table
       :values="perTable"
@@ -26,7 +26,7 @@
         <template v-for="value in sort.values">
           <thead class="thead-light">
             <tr>
-              <th>{{ value.name }}</th>
+              <th class="text-monospace font-weight-normal">{{ value.name }}</th>
               <th class="text-right">{{ value.count }}</th>
               <th class="text-right">
                 <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
@@ -121,7 +121,7 @@
       </thead>
       <tbody slot="body" slot-scope="sort">
         <tr v-for="value in sort.values" :key="value.name">
-          <td>{{ value.name }}</td>
+          <td class="text-monospace">{{ value.name }}</td>
           <td class="text-right">{{ value.count }}</td>
           <td class="text-right">
             <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
