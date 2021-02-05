@@ -39,10 +39,10 @@
           <tbody>
             <tr
               v-for="nodesPerType, nodeType in lodash.groupBy(lodash.sortBy(value.nodes, nodeProps.NODE_TYPE), nodeProps.NODE_TYPE)"
-              class="font-italic text-muted"
+              class="text-muted"
               style="font-size: smaller"
               >
-              <td class="pl-3">{{ nodeType.toUpperCase() }}</td>
+              <td class="pl-3">{{ nodeType }}</td>
               <td class="text-right">{{ nodesPerType.length }}</td>
               <td class="text-right">
                 <span class="px-1">
