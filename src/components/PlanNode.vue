@@ -21,7 +21,7 @@
             v-tippy="{arrow: true}"
         >
           <header class="mb-0">
-            <h4>
+            <h4 class="text-body">
               <a class="font-weight-normal small" :href="'#/node/' + node.nodeId" @click.stop>#{{node.nodeId}}</a>
               {{ getNodeName() }}
             </h4>
@@ -484,9 +484,9 @@ export default class PlanNode extends Vue {
     let nodeName = this.isParallelAware ? 'Parallel ' : '';
     nodeName += this.node[NodeProp.NODE_TYPE];
     if (this.viewOptions.viewMode === ViewMode.DOT && !this.showDetails) {
-      return nodeName.replace(/[^A-Z]/g, '').toUpperCase();
+      return nodeName.replace(/[^A-Z]/g, '');
     }
-    return nodeName.toUpperCase();
+    return nodeName;
   }
 
   private get shouldShowPlannerEstimate() {
