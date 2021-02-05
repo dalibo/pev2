@@ -1,0 +1,79 @@
+{
+    "Plan": {
+        "Node Type": "MixedAggregate",
+        "Startup Cost": 0,
+        "Total Cost": 34604.98,
+        "Plan Rows": 8,
+        "Plan Width": 27,
+        "Actual Startup Time": 643.678,
+        "Actual Total Time": 643.691,
+        "Actual Rows": 51,
+        "Actual Loops": 1,
+        "Grouping Sets": [
+            {
+                "Hash Keys": [
+                    ["manager", "fonction", "num_service"]
+                ]
+            },
+            {
+                "Hash Keys": [
+                    ["manager", "fonction"]
+                ]
+            },
+            {
+                "Hash Keys": [
+                    ["manager"]
+                ]
+            },
+            {
+                "Hash Keys": [
+                    ["fonction", "num_service"]
+                ]
+            },
+            {
+                "Hash Keys": [
+                    ["fonction"]
+                ]
+            },
+            {
+                "Hash Keys": [
+                    ["num_service", "manager"]
+                ]
+            },
+            {
+                "Hash Keys": [
+                    ["num_service"]
+                ]
+            },
+            {
+                "Group Keys": [
+                    []
+                ]
+            }
+        ],
+        "Shared Hit Blocks": 4664,
+        "Shared Read Blocks": 0,
+        "Shared Written Blocks": 0,
+        "Shared Dirtied Blocks": 0,
+        "Plans": [
+            {
+                "Node Type": "Seq Scan",
+                "Relation Name": "employes_big",
+                "Startup Cost": 0,
+                "Total Cost": 9654.15,
+                "Plan Rows": 499015,
+                "Plan Width": 19,
+                "Actual Startup Time": 0.026,
+                "Actual Total Time": 33.034,
+                "Actual Rows": 499015,
+                "Actual Loops": 1,
+                "Shared Hit Blocks": 4664,
+                "Shared Read Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Shared Dirtied Blocks": 0
+            }
+        ]
+    },
+    "Planning Time": 0.32,
+    "Execution Time": 643.798
+}

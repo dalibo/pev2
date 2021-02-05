@@ -1,0 +1,17 @@
+                                                        QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------------
+ MixedAggregate  (cost=0.00..34604.98 rows=8 width=27) (actual time=643.678..643.691 rows=51 loops=1)
+   Hash Key: manager, fonction, num_service
+   Hash Key: manager, fonction
+   Hash Key: manager
+   Hash Key: fonction, num_service
+   Hash Key: fonction
+   Hash Key: num_service, manager
+   Hash Key: num_service
+   Group Key: ()
+   Buffers: shared hit=4664
+   ->  Seq Scan on employes_big  (cost=0.00..9654.15 rows=499015 width=19) (actual time=0.026..33.034 rows=499015 loops=1)
+         Buffers: shared hit=4664
+ Planning Time: 0.320 ms
+ Execution Time: 643.798 ms
+(14 rows)

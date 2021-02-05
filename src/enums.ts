@@ -106,6 +106,7 @@ export enum NodeProp {
   FULL_SORT_GROUPS = 'Full-sort Groups',
   PRE_SORTED_GROUPS = 'Pre-sorted Groups',
   PRESORTED_KEY = 'Presorted Key',
+  GROUPING_SETS = 'Grouping Sets',
 
   // computed by pev
   NODE_ID = 'nodeId',

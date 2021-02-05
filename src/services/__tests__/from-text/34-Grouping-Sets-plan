@@ -1,0 +1,6 @@
+MixedAggregate  (cost=0.00..63.07 rows=207 width=24)
+  Hash Key: a, b
+  Group Key: ()
+  Group Key: ()
+  Group Key: ()
+  ->  Seq Scan on gstest_empty  (cost=0.00..30.40 rows=2040 width=12)

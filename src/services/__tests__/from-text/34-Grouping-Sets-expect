@@ -1,0 +1,39 @@
+{
+  "Plan": {
+    "Node Type": "Aggregate",
+    "Strategy": "Mixed",
+    "Partial Mode": "Simple",
+    "Parallel Aware": false,
+    "Startup Cost": 0.00,
+    "Total Cost": 63.07,
+    "Plan Rows": 207,
+    "Plan Width": 24,
+    "Grouping Sets": [
+      {
+        "Hash Keys": [
+          ["a", "b"]
+        ]
+      },
+      {
+        "Group Keys": [
+          [],
+          [],
+          []
+        ]
+      }
+    ],
+    "Plans": [
+      {
+        "Node Type": "Seq Scan",
+        "Parent Relationship": "Outer",
+        "Parallel Aware": false,
+        "Relation Name": "gstest_empty",
+        "Alias": "gstest_empty",
+        "Startup Cost": 0.00,
+        "Total Cost": 30.40,
+        "Plan Rows": 2040,
+        "Plan Width": 12
+      }
+    ]
+  }
+}

@@ -11,7 +11,9 @@ import * as path from 'path';
 
 const dir = path.join(path.dirname(module.filename), 'from-text');
 const files = fs.readdirSync(dir);
-let tests = files.map((file: string) => file.replace(/-.*/, ''));
+const planRegex = /-(plan)$/;
+let tests = files.filter((file: string) => file.match(planRegex));
+tests = tests.map((file: string) => file.replace(planRegex, ''));
 tests = _.uniq(tests);
 tests.forEach((planTest: string) => {
   describe('From text: Plan ' + planTest, () => {

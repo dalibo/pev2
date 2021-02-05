@@ -715,6 +715,14 @@ export class PlanService {
           return;
         }
 
+        if (this.parseHashKey(extraMatches[2], element)) {
+          return;
+        }
+
+        if (this.parseGroupKey(extraMatches[2], element)) {
+          return;
+        }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, '');
         // try to convert to number
@@ -758,6 +766,37 @@ export class PlanService {
       el[NodeProp.SORT_METHOD] = sortMatches[2].trim();
       el[NodeProp.SORT_SPACE_USED] = sortMatches[4];
       el[NodeProp.SORT_SPACE_TYPE] = sortMatches[3];
+      return true;
+    }
+    return false;
+  }
+
+  private parseHashKey(text: string, el: Node): boolean {
+    const hashKeyRegex = /^\s*Hash Key:\s+(.*)/g;
+    const hashKeyMatches = hashKeyRegex.exec(text);
+    if (hashKeyMatches) {
+      if (!_.has(el, NodeProp.GROUPING_SETS)) {
+        el[NodeProp.GROUPING_SETS] = [];
+      }
+      const groupingSets = el[NodeProp.GROUPING_SETS];
+      groupingSets.push({
+        'Hash Keys': [_.map(hashKeyMatches[1].split(','), _.trim)],
+      });
+      return true;
+    }
+    return false;
+  }
+
+  private parseGroupKey(text: string, el: Node): boolean {
+    const groupKeyRegex = /^\s*Group Key:\s+(.*)/g;
+    const groupKeyMatches = groupKeyRegex.exec(text);
+    if (groupKeyMatches) {
+      const value = groupKeyMatches[1];
+      if (_.has(el, NodeProp.GROUPING_SETS)) {
+        el[NodeProp.GROUPING_SETS].push({'Group Keys': [value]});
+      } else {
+        el[NodeProp.GROUP_KEY] = value;
+      }
       return true;
     }
     return false;
