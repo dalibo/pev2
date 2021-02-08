@@ -64,11 +64,12 @@ $bg-color: #fff;
     overflow: hidden;
 
     h4 {
-      font-size: $font-size-base;
+      font-size: $font-size-base + 1;
       float: left;
       font-weight: 600;
       margin: 0;
       line-height: inherit;
+      color: black !important;
     }
 
     .node-duration {
