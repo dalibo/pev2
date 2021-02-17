@@ -120,7 +120,7 @@
             </div>
             <div>
               <i class="fa fa-fw fa-align-justify text-muted"></i>
-              <b>Rows:</b> <span class="px-1">{{ formattedProp('ACTUAL_ROWS') }}</span> <span class="text-muted" v-if="node[nodeProps.PLAN_ROWS]">(Planned: {{ formattedProp('PLAN_ROWS') }})</span>
+              <b>Rows:</b> <span class="px-1">{{ tilde + formattedProp('ACTUAL_ROWS_REVISED') }}</span> <span class="text-muted" v-if="node[nodeProps.PLAN_ROWS]">(Planned: {{ tilde + formattedProp('PLAN_ROWS_REVISED') }})</span>
               <span v-if="plannerRowEstimateDirection !== estimateDirections.none && shouldShowPlannerEstimate">
                 |
                 <span v-if="plannerRowEstimateDirection === estimateDirections.over"><i class="fa fa-arrow-up"></i> over</span>
@@ -137,7 +137,7 @@
                 {{ nodeProps[rowsRemovedProp] }}:
               </b>
               <span>
-                <span class="px-1">{{ formattedProp(rowsRemovedProp) }}</span>|
+                <span class="px-1">{{ tilde + formattedProp(rowsRemovedProp) }}</span>|
                 <span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercent == 100 ? '>99' : rowsRemovedPercent }}%</span>
               </span>
             </div>
@@ -412,6 +412,10 @@ export default class PlanNode extends Vue {
       NodeProp.NODE_ID,
       NodeProp.ROWS_REMOVED_BY_FILTER,
       NodeProp.ROWS_REMOVED_BY_JOIN_FILTER,
+      NodeProp.ACTUAL_ROWS_REVISED,
+      NodeProp.PLAN_ROWS_REVISED,
+      NodeProp.ROWS_REMOVED_BY_FILTER_REVISED,
+      NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED,
   ];
 
   public setShowDetails(showDetails: boolean): void {
@@ -445,7 +449,7 @@ export default class PlanNode extends Vue {
 
   private get rowsRemovedProp() {
     const nodeKey = Object.keys(this.node).find(
-      (key) => key === NodeProp.ROWS_REMOVED_BY_FILTER || key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER,
+      (key) => key === NodeProp.ROWS_REMOVED_BY_FILTER_REVISED || key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED,
     );
     type NodePropStrings = keyof typeof NodeProp;
     return Object.keys(NodeProp).find((prop) => NodeProp[prop as NodePropStrings] === nodeKey);

@@ -174,6 +174,13 @@ export class PlanService {
     if (node[NodeProp.EXCLUSIVE_COST] < 0) {
       node[NodeProp.EXCLUSIVE_COST] = 0;
     }
+
+    _.each(['ACTUAL_ROWS', 'PLAN_ROWS', 'ROWS_REMOVED_BY_FILTER'], (prop: keyof typeof NodeProp) => {
+      if (!_.isUndefined(node[NodeProp[prop]])) {
+        const revisedProp = prop + '_REVISED' as keyof typeof NodeProp;
+        node[NodeProp[revisedProp]] = node[NodeProp[prop]] * node[NodeProp.ACTUAL_LOOPS];
+      }
+    });
   }
 
   // recursive function to get the sum of actual durations of a a node children
