@@ -67,9 +67,8 @@
                 >
                 <span class="tree-lines">
                   <template v-for="i in lodash.range(row[0])">
-                    <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
-                  </template>
-                  <template v-if="index !== 0">{{ row[2] ? '└' : '├' }}</template>
+                    <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">&nbsp;</template>
+                  </template><template v-if="index !== 0">{{ row[2] ? '└' : '├' }}</template>
                 </span>
                 <a class="font-italic text-reset"
                   href
@@ -94,12 +93,10 @@
               <td class="node-type pr-2">
                 <span class="tree-lines">
                   <template v-for="i in lodash.range(row[0])">
-                    <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">⠀</template>
-                  </template>
-                  <template v-if="index !== 0">
-                    <template v-if="!row[1][nodeProps.SUBPLAN_NAME]">{{ row[2] ? '└' : '├' }}</template>
-                    <template v-else>
-                      <template v-if="!row[2]">│</template><template v-else>⠀</template>
+                    <template v-if="lodash.indexOf(row[3], i) != -1">│</template><template v-else-if="i !== 0">&nbsp;</template>
+                  </template><template v-if="index !== 0">
+                    <template v-if="!row[1][nodeProps.SUBPLAN_NAME]">{{ row[2] ? '└' : '├' }}</template><template v-else>
+                      <template v-if="!row[2]">│</template><template v-else>&nbsp;</template>
                     </template>
                   </template>
                 </span>
