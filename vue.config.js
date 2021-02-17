@@ -12,6 +12,19 @@ module.exports = {
   css: {
     extract: false,
   },
+  chainWebpack: (config) => {
+    config.module
+      .rule("vue")
+      .use("vue-loader")
+      .loader("vue-loader")
+      .tap((options) => ({
+        ...options,
+        compilerOptions: {
+          ...options.compilerOptions,
+          whitespace: "preserve",
+        },
+      }));
+  },
   configureWebpack: {
     plugins: [
       // To strip all locales except “en”
