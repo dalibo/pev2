@@ -414,6 +414,8 @@ export default class PlanNode extends Vue {
       NodeProp.WAL_BYTES,
       NodeProp.WAL_FPI,
       NodeProp.NODE_ID,
+      NodeProp.ROWS_REMOVED_BY_FILTER,
+      NodeProp.ROWS_REMOVED_BY_JOIN_FILTER,
   ];
 
   public setShowDetails(showDetails: boolean): void {
