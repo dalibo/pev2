@@ -14,6 +14,9 @@
         <li class="nav-item p-1">
           <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'stats' }" @click.prevent="setActiveTab('stats')" href>Stats</a>
         </li>
+        <button @click="exportAsCanvas" class="ml-auto">
+          Export
+        </button>
       </ul>
     </div>
 
@@ -142,7 +145,7 @@
                       </diagram>
                 </pane>
                 <pane ref="plan" class="plan d-flex flex-column flex-grow-1 grab-bing overflow-auto">
-                  <ul class="main-plan p-2 mb-0">
+                  <ul class="main-plan p-2 mb-0" ref="mainplan">
                     <li>
                       <plan-node :node="rootNode" :plan="plan" :viewOptions="viewOptions" :eventBus="eventBus" ref="root">
                         <template v-slot:nodeindex="{ node }">
@@ -162,6 +165,9 @@
                   </ul>
                 </pane>
               </splitpanes>
+            </div>
+            <div>
+              <div ref="canvas" style="width: 200px;"/>
             </div>
             <div class="small p-2 border-left" v-if="plan && !viewOptions.menuHidden">
               <div class="text-right clearfix">
@@ -232,6 +238,7 @@ import * as _ from 'lodash';
 import tippy from 'tippy.js';
 import { Splitpanes, Pane } from 'splitpanes';
 import 'splitpanes/dist/splitpanes.css';
+import html2canvas from 'html2canvas';
 
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
@@ -275,6 +282,8 @@ export default class Plan extends Vue {
     plan: InstanceType<typeof Pane>,
     root: PlanNode,
     diagram: InstanceType<typeof Diagram>,
+    mainplan: HTMLElement,
+    canvas: HTMLElement,
   };
 
   @Prop(String) private planSource!: string;
@@ -547,6 +556,19 @@ export default class Plan extends Vue {
     if (cmp) {
       cmp.selected = false;
     }
+  }
+
+  private exportAsCanvas() {
+    const planEl = this.$refs.mainplan;
+    const canvasContainerEl = this.$refs.canvas;
+    const width = canvasContainerEl.scrollWidth;
+
+    html2canvas(planEl, {
+    }).then((canvas) => {
+      canvasContainerEl.appendChild(canvas);
+      canvas.style.width = width + 'px';
+      canvas.style.height = canvas.height * width / canvas.width + 'px';
+    });
   }
 }
 </script>
