@@ -4,6 +4,3 @@ node_js:
 cache: npm
 script:
   - npm run test:unit
-
-  on:
-    branch: master

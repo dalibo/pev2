@@ -163,3 +163,16 @@ $buffers-colors: (
 .bg-hatched {
   @extend %bg-hatched;
 }
+
+.border-dashed {
+  border-style: dashed !important;
+  background-color: transparent !important;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

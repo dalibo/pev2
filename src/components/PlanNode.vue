@@ -1,9 +1,11 @@
 <template>
   <div :class="{'subplan': node[nodeProps.SUBPLAN_NAME], 'd-flex flex-column align-items-center': viewOptions.orientation == orientations.TWOD}">
     <h4 v-if="node[nodeProps.SUBPLAN_NAME]">{{ node[nodeProps.SUBPLAN_NAME] }}</h4>
-    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': isNeverExecuted, 'parallel': workersCount, 'selected': selected}]">
-      <div class="workers text-muted py-0 px-1" v-if="workersCount">
-        <div v-for="index in workersCountReversed" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;'">
+    <div :class="['text-left plan-node', {'detailed': showDetails, 'never-executed': isNeverExecuted, 'parallel': workersPlannedCount, 'selected': selected}]">
+      <div class="workers text-muted py-0 px-1" v-if="workersPlannedCount">
+        <div v-for="index in workersPlannedCountReversed" :style="'top: ' + (1 + index * 2)  + 'px; left: ' + (1 + (index + 1) * 3) + 'px;'"
+             :class="{'border-dashed': index >= workersLaunchedCount}">
+          {{ index }}
         </div>
       </div>
       <div class="collapse-handle" v-if="hasChildren">
@@ -19,7 +21,7 @@
             v-tippy="{arrow: true}"
         >
           <header class="mb-0">
-            <h4>
+            <h4 class="text-body">
               <a class="font-weight-normal small" :href="'#/node/' + node.nodeId" @click.stop>#{{node.nodeId}}</a>
               {{ getNodeName() }}
             </h4>
@@ -37,27 +39,29 @@
             </span>
           </header>
 
-          <div v-if="viewOptions.viewMode === viewModes.FULL" class="font-italic text-left">
-            <div v-if="node[nodeProps.RELATION_NAME]">
-              <span class="text-muted">on </span>
-              <span v-if="node[nodeProps.SCHEMA]">{{node[nodeProps.SCHEMA]}}.</span>{{node[nodeProps.RELATION_NAME]}}
-              <span v-if="node[nodeProps.ALIAS]"> ({{node[nodeProps.ALIAS]}})</span>
+          <div v-if="viewOptions.viewMode === viewModes.FULL" class="text-left text-monospace">
+            <div v-if="node[nodeProps.RELATION_NAME]" :class="{'line-clamp-2': !showDetails}">
+              <span class="text-muted">on&nbsp;</span><span v-if="node[nodeProps.SCHEMA]">{{node[nodeProps.SCHEMA]}}.</span>{{node[nodeProps.RELATION_NAME]}}
+              <span v-if="node[nodeProps.ALIAS]">
+                <span class="text-muted">as</span>
+                {{node[nodeProps.ALIAS]}}
+              </span>
             </div>
-            <div v-if="node[nodeProps.GROUP_KEY]">
-              <span class="text-muted">by</span> {{node[nodeProps.GROUP_KEY] | keysToString | truncate(250, '…') }}</div>
-            <div v-if="node[nodeProps.SORT_KEY]">
-              <span class="text-muted">by</span><span v-html="'&nbsp;' + $options.filters.truncate($options.filters.sortKeys(node[nodeProps.SORT_KEY], node[nodeProps.PRESORTED_KEY]), 250, '…')"></span>
+            <div v-if="node[nodeProps.GROUP_KEY]" :class="{'line-clamp-2': !showDetails}">
+              <span class="text-muted">by</span>&nbsp;<span v-html="$options.filters.keysToString(node[nodeProps.GROUP_KEY])"></span></div>
+            <div v-if="node[nodeProps.SORT_KEY]" :class="{'line-clamp-2': !showDetails}">
+              <span class="text-muted">by</span> <span v-html="$options.filters.sortKeys(node[nodeProps.SORT_KEY], node[nodeProps.PRESORTED_KEY])"></span>
             </div>
-            <div v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] | keysToString | truncate(250, '…') }}
+            <div v-if="node[nodeProps.JOIN_TYPE]">{{node[nodeProps.JOIN_TYPE] }}
               <span class="text-muted">join</span></div>
-            <div v-if="node[nodeProps.INDEX_NAME]"><span class="text-muted">
-                using</span> {{node[nodeProps.INDEX_NAME] | keysToString }}</div>
-            <div v-if="node[nodeProps.HASH_CONDITION]"><span class="text-muted">
-                on</span> {{node[nodeProps.HASH_CONDITION] | keysToString }}</div>
+            <div v-if="node[nodeProps.INDEX_NAME]" :class="{'line-clamp-2': !showDetails}">
+              <span class="text-muted">using</span>&nbsp;<span v-html="$options.filters.keysToString(node[nodeProps.INDEX_NAME])"></span>
+            </div>
+            <div v-if="node[nodeProps.HASH_CONDITION]" :class="{'line-clamp-2': !showDetails}">
+              <span class="text-muted">on</span>&nbsp;<span v-html="$options.filters.keysToString(node[nodeProps.HASH_CONDITION])"></span></div>
             <div v-if="node[nodeProps.CTE_NAME]">
               <a class="text-reset" href v-on:click.stop.prevent="eventBus.$emit('clickcte', 'CTE ' + node[nodeProps.CTE_NAME])">
-                <i class="fa fa-search text-muted"></i>&nbsp;
-                <span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
+                <i class="fa fa-search text-muted"></i>&nbsp;<span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
               </a>
             </div>
           </div>
@@ -95,7 +99,7 @@
               <a class="nav-link" :class="{'active' : activeTab === 'output', 'disabled': !node[nodeProps.OUTPUT] }" @click.prevent="setActiveTab('output')" href>Output</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" :class="{'active' : activeTab === 'workers', 'disabled': !workersCount  }" @click.prevent="setActiveTab('workers')" href>Workers</a>
+              <a class="nav-link" :class="{'active' : activeTab === 'workers', 'disabled': !(node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER]) }" @click.prevent="setActiveTab('workers')" href>Workers</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" :class="{'active' : activeTab === 'misc' }" @click.prevent="setActiveTab('misc')" href>Misc</a>
@@ -105,7 +109,7 @@
         <div class="card-body tab-content" v-if="showDetails">
           <div class="tab-pane" :class="{'show active': activeTab === 'general' }">
             <!-- general -->
-            <div v-if="node[nodeProps.EXCLUSIVE_DURATION]">
+            <div v-if="plan.isAnalyze">
               <i class="fa fa-fw fa-clock text-muted"></i>
               <b>Timing:</b>&nbsp;
               <span :class="'p-0 px-1 rounded alert ' + durationClass" v-html="formattedProp('EXCLUSIVE_DURATION')"></span>
@@ -116,7 +120,7 @@
             </div>
             <div>
               <i class="fa fa-fw fa-align-justify text-muted"></i>
-              <b>Rows:</b> <span class="px-1">{{ formattedProp('ACTUAL_ROWS') }}</span> <span class="text-muted" v-if="node[nodeProps.PLAN_ROWS]">(Planned: {{ formattedProp('PLAN_ROWS') }})</span>
+              <b>Rows:</b> <span class="px-1">{{ tilde + formattedProp('ACTUAL_ROWS_REVISED') }}</span> <span class="text-muted" v-if="node[nodeProps.PLAN_ROWS]">(Planned: {{ tilde + formattedProp('PLAN_ROWS_REVISED') }})</span>
               <span v-if="plannerRowEstimateDirection !== estimateDirections.none && shouldShowPlannerEstimate">
                 |
                 <span v-if="plannerRowEstimateDirection === estimateDirections.over"><i class="fa fa-arrow-up"></i> over</span>
@@ -133,7 +137,7 @@
                 {{ nodeProps[rowsRemovedProp] }}:
               </b>
               <span>
-                <span class="px-1">{{ formattedProp(rowsRemovedProp) }}</span>|
+                <span class="px-1">{{ tilde + formattedProp(rowsRemovedProp) }}</span>|
                 <span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercent == 100 ? '>99' : rowsRemovedPercent }}%</span>
               </span>
             </div>
@@ -218,15 +222,27 @@
             </div>
             <!-- iobuffer tab -->
           </div>
-          <div class="tab-pane overflow-auto" :class="{'show active': activeTab === 'output' }" v-html="formattedProp('OUTPUT')" style="max-height: 200px">
+          <div class="tab-pane overflow-auto text-monospace" :class="{'show active': activeTab === 'output' }" v-html="formattedProp('OUTPUT')" style="max-height: 200px">
             <!-- output tab -->
           </div>
-          <div class="tab-pane" :class="{'show active': activeTab === 'workers' }" v-if="workersCount">
-
+          <div class="tab-pane" :class="{'show active': activeTab === 'workers' }" v-if="node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER]">
             <!-- workers tab -->
-            <div v-if="lodash.isNumber(workersCount) && !lodash.isNaN(workersCount) && viewOptions.viewMode === viewModes.FULL">
-              <b>Workers: </b> <span class="px-1">{{ workersCount }}</span>
+            <div v-if="(node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER]) && viewOptions.viewMode === viewModes.FULL">
+              <b>Workers planned: </b> <span class="px-1">{{ node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER] }}</span>
+              <em v-if="!node[nodeProps.WORKERS_PLANNED] && !node[nodeProps.WORKERS] && (!plan.isVerbose || !plan.isAnalyze)" class="text-warning">
+                <i class="fa fa-exclamation-triangle cursor-help" :title="getHelpMessage('fuzzy needs verbose')"></i>
+              </em>
             </div>
+            <div v-if="node[nodeProps.WORKERS_LAUNCHED] && viewOptions.viewMode === viewModes.FULL">
+              <b>Workers launched: </b> <span class="px-1">{{ node[nodeProps.WORKERS_LAUNCHED] }}</span>
+            </div>
+            <div v-if="!workersLaunchedCount && node[nodeProps.WORKERS_PLANNED_BY_GATHER]" class="text-muted">
+              <em>
+                Detailed information is not available.
+                  <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('workers detailed info missing')"></i>
+              </em>
+            </div>
+
             <div class="accordion" v-if="lodash.isArray(node[nodeProps.WORKERS])">
               <template v-for="(worker, index) in node[nodeProps.WORKERS]">
                 <div class="card">
@@ -250,10 +266,6 @@
                   </div>
                 </div>
               </template>
-            </div>
-            <div v-else class="font-italic">
-              <strong>Workers</strong>: Detailed information not available.
-              Consider using <code>EXPLAIN VERBOSE</code>.
             </div>
             <!-- workers tab -->
           </div>
@@ -398,6 +410,12 @@ export default class PlanNode extends Vue {
       NodeProp.WAL_BYTES,
       NodeProp.WAL_FPI,
       NodeProp.NODE_ID,
+      NodeProp.ROWS_REMOVED_BY_FILTER,
+      NodeProp.ROWS_REMOVED_BY_JOIN_FILTER,
+      NodeProp.ACTUAL_ROWS_REVISED,
+      NodeProp.PLAN_ROWS_REVISED,
+      NodeProp.ROWS_REMOVED_BY_FILTER_REVISED,
+      NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED,
   ];
 
   public setShowDetails(showDetails: boolean): void {
@@ -431,7 +449,7 @@ export default class PlanNode extends Vue {
 
   private get rowsRemovedProp() {
     const nodeKey = Object.keys(this.node).find(
-      (key) => key === NodeProp.ROWS_REMOVED_BY_FILTER || key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER,
+      (key) => key === NodeProp.ROWS_REMOVED_BY_FILTER_REVISED || key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED,
     );
     type NodePropStrings = keyof typeof NodeProp;
     return Object.keys(NodeProp).find((prop) => NodeProp[prop as NodePropStrings] === nodeKey);
@@ -468,9 +486,9 @@ export default class PlanNode extends Vue {
     let nodeName = this.isParallelAware ? 'Parallel ' : '';
     nodeName += this.node[NodeProp.NODE_TYPE];
     if (this.viewOptions.viewMode === ViewMode.DOT && !this.showDetails) {
-      return nodeName.replace(/[^A-Z]/g, '').toUpperCase();
+      return nodeName.replace(/[^A-Z]/g, '');
     }
-    return nodeName.toUpperCase();
+    return nodeName;
   }
 
   private get shouldShowPlannerEstimate() {
@@ -639,15 +657,20 @@ export default class PlanNode extends Vue {
     return !!this.plans;
   }
 
-  private get workersCount(): number {
+  private get workersLaunchedCount(): number {
     if (_.isArray(this.node[NodeProp.WORKERS])) {
       return this.node[NodeProp.WORKERS].length;
     }
     return parseInt(this.node[NodeProp.WORKERS], 0);
   }
 
-  private get workersCountReversed(): number[] {
-    return [...Array(this.workersCount).keys()].slice().reverse();
+  private get workersPlannedCount(): number {
+    return this.node[NodeProp.WORKERS_PLANNED_BY_GATHER];
+  }
+
+  private get workersPlannedCountReversed(): number[] {
+    const workersPlanned = this.node[NodeProp.WORKERS_PLANNED_BY_GATHER];
+    return [...Array(workersPlanned).keys()].slice().reverse();
   }
 
   private get isParallelAware(): boolean {

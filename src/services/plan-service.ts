@@ -28,6 +28,8 @@ export class PlanService {
       query: planQuery,
       planStats: {},
       ctes: [],
+      isAnalyze: _.has(planContent.Plan, NodeProp.ACTUAL_ROWS),
+      isVerbose: this.findOutputProperty(planContent.Plan),
     };
 
     this.nodeId = 1;
@@ -47,15 +49,19 @@ export class PlanService {
     this.calculatePlannerEstimate(node);
 
     _.each(node[NodeProp.PLANS], (child) => {
-      // All children of Gather node will be considered parallel
-      // Pass the number of workers launched to children
-      if (!child[NodeProp.WORKERS]) {
-        let workersLaunched;
-        if (node[NodeProp.WORKERS_PLANNED]) {
-          // Launched workers info may not be available (ie. no analyze)
-          workersLaunched = node[NodeProp.WORKERS_LAUNCHED] || node[NodeProp.WORKERS_PLANNED];
-        }
-        child[NodeProp.WORKERS] = workersLaunched || node[NodeProp.WORKERS];
+      // Disseminate workers planned info to parallel nodes (ie. Gather children)
+      if (
+        // Gather direct child is parallel
+        node[NodeProp.NODE_TYPE].indexOf('Gather') !== -1 ||
+        // EXPLAIN (ANALYZE) and number of loops not matching
+        (!plan.isVerbose && child[NodeProp.ACTUAL_LOOPS] === node[NodeProp.ACTUAL_LOOPS]) ||
+        // EXPLAIN (VERBOSE)
+        (plan.isVerbose && !plan.isAnalyze) ||
+        // Workers info available
+        (child[NodeProp.WORKERS] && child[NodeProp.WORKERS].length)
+      ) {
+        child[NodeProp.WORKERS_PLANNED_BY_GATHER] = node[NodeProp.WORKERS_PLANNED] ||
+          node[NodeProp.WORKERS_PLANNED_BY_GATHER];
       }
       if (this.isCTE(child)) {
         plan.ctes.push(child);
@@ -146,7 +152,7 @@ export class PlanService {
       node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
       // unless the current node is a child of a gather node
-      if (!node[NodeProp.WORKERS]) {
+      if (!node[NodeProp.WORKERS_PLANNED_BY_GATHER]) {
         node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.EXCLUSIVE_DURATION] * node[NodeProp.ACTUAL_LOOPS];
       }
 
@@ -168,6 +174,13 @@ export class PlanService {
     if (node[NodeProp.EXCLUSIVE_COST] < 0) {
       node[NodeProp.EXCLUSIVE_COST] = 0;
     }
+
+    _.each(['ACTUAL_ROWS', 'PLAN_ROWS', 'ROWS_REMOVED_BY_FILTER'], (prop: keyof typeof NodeProp) => {
+      if (!_.isUndefined(node[NodeProp[prop]])) {
+        const revisedProp = prop + '_REVISED' as keyof typeof NodeProp;
+        node[NodeProp[revisedProp]] = node[NodeProp[prop]] * node[NodeProp.ACTUAL_LOOPS];
+      }
+    });
   }
 
   // recursive function to get the sum of actual durations of a a node children
@@ -979,6 +992,17 @@ export class PlanService {
       );
       const exclusivePropertyString = 'EXCLUSIVE_' + property as keyof typeof NodeProp;
       node[NodeProp[exclusivePropertyString]] = node[NodeProp[property]] - sum;
+    });
+  }
+
+  private findOutputProperty(node: Node): boolean {
+    // resursively look for an "Output" property
+    const children = node.Plans;
+    if (!children) {
+      return false;
+    }
+    return _.some(children, (child) => {
+      return _.has(child, NodeProp.OUTPUT) || this.findOutputProperty(child);
     });
   }
 }

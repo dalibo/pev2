@@ -10,6 +10,8 @@ export interface IPlan {
   planStats: IPlanStats;
   formattedQuery?: string;
   ctes: any[];
+  isAnalyze: boolean;
+  isVerbose: boolean;
 }
 
 export interface ITrigger {

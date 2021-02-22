@@ -6,7 +6,7 @@
     "SQL",
     "plan"
   ],
-  "version": "0.16.1",
+  "version": "0.17.1",
   "main": "./dist/pev2.common.js",
   "files": [
     "dist/*"
@@ -23,11 +23,11 @@
   "dependencies": {
     "@types/dragscroll": "0.0.0",
     "@types/highlight.js": "^9.12.4",
-    "@types/lodash": "^4.14.165",
+    "@types/lodash": "^4.14.168",
     "@types/moment-duration-format": "^2.2.2",
     "bootstrap": "^4.5.3",
     "clarinet": "^0.12.3",
-    "core-js": "^3.6.5",
+    "core-js": "^3.8.3",
     "highlight.js": "^10.4.1",
     "jquery": "^3.5.1",
     "lodash": "^4.17.20",
@@ -36,9 +36,10 @@
     "popper.js": "^1.16.1",
     "splitpanes": "^2.3.6",
     "tippy.js": "^6.2.7",
-    "vue": "^2.6.10",
+    "tippy.js": "^6.2.4",
+    "vue": "^2.6.12",
     "vue-class-component": "^7.2.5",
-    "vue-property-decorator": "^8.4.2",
+    "vue-property-decorator": "^8.5.1",
     "vue-sorted-table": "^1.2.0",
     "vue-tippy": "^4.7.1"
   },

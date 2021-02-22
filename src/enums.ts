@@ -110,6 +110,10 @@ export enum NodeProp {
   NODE_ID = 'nodeId',
   EXCLUSIVE_DURATION = '*Duration (exclusive)',
   EXCLUSIVE_COST = '*Cost (exclusive)',
+  ACTUAL_ROWS_REVISED = '*Actual Rows Revised',
+  PLAN_ROWS_REVISED = '*Plan Rows Revised',
+  ROWS_REMOVED_BY_FILTER_REVISED = '*Rows Removed by Filter',
+  ROWS_REMOVED_BY_JOIN_FILTER_REVISED = '*Rows Removed by Join Filter',
 
   PLANNER_ESTIMATE_FACTOR = '*Planner Row Estimate Factor',
   PLANNER_ESTIMATE_DIRECTION = '*Planner Row Estimate Direction',
@@ -127,6 +131,8 @@ export enum NodeProp {
 
   EXCLUSIVE_IO_READ_TIME = '*I/O Read Time (exclusive)',
   EXCLUSIVE_IO_WRITE_TIME = '*I/O Write Time (exclusive)',
+
+  WORKERS_PLANNED_BY_GATHER = '*Workers Planned By Gather',
 
   CTE_SCAN = 'CTE Scan',
   CTE_NAME = 'CTE Name',
@@ -157,6 +163,8 @@ export const nodePropTypes: any = {};
 
 nodePropTypes[NodeProp.ACTUAL_ROWS] = PropType.rows;
 nodePropTypes[NodeProp.PLAN_ROWS] = PropType.rows;
+nodePropTypes[NodeProp.ACTUAL_ROWS_REVISED] = PropType.rows;
+nodePropTypes[NodeProp.PLAN_ROWS_REVISED] = PropType.rows;
 nodePropTypes[NodeProp.ACTUAL_TOTAL_TIME] = PropType.duration;
 nodePropTypes[NodeProp.ACTUAL_STARTUP_TIME] = PropType.duration;
 nodePropTypes[NodeProp.STARTUP_COST] = PropType.cost;
@@ -166,6 +174,8 @@ nodePropTypes[NodeProp.WORKERS] = PropType.json;
 nodePropTypes[NodeProp.SORT_SPACE_USED] = PropType.kilobytes;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER] = PropType.rows;
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows;
+nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER_REVISED] = PropType.rows;
+nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED] = PropType.rows;
 nodePropTypes[NodeProp.HEAP_FETCHES] = PropType.rows;
 nodePropTypes[NodeProp.OUTPUT] = PropType.list;
 nodePropTypes[NodeProp.SORT_KEY] = PropType.list;
