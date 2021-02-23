@@ -25,7 +25,7 @@
     "@types/highlight.js": "^9.12.4",
     "@types/lodash": "^4.14.168",
     "@types/moment-duration-format": "^2.2.2",
-    "bootstrap": "^4.5.3",
+    "bootstrap": "^4.6.0",
     "clarinet": "^0.12.3",
     "core-js": "^3.8.3",
     "highlight.js": "^10.6.0",
