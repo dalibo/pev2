@@ -30,7 +30,7 @@
     "core-js": "^3.8.3",
     "highlight.js": "^10.4.1",
     "jquery": "^3.5.1",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
     "popper.js": "^1.16.1",
