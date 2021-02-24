@@ -93,7 +93,7 @@
               <a class="nav-link" :class="{'active' : activeTab === 'general' }" @click.prevent="setActiveTab('general')" href>General</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-nowrap" :class="{'active' : activeTab === 'iobuffer' }" @click.prevent="setActiveTab('iobuffer')" href>IO & Buffers</a>
+              <a class="nav-link text-nowrap" :class="{'active' : activeTab === 'iobuffer', 'disabled': !shouldShowIoBuffers }" @click.prevent="setActiveTab('iobuffer')" href>IO & Buffers</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" :class="{'active' : activeTab === 'output', 'disabled': !node[nodeProps.OUTPUT] }" @click.prevent="setActiveTab('output')" href>Output</a>
@@ -692,6 +692,29 @@ export default class PlanNode extends Vue {
             nodePropTypes[key] === PropType.increment ||
             key === NodeProp.ACTUAL_ROWS) &&
            this.notMiscProperties.indexOf(key) === -1;
+  }
+
+  private get shouldShowIoBuffers(): boolean {
+    const properties: Array<keyof typeof NodeProp> = [
+      'EXCLUSIVE_SHARED_HIT_BLOCKS',
+      'EXCLUSIVE_SHARED_READ_BLOCKS',
+      'EXCLUSIVE_SHARED_DIRTIED_BLOCKS',
+      'EXCLUSIVE_SHARED_WRITTEN_BLOCKS',
+      'EXCLUSIVE_TEMP_READ_BLOCKS',
+      'EXCLUSIVE_TEMP_WRITTEN_BLOCKS',
+      'EXCLUSIVE_LOCAL_HIT_BLOCKS',
+      'EXCLUSIVE_LOCAL_READ_BLOCKS',
+      'EXCLUSIVE_LOCAL_DIRTIED_BLOCKS',
+      'EXCLUSIVE_LOCAL_WRITTEN_BLOCKS',
+      'EXCLUSIVE_IO_READ_TIME',
+      'EXCLUSIVE_IO_WRITE_TIME',
+    ];
+    const values = _.map(properties, (property) => {
+      const value = this.node[NodeProp[property]];
+      return _.isNaN(value) ? 0 : value;
+    });
+    const sum = _.sum(values);
+    return sum > 0;
   }
 
   private get isNeverExecuted(): boolean {
