@@ -6,6 +6,7 @@
     "Startup Cost": 0,
     "Total Cost": 1885.6,
     "Plan Rows": 227,
+    "Plan Width": 200,
     "Plans": [
       {
         "Node Type": "Index Scan",
@@ -15,6 +16,7 @@
         "Startup Cost": 0,
         "Total Cost": 8.27,
         "Plan Rows": 1,
+        "Plan Width": 4,
         "Parent Relationship": "SubPlan",
         "Subplan Name": "SubPlan",
         "Index Cond": "(relname = $0)"

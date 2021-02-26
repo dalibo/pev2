@@ -6,6 +6,7 @@
     "Startup Cost": 0,
     "Total Cost": 2.5,
     "Plan Rows": 1,
+    "Plan Width": 4,
     "Actual Startup Time": 0.26,
     "Actual Total Time": 0.261,
     "Actual Rows": 0,

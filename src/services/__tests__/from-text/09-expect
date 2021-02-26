@@ -4,12 +4,14 @@
     "Startup Cost": 0,
     "Total Cost": 0.34,
     "Plan Rows": 1,
+    "Plan Width": 8,
     "Plans": [
       {
         "Node Type": "Nested Loop",
         "Startup Cost": 0,
         "Total Cost": 335.2,
         "Plan Rows": 1000,
+        "Plan Width": 8,
         "Plans": [
           {
             "Node Type": "Seq Scan",
@@ -17,7 +19,8 @@
             "Alias": "t2",
             "Startup Cost": 0,
             "Total Cost": 14,
-            "Plan Rows": 1000
+            "Plan Rows": 1000,
+            "Plan Width": 4
           },
           {
             "Node Type": "Index Scan",
@@ -27,6 +30,7 @@
             "Startup Cost": 0,
             "Total Cost": 0.31,
             "Plan Rows": 1,
+            "Plan Width": 4,
             "Index Cond": "(t1.id = (t2.id + 1))"
           }
         ]

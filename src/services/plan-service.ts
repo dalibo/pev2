@@ -530,6 +530,7 @@ export class PlanService {
           newNode[NodeProp.STARTUP_COST] = parseFloat(nodeMatches[3] || nodeMatches[14]);
           newNode[NodeProp.TOTAL_COST] = parseFloat(nodeMatches[4] || nodeMatches[15]);
           newNode[NodeProp.PLAN_ROWS] = parseInt(nodeMatches[5] || nodeMatches[16], 0);
+          newNode[NodeProp.PLAN_WIDTH] = parseInt(nodeMatches[6] || nodeMatches[17], 0);
         }
         if (nodeMatches[7] && nodeMatches[8] || nodeMatches[18] && nodeMatches[19]) {
           newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(nodeMatches[7] || nodeMatches[18]);

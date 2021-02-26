@@ -4,6 +4,7 @@
     "Relation Name": "tenk1",
     "Startup Cost": 0,
     "Total Cost": 333,
-    "Plan Rows": 10000
+    "Plan Rows": 10000,
+    "Plan Width": 148
   }
 }
