@@ -60,6 +60,7 @@ export enum NodeProp {
   NODE_TYPE = 'Node Type',
   ACTUAL_ROWS = 'Actual Rows',
   PLAN_ROWS = 'Plan Rows',
+  PLAN_WIDTH = 'Plan Width',
   ROWS_REMOVED_BY_FILTER = 'Rows Removed by Filter',
   ROWS_REMOVED_BY_JOIN_FILTER = 'Rows Removed by Join Filter',
   ACTUAL_STARTUP_TIME = 'Actual Startup Time',

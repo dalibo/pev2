@@ -5,6 +5,7 @@
     "Startup Cost": 39.88,
     "Total Cost": 3946.78,
     "Plan Rows": 1113,
+    "Plan Width": 323,
     "Recheck Cond": "((poi_id >= 100) AND (poi_id <= 3000))",
     "Plans": [
       {
@@ -13,6 +14,7 @@
         "Startup Cost": 0,
         "Total Cost": 39.6,
         "Plan Rows": 1113,
+        "Plan Width": 0,
         "Index Cond": "((poi_id >= 100) AND (poi_id <= 3000))"
       }
     ]
