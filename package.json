@@ -29,7 +29,7 @@
     "clarinet": "^0.12.3",
     "core-js": "^3.9.1",
     "highlight.js": "^10.6.0",
-    "jquery": "^3.5.1",
+    "jquery": "^3.6.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
