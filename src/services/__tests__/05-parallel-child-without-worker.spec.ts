@@ -44,6 +44,5 @@ describe('PlanService', () => {
   test('Node doesn\'t contain workers', () => {
     expect(bitmapIndexScanNode['Node Type']).toEqual('Bitmap Index Scan');
     expect(bitmapIndexScanNode).not.toHaveProperty('Workers');
-    expect(bitmapIndexScanNode).not.toHaveProperty('*Workers Planned By Gather');
   });
 });
