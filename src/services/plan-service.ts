@@ -50,16 +50,9 @@ export class PlanService {
 
     _.each(node[NodeProp.PLANS], (child) => {
       // Disseminate workers planned info to parallel nodes (ie. Gather children)
-      if (
-        // Gather direct child is parallel
-        node[NodeProp.NODE_TYPE].indexOf('Gather') !== -1 ||
-        // EXPLAIN (ANALYZE) and number of loops not matching
-        (!plan.isVerbose && child[NodeProp.ACTUAL_LOOPS] === node[NodeProp.ACTUAL_LOOPS]) ||
-        // EXPLAIN (VERBOSE)
-        (plan.isVerbose && !plan.isAnalyze) ||
-        // Workers info available
-        (child[NodeProp.WORKERS] && child[NodeProp.WORKERS].length)
-      ) {
+      if (!this.isCTE(child) &&
+          child[NodeProp.PARENT_RELATIONSHIP] !== 'InitPlan' &&
+          child[NodeProp.PARENT_RELATIONSHIP] !== 'SubPlan') {
         child[NodeProp.WORKERS_PLANNED_BY_GATHER] = node[NodeProp.WORKERS_PLANNED] ||
           node[NodeProp.WORKERS_PLANNED_BY_GATHER];
       }
@@ -149,12 +142,12 @@ export class PlanService {
   // actual duration and actual cost are calculated by subtracting child values from the total
   public calculateActuals(node: any) {
     if (!_.isUndefined(node[NodeProp.ACTUAL_TOTAL_TIME])) {
-      node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
-      // unless the current node is a child of a gather node
-      if (!node[NodeProp.WORKERS_PLANNED_BY_GATHER]) {
-        node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.EXCLUSIVE_DURATION] * node[NodeProp.ACTUAL_LOOPS];
-      }
+      // number of workers is also taken into account
+      const workers = (node[NodeProp.WORKERS_PLANNED_BY_GATHER] || 0) + 1;
+      node[NodeProp.ACTUAL_TOTAL_TIME] = node[NodeProp.ACTUAL_TOTAL_TIME] * node[NodeProp.ACTUAL_LOOPS] / workers;
+      node[NodeProp.ACTUAL_STARTUP_TIME] = node[NodeProp.ACTUAL_STARTUP_TIME] * node[NodeProp.ACTUAL_LOOPS] / workers;
+      node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME];
 
       const duration = node[NodeProp.EXCLUSIVE_DURATION] - this.childrenDuration(node, 0);
       node[NodeProp.EXCLUSIVE_DURATION] = duration > 0 ? duration : 0;

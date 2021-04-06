@@ -131,7 +131,6 @@ Execution Time: 9.025 ms
   const bitmapIndexScanNode = plan.content.Plan.Plans[0].Plans[0].Plans[0].Plans[0];
   test('Node isn\'t parallel', () => {
     expect(bitmapIndexScanNode['Node Type']).toEqual('Bitmap Index Scan');
-    expect(bitmapIndexScanNode).not.toHaveProperty('*Workers Planned By Gather');
   });
 });
 
@@ -201,6 +200,5 @@ Execution Time: 5.646 ms
   const bitmapIndexScanNode = plan.content.Plan.Plans[0].Plans[0].Plans[0].Plans[0];
   test('Node isn\'t parallel', () => {
     expect(bitmapIndexScanNode['Node Type']).toEqual('Bitmap Index Scan');
-    expect(bitmapIndexScanNode).not.toHaveProperty('*Workers Planned By Gather');
   });
 });
