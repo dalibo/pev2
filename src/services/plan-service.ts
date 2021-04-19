@@ -171,7 +171,8 @@ export class PlanService {
     _.each(['ACTUAL_ROWS', 'PLAN_ROWS', 'ROWS_REMOVED_BY_FILTER'], (prop: keyof typeof NodeProp) => {
       if (!_.isUndefined(node[NodeProp[prop]])) {
         const revisedProp = prop + '_REVISED' as keyof typeof NodeProp;
-        node[NodeProp[revisedProp]] = node[NodeProp[prop]] * node[NodeProp.ACTUAL_LOOPS];
+        const loops = node[NodeProp.ACTUAL_LOOPS] || 1;
+        node[NodeProp[revisedProp]] = node[NodeProp[prop]] * loops;
       }
     });
   }

@@ -1,4 +1,6 @@
 import { PlanService } from '@/services/plan-service';
+import { IPlan } from '@/iplan';
+import { findNodeById } from '@/services/help-service';
 
 describe('PlanService', () => {
   test('can parse plan in json format', () => {
@@ -253,5 +255,16 @@ Execution Time: 19.475 ms
 `;
     const r: any = planService.fromSource(source);
     expect(r.Plan.Plans[1]['Node Type']).toBe('Merge Join');
+  });
+
+  test('planned rows (revised) is correct', () => {
+    const planService = new PlanService();
+    const source = `
+Seq Scan on foo  (cost=0.00..18334.00 rows=1000000 width=37)
+`;
+    const r: any = planService.fromSource(source);
+    const plan: IPlan = planService.createPlan('', r, '');
+    const seqscan = findNodeById(plan, 1);
+    expect(seqscan['*Plan Rows Revised']).toBe(1000000);
   });
 });

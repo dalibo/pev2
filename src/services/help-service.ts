@@ -1,3 +1,5 @@
+import { IPlan } from '@/iplan';
+
 export class HelpService {
   public nodeId = 0;
 
@@ -231,4 +233,18 @@ export function splitBalanced(input: string, split: string) {
     return '';
   });
   return results;
+}
+
+export function findNodeById(plan: IPlan, id: number): any | null {
+  let o = plan.content.Plan;
+  if (o.Plans) {
+    o.Plans.some(function iter(child: any): boolean | undefined {
+      if (child.nodeId === id) {
+        o = child;
+        return true;
+      }
+      return child.Plans && child.Plans.some(iter);
+    });
+  }
+  return o;
 }
