@@ -1,6 +1,8 @@
 import { PlanService } from '@/services/plan-service';
 import { IPlan } from '@/iplan';
 
+import { findNodeById } from '@/services/help-service';
+
 // In this plan, we have a Bitmap Index Scan node (#12) which doesn't have
 // any information on workers.
 // It must be considered as having workers though.
@@ -72,16 +74,3 @@ Execution time: 383161.073 ms
     expect(bitmapindexscan['*Duration (exclusive)']).toBe(285217.30275);
   });
 });
-
-
-function findNodeById(plan: IPlan, id: number): any | null {
-  let o = null;
-  plan.content.Plan.Plans.some(function iter(child: any): boolean | undefined {
-    if (child.nodeId === id) {
-      o = child;
-      return true;
-    }
-    return child.Plans && child.Plans.some(iter);
-  });
-  return o;
-}
