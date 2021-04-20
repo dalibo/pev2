@@ -172,9 +172,9 @@ export function durationClass(i: number): string {
 }
 
 export function pgsql(text: string) {
-  return hljs.highlight('pgsql', text).value;
+  return hljs.highlight(text, {language: 'pgsql'}).value;
 }
 
 export function json(text: string) {
-  return hljs.highlight('json', text).value;
+  return hljs.highlight(text, {language: 'json'}).value;
 }

@@ -164,6 +164,7 @@ export const nodePropTypes: any = {};
 
 nodePropTypes[NodeProp.ACTUAL_ROWS] = PropType.rows;
 nodePropTypes[NodeProp.PLAN_ROWS] = PropType.rows;
+nodePropTypes[NodeProp.PLAN_WIDTH] = PropType.bytes;
 nodePropTypes[NodeProp.ACTUAL_ROWS_REVISED] = PropType.rows;
 nodePropTypes[NodeProp.PLAN_ROWS_REVISED] = PropType.rows;
 nodePropTypes[NodeProp.ACTUAL_TOTAL_TIME] = PropType.duration;
