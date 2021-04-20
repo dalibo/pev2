@@ -22,7 +22,7 @@
         >
           <header class="mb-0">
             <h4 class="text-body">
-              <a class="font-weight-normal small" :href="'#/node/' + node.nodeId" @click.stop>#{{node.nodeId}}</a>
+              <a class="font-weight-normal small" :href="'#plan/node/' + node.nodeId" @click.stop>#{{node.nodeId}}</a>
               {{ getNodeName() }}
             </h4>
             <div class="float-right">

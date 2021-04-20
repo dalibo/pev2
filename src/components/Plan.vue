@@ -3,16 +3,16 @@
     <div>
       <ul class="nav nav-pills">
         <li class="nav-item p-1">
-          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'plan' }" @click.prevent="setActiveTab('plan')" href>Plan</a>
+          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'plan' }" href="#plan">Plan</a>
         </li>
         <li class="nav-item p-1">
-          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'raw' }" @click.prevent="setActiveTab('raw')" href>Raw</a>
+          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'raw' }" href="#raw">Raw</a>
         </li>
         <li class="nav-item p-1">
-          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'query', 'disabled': !queryText }" @click.prevent="setActiveTab('query')" href>Query</a>
+          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'query', 'disabled': !queryText }" href="#query">Query</a>
         </li>
         <li class="nav-item p-1">
-          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'stats' }" @click.prevent="setActiveTab('stats')" href>Stats</a>
+          <a class="nav-link px-2 py-0" :class="{'active' : activeTab === 'stats' }" href="#stats">Stats</a>
         </li>
       </ul>
     </div>
@@ -389,10 +389,15 @@ export default class Plan extends Vue {
   }
 
   private onHashChange(): void {
-    const reg = /#\/node\/([0-9]*)/;
+    const reg = /#([a-zA-Z]*)(\/node\/([0-9]*))*/;
     const matches = reg.exec(window.location.hash);
     if (matches) {
-      this.selectNode(parseInt(matches[1], 0));
+      const tab = matches[1] || 'plan';
+      this.setActiveTab(tab);
+      const nodeId = matches[3];
+      if (nodeId !== undefined) {
+        this.selectNode(parseInt(nodeId, 0));
+      }
     }
   }
 

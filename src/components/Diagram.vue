@@ -88,7 +88,7 @@
               >
 
               <td class="node-index">
-                <a class="font-weight-normal small" :href="'#/node/' + row[1].nodeId" @click>#{{row[1].nodeId}}</a>
+                <a class="font-weight-normal small" :href="'#plan/node/' + row[1].nodeId" @click>#{{row[1].nodeId}}</a>
               </td>
               <td class="node-type pr-2">
                 <span class="tree-lines">
