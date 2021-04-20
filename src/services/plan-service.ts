@@ -193,16 +193,16 @@ export class PlanService {
   // figure out order of magnitude by which the planner mis-estimated how many rows would be
   // invloved in this node
   public calculatePlannerEstimate(node: any) {
-    if (!node[NodeProp.ACTUAL_ROWS]) {
+    if (node[NodeProp.ACTUAL_ROWS] === undefined) {
       return;
     }
     node[NodeProp.PLANNER_ESTIMATE_FACTOR] = node[NodeProp.ACTUAL_ROWS] / node[NodeProp.PLAN_ROWS];
     node[NodeProp.PLANNER_ESTIMATE_DIRECTION] = EstimateDirection.none;
 
-    if (node[NodeProp.PLANNER_ESTIMATE_FACTOR] > 1) {
+    if (node[NodeProp.ACTUAL_ROWS] > node[NodeProp.PLAN_ROWS]) {
       node[NodeProp.PLANNER_ESTIMATE_DIRECTION] = EstimateDirection.under;
     }
-    if (node[NodeProp.PLANNER_ESTIMATE_FACTOR] < 1) {
+    if (node[NodeProp.ACTUAL_ROWS] < node[NodeProp.PLAN_ROWS]) {
       node[NodeProp.PLANNER_ESTIMATE_DIRECTION] = EstimateDirection.over;
       node[NodeProp.PLANNER_ESTIMATE_FACTOR] = node[NodeProp.PLAN_ROWS] / node[NodeProp.ACTUAL_ROWS];
     }

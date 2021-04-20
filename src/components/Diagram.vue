@@ -117,9 +117,9 @@
                   <span class="text-muted small">
                     <i class="fa fa-fw" :class="{'fa-arrow-down': row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.under}"></i>
                   </span>
-                  <div class="progress-bar" :class="[row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.under ? 'bg-secondary' : 'bg-transparent']" role="progressbar" :style="'width: ' + (row[1][nodeProps.PLANNER_ESTIMATE_FACTOR] || 0) / maxEstimateFactor * 100 + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar" :class="[row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.under ? 'bg-secondary' : 'bg-transparent']" role="progressbar" :style="'width: ' + estimateFactorPercent(row) + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
                   <div class="progress-bar border-left" role="progressbar" style="width: 1px; height: 5px;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                  <div class="progress-bar" :class="[row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.over ? 'bg-secondary' : 'bg-transparent']" role="progressbar" :style="'width: ' + (row[1][nodeProps.PLANNER_ESTIMATE_FACTOR] || 0) / maxEstimateFactor * 100 + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar" :class="[row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.over ? 'bg-secondary' : 'bg-transparent']" role="progressbar" :style="'width: ' + estimateFactorPercent(row) + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
                   <span class="text-muted small">
                     <i class="fa fa-fw" :class="{'fa-arrow-up': row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.over}"></i>
                   </span>
@@ -289,6 +289,9 @@ export default class Diagram extends Vue {
     const estimateFactor = node[NodeProp.PLANNER_ESTIMATE_FACTOR];
     const estimateDirection = node[NodeProp.PLANNER_ESTIMATE_DIRECTION];
     let text = '';
+    if (estimateFactor === undefined || estimateDirection === undefined) {
+      return 'N/A';
+    }
     switch (estimateDirection) {
       case EstimateDirection.over:
         text += '<i class="fa fa-arrow-up"></i> over';
@@ -300,7 +303,10 @@ export default class Diagram extends Vue {
         text += 'Correctly';
     }
     text += ' estimated';
-    text += estimateFactor ? ' by <b>' + factor(estimateFactor) + '</b>' : '';
+    text += (estimateFactor !== 1) ? ' by <b>' + factor(estimateFactor) + '</b>' : '';
+    text += '<br>';
+    text += 'Planned: ' + node[NodeProp.PLAN_ROWS];
+    text += ' 🡒 Actual: ' + node[NodeProp.ACTUAL_ROWS_REVISED];
     return text;
   }
 
@@ -386,10 +392,21 @@ export default class Diagram extends Vue {
     }
   }
 
+  private estimateFactorPercent(row: any[]): number {
+    const node = row[1];
+    if (node[NodeProp.PLANNER_ESTIMATE_FACTOR] === Infinity) {
+      return 100;
+    }
+    return (node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0) / this.maxEstimateFactor * 100;
+  }
+
   private get maxEstimateFactor(): number {
     const max = _.max(_.map(this.plans, (plan) => {
       return _.max(_.map(plan, (row) => {
-        return row[1][NodeProp.PLANNER_ESTIMATE_FACTOR];
+        const f = row[1][NodeProp.PLANNER_ESTIMATE_FACTOR];
+        if (f !== Infinity) {
+          return f;
+        }
       }));
     }));
     return max * 2 || 1;
