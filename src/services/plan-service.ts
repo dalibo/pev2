@@ -369,7 +369,7 @@ export class PlanService {
         // if there more closing parenthesis this means that it's the
         // continuation of a previous line
         out[out.length - 1] += line;
-      } else if (line.match(/^(?:Total\s+runtime|Planning\s+time|Execution\s+time|Time|Filter|Output)/i)) {
+      } else if (line.match(/^(?:Total\s+runtime|Planning\s+time|Execution\s+time|Time|Filter|Output|JIT)/i)) {
         out.push(line);
       } else if (
         line.match(/^\S/) || // doesn't start with a blank space (allowed only for the first node)
