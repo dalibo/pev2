@@ -38,19 +38,21 @@
           </thead>
           <tbody>
             <tr
-              v-for="nodesPerType, nodeType in lodash.groupBy(lodash.sortBy(value.nodes, nodeProps.NODE_TYPE), nodeProps.NODE_TYPE)"
+              v-for="node in lodash.reverse(lodash.sortBy(value.nodes, nodeProps.EXCLUSIVE_DURATION))"
               class="text-muted"
               style="font-size: smaller"
               >
-              <td class="pl-3">{{ nodeType }}</td>
-              <td class="text-right">{{ nodesPerType.length }}</td>
+              <td class="pl-3">
+                <a :href="'#plan/node/' + node.nodeId" class="mr-1">#{{node.nodeId}}</a> {{ node[nodeProps.NODE_TYPE] }}
+              </td>
+              <td class="text-right"></td>
               <td class="text-right">
                 <span class="px-1">
-                  {{ lodash.sumBy(nodesPerType, nodeProps.EXCLUSIVE_DURATION) | duration(true) }}
+                  {{ node[nodeProps.EXCLUSIVE_DURATION] | duration(true) }}
                 </span>
               </td>
               <td class="text-right">
-                {{ lodash.sumBy(nodesPerType, nodeProps.EXCLUSIVE_DURATION) / lodash.sumBy(value.nodes, nodeProps.EXCLUSIVE_DURATION) | percent  }}
+                {{ durationPercent([node]) | percent  }}
               </td>
             </tr>
           </tbody>
@@ -84,18 +86,42 @@
           </th>
         </tr>
       </thead>
-      <tbody slot="body" slot-scope="sort">
-        <tr v-for="value in sort.values" :key="value.name">
-          <td>{{ value.name }}</td>
-          <td class="text-right">{{ value.count }}</td>
-          <td class="text-right">
-            <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
-              {{ value.time | duration(true) }}
-            </span>
-          </td>
-          <td class="text-right">{{ value.timePercent | percent }}</td>
-        </tr>
-      </tbody>
+      <template slot="body" slot-scope="sort">
+        <template v-for="value in sort.values">
+          <tbody>
+            <tr>
+              <td>{{ value.name }}</td>
+              <td class="text-right">{{ value.count }}</td>
+              <td class="text-right">
+                <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
+                  {{ value.time | duration(true) }}
+                </span>
+              </td>
+              <td class="text-right">{{ value.timePercent | percent }}</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr
+              v-for="node in lodash.reverse(lodash.sortBy(value.nodes, nodeProps.EXCLUSIVE_DURATION))"
+              class="text-muted"
+              style="font-size: smaller"
+              >
+              <td class="pl-3">
+                <a :href="'#plan/node/' + node.nodeId" class="mr-1">#{{node.nodeId}}</a>
+              </td>
+              <td class="text-right"></td>
+              <td class="text-right">
+                <span class="px-1">
+                  {{ node[nodeProps.EXCLUSIVE_DURATION] | duration(true) }}
+                </span>
+              </td>
+              <td class="text-right">
+                {{ durationPercent([node]) | percent  }}
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </template>
     </sorted-table>
     <h6>Per index stats</h6>
     <sorted-table
@@ -119,18 +145,42 @@
           </th>
         </tr>
       </thead>
-      <tbody slot="body" slot-scope="sort">
-        <tr v-for="value in sort.values" :key="value.name">
-          <td class="text-monospace">{{ value.name }}</td>
-          <td class="text-right">{{ value.count }}</td>
-          <td class="text-right">
-            <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
-              {{ value.time | duration(true) }}
-            </span>
-          </td>
-          <td class="text-right">{{ value.timePercent | percent }}</td>
-        </tr>
-      </tbody>
+      <template slot="body" slot-scope="sort">
+        <template v-for="value in sort.values">
+          <tbody>
+            <tr v-for="value in sort.values" :key="value.name">
+              <td class="text-monospace">{{ value.name }}</td>
+              <td class="text-right">{{ value.count }}</td>
+              <td class="text-right">
+                <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
+                  {{ value.time | duration(true) }}
+                </span>
+              </td>
+              <td class="text-right">{{ value.timePercent | percent }}</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr
+              v-for="node in lodash.reverse(lodash.sortBy(value.nodes, nodeProps.EXCLUSIVE_DURATION))"
+              class="text-muted"
+              style="font-size: smaller"
+              >
+              <td class="pl-3">
+                <a :href="'#plan/node/' + node.nodeId" class="mr-1">#{{node.nodeId}}</a> {{ node[nodeProps.NODE_TYPE] }}
+              </td>
+              <td class="text-right"></td>
+              <td class="text-right">
+                <span class="px-1">
+                  {{ node[nodeProps.EXCLUSIVE_DURATION] | duration(true) }}
+                </span>
+              </td>
+              <td class="text-right">
+                {{ durationPercent([node]) | percent  }}
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </template>
       <tbody v-if="!perIndex.length">
         <tr>
           <td colspan="3" class="text-center font-italic">No index used</td>
@@ -220,6 +270,7 @@ export default class Stats extends Vue {
         count: nodes.length,
         time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
         timePercent: this.durationPercent(nodes),
+        nodes,
       });
     });
     return values;
@@ -237,6 +288,7 @@ export default class Stats extends Vue {
         count: nodes.length,
         time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
         timePercent: this.durationPercent(nodes),
+        nodes,
       });
     });
     return values;
