@@ -396,7 +396,10 @@ export default class Plan extends Vue {
       this.setActiveTab(tab);
       const nodeId = matches[3];
       if (nodeId !== undefined) {
-        this.selectNode(parseInt(nodeId, 0));
+        // Delayed to make sure the tab has changed before recentering
+        setTimeout(() => {
+          this.selectNode(parseInt(nodeId, 0));
+        }, 1);
       }
     }
   }
