@@ -11,7 +11,7 @@ You can either install and run the application using `npm` or use `docker`.
 #### Run the application locally
 
 ```
-npm install
+npm ci
 npm run serve
 ```
 
