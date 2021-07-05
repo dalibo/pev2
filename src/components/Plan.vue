@@ -70,7 +70,7 @@
                 <button @click.prevent="showTriggers = !showTriggers" class="bg-transparent border-0 p-0 m-0 pl-1">
                   <i class="fa fa-caret-down text-muted"></i>
                 </button>
-                <div class="plan-triggers-container text-left" v-if="showTriggers">
+                <div class="stat-dropdown-container text-left" v-if="showTriggers">
                   <button class="btn btn-close float-right" v-on:click="showTriggers = false">
                     <i class="fa fa-times"></i>
                   </button>
@@ -100,7 +100,7 @@
               <button @click.prevent="showSettings = !showSettings" class="bg-transparent border-0 p-0 m-0 pl-1">
                 <i class="fa fa-caret-down text-muted"></i>
               </button>
-              <div class="plan-triggers-container text-left" v-if="showSettings">
+              <div class="stat-dropdown-container text-left" v-if="showSettings">
                 <button class="btn btn-close float-right" v-on:click="showSettings = false">
                   <i class="fa fa-times"></i>
                 </button>
