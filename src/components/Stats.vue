@@ -8,6 +8,7 @@
       class="table table-nonfluid table-sm table-bordered align-top"
       sort="time"
       dir="desc"
+      ref="table"
     >
       <thead class="thead-dark">
         <tr>
@@ -25,8 +26,11 @@
       <template slot="body" slot-scope="sort">
         <template v-for="value in sort.values">
           <thead class="thead-light">
-            <tr>
-              <th class="text-monospace font-weight-normal">{{ value.name }}</th>
+            <tr v-on:click.prevent="showDetail(value)" role="button">
+              <th class="text-monospace font-weight-normal">
+                <i class="fa fa-fw" :class="{'fa-chevron-right': !value.expanded, 'fa-chevron-down': value.expanded}"></i>
+                {{ value.name }}
+              </th>
               <th class="text-right">{{ value.count }}</th>
               <th class="text-right">
                 <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
@@ -36,7 +40,7 @@
               <th class="text-right">{{ value.timePercent | percent }}</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody :class="value.expanded ? '' : 'd-none'">
             <tr
               v-for="node in lodash.reverse(lodash.sortBy(value.nodes, nodeProps.EXCLUSIVE_DURATION))"
               class="text-muted"
@@ -89,8 +93,11 @@
       <template slot="body" slot-scope="sort">
         <template v-for="value in sort.values">
           <tbody>
-            <tr>
-              <td>{{ value.name }}</td>
+            <tr v-on:click.prevent="showDetail(value)" role="button">
+              <td>
+                <i class="fa fa-fw" :class="{'fa-chevron-right': !value.expanded, 'fa-chevron-down': value.expanded}"></i>
+                {{ value.name }}
+              </td>
               <td class="text-right">{{ value.count }}</td>
               <td class="text-right">
                 <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
@@ -100,7 +107,7 @@
               <td class="text-right">{{ value.timePercent | percent }}</td>
             </tr>
           </tbody>
-          <tbody>
+          <tbody :class="value.expanded ? '' : 'd-none'">
             <tr
               v-for="node in lodash.reverse(lodash.sortBy(value.nodes, nodeProps.EXCLUSIVE_DURATION))"
               class="text-muted"
@@ -148,8 +155,11 @@
       <template slot="body" slot-scope="sort">
         <template v-for="value in sort.values">
           <tbody>
-            <tr v-for="value in sort.values" :key="value.name">
-              <td class="text-monospace">{{ value.name }}</td>
+            <tr v-on:click.prevent="showDetail(value)" role="button">
+              <td class="text-monospace">
+                <i class="fa fa-fw" :class="{'fa-chevron-right': !value.expanded, 'fa-chevron-down': value.expanded}"></i>
+                {{ value.name }}
+              </td>
               <td class="text-right">{{ value.count }}</td>
               <td class="text-right">
                 <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
@@ -159,7 +169,7 @@
               <td class="text-right">{{ value.timePercent | percent }}</td>
             </tr>
           </tbody>
-          <tbody>
+          <tbody :class="value.expanded ? '' : 'd-none'">
             <tr
               v-for="node in lodash.reverse(lodash.sortBy(value.nodes, nodeProps.EXCLUSIVE_DURATION))"
               class="text-muted"
@@ -256,6 +266,7 @@ export default class Stats extends Vue {
         time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
         timePercent: this.durationPercent(nodes),
         nodes,
+        expanded: false,
       });
     });
     return values;
@@ -271,6 +282,7 @@ export default class Stats extends Vue {
         time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
         timePercent: this.durationPercent(nodes),
         nodes,
+        expanded: false,
       });
     });
     return values;
@@ -292,6 +304,12 @@ export default class Stats extends Vue {
       });
     });
     return values;
+  }
+
+  private showDetail(value: any) {
+    // FIXME: it would be better not to change the record itself
+    value.expanded = !value.expanded;
+    this.$forceUpdate();
   }
 }
 </script>
