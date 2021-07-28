@@ -25,41 +25,7 @@
       </thead>
       <template slot="body" slot-scope="sort">
         <template v-for="value in sort.values">
-          <thead class="thead-light">
-            <tr v-on:click.prevent="showDetail(value)" role="button">
-              <th class="text-monospace font-weight-normal">
-                <i class="fa fa-fw" :class="{'fa-chevron-right': !value.expanded, 'fa-chevron-down': value.expanded}"></i>
-                {{ value.name }}
-              </th>
-              <th class="text-right">{{ value.count }}</th>
-              <th class="text-right">
-                <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
-                  {{ value.time | duration(true) }}
-                </span>
-              </th>
-              <th class="text-right">{{ value.timePercent | percent }}</th>
-            </tr>
-          </thead>
-          <tbody :class="value.expanded ? '' : 'd-none'">
-            <tr
-              v-for="node in lodash.reverse(lodash.sortBy(value.nodes, nodeProps.EXCLUSIVE_DURATION))"
-              class="text-muted"
-              style="font-size: smaller"
-              >
-              <td class="pl-3">
-                <a :href="'#plan/node/' + node.nodeId" class="mr-1">#{{node.nodeId}}</a> {{ node[nodeProps.NODE_TYPE] }}
-              </td>
-              <td class="text-right"></td>
-              <td class="text-right">
-                <span class="px-1">
-                  {{ node[nodeProps.EXCLUSIVE_DURATION] | duration(true) }}
-                </span>
-              </td>
-              <td class="text-right">
-                {{ durationPercent([node]) | percent  }}
-              </td>
-            </tr>
-          </tbody>
+          <stats-table-item :value="value" :executionTime="executionTime"></stats-table-item>
         </template>
       </template>
       <tbody v-if="!perTable.length">
@@ -92,41 +58,7 @@
       </thead>
       <template slot="body" slot-scope="sort">
         <template v-for="value in sort.values">
-          <tbody>
-            <tr v-on:click.prevent="showDetail(value)" role="button">
-              <td>
-                <i class="fa fa-fw" :class="{'fa-chevron-right': !value.expanded, 'fa-chevron-down': value.expanded}"></i>
-                {{ value.name }}
-              </td>
-              <td class="text-right">{{ value.count }}</td>
-              <td class="text-right">
-                <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
-                  {{ value.time | duration(true) }}
-                </span>
-              </td>
-              <td class="text-right">{{ value.timePercent | percent }}</td>
-            </tr>
-          </tbody>
-          <tbody :class="value.expanded ? '' : 'd-none'">
-            <tr
-              v-for="node in lodash.reverse(lodash.sortBy(value.nodes, nodeProps.EXCLUSIVE_DURATION))"
-              class="text-muted"
-              style="font-size: smaller"
-              >
-              <td class="pl-3">
-                <a :href="'#plan/node/' + node.nodeId" class="mr-1">#{{node.nodeId}}</a>
-              </td>
-              <td class="text-right"></td>
-              <td class="text-right">
-                <span class="px-1">
-                  {{ node[nodeProps.EXCLUSIVE_DURATION] | duration(true) }}
-                </span>
-              </td>
-              <td class="text-right">
-                {{ durationPercent([node]) | percent  }}
-              </td>
-            </tr>
-          </tbody>
+          <stats-table-item :value="value" :executionTime="executionTime"></stats-table-item>
         </template>
       </template>
     </sorted-table>
@@ -154,41 +86,7 @@
       </thead>
       <template slot="body" slot-scope="sort">
         <template v-for="value in sort.values">
-          <tbody>
-            <tr v-on:click.prevent="showDetail(value)" role="button">
-              <td class="text-monospace">
-                <i class="fa fa-fw" :class="{'fa-chevron-right': !value.expanded, 'fa-chevron-down': value.expanded}"></i>
-                {{ value.name }}
-              </td>
-              <td class="text-right">{{ value.count }}</td>
-              <td class="text-right">
-                <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
-                  {{ value.time | duration(true) }}
-                </span>
-              </td>
-              <td class="text-right">{{ value.timePercent | percent }}</td>
-            </tr>
-          </tbody>
-          <tbody :class="value.expanded ? '' : 'd-none'">
-            <tr
-              v-for="node in lodash.reverse(lodash.sortBy(value.nodes, nodeProps.EXCLUSIVE_DURATION))"
-              class="text-muted"
-              style="font-size: smaller"
-              >
-              <td class="pl-3">
-                <a :href="'#plan/node/' + node.nodeId" class="mr-1">#{{node.nodeId}}</a> {{ node[nodeProps.NODE_TYPE] }}
-              </td>
-              <td class="text-right"></td>
-              <td class="text-right">
-                <span class="px-1">
-                  {{ node[nodeProps.EXCLUSIVE_DURATION] | duration(true) }}
-                </span>
-              </td>
-              <td class="text-right">
-                {{ durationPercent([node]) | percent  }}
-              </td>
-            </tr>
-          </tbody>
+          <stats-table-item :value="value" :executionTime="executionTime"></stats-table-item>
         </template>
       </template>
       <tbody v-if="!perIndex.length">
@@ -206,18 +104,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import Node from '@/inode';
 import { IPlan } from '../iplan';
 import { NodeProp } from '../enums';
-import { duration, durationClass, percent } from '@/filters';
 import { SortedTable, SortLink } from 'vue-sorted-table';
+import StatsTableItem from '@/components/StatsTableItem.vue';
 
 @Component({
-  filters: {
-    duration,
-    durationClass,
-    percent,
-  },
   components: {
     SortedTable,
     SortLink,
+    StatsTableItem,
   },
 })
 export default class Stats extends Vue {
@@ -225,7 +119,6 @@ export default class Stats extends Vue {
 
   private nodes = [] as Node[];
 
-  private lodash = _;
   private nodeProps = NodeProp;
   private executionTime: number = 0;
 
@@ -266,7 +159,6 @@ export default class Stats extends Vue {
         time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
         timePercent: this.durationPercent(nodes),
         nodes,
-        expanded: false,
       });
     });
     return values;
@@ -282,7 +174,6 @@ export default class Stats extends Vue {
         time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
         timePercent: this.durationPercent(nodes),
         nodes,
-        expanded: false,
       });
     });
     return values;
@@ -304,12 +195,6 @@ export default class Stats extends Vue {
       });
     });
     return values;
-  }
-
-  private showDetail(value: any) {
-    // FIXME: it would be better not to change the record itself
-    value.expanded = !value.expanded;
-    this.$forceUpdate();
   }
 }
 </script>
