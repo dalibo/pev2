@@ -283,7 +283,7 @@ $connector-line: 2px solid darken($line-color, 10%);
 .plan-stats {
   font-size: $font-size-base;
 
-  .plan-triggers-container {
+  .stat-dropdown-container {
     border: 1px solid $line-color;
     padding: $padding-xl;
     background-color: #fff;
@@ -294,6 +294,8 @@ $connector-line: 2px solid darken($line-color, 10%);
     z-index: 6;
     right: 0;
     width: 300px;
+    max-height: 70vh;
+    overflow: auto;
 
     .btn-close {
       border-radius: 50%;

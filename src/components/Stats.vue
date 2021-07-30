@@ -8,6 +8,7 @@
       class="table table-nonfluid table-sm table-bordered align-top"
       sort="time"
       dir="desc"
+      ref="table"
     >
       <thead class="thead-dark">
         <tr>
@@ -24,36 +25,7 @@
       </thead>
       <template slot="body" slot-scope="sort">
         <template v-for="value in sort.values">
-          <thead class="thead-light">
-            <tr>
-              <th class="text-monospace font-weight-normal">{{ value.name }}</th>
-              <th class="text-right">{{ value.count }}</th>
-              <th class="text-right">
-                <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
-                  {{ value.time | duration(true) }}
-                </span>
-              </th>
-              <th class="text-right">{{ value.timePercent | percent }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="nodesPerType, nodeType in lodash.groupBy(lodash.sortBy(value.nodes, nodeProps.NODE_TYPE), nodeProps.NODE_TYPE)"
-              class="text-muted"
-              style="font-size: smaller"
-              >
-              <td class="pl-3">{{ nodeType }}</td>
-              <td class="text-right">{{ nodesPerType.length }}</td>
-              <td class="text-right">
-                <span class="px-1">
-                  {{ lodash.sumBy(nodesPerType, nodeProps.EXCLUSIVE_DURATION) | duration(true) }}
-                </span>
-              </td>
-              <td class="text-right">
-                {{ lodash.sumBy(nodesPerType, nodeProps.EXCLUSIVE_DURATION) / lodash.sumBy(value.nodes, nodeProps.EXCLUSIVE_DURATION) | percent  }}
-              </td>
-            </tr>
-          </tbody>
+          <stats-table-item :value="value" :executionTime="executionTime"></stats-table-item>
         </template>
       </template>
       <tbody v-if="!perTable.length">
@@ -84,18 +56,11 @@
           </th>
         </tr>
       </thead>
-      <tbody slot="body" slot-scope="sort">
-        <tr v-for="value in sort.values" :key="value.name">
-          <td>{{ value.name }}</td>
-          <td class="text-right">{{ value.count }}</td>
-          <td class="text-right">
-            <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
-              {{ value.time | duration(true) }}
-            </span>
-          </td>
-          <td class="text-right">{{ value.timePercent | percent }}</td>
-        </tr>
-      </tbody>
+      <template slot="body" slot-scope="sort">
+        <template v-for="value in sort.values">
+          <stats-table-item :value="value" :executionTime="executionTime"></stats-table-item>
+        </template>
+      </template>
     </sorted-table>
     <h6>Per index stats</h6>
     <sorted-table
@@ -119,18 +84,11 @@
           </th>
         </tr>
       </thead>
-      <tbody slot="body" slot-scope="sort">
-        <tr v-for="value in sort.values" :key="value.name">
-          <td class="text-monospace">{{ value.name }}</td>
-          <td class="text-right">{{ value.count }}</td>
-          <td class="text-right">
-            <span class="alert p-0 px-1" :class="$options.filters.durationClass(value.timePercent * 100)">
-              {{ value.time | duration(true) }}
-            </span>
-          </td>
-          <td class="text-right">{{ value.timePercent | percent }}</td>
-        </tr>
-      </tbody>
+      <template slot="body" slot-scope="sort">
+        <template v-for="value in sort.values">
+          <stats-table-item :value="value" :executionTime="executionTime"></stats-table-item>
+        </template>
+      </template>
       <tbody v-if="!perIndex.length">
         <tr>
           <td colspan="3" class="text-center font-italic">No index used</td>
@@ -146,18 +104,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import Node from '@/inode';
 import { IPlan } from '../iplan';
 import { NodeProp } from '../enums';
-import { duration, durationClass, percent } from '@/filters';
 import { SortedTable, SortLink } from 'vue-sorted-table';
+import StatsTableItem from '@/components/StatsTableItem.vue';
 
 @Component({
-  filters: {
-    duration,
-    durationClass,
-    percent,
-  },
   components: {
     SortedTable,
     SortLink,
+    StatsTableItem,
   },
 })
 export default class Stats extends Vue {
@@ -165,7 +119,6 @@ export default class Stats extends Vue {
 
   private nodes = [] as Node[];
 
-  private lodash = _;
   private nodeProps = NodeProp;
   private executionTime: number = 0;
 
@@ -220,6 +173,7 @@ export default class Stats extends Vue {
         count: nodes.length,
         time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
         timePercent: this.durationPercent(nodes),
+        nodes,
       });
     });
     return values;
@@ -237,6 +191,7 @@ export default class Stats extends Vue {
         count: nodes.length,
         time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
         timePercent: this.durationPercent(nodes),
+        nodes,
       });
     });
     return values;
