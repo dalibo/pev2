@@ -6,7 +6,7 @@
     "SQL",
     "plan"
   ],
-  "version": "0.20.1",
+  "version": "0.21.0",
   "main": "./dist/pev2.common.js",
   "files": [
     "dist/*"
