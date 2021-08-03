@@ -27,8 +27,9 @@
               <span v-if="durationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + durationClass" content="Slow" v-tippy><i class="fa fa-fw fa-clock"></i></span>
               <span v-if="costClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + costClass" content="Cost is high" v-tippy><i class="fa fa-fw fa-dollar-sign"></i></span>
               <span v-if="estimationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + estimationClass" content="Bad estimation for number of rows" v-tippy><i class="fa fa-fw fa-thumbs-down"></i></span>
-              <span v-if="rowsRemovedClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + rowsRemovedClass" content="High number of rows removed" v-tippy><i class="fa fa-fw fa-filter"></i></span>
+              <span v-if="rowsRemovedClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + rowsRemovedClass" :content="filterTooltip" v-tippy><i class="fa fa-fw fa-filter"></i></span>
               <span v-if="heapFetchesClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + heapFetchesClass" content="Heap Fetches number is high" v-tippy="{arrow: true}"><i class="fa fa-fw fa-exchange-alt"></i></span>
+              <span v-if="rowsRemoved && !rowsRemovedClass" class="p-0  d-inline-block mb-0 ml-1 text-nowrap" :content="filterTooltip" v-tippy><i class="fa fa-fw fa-filter text-muted"></i></span>
             </div>
             <span v-if="viewOptions.viewMode === viewModes.FULL">
               <span class="node-duration text-warning" v-if="isNeverExecuted">
@@ -661,6 +662,10 @@ export default class PlanNode extends Vue {
 
   private get hasChildren(): boolean {
     return !!this.plans;
+  }
+
+  private get filterTooltip(): string {
+    return this.rowsRemovedPercentString + '% of rows removed by filter';
   }
 
   private get workersLaunchedCount(): number {
