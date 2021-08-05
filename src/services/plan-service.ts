@@ -168,7 +168,8 @@ export class PlanService {
       node[NodeProp.EXCLUSIVE_COST] = 0;
     }
 
-    _.each(['ACTUAL_ROWS', 'PLAN_ROWS', 'ROWS_REMOVED_BY_FILTER'], (prop: keyof typeof NodeProp) => {
+    _.each(['ACTUAL_ROWS', 'PLAN_ROWS', 'ROWS_REMOVED_BY_FILTER', 'ROWS_REMOVED_BY_JOIN_FILTER'],
+      (prop: keyof typeof NodeProp) => {
       if (!_.isUndefined(node[NodeProp[prop]])) {
         const revisedProp = prop + '_REVISED' as keyof typeof NodeProp;
         const loops = node[NodeProp.ACTUAL_LOOPS] || 1;
