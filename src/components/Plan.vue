@@ -32,7 +32,7 @@
               <template v-if="!plan.planStats.executionTime">
                 <span class="text-muted">
                   N/A
-                  <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing execution time')"></i>
+                  <i class="fa fa-info-circle cursor-help" :content="getHelpMessage('missing execution time')" v-tippy></i>
                 </span>
               </template>
               <template v-else>
@@ -44,7 +44,7 @@
               <template v-if="!plan.planStats.planningTime">
                 <span class="text-muted">
                   N/A
-                  <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('missing planning time')"></i>
+                  <i class="fa fa-info-circle cursor-help" :content="getHelpMessage('missing planning time')" v-tippy></i>
                 </span>
               </template>
               <template v-else>

@@ -17,8 +17,6 @@
       >
         <div class="card-body header no-focus-outline"
             v-on:click.stop="showDetails = !showDetails"
-            :content="(showDetails ? 'Hide' : 'View') + ' node details'"
-            v-tippy="{arrow: true}"
         >
           <header class="mb-0">
             <h4 class="text-body">
@@ -26,11 +24,11 @@
               {{ getNodeName() }}
             </h4>
             <div class="float-right">
-              <span v-if="durationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + durationClass" title="Slow"><i class="fa fa-fw fa-clock"></i></span>
-              <span v-if="costClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + costClass" title="Cost is high"><i class="fa fa-fw fa-dollar-sign"></i></span>
-              <span v-if="estimationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + estimationClass" title="Bad estimation for number of rows"><i class="fa fa-fw fa-thumbs-down"></i></span>
-              <span v-if="rowsRemovedClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + rowsRemovedClass" title="High number of rows removed"><i class="fa fa-fw fa-filter"></i></span>
-              <span v-if="heapFetchesClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + heapFetchesClass" title="Heap Fetches number is high"><i class="fa fa-fw fa-exchange-alt"></i></span>
+              <span v-if="durationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + durationClass" content="Slow" v-tippy><i class="fa fa-fw fa-clock"></i></span>
+              <span v-if="costClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + costClass" content="Cost is high" v-tippy><i class="fa fa-fw fa-dollar-sign"></i></span>
+              <span v-if="estimationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + estimationClass" content="Bad estimation for number of rows" v-tippy><i class="fa fa-fw fa-thumbs-down"></i></span>
+              <span v-if="rowsRemovedClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + rowsRemovedClass" content="High number of rows removed" v-tippy><i class="fa fa-fw fa-filter"></i></span>
+              <span v-if="heapFetchesClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + heapFetchesClass" content="Heap Fetches number is high" v-tippy="{arrow: true}"><i class="fa fa-fw fa-exchange-alt"></i></span>
             </div>
             <span v-if="viewOptions.viewMode === viewModes.FULL">
               <span class="node-duration text-warning" v-if="isNeverExecuted">
@@ -66,7 +64,7 @@
             </div>
           </div>
 
-          <div v-if="!allWorkersLaunched && viewOptions.viewMode === viewModes.FULL" class="text-c-3 cursor-help" :title="getHelpMessage('workers planned not launched')">
+          <div v-if="!allWorkersLaunched && viewOptions.viewMode === viewModes.FULL" class="text-c-3 cursor-help" :content="getHelpMessage('workers planned not launched')" v-tippy>
             <i class="fa fa-exclamation-triangle"></i>&nbsp;
             <span>Not all workers launched</span>
           </div>
@@ -213,11 +211,11 @@
             </table>
             <div v-if="node[nodeProps.WAL_RECORDS] || node[nodeProps.WAL_BYTES]" class="mb-2">
               <b>
-                <span class="more-info" title="Write-Ahead Logging">WAL</span>:
+                <span class="more-info" content="Write-Ahead Logging" v-tippy>WAL</span>:
               </b>
               {{ formattedProp('WAL_RECORDS') }} records <small>({{ formattedProp('WAL_BYTES') }})</small>
               <span v-if="node[nodeProps.WAL_FPI]"> -
-              <span class="more-info" title="WAL Full Page Images">FPI</span>: {{ formattedProp('WAL_FPI') }}
+              <span class="more-info" content="WAL Full Page Images" v-tippy>FPI</span>: {{ formattedProp('WAL_FPI') }}
               </span>
             </div>
             <!-- iobuffer tab -->
@@ -230,7 +228,7 @@
             <div v-if="(node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER]) && viewOptions.viewMode === viewModes.FULL">
               <b>Workers planned: </b> <span class="px-1">{{ node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER] }}</span>
               <em v-if="!node[nodeProps.WORKERS_PLANNED] && !node[nodeProps.WORKERS] && (!plan.isVerbose || !plan.isAnalyze)" class="text-warning">
-                <i class="fa fa-exclamation-triangle cursor-help" :title="getHelpMessage('fuzzy needs verbose')"></i>
+                <i class="fa fa-exclamation-triangle cursor-help" :content="getHelpMessage('fuzzy needs verbose')" v-tippy></i>
               </em>
             </div>
             <div v-if="node[nodeProps.WORKERS_LAUNCHED] && viewOptions.viewMode === viewModes.FULL">
@@ -239,7 +237,7 @@
             <div v-if="!workersLaunchedCount && node[nodeProps.WORKERS_PLANNED_BY_GATHER]" class="text-muted">
               <em>
                 Detailed information is not available.
-                  <i class="fa fa-info-circle cursor-help" :title="getHelpMessage('workers detailed info missing')"></i>
+                  <i class="fa fa-info-circle cursor-help" :content="getHelpMessage('workers detailed info missing')" v-tippy></i>
               </em>
             </div>
 
