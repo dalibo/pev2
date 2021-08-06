@@ -136,7 +136,7 @@
               </b>
               <span>
                 <span class="px-1">{{ tilde + formattedProp(rowsRemovedProp) }}</span>|
-                <span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercent == 100 ? '>99' : rowsRemovedPercent }}%</span>
+                <span :class="'p-0 px-1 alert ' + rowsRemovedClass">{{ rowsRemovedPercentString }}%</span>
               </span>
             </div>
             <div v-if="node[nodeProps.HEAP_FETCHES]">
@@ -340,6 +340,7 @@ export default class PlanNode extends Vue {
   private plannerRowEstimateDirection?: EstimateDirection;
   private rowsRemoved: number = NaN;
   private rowsRemovedPercent: number = NaN;
+  private rowsRemovedPercentString?: string | null;
 
   // required for custom change detection
   private currentCompactView?: boolean;
@@ -462,6 +463,13 @@ export default class PlanNode extends Vue {
       this.rowsRemoved = removed;
       const actual = this.node[NodeProp.ACTUAL_ROWS];
       this.rowsRemovedPercent = _.floor(removed / (removed + actual) * 100);
+      if (this.rowsRemovedPercent === 100) {
+        this.rowsRemovedPercentString = '>99';
+      } else if (this.rowsRemovedPercent === 0) {
+        this.rowsRemovedPercentString = '<1';
+      } else {
+        this.rowsRemovedPercentString = this.rowsRemovedPercent.toString();
+      }
     }
   }
 
