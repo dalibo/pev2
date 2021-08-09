@@ -211,11 +211,21 @@
         <!-- end Plan tab -->
         </div>
       </div>
-      <div class="tab-pane flex-grow-1 overflow-auto" :class="{'show active': activeTab === 'raw' }">
-        <pre class="small p-2 mb-0"><code v-html="$options.filters.json(planSource)"></code></pre>
+      <div class="tab-pane flex-grow-1 overflow-hidden position-relative" :class="{'show active': activeTab === 'raw' }">
+        <div class="overflow-hidden d-flex w-100 h-100">
+          <div class="overflow-auto flex-grow-1">
+            <pre class="small p-2 mb-0"><code v-html="$options.filters.json(planSource)"></code></pre>
+          </div>
+          <copy :content="planSource" />
+        </div>
       </div>
-      <div class="tab-pane flex-grow-1 overflow-auto" :class="{'show active': activeTab === 'query' }" v-if="queryText">
-        <pre class="small p-2 mb-0"><code v-html="$options.filters.pgsql(queryText)"></code></pre>
+      <div class="tab-pane flex-grow-1 overflow-hidden position-relative" :class="{'show active': activeTab === 'query' }" v-if="queryText">
+        <div class="overflow-hidden d-flex w-100 h-100">
+          <div class="overflow-auto flex-grow-1">
+            <pre class="small p-2 mb-0"><code v-html="$options.filters.pgsql(queryText)"></code></pre>
+          </div>
+        </div>
+        <copy :content="queryText" />
       </div>
       <div class="tab-pane flex-grow-1 overflow-auto" :class="{'show active': activeTab === 'stats' }">
         <stats
@@ -235,6 +245,7 @@ import 'splitpanes/dist/splitpanes.css';
 
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
+import Copy from '@/components/Copy.vue';
 import Diagram from '@/components/Diagram.vue';
 import Stats from '@/components/Stats.vue';
 import { HelpService, scrollChildIntoParentView } from '@/services/help-service';
@@ -253,6 +264,7 @@ Vue.component('tippy', TippyComponent);
 @Component({
   name: 'plan',
   components: {
+    Copy,
     Diagram,
     Pane,
     PlanNode,
@@ -290,6 +302,7 @@ export default class Plan extends Vue {
   private showSettings: boolean = false;
   private activeTab: string = '';
   private highlightTimeout!: number;
+  private rawCopied: boolean = false;
 
   private helpService = new HelpService();
   private lodash = _;
