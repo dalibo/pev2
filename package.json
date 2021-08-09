@@ -38,6 +38,7 @@
     "tippy.js": "^6.3.1",
     "vue": "^2.6.14",
     "vue-class-component": "^7.2.6",
+    "vue-clipboard3": "^1.0.1",
     "vue-fragment": "^1.5.2",
     "vue-property-decorator": "^8.5.1",
     "vue-sorted-table": "^1.3.0",
