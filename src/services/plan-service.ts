@@ -644,11 +644,24 @@ export class PlanService {
           'Calls': triggerMatches[4],
         });
       } else if (jitMatches) {
-        root.JIT = {};
-        const element = {
-          node: root.JIT,
-        };
-        elementsAtDepth.push([1, element]);
+        let element;
+        if (elementsAtDepth.length === 0) {
+          root.JIT = {};
+          element = {
+            node: root.JIT,
+          };
+          elementsAtDepth.push([1, element]);
+        } else {
+          const lastElement = _.last(elementsAtDepth)![1];
+          if (_.last(lastElement.node[NodeProp.WORKERS])) {
+            const worker: Worker = _.last(lastElement.node[NodeProp.WORKERS])! as Worker;
+            worker.JIT = {};
+            element = {
+              node: worker.JIT,
+            };
+            elementsAtDepth.push([depth, element]);
+          }
+        }
       } else if (extraMatches) {
         const prefix = extraMatches[1];
 
