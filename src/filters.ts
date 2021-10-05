@@ -46,13 +46,13 @@ export function keysToString(value: any): string {
   if (!(value instanceof Array)) {
     value = [value];
   }
-  value = _.map(value, (v) => v.replace(/(^\(|\)$)/g, ''));
+  value = _.map(value, (v) => _.escape(v.replace(/(^\(|\)$)/g, '')));
   return value.join(', ');
 }
 
 export function sortKeys(sort: string[], presort: string[] | undefined): string {
   return _.map(sort, (v) => {
-    let result = v;
+    let result = _.escape(v);
     if (presort) {
       result += (presort.indexOf(v) !== -1 ? '&nbsp;<span class="text-muted">(presort)</span>' : '');
     }
@@ -100,7 +100,7 @@ export function percent(value: number): string {
 
 export function list(value: string[] | string): string {
   if (typeof value === 'string') {
-    value = value.split(/\s*,\s*/);
+    value = _.escape(value).split(/\s*,\s*/);
   }
   const compiled = _.template('<% _.forEach(lines, function(line) { %><li><%- line %></li><% }); %>');
   return '<ul class="list-unstyled">' + compiled({lines: value}) + '</ul>';
@@ -153,7 +153,7 @@ export function formatNodeProp(key: string, value: any): string {
       return sortGroups(value);
     }
   }
-  return value;
+  return _.escape(value);
 }
 
 export function durationClass(i: number): string {
