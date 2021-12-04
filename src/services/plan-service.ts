@@ -935,11 +935,11 @@ export class PlanService {
 
     if (settingsMatches) {
       el.Settings = {};
-      const settings = settingsMatches[2].split(/\s*,\s*/);
+      const settings = splitBalanced(settingsMatches[2], ',');
       let matches;
       _.each(settings, (option) => {
         const reg = /^(\S*)\s+=\s+(.*)$/g;
-        matches = reg.exec(option);
+        matches = reg.exec(_.trim(option));
         el.Settings[matches![1]] = matches![2].replace(/'/g, '');
       });
       return true;
