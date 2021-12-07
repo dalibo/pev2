@@ -43,6 +43,7 @@ export const NODE_DESCRIPTIONS: INodeDescription = {
     Results of this node are fed to the <strong>Bitmap Heap Scan</strong>.`,
     'CTE SCAN': `performs a sequential scan of <strong>Common Table Expression (CTE) query</strong> results. Note that
     results of a CTE are materialized (calculated and temporarily stored).`,
+  'MEMOIZE': `is used to cache the results of the inner side of a nested loop. It avoids executing underlying nodes when the results for the current parameters are already in the cache.`,
 };
 
 interface IHelpMessage {
