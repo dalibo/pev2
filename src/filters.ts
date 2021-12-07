@@ -36,6 +36,13 @@ export function rows(value: number): string {
   return value.toLocaleString();
 }
 
+export function loops(value: number): string {
+  if (value === undefined) {
+    return 'N/A';
+  }
+  return value.toLocaleString();
+}
+
 export function factor(value: number): string {
   const f: string = parseFloat(value.toPrecision(2)).toLocaleString();
   const compiled = _.template('${f}&nbsp;<span class="text-muted">&times;</span>');
@@ -128,6 +135,8 @@ export function formatNodeProp(key: string, value: any): string {
       return cost(value);
     } else if (nodePropTypes[key] === PropType.rows) {
       return rows(value);
+    } else if (nodePropTypes[key] === PropType.loops) {
+      return loops(value);
     } else if (nodePropTypes[key] === PropType.factor) {
       return factor(value);
     } else if (nodePropTypes[key] === PropType.estimateDirection) {

@@ -156,6 +156,7 @@ export enum PropType {
   json,
   kilobytes,
   list,
+  loops,
   rows,
   sortGroups,
 }
@@ -163,6 +164,7 @@ export enum PropType {
 export const nodePropTypes: any = {};
 
 nodePropTypes[NodeProp.ACTUAL_ROWS] = PropType.rows;
+nodePropTypes[NodeProp.ACTUAL_LOOPS] = PropType.loops;
 nodePropTypes[NodeProp.PLAN_ROWS] = PropType.rows;
 nodePropTypes[NodeProp.PLAN_WIDTH] = PropType.bytes;
 nodePropTypes[NodeProp.ACTUAL_ROWS_REVISED] = PropType.rows;
