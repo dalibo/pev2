@@ -10,7 +10,7 @@ module.exports = {
     },
   },
   css: {
-    extract: true,
+    extract: !!process.env.EXTRACT_CSS,
   },
   chainWebpack: (config) => {
     config.module
