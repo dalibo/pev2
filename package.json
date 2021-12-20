@@ -9,7 +9,8 @@
   "version": "0.23.0",
   "main": "./dist/pev2.common.js",
   "files": [
-    "dist/*"
+    "dist/*",
+    "src/assets/scss/*"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",
