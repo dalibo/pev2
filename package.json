@@ -14,7 +14,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "lint": "vue-cli-service lint",
-    "build": "vue-cli-service build --target lib --name pev2 ./src/components/Plan.vue",
+    "build": "vue-cli-service build --target lib --name pev2 ./src/components/Plan.vue && EXTRACT_CSS=true vue-cli-service build --target lib --name pev2 ./src/components/Plan.vue --dest ./dist/components && cp -R ./src/assets/scss ./dist/scss",
     "build-app": "vue-cli-service build --dest dist-app",
     "test:unit": "jest",
     "snyk-protect": "snyk protect",

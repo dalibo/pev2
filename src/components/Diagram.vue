@@ -170,7 +170,6 @@ import { scrollChildIntoParentView } from '@/services/help-service';
 import Node from '@/inode';
 import { IPlan } from '../iplan';
 import tippy, {createSingleton, Instance, CreateSingletonInstance} from 'tippy.js';
-import 'tippy.js/dist/tippy.css'; // optional for styling
 
 @Component({
   filters: {
