@@ -4,7 +4,6 @@ import momentDurationFormatSetup from 'moment-duration-format';
 momentDurationFormatSetup(moment);
 import { EstimateDirection, NodeProp, nodePropTypes, PropType } from '@/enums';
 import hljs from 'highlight.js/lib/core';
-import 'highlight.js/styles/github.css';
 import * as langPgsql from 'highlight.js/lib/languages/pgsql';
 hljs.registerLanguage('pgsql', langPgsql);
 

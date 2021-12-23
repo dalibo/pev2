@@ -241,7 +241,6 @@
 import * as _ from 'lodash';
 import tippy from 'tippy.js';
 import { Splitpanes, Pane } from 'splitpanes';
-import 'splitpanes/dist/splitpanes.css';
 
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import PlanNode from '@/components/PlanNode.vue';
@@ -573,6 +572,10 @@ export default class Plan extends Vue {
 </script>
 
 <style lang="scss">
-@import '../assets/scss/plan';
-@import '../assets/scss/plan-diagram';
+@import "~tippy.js/dist/tippy.css";
+@import '~splitpanes/dist/splitpanes.css';
+@import '~highlight.js/styles/github.css';
+
+@import '../assets/scss/variables';
+@import '../assets/scss/pev2';
 </style>

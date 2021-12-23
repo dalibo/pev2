@@ -83,6 +83,35 @@ For a complete example, see [this codesandbox][codesandbox].
 [demo]: https://dalibo.github.io/pev2
 [explain.dali.bo]: https://explain.dalibo.com
 
+### Custom theme using SCSS
+
+```js
+// index.js
+
+// import component without styles
+import Pev2 from "pev2/components/pev2.common";
+```
+
+```scss
+// styles.scss
+
+// add pev2 vendor styles
+@import "~tippy.js/dist/tippy.css";
+@import "~splitpanes/dist/splitpanes.css";
+
+// use any theme from highlight.js
+@import "~highlight.js/styles/github.css";
+
+// import pev2 variables
+@import "~pev2/scss/variables";
+
+// redefine variables from '~pev2/scss/variables' file
+$text-color: red;
+
+// import the rest of pev2 scss styles
+@import "~pev2/scss/pev2";
+```
+
 ## Disclaimer
 
 This project is a rewrite of the excellent [Postgres Explain Visualizer
