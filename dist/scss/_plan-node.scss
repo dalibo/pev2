@@ -1,0 +1,265 @@
+$compact-width: 50px;
+$bg-color: #fff;
+.plan-node {
+  text-decoration: none;
+  color: $text-color;
+  display: inline-block;
+  transition: all 0.1s;
+  position: relative;
+  font-size: $font-size-sm;
+  margin-bottom: 4px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  width: 400px;
+  .twod & {
+    width: 240px;
+  }
+  .twod.compact & {
+    width: 140px;
+  }
+  .twod.dot & {
+    width: $compact-width;
+  }
+
+  .plan-node-body {
+    position: relative;
+    border: 1px solid $line-color;
+    border-radius: $border-radius-base;
+    background-color: $plan-node-bg;
+    box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
+    cursor: auto;
+
+    .header.card-body {
+      cursor: pointer;
+      &:hover {
+        background-color: $gray-lightest;
+      }
+    }
+
+    &.card {
+      .card-body, .card-header {
+        padding: $padding-base $padding-lg;
+      }
+
+      .card-header .card-header-tabs {
+        margin-right: 0;
+        margin-left: 0;
+        margin-bottom: -$padding-base;
+        margin-top: $padding-base;
+
+        .nav-link {
+          padding: $padding-base / 2 $padding-lg;
+        }
+      }
+    }
+  }
+
+  &.parallel .plan-node-body {
+    box-shadow: none;
+  }
+
+  header {
+    margin-bottom: $padding-base;
+    overflow: hidden;
+
+    h4 {
+      font-size: $font-size-base + 1;
+      float: left;
+      font-weight: 600;
+      margin: 0;
+      line-height: inherit;
+      color: black !important;
+    }
+
+    .node-duration {
+      float: right;
+      margin-left: $padding-lg;
+      font-size: $font-size-base;
+    }
+  }
+
+  .prop-list {
+    color: inherit;
+    // required for overflow-wrap to be taken into account
+    table-layout: fixed;
+  }
+
+  //hovers
+  &:hover,
+  &.highlight {
+    $hover-color: rgba(0,0,0,0.4);
+    .plan-node-body {
+      box-shadow: 1px 1px 5px 0px $hover-color;
+    }
+    .workers > div {
+      border-color: rgba($hover-color, 0.2);
+    }
+  }
+
+
+  &.selected {
+    .plan-node-body {
+      border-color: $highlight-color;
+      box-shadow: 0px 0px 5px 2px rgba($highlight-color,0.4);
+    }
+
+    .workers > div {
+      border-color: rgba($highlight-color, 0.2);
+    }
+  }
+
+  .node-description {
+    text-align: left;
+    font-style: italic;
+    word-break: normal;
+
+    .node-type {
+      font-weight: 600;
+      background-color: $blue;
+      color: #fff;
+      padding: 0 $padding-base;
+    }
+  }
+
+  .btn-default {
+    border: 0;
+  }
+
+  .text-muted {
+    color: $text-color-light;
+  }
+
+  .plan-query-container {
+    border: 1px solid $line-color;
+    padding: $padding-xl;
+    background-color: #fff;
+    position: absolute;
+    box-shadow: 0px 0px 10px 2px rgba(0,0,0,0.3);
+    border-radius: $border-radius-base;
+    margin-bottom: $padding-xl;
+    z-index: 1;
+    left: 0;
+
+    h3 {
+      font-size: $font-size-lg;
+      width: 93%;
+      text-align: left;
+      border-bottom: 1px solid $line-color;
+      padding-bottom: $padding-base;
+      margin-bottom: $padding-lg;
+    }
+  }
+
+  .collapse-handle {
+    cursor: pointer;
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    right: 0;
+    display: none;
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  &:hover .collapse-handle {
+    display: block;
+  }
+
+  &.never-executed .plan-node-body {
+    @extend %bg-hatched;
+  }
+
+  &.flash .plan-node-body {
+    animation: flash 1s;
+  }
+
+  .workers {
+    position: absolute;
+    left: -1px;
+    top: 1px;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+
+    > div {
+      border: 1px solid $gray-light;
+      border-radius: $border-radius-base;
+      background-color: $white;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+    }
+  }
+
+  .workers-handle {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: -5px;
+    > div {
+      position: absolute;
+      top: 0;
+      background-color: white;
+      border: 1px solid darken($gray-lightest, 3);
+      border-radius: $border-radius-base;
+
+      &:hover {
+        background-color: $gray-lightest;
+        border-color: $gray-light;
+      }
+    }
+  }
+}
+
+.node-bar-container {
+  height: 5px;
+  margin-top: $padding-lg;
+  margin-bottom: $padding-sm;
+  border-radius: $border-radius-lg;
+  background-color: $gray-light;
+  position: relative;
+
+  .node-bar {
+    border-radius: $border-radius-lg;
+    height: 100%;
+    text-align: left;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+
+.node-bar-label {
+  text-align: left;
+  display: block;
+}
+
+.detailed {
+  width: 400px !important;
+}
+
+ul.node-children.collapsed {
+  .plan-node,
+  .plan-node-body {
+    width: $compact-width !important;
+  }
+  .plan-node {
+    display: block;
+    .plan-node-body {
+      height: $compact-width / 3;
+      * {
+        display: none;
+      }
+    }
+    &:hover .collapse-handle {
+      display: none;
+    }
+  }
+
+  .classic .plan & li::before {
+    top: 7px;
+  }
+  .classic .plan & li:last-child::after {
+    height: 14px;
+  }
+}
