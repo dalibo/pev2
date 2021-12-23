@@ -39,7 +39,3 @@ export default class Copy extends Vue {
   }
 }
 </script>
-
-<style lang="scss">
-@import '../assets/scss/copy';
-</style>
