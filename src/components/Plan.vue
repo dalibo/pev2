@@ -292,6 +292,7 @@ export default class Plan extends Vue {
   @Prop(String) private planSource!: string;
   @Prop(String) private planQuery!: string;
   @Prop(Number) private zoomTo!: number;
+  @Prop({default: true}) private showDiagram!: boolean;
   private queryText!: string;
   private plan!: IPlan | null;
   private rootNode!: any;
@@ -316,7 +317,7 @@ export default class Plan extends Vue {
     highlightType: HighlightType.NONE,
     viewMode: ViewMode.FULL,
     orientation: Orientation.TWOD,
-    showDiagram: true,
+    showDiagram: this.showDiagram,
     diagramWidth: 20,
   };
 
