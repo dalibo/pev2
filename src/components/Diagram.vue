@@ -305,7 +305,7 @@ export default class Diagram extends Vue {
     text += (estimateFactor !== 1) ? ' by <b>' + factor(estimateFactor) + '</b>' : '';
     text += '<br>';
     text += 'Planned: ' + node[NodeProp.PLAN_ROWS_REVISED];
-    text += ' 🡒 Actual: ' + node[NodeProp.ACTUAL_ROWS_REVISED];
+    text += ' → Actual: ' + node[NodeProp.ACTUAL_ROWS_REVISED];
     return text;
   }
 
