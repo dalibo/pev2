@@ -6,7 +6,7 @@
       :class="copied ? 'd-none' : 'd-block'"
       @click="copyRaw"
     >
-      <i class="far fa-clipboard fa-fw"></i>
+      <font-awesome-icon fixed-width icon="clipboard" />
     </button>
     <button
       class="btn btn-outline-secondary bg-light btn-sm m-2"
@@ -15,7 +15,7 @@
       v-tippy="{ placement: 'left', arrow: true }"
       content="copied"
     >
-      <i class="fa fa-check fa-fw text-success"></i>
+      <font-awesome-icon fixed-width icon="check" class="text-muted" />
     </button>
   </div>
 </template>

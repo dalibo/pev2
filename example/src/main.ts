@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '@fortawesome/fontawesome-free/css/all.css';
 import Home from './views/Home.vue';
 import Plan from './views/Plan.vue';
 import About from './views/About.vue';

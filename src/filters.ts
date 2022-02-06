@@ -138,15 +138,6 @@ export function formatNodeProp(key: string, value: any): string {
       return loops(value);
     } else if (nodePropTypes[key] === PropType.factor) {
       return factor(value);
-    } else if (nodePropTypes[key] === PropType.estimateDirection) {
-      switch (value) {
-        case EstimateDirection.over:
-          return '<i class="fa fa-arrow-up"></i> over';
-        case EstimateDirection.under:
-          return '<i class="fa fa-arrow-down"></i> under';
-        default:
-          return '-';
-      }
     } else if (nodePropTypes[key] === PropType.json) {
       return JSON.stringify(value, null, 2);
     } else if (nodePropTypes[key] === PropType.bytes) {

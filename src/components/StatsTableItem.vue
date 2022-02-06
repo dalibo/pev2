@@ -3,7 +3,8 @@
     <thead class="thead-light">
       <tr v-on:click.prevent="expanded = !expanded" role="button" class="user-select-none">
         <th>
-          <i class="fa fa-fw" :class="{'fa-chevron-right': !expanded, 'fa-chevron-down': expanded}"></i>
+          <font-awesome-icon fixed-width icon="chevron-right" v-if="!expanded" />
+          <font-awesome-icon fixed-width icon="chevron-down" v-else />
           {{ value.name }}
         </th>
         <th class="text-right">{{ value.count }}</th>

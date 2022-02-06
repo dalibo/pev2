@@ -9,7 +9,8 @@
         </div>
       </div>
       <div class="collapse-handle" v-if="hasChildren">
-        <i :class="['fa fa-fw', {'fa-compress': !collapsed, 'fa-expand': collapsed}]" v-on:click.stop="toggleCollapsed()" title="Collpase or expand child nodes"></i>
+        <font-awesome-icon fixed-width icon="compress" v-if="!collapsed" fixed-width v-on:click.stop="toggleCollapsed()" content="Collapse child nodes" v-tippy />
+        <font-awesome-icon fixed-width icon="expand" v-else fixed-width v-on:click.stop="toggleCollapsed()" content="Expand child nodes" v-tippy />
       </div>
       <div class="plan-node-body card"
            @mouseenter="eventBus.$emit('mouseovernode', node.nodeId)"
@@ -24,12 +25,12 @@
               {{ getNodeName() }}
             </h4>
             <div class="float-right">
-              <span v-if="durationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + durationClass" content="Slow" v-tippy><i class="fa fa-fw fa-clock"></i></span>
-              <span v-if="costClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + costClass" content="Cost is high" v-tippy><i class="fa fa-fw fa-dollar-sign"></i></span>
-              <span v-if="estimationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + estimationClass" content="Bad estimation for number of rows" v-tippy><i class="fa fa-fw fa-thumbs-down"></i></span>
-              <span v-if="rowsRemovedClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + rowsRemovedClass" :content="filterTooltip" v-tippy><i class="fa fa-fw fa-filter"></i></span>
-              <span v-if="heapFetchesClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + heapFetchesClass" content="Heap Fetches number is high" v-tippy="{arrow: true}"><i class="fa fa-fw fa-exchange-alt"></i></span>
-              <span v-if="rowsRemoved && !rowsRemovedClass" class="p-0  d-inline-block mb-0 ml-1 text-nowrap" :content="filterTooltip" v-tippy><i class="fa fa-fw fa-filter text-muted"></i></span>
+              <span v-if="durationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + durationClass" content="Slow" v-tippy><font-awesome-icon fixed-width icon="clock" /></span>
+              <span v-if="costClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + costClass" content="Cost is high" v-tippy><font-awesome-icon fixed-width icon="dollar-sign" /></span>
+              <span v-if="estimationClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + estimationClass" content="Bad estimation for number of rows" v-tippy><font-awesome-icon fixed-width icon="thumbs-down" /></span>
+              <span v-if="rowsRemovedClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + rowsRemovedClass" :content="filterTooltip" v-tippy><font-awesome-icon fixed-width icon="filter" /></span>
+              <span v-if="heapFetchesClass" :class="'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + heapFetchesClass" content="Heap Fetches number is high" v-tippy="{arrow: true}"><font-awesome-icon fixed-width icon="exchange-alt" /></span>
+              <span v-if="rowsRemoved && !rowsRemovedClass" class="p-0  d-inline-block mb-0 ml-1 text-nowrap" :content="filterTooltip" v-tippy><font-awesome-icon fixed-width icon="filter" class="text-muted" /></span>
             </div>
             <span v-if="viewOptions.viewMode === viewModes.FULL">
               <span class="node-duration text-warning" v-if="isNeverExecuted">
@@ -60,13 +61,13 @@
               <span class="text-muted">on</span>&nbsp;<span v-html="$options.filters.keysToString(node[nodeProps.HASH_CONDITION])"></span></div>
             <div v-if="node[nodeProps.CTE_NAME]">
               <a class="text-reset" href v-on:click.stop.prevent="eventBus.$emit('clickcte', 'CTE ' + node[nodeProps.CTE_NAME])">
-                <i class="fa fa-search text-muted"></i>&nbsp;<span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
+                <font-awesome-icon fixed-width icon="search" class="text-muted" />&nbsp;<span class="text-muted">CTE</span> {{node[nodeProps.CTE_NAME]}}
               </a>
             </div>
           </div>
 
           <div v-if="!allWorkersLaunched && viewOptions.viewMode === viewModes.FULL" class="text-c-3 cursor-help" :content="getHelpMessage('workers planned not launched')" v-tippy>
-            <i class="fa fa-exclamation-triangle"></i>&nbsp;
+            <font-awesome-icon fixed-width icon="exclamation-triangle" />&nbsp;
             <span>Not all workers launched</span>
           </div>
           <div class="clearfix"></div>
@@ -109,7 +110,7 @@
           <div class="tab-pane" :class="{'show active': activeTab === 'general' }">
             <!-- general -->
             <div v-if="plan.isAnalyze">
-              <i class="fa fa-fw fa-clock text-muted"></i>
+              <font-awesome-icon fixed-width icon="clock" class="text-muted" />
               <b>Timing:</b>&nbsp;
               <span :class="'p-0 px-1 rounded alert ' + durationClass" v-html="formattedProp('EXCLUSIVE_DURATION')"></span>
               <template v-if="executionTimePercent !== Infinity">
@@ -118,12 +119,12 @@
               </template>
             </div>
             <div>
-              <i class="fa fa-fw fa-align-justify text-muted"></i>
+              <font-awesome-icon fixed-width icon="align-justify" class="text-muted" />
               <b>Rows:</b> <span class="px-1">{{ tilde + formattedProp('ACTUAL_ROWS_REVISED') }}</span> <span class="text-muted" v-if="node[nodeProps.PLAN_ROWS]">(Planned: {{ tilde + formattedProp('PLAN_ROWS_REVISED') }})</span>
               <span v-if="plannerRowEstimateDirection !== estimateDirections.none && shouldShowPlannerEstimate">
                 |
-                <span v-if="plannerRowEstimateDirection === estimateDirections.over"><i class="fa fa-arrow-up"></i> over</span>
-                <span v-if="plannerRowEstimateDirection === estimateDirections.under"><i class="fa fa-arrow-down"></i> under</span>
+                <span v-if="plannerRowEstimateDirection === estimateDirections.over"><font-awesome-icon fixed-width icon="arrow-up" /> over</span>
+                <span v-if="plannerRowEstimateDirection === estimateDirections.under"><font-awesome-icon fixed-width icon="arrow-down" /> under</span>
                 estimated
                 <span v-if="plannerRowEstimateValue != Infinity"> by
                   <span :class="'p-0 px-1 alert ' + estimationClass" v-html="formattedProp('PLANNER_ESTIMATE_FACTOR')"></span>
@@ -131,7 +132,7 @@
               </span>
             </div>
             <div v-if="rowsRemoved">
-              <i class="fa fa-fw fa-filter text-muted"></i>
+              <font-awesome-icon fixed-width icon="filter" class="text-muted" />
               <b>
                 {{ nodeProps[rowsRemovedProp] }}:
               </b>
@@ -141,22 +142,22 @@
               </span>
             </div>
             <div v-if="node[nodeProps.HEAP_FETCHES]">
-              <i class="fa fa-fw fa-exchange-alt text-muted"></i>
+              <font-awesome-icon fixed-width icon="exchange-alt" class="text-muted" />
               <b>Heap Fetches:</b>&nbsp;
               <span :class="'p-0 px-1 rounded alert ' + heapFetchesClass" v-html="formattedProp('HEAP_FETCHES')"></span>
               &nbsp;
-              <i class="fa fa-fw fa-info-circle text-muted" v-if="heapFetchesClass"
+              <font-awesome-icon fixed-width icon="info-circle" class="text-muted" v-if="heapFetchesClass"
                 content="Visibility map may be out-of-date. Consider using VACUUM or change autovacuum settings."
                 v-tippy="{arrow: true}"
-              ></i>
+              />
               </span>
             </div>
             <div v-if="node[nodeProps.EXCLUSIVE_COST]">
-              <i class="fa fa-fw fa-dollar-sign text-muted"></i>
+              <font-awesome-icon fixed-width icon="dollar-sign" class="text-muted" />
               <b>Cost:</b> <span :class="'p-0 px-1 mr-1 alert ' + costClass">{{ formattedProp('EXCLUSIVE_COST') }}</span> <span class="text-muted">(Total: {{ formattedProp('TOTAL_COST') }})</span>
             </div>
             <div v-if="node[nodeProps.ACTUAL_LOOPS] > 1">
-              <i class="fa fa-fw fa-undo text-muted"></i>
+              <font-awesome-icon fixed-width icon="undo" class="text-muted" />
               <b>Loops:</b> <span class="px-1">{{ formattedProp('ACTUAL_LOOPS') }}
               </span>
             </div>
@@ -229,7 +230,7 @@
             <div v-if="(node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER]) && viewOptions.viewMode === viewModes.FULL">
               <b>Workers planned: </b> <span class="px-1">{{ node[nodeProps.WORKERS_PLANNED] || node[nodeProps.WORKERS_PLANNED_BY_GATHER] }}</span>
               <em v-if="!node[nodeProps.WORKERS_PLANNED] && !node[nodeProps.WORKERS] && (!plan.isVerbose || !plan.isAnalyze)" class="text-warning">
-                <i class="fa fa-exclamation-triangle cursor-help" :content="getHelpMessage('fuzzy needs verbose')" v-tippy></i>
+                <font-awesome-icon fixed-width icon="exclamation-triangle" class="cursor-help" :content="getHelpMessage('fuzzy needs verbose')" v-tippy/>
               </em>
             </div>
             <div v-if="node[nodeProps.WORKERS_LAUNCHED] && viewOptions.viewMode === viewModes.FULL">
@@ -238,7 +239,7 @@
             <div v-if="!workersLaunchedCount && node[nodeProps.WORKERS_PLANNED_BY_GATHER]" class="text-muted">
               <em>
                 Detailed information is not available.
-                  <i class="fa fa-info-circle cursor-help" :content="getHelpMessage('workers detailed info missing')" v-tippy></i>
+                  <font-awesome-icon fixed-width icon="info-circle" class="cursor-help" :content="getHelpMessage('workers detailed info missing')" v-tippy/>
               </em>
             </div>
 
@@ -247,8 +248,8 @@
                 <div class="card">
                   <div class="card-header p-0">
                     <button class="btn btn-link btn-sm text-secondary" type="button" data-toggle="collapse" :data-target="'#collapse-' + _uid + '-' + index" style="font-size: inherit;">
-                      <i class="fa fa-chevron-right fa-fw"></i>
-                      <i class="fa fa-chevron-down fa-fw"></i>
+                      <font-awesome-icon icon="chevron-right" fixed-width />
+                      <font-awesome-icon icon="chevron-down" fixed-width />
                       Worker {{ worker[workerProps.WORKER_NUMBER] }}
                     </button>
                   </div>

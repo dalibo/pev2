@@ -115,13 +115,15 @@
                 <!-- estimation -->
                 <div class="progress rounded-0 align-items-center bg-transparent justify-content-center" style="height: 10px;" v-else-if="viewOptions.metric == metrics.estimate_factor" :key="'node' + index + 'estimation'">
                   <span class="text-muted small">
-                    <i class="fa fa-fw" :class="{'fa-arrow-down': row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.under}"></i>
+                    <font-awesome-icon fixed-width icon="arrow-down" v-if="row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.under" />
+                    <i class="fa fa-fw" v-else />
                   </span>
                   <div class="progress-bar" :class="[row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.under ? 'bg-secondary' : 'bg-transparent']" role="progressbar" :style="'width: ' + estimateFactorPercent(row) + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
                   <div class="progress-bar border-left" role="progressbar" style="width: 1px; height: 5px;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
                   <div class="progress-bar" :class="[row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.over ? 'bg-secondary' : 'bg-transparent']" role="progressbar" :style="'width: ' + estimateFactorPercent(row) + '%; height:5px;'" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
                   <span class="text-muted small">
-                    <i class="fa fa-fw" :class="{'fa-arrow-up': row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.over}"></i>
+                    <font-awesome-icon fixed-width icon="arrow-up" v-if="row[1][nodeProps.PLANNER_ESTIMATE_DIRECTION] === estimateDirections.over" />
+                    <i class="fa fa-fw" v-else />
                   </span>
                 </div>
                 <!-- cost -->
@@ -287,26 +289,39 @@ export default class Diagram extends Vue {
   private estimateFactorTooltip(node: Node): string {
     const estimateFactor = node[NodeProp.PLANNER_ESTIMATE_FACTOR];
     const estimateDirection = node[NodeProp.PLANNER_ESTIMATE_DIRECTION];
-    let text = '';
-    if (estimateFactor === undefined || estimateDirection === undefined) {
-      return 'N/A';
-    }
-    switch (estimateDirection) {
-      case EstimateDirection.over:
-        text += '<i class="fa fa-arrow-up"></i> over';
-        break;
-      case EstimateDirection.under:
-        text += '<i class="fa fa-arrow-down"></i> under';
-        break;
-      default:
-        text += 'Correctly';
-    }
-    text += ' estimated';
-    text += (estimateFactor !== 1) ? ' by <b>' + factor(estimateFactor) + '</b>' : '';
-    text += '<br>';
-    text += 'Planned: ' + node[NodeProp.PLAN_ROWS_REVISED];
-    text += ' → Actual: ' + node[NodeProp.ACTUAL_ROWS_REVISED];
-    return text;
+    let html: string;
+    const el = document.createElement('DIV')
+    const  vm = new Vue({
+      template: `
+        <div>
+          <span v-if="!estimateFactor || !estimateDirection">N/A</span>
+          <span v-if="estimateDirection == EstimateDirection.over">
+            <font-awesome-icon icon="arrow-up" /> over
+          </span>
+          <span v-else-if="estimateDirection == EstimateDirection.under">
+            <font-awesome-icon icon="arrow-down" /> under
+          </span>
+          <span v-else>Correctly</span>
+          estimated
+          <span v-if="estimateFactor !== 1">
+          by <b v-html="factor(estimateFactor)"></b>
+          </span>
+          <br>
+          Planned: {{ node[NodeProp.PLAN_ROWS_REVISED] }}
+          → Actual: {{ node[NodeProp.ACTUAL_ROWS_REVISED] }}
+        </div>
+      `,
+      data: {
+        estimateFactor: estimateFactor,
+        estimateDirection: estimateDirection,
+        EstimateDirection: EstimateDirection,
+        factor: factor,
+        node: node,
+        NodeProp: NodeProp,
+      }
+    })
+    vm.$mount(el);
+    return vm.$el.innerHTML;
   }
 
   private costTooltip(node: Node): string {

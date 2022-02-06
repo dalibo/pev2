@@ -18,19 +18,19 @@
     <ul>
       <li>
         isolate the plan view component and its dependencies in order to use it in
-        any web app <i class="fa fa-check text-success"></i>
+        any web app <font-awesome-icon icon="check" class="text-success" />
       </li>
       <li>
-        make it work with recent version of JS frameworks <i class="fa fa-check text-success"></i>
+        make it work with recent version of JS frameworks <font-awesome-icon icon="check" class="text-success" />
       </li>
       <li>
-        upgrade Bootstrap to a more recent version <i class="fa fa-check text-success"></i>
+        upgrade Bootstrap to a more recent version <font-awesome-icon icon="check" class="text-success" />
       </li>
       <li>
-        use VueJS just for a matter of taste <i class="fa fa-check text-success"></i>
+        use VueJS just for a matter of taste <font-awesome-icon icon="check" class="text-success" />
       </li>
       <li>
-        add ability to parse text format <i class="fa fa-check text-success"></i>
+        add ability to parse text format <font-awesome-icon icon="check" class="text-success" />
       </li>
       <li>
         add support for new features (parallelism, triggers, disk usage, …)

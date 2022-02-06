@@ -32,7 +32,7 @@
               <template v-if="!plan.planStats.executionTime">
                 <span class="text-muted">
                   N/A
-                  <i class="fa fa-info-circle cursor-help" :content="getHelpMessage('missing execution time')" v-tippy></i>
+                  <font-awesome-icon icon="info-circle" class="cursor-help" :content="getHelpMessage('missing execution time')" v-tippy />
                 </span>
               </template>
               <template v-else>
@@ -44,7 +44,7 @@
               <template v-if="!plan.planStats.planningTime">
                 <span class="text-muted">
                   N/A
-                  <i class="fa fa-info-circle cursor-help" :content="getHelpMessage('missing planning time')" v-tippy></i>
+                  <font-awesome-icon icon="info-circle" class="cursor-help" :content="getHelpMessage('missing planning time')" v-tippy />
                 </span>
               </template>
               <template v-else>
@@ -68,11 +68,11 @@
                   <span :class="'mb-0 p-0 px-1 alert ' + $options.filters.durationClass(totalTriggerDurationPercent)" v-html="$options.filters.duration(triggersTotalDuration)"></span>
                 </span>
                 <button @click.prevent="showTriggers = !showTriggers" class="bg-transparent border-0 p-0 m-0 pl-1">
-                  <i class="fa fa-caret-down text-muted"></i>
+                  <font-awesome-icon icon="caret-down" class="text-muted" />
                 </button>
                 <div class="stat-dropdown-container text-left" v-if="showTriggers">
                   <button class="btn btn-close float-right" v-on:click="showTriggers = false">
-                    <i class="fa fa-times"></i>
+                    <font-awesome-icon icon="times" />
                   </button>
                   <h3>Triggers</h3>
                   <div v-for="(trigger, index) in plan.planStats.triggers">
@@ -98,11 +98,11 @@
             <div class="d-inline-block border-left px-2 position-relative" v-if="plan.planStats.settings">
               <span class="stat-label">Settings: <span class="badge badge-secondary">{{ lodash.keys(plan.planStats.settings).length }}</span></span>
               <button @click.prevent="showSettings = !showSettings" class="bg-transparent border-0 p-0 m-0 pl-1">
-                <i class="fa fa-caret-down text-muted"></i>
+                <font-awesome-icon icon="caret-down" class="text-muted" />
               </button>
               <div class="stat-dropdown-container text-left" v-if="showSettings">
                 <button class="btn btn-close float-right" v-on:click="showSettings = false">
-                  <i class="fa fa-times"></i>
+                  <font-awesome-icon icon="times" />
                 </button>
                 <h3>PG Settings</h3>
                 <em class="text-muted d-block pb-2">
@@ -119,7 +119,7 @@
               </div>
             </div>
             <button v-on:click="showHideMenu" :class="['border-left btn btn-sm p-0 px-2 ml-auto', {'text-primary': !viewOptions.menuHidden}]">
-              <i class="fa fa-cog p-0"></i> Settings
+              <font-awesome-icon icon="cog" /> Settings
             </button>
           </div>
           <div class="flex-grow-1 d-flex overflow-hidden">
@@ -171,7 +171,7 @@
               </div>
               <div class="form-check">
                 <input id="showDiagram" type="checkbox" v-model="viewOptions.showDiagram" class="form-check-input">
-                <label for="showDiagram" class="form-check-label"><i class="fa fa-align-left"></i> Diagram</label>
+                <label for="showDiagram" class="form-check-label"><font-awesome-icon icon="align-left" /> Diagram</label>
               </div>
               <hr>
               <label class="text-uppercase">Density</label>
@@ -187,11 +187,11 @@
               <div class="form-group">
                 <div class="btn-group btn-group-sm">
                   <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.TWOD}" v-on:click="viewOptions.orientation = orientations.TWOD">
-                    <i class="fa fa-sitemap"></i>
+                    <font-awesome-icon icon="sitemap" />
                     2D
                   </button>
                   <button class="btn btn-outline-secondary" :class="{'active': viewOptions.orientation == orientations.CLASSIC}" v-on:click="viewOptions.orientation = orientations.CLASSIC">
-                    <i class="fa fa-list"></i>
+                    <font-awesome-icon icon="list" />
                     classic
                   </button>
                 </div>
@@ -259,6 +259,16 @@ import Dragscroll from '@/dragscroll';
 import VueTippy, { TippyComponent } from 'vue-tippy';
 Vue.use(VueTippy);
 Vue.component('tippy', TippyComponent);
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+// Add all icons to the library
+library.add(fas, far, fab)
+Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 @Component({
   name: 'plan',

@@ -31,4 +31,5 @@ module.exports = {
       new MomentLocalesPlugin(),
     ],
   },
+  runtimeCompiler: true,
 };
