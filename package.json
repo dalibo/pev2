@@ -35,7 +35,7 @@
     "moment-duration-format": "^2.3.2",
     "popper.js": "^1.16.1",
     "splitpanes": "^2.3.8",
-    "tippy.js": "^6.3.2",
+    "tippy.js": "^6.3.7",
     "vue": "^2.6.14",
     "vue-class-component": "^7.2.6",
     "vue-clipboard3": "^1.0.1",
