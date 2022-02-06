@@ -27,7 +27,7 @@
     "@types/moment-duration-format": "^2.2.3",
     "bootstrap": "^4.6.1",
     "clarinet": "^0.12.3",
-    "core-js": "^3.16.1",
+    "core-js": "^3.21.0",
     "highlight.js": "^10.7.2",
     "jquery": "^3.6.0",
     "lodash": "^4.17.21",
