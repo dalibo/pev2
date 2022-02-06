@@ -15,6 +15,11 @@
     "dist/*"
   ],
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-brands-svg-icons": "^5.15.4",
+    "@fortawesome/free-regular-svg-icons": "^5.15.4",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/vue-fontawesome": "^2.0.6",
     "@types/dragscroll": "0.0.0",
     "@types/highlight.js": "^9.12.4",
     "@types/lodash": "^4.14.172",
