@@ -17,8 +17,9 @@ colleagues or customers.
 
 PEV2 can be run locally.
 
-Simply download [pev2.tar.gz](https://github.com/dalibo/pev2/releases/latest),
-extract the archive and open `index.html` in your favorite internet browser.
+Simply download
+[pev2.html](https://github.com/dalibo/pev2/releases/latest/download/pev2.html),
+and open it in your favorite internet browser.
 
 ### Local installation using docker
 

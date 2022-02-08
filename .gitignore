@@ -20,6 +20,3 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
-
-# Generate files
-pev2.tar.gz
