@@ -13,16 +13,6 @@
           <br>
           <em>psql</em> users can export the plan to a file using <code>psql -XqAt -f explain.sql > analyze.json</code>
         </div>
-        <div class="dropdown ml-auto">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Sample Plans
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a v-for="(sample, index) in samples" class="dropdown-item" v-on:click.prevent="loadSample(sample)" href>
-              {{ sample[0] }}
-            </a>
-          </div>
-        </div>
       </div>
     </div>
     <form v-on:submit.prevent="submitPlan">
@@ -51,21 +41,6 @@ import { setPlanData } from '../main.ts';
   }
 })
 export default class Home extends Vue {
-  private samples: any[] = [
-    ['Example 1 (JSON)', 'plan_1_.txt', 'plan_1.sql'],
-    ['Example 1 (plain text)', 'plan_1.txt', 'plan_1.sql'],
-    ['Example 2', 'plan_2.txt', 'plan_2.sql'],
-    ['Example 3', 'plan_3.txt', 'plan_3.sql'],
-    ['Example 4', 'plan_4.txt'],
-    ['Example 5', 'plan_5.txt', 'plan_5.sql'],
-    ['With subplan', 'plan_6.txt'],
-    ['With CTE', 'plan_7.txt'],
-    ['Very large plan', 'plan_8.txt'],
-    ['With trigger', 'plan_trigger_.txt', 'plan_trigger.sql'],
-    ['With trigger (plain text)', 'plan_trigger.txt', 'plan_trigger_2.sql'],
-    ['Parallel (verbose)', 'plan_parallel.txt'],
-    ['Parallel (4 workers)', 'plan_parallel2.txt', 'plan_parallel2.sql'],
-  ];
   private planInput: string = '';
   private queryInput: string = '';
   private draggingPlan: boolean = false;
@@ -82,21 +57,6 @@ export default class Home extends Vue {
 
   private submitPlan(): void {
     setPlanData(this.planInput, this.queryInput);
-  }
-
-  private loadSample(sample: string[]): void {
-    import('raw-loader!../../samples/' + sample[1])
-      .then((data) => {
-        this.planInput = data.default;
-      });
-    if (sample[2]) {
-      import('raw-loader!../../samples/' + sample[2])
-        .then((data) => {
-          this.queryInput = data.default;
-        });
-    } else {
-      this.queryInput = '';
-    }
   }
 
   private handleDrop(event: DragEvent) {
