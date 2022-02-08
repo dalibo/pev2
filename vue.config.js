@@ -1,4 +1,6 @@
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlInlineScriptPlugin = require("html-inline-script-webpack-plugin");
 
 module.exports = {
   publicPath: "",
@@ -7,6 +9,7 @@ module.exports = {
     index: {
       entry: "example/src/main.ts",
       template: "example/index.html",
+      filename: "pev2.html",
     },
   },
   css: {
@@ -29,7 +32,12 @@ module.exports = {
     plugins: [
       // To strip all locales except “en”
       new MomentLocalesPlugin(),
+      new HtmlWebpackPlugin(),
+      new HtmlInlineScriptPlugin(),
     ],
+    optimization: {
+      splitChunks: false,
+    },
   },
   runtimeCompiler: true,
 };

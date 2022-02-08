@@ -6,7 +6,7 @@
     "build": "vue-cli-service build --target lib --name pev2 ./src/components/Plan.vue && EXTRACT_CSS=true vue-cli-service build --target lib --name pev2 ./src/components/Plan.vue --dest ./dist/components && cp -R ./src/assets/scss ./dist/scss",
     "test:unit": "jest",
     "lint": "vue-cli-service lint",
-    "build-app": "vue-cli-service build --dest dist-app --no-module",
+    "build-app": "vue-cli-service build --dest dist-app && rm -rf dist-app/index.html",
     "prepare": "npm run snyk-protect",
     "snyk-protect": "snyk protect"
   },
@@ -52,6 +52,8 @@
     "@vue/cli-service": "~5.0.0-rc.2",
     "@vue/test-utils": "^1.0.0-beta.29",
     "babel-core": "^6.26.3",
+    "html-inline-script-webpack-plugin": "^2.0.3",
+    "html-webpack-plugin": "^5.5.0",
     "husky": "^4.2.2",
     "jest": "^27.5.0",
     "lint-staged": "^10.0.7",
