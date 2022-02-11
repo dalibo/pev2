@@ -32,8 +32,8 @@ module.exports = {
     plugins: [
       // To strip all locales except “en”
       new MomentLocalesPlugin(),
-      new HtmlWebpackPlugin(),
-      new HtmlInlineScriptPlugin(),
+      //new HtmlWebpackPlugin(),
+      //new HtmlInlineScriptPlugin(),
     ],
     optimization: {
       splitChunks: false,
