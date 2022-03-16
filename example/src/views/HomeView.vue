@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, ref } from "vue"
+import { inject, ref, onMounted } from "vue"
 import MainLayout from "../layouts/MainLayout.vue"
 
 const setPlanData = inject("setPlanData")
@@ -10,6 +10,13 @@ const queryInput = ref<string>("")
 function submitPlan() {
   setPlanData(planInput, queryInput)
 }
+
+onMounted(() => {
+  const textAreas = document.getElementsByTagName("textarea")
+  Array.prototype.forEach.call(textAreas, (elem: HTMLInputElement) => {
+    elem.placeholder = elem.placeholder.replace(/\\n/g, "\n")
+  })
+})
 </script>
 
 <template>
