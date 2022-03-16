@@ -1,11 +1,23 @@
 <script lang="ts" setup>
 import { inject, ref, onMounted } from "vue"
 import MainLayout from "../layouts/MainLayout.vue"
+import { plan1_source, plan1_source_json, plan1_query } from "../samples.ts"
 
 const setPlanData = inject("setPlanData")
 
 const planInput = ref<string>("")
 const queryInput = ref<string>("")
+
+interface Sample extends Array<string> {
+  0: string
+  1: string
+  2: string
+}
+
+const samples = ref<Sample[]>([
+  ["Example 1 TEXT", plan1_source, plan1_query],
+  ["Example 1 JSON", plan1_source_json, plan1_query],
+])
 
 function submitPlan() {
   setPlanData(planInput, queryInput)
@@ -17,6 +29,11 @@ onMounted(() => {
     elem.placeholder = elem.placeholder.replace(/\\n/g, "\n")
   })
 })
+
+function loadSample(sample: Sample) {
+  planInput.value = sample[1]
+  queryInput.value = sample[2]
+}
 </script>
 
 <template>
