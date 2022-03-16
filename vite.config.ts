@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from "url"
 
 import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
+import { viteSingleFile } from "vite-plugin-singlefile"
 
 const build = process.env.LIB
   ? {
@@ -24,12 +25,23 @@ const build = process.env.LIB
     }
   : {
       outDir: "dist-app",
+      target: "esnext",
+      assetsInlineLimit: 100000000,
+      chunkSizeWarningLimit: 100000000,
+      cssCodeSplit: false,
+      brotliSize: false,
+      rollupOptions: {
+        inlineDynamicImports: true,
+        output: {
+          manualChunks: () => "everything.js",
+        },
+      },
     }
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: build,
-  plugins: [vue()],
+  plugins: [vue(), viteSingleFile()],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
