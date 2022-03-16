@@ -7,6 +7,8 @@ const setPlanData = inject("setPlanData")
 
 const planInput = ref<string>("")
 const queryInput = ref<string>("")
+const draggingPlan = ref<boolean>(false)
+const draggingQuery = ref<boolean>(false)
 
 interface Sample extends Array<string> {
   0: string
@@ -35,6 +37,28 @@ onMounted(() => {
 function loadSample(sample: Sample) {
   planInput.value = sample[1]
   queryInput.value = sample[2]
+}
+
+function handleDrop(event: DragEvent) {
+  const input = event.srcElement
+  if (!(input instanceof HTMLTextAreaElement)) {
+    return
+  }
+  draggingPlan.value = false
+  draggingQuery.value = false
+  if (!event.dataTransfer) {
+    return
+  }
+  const file = event.dataTransfer.files[0]
+  const reader = new FileReader()
+  reader.onload = () => {
+    if (reader.result instanceof ArrayBuffer) {
+      return
+    }
+    input.value = reader.result || ""
+    input.dispatchEvent(new Event("input"))
+  }
+  reader.readAsText(file)
 }
 </script>
 
