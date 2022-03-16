@@ -78,7 +78,9 @@ function handleDrop(event: DragEvent) {
         <div class="col d-flex">
           <div class="text-muted">
             For best results, use
-            <code>EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)</code>
+            <code>
+              EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)
+            </code>
             <br />
             <em>psql</em> users can export the plan to a file using
             <code>psql -XqAt -f explain.sql > analyze.json</code>
