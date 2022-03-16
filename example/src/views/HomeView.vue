@@ -28,6 +28,8 @@ onMounted(() => {
   Array.prototype.forEach.call(textAreas, (elem: HTMLInputElement) => {
     elem.placeholder = elem.placeholder.replace(/\\n/g, "\n")
   })
+  const noHashURL = window.location.href.replace(/#.*$/, "")
+  window.history.replaceState("", document.title, noHashURL)
 })
 
 function loadSample(sample: Sample) {
