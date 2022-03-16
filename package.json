@@ -25,6 +25,7 @@
     "prettier": "^2.5.1",
     "typescript": "~4.5.5",
     "vite": "^2.8.4",
+    "vite-plugin-singlefile": "^0.7.1",
     "vue-tsc": "^0.31.4"
   }
 }
