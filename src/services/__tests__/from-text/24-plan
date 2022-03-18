@@ -1,0 +1,12 @@
+'Sort  (cost=148927.96..149012.78 rows=33927 width=49) (actual time=2906.084..2946.819 rows=24935 loops=1)'
+'  Sort Key: ak.artikelnr_list'
+'  Sort Method:  quicksort  Memory: 3536kB'
+'  ->  Nested Loop  (cost=1.55..146374.93 rows=33927 width=49) (actual time=0.160..2531.059 rows=24935 loops=1)'
+'        ->  Seq Scan on t_artikelkey ak  (cost=0.00..2312.30 rows=25130 width=237) (actual time=0.014..85.614 rows=25112 loops=1)'
+'        ->  Bitmap Heap Scan on artikel_as aas  (cost=1.55..5.63 rows=6 width=10) (actual time=0.073..0.074 rows=1 loops=25112)'
+'              Recheck Cond: ((aas.artikelnrforvererbung)::text = ANY ((ARRAY[ak.keysum1, ak.keysum2, ak.keysum3, ak.keysum4, ak.keysum5, ak.keysum6])::text[]))'
+'              Filter: ((aas.aas_ask)::text = 'PRE'::text)'
+'              ->  Bitmap Index Scan on idx_artikel_as_artnrver  (cost=0.00..1.55 rows=6 width=0) (actual time=0.066..0.066 rows=1 loops=25112)'
+'                    Index Cond: ((aas.artikelnrforvererbung)::text = ANY ((ARRAY[ak.keysum1, ak.keysum2, ak.keysum3, ak.keysum4, ak.keysum5, ak.keysum6])::text[]))'
+
+

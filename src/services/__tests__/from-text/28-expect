@@ -1,0 +1,13 @@
+{
+  "Plan": {
+    "Node Type": "Seq Scan",
+    "Relation Name": "pg_class",
+    "Actual Startup Time": 0.016,
+    "Actual Total Time": 0.149,
+    "Actual Rows": 342,
+    "Actual Loops": 1
+  },
+  "Planning Time": 0.188,
+  "Execution Time": 0.238
+}
+

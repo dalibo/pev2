@@ -1,0 +1,8 @@
+# explain select *, (select oid::int4 from pg_class c2 where c2.relname = c.relname) - oid::int4 from pg_class c;
+                                              QUERY PLAN
+------------------------------------------------------------------------------------------------------
+ Seq Scan on pg_class c  (cost=0.00..1885.60 rows=227 width=200)
+   SubPlan
+     ->  Index Scan using pg_class_relname_nsp_index on pg_class c2  (cost=0.00..8.27 rows=1 width=4)
+           Index Cond: (relname = $0)
+(4 rows)

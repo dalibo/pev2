@@ -1,0 +1,35 @@
+{
+  "Plan": {
+    "Node Type": "Sort",
+    "Startup Cost": 29.81,
+    "Total Cost": 30.67,
+    "Plan Rows": 342,
+    "Plan Width": 262,
+    "Actual Startup Time": 0.44,
+    "Actual Total Time": 0.537,
+    "Actual Rows": 352,
+    "Actual Loops": 1,
+    "Sort Key": [
+      "relallvisible"
+    ],
+    "Sort Method": "quicksort",
+    "Sort Space Used": "118",
+    "Sort Space Type": "Memory",
+    "Plans": [
+      {
+        "Node Type": "Seq Scan",
+        "Relation Name": "pg_class",
+        "Startup Cost": 0,
+        "Total Cost": 15.42,
+        "Plan Rows": 342,
+        "Plan Width": 262,
+        "Actual Startup Time": 0.021,
+        "Actual Total Time": 0.175,
+        "Actual Rows": 352,
+        "Actual Loops": 1
+      }
+    ]
+  },
+  "Planning Time": 0.255,
+  "Execution Time": 0.678
+}

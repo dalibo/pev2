@@ -1,0 +1,63 @@
+{
+  "Plan": {
+    "Node Type": "Index Scan",
+    "Index Name": "pg_class_oid_index",
+    "Relation Name": "pg_class",
+    "Startup Cost": 0.17,
+    "Total Cost": 8.44,
+    "Plan Rows": 1,
+    "Plan Width": 194,
+    "Actual Startup Time": 0.035,
+    "Actual Total Time": 0.036,
+    "Actual Rows": 1,
+    "Actual Loops": 1,
+    "Index Cond": "(oid = $1)",
+    "Plans": [
+      {
+        "Node Type": "Result",
+        "Startup Cost": 0.16,
+        "Total Cost": 0.17,
+        "Plan Rows": 1,
+        "Plan Width": 0,
+        "Actual Startup Time": 0.023,
+        "Actual Total Time": 0.023,
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Parent Relationship": "InitPlan",
+        "Subplan Name": "InitPlan 2 (returns $1)",
+        "Plans": [
+          {
+            "Node Type": "Limit",
+            "Startup Cost": 0,
+            "Total Cost": 0.16,
+            "Plan Rows": 1,
+            "Plan Width": 4,
+            "Actual Startup Time": 0.02,
+            "Actual Total Time": 0.021,
+            "Actual Rows": 1,
+            "Actual Loops": 1,
+            "Parent Relationship": "InitPlan",
+            "Subplan Name": "InitPlan 1 (returns $0)",
+            "Plans": [
+              {
+                "Node Type": "Index Scan",
+                "Index Name": "pg_class_oid_index",
+                "Relation Name": "pg_class",
+                "Startup Cost": 0,
+                "Total Cost": 44.47,
+                "Plan Rows": 281,
+                "Plan Width": 4,
+                "Actual Startup Time": 0.019,
+                "Actual Total Time": 0.019,
+                "Actual Rows": 1,
+                "Actual Loops": 1,
+                "Index Cond": "(oid IS NOT NULL)"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Total Runtime": 0.081
+}

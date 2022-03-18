@@ -1,0 +1,6 @@
+                            QUERY PLAN                            
+------------------------------------------------------------------
+ Seq Scan on pg_class (actual time=0.016..0.149 rows=342 loops=1)
+ Planning Time: 0.188 ms
+ Execution Time: 0.238 ms
+(3 lignes)

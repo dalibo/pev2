@@ -1,0 +1,15 @@
+ ->  Index Scan using id_contact_event_idx on of_contact_event e  (cost=30.00..34.33 rows=1 width=40) (actual time=0.003..0.003 rows=1 loops=19499)
+       Index Cond: (e.id_contact_event = CASE WHEN (("outer".client_status_cc = 2) AND ("outer".client_status_unit = 2) AND ("outer".id_employee_responsible IS NULL) AND ("outer".id_unit_responsible IS NULL)) THEN (subplan) ELSE "outer".latest_event END)
+       SubPlan
+         ->  Limit  (cost=29.99..30.00 rows=1 width=19) (actual time=0.018..0.018 rows=1 loops=5570)
+               ->  Sort  (cost=29.99..30.00 rows=4 width=19) (actual time=0.018..0.018 rows=1 loops=5570)
+                     Sort Key: status, date_registration, visit
+                     ->  Index Scan using idx_of_contact_event_id_contact_client on of_contact_event ev2  (cost=0.00..29.95 rows=4 width=19) (actual time=0.006..0.012 rows=6 loops=5570)
+                           Index Cond: (id_contact_client = $0)
+                           Filter: (id_contact_event < $1)
+         ->  Limit  (cost=29.99..30.00 rows=1 width=19) (never executed)
+               ->  Sort  (cost=29.99..30.00 rows=4 width=19) (never executed)
+                     Sort Key: status, date_registration, visit
+                     ->  Index Scan using idx_of_contact_event_id_contact_client on of_contact_event ev2  (cost=0.00..29.95 rows=4 width=19) (never executed)
+                           Index Cond: (id_contact_client = $0)
+                           Filter: (id_contact_event < $1)

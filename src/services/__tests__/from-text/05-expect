@@ -1,0 +1,17 @@
+{
+  "Plan": {
+    "Node Type": "Index Scan",
+    "Index Name": "test_pkey",
+    "Relation Name": "test",
+    "Alias": "t",
+    "Startup Cost": 0,
+    "Total Cost": 8.27,
+    "Plan Rows": 1,
+    "Plan Width": 4,
+    "Actual Startup Time": 0.029,
+    "Actual Total Time": 0.033,
+    "Actual Rows": 1,
+    "Actual Loops": 1,
+    "Index Cond": "(id = 1)"
+  }
+}

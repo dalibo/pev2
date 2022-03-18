@@ -1,0 +1,5 @@
+Hash Join  (cost=6.65..104.10 rows=1600 width=1363) (actual time=0.002..0.002 rows=0 loops=1)
+  Hash Cond: ("outer".uzytkownik_id = "inner".id)
+  ->  Seq Scan on uprawnienie_uzytkownik uu  (cost=0.00..26.00 rows=1600 width=17) (actual time=0.001..0.001 rows=0 loops=1)
+  ->  Hash  (cost=6.12..6.12 rows=212 width=1346) (never executed)
+        ->  Seq Scan on uprawnienie u  (cost=0.00..6.12 rows=212 width=1346) (never executed)

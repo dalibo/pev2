@@ -1,0 +1,4 @@
+QUERY PLAN                          
+-------------------------------------------------------------
+ Result  (cost=0.00..0.01 rows=1 width=4)
+ Settings: search_path = 'public, magasin', work_mem = '8MB'

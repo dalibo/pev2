@@ -1,0 +1,4 @@
+ Seq Scan on pg_class  (cost=0.00..17.99 rows=499 width=267) (actual time=0.039..0.494 rows=494 loops=1)
+ Settings: effective_io_concurrency = '100', enable_partitionwise_aggregate = 'on', enable_partitionwise_join = 'on', from_collapse_limit = '10', join_collapse_limit = '10', max_parallel_workers = '4', random_page_cost = '1', temp_buffers = '32MB', work_mem = '30MB'
+ Planning Time: 6.615 ms
+ Execution Time: 1.190 ms

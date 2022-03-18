@@ -1,0 +1,20 @@
+{
+  "Plan": {
+    "Node Type": "Limit",
+    "Startup Cost": 0,
+    "Total Cost": 0.08,
+    "Plan Rows": 2,
+    "Plan Width": 36,
+    "Plans": [
+      {
+        "Node Type": "Index Scan Backward",
+        "Index Name": "w",
+        "Relation Name": "x",
+        "Startup Cost": 0,
+        "Total Cost": 5770.49,
+        "Plan Rows": 149976,
+        "Plan Width": 36
+      }
+    ]
+  }
+}

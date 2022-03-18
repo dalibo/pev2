@@ -1,0 +1,84 @@
+{
+  "Plan": {
+    "Node Type": "Limit",
+    "Startup Cost": 18602.75,
+    "Total Cost": 19244.22,
+    "Plan Rows": 1,
+    "Plan Width": 636,
+    "Actual Startup Time": 126.516,
+    "Actual Total Time": 126.517,
+    "Actual Rows": 1,
+    "Actual Loops": 1,
+    "Plans": [
+      {
+        "Node Type": "Nested Loop",
+        "Startup Cost": 0,
+        "Total Cost": 2254139.98,
+        "Plan Rows": 3514,
+        "Plan Width": 636,
+        "Actual Startup Time": 2.637,
+        "Actual Total Time": 126.488,
+        "Actual Rows": 30,
+        "Actual Loops": 1,
+        "Plans": [
+          {
+            "Node Type": "Nested Loop",
+            "Startup Cost": 0,
+            "Total Cost": 1860597.05,
+            "Plan Rows": 73883,
+            "Plan Width": 640,
+            "Actual Startup Time": 0.214,
+            "Actual Total Time": 121.234,
+            "Actual Rows": 588,
+            "Actual Loops": 1,
+            "Plans": [
+              {
+                "Node Type": "Index Scan Backward",
+                "Index Name": "index_stories_on_published_at",
+                "Relation Name": "stories",
+                "Startup Cost": 0,
+                "Total Cost": 405621.7,
+                "Plan Rows": 1303286,
+                "Plan Width": 636,
+                "Actual Startup Time": 0.099,
+                "Actual Total Time": 52.447,
+                "Actual Rows": 10157,
+                "Actual Loops": 1,
+                "Filter": "(NOT hidden)"
+              },
+              {
+                "Node Type": "Index Scan",
+                "Index Name": "index_story_tag_attachments_on_story_id_and_story_tag_id",
+                "Relation Name": "story_tag_attachments",
+                "Startup Cost": 0,
+                "Total Cost": 1.1,
+                "Plan Rows": 1,
+                "Plan Width": 4,
+                "Actual Startup Time": 0.005,
+                "Actual Total Time": 0.005,
+                "Actual Rows": 0,
+                "Actual Loops": 10157,
+                "Index Cond": "((story_tag_attachments.story_id = stories.id) AND (story_tag_attachments.story_tag_id = 166))"
+              }
+            ]
+          },
+          {
+            "Node Type": "Index Scan",
+            "Index Name": "index_story_region_attachments_on_story_id_and_region_id",
+            "Relation Name": "story_region_attachments",
+            "Startup Cost": 0,
+            "Total Cost": 5.31,
+            "Plan Rows": 1,
+            "Plan Width": 4,
+            "Actual Startup Time": 0.007,
+            "Actual Total Time": 0.007,
+            "Actual Rows": 0,
+            "Actual Loops": 588,
+            "Index Cond": "((story_region_attachments.story_id = stories.id) AND (story_region_attachments.region_id = 26824))"
+          }
+        ]
+      }
+    ]
+  },
+  "Total Runtime": 126.625
+}

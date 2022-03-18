@@ -1,0 +1,1 @@
+Seq Scan on test x  (cost=0.00..14.00 rows=1000 width=4) (actual time=0.025..1.985 rows=1000 loops=1)

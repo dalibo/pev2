@@ -1,0 +1,56 @@
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+--------------------
+ Gather  (cost=1065.61..25668.81 rows=2500 width=457) (actual time=9.441..10499.144
+ rows=1000000 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   Buffers: shared hit=15970 read=1081
+   ->  Hash Semi Join  (cost=65.61..24418.81 rows=1042 width=457) (actual time=2.56
+2..9958.864 rows=333333 loops=3)
+         Hash Cond: (pgbench_accounts_2.bid = pgbench_branches_1.bid)
+         Buffers: shared hit=15970 read=1081
+         ->  Hash Join  (cost=48.76..24335.69 rows=20833 width=461) (actual time=1.
+021..7109.108 rows=333333 loops=3)
+               Hash Cond: (pgbench_accounts_2.bid = pgbench_branches.bid)
+               Buffers: shared hit=15872 read=1081
+               ->  Parallel Append  (cost=0.00..23170.00 rows=416667 width=97) (act
+ual time=0.306..4263.511 rows=333333 loops=3)
+                     Buffers: shared hit=15839 read=1081
+                     ->  Parallel Seq Scan on pgbench_accounts_2  (cost=0.00..7034.
+57 rows=138957 width=97) (actual time=0.206..1546.906 rows=333497 loops=1)
+                           Buffers: shared hit=5278 read=367
+                     ->  Parallel Seq Scan on pgbench_accounts_1  (cost=0.00..7029.
+60 rows=138860 width=97) (actual time=0.120..1576.049 rows=333263 loops=1)
+                           Buffers: shared hit=5350 read=291
+                     ->  Parallel Seq Scan on pgbench_accounts_3  (cost=0.00..7022.
+50 rows=138850 width=97) (actual time=0.269..451.992 rows=111080 loops=3)
+                           Buffers: shared hit=5211 read=423
+               ->  Hash  (cost=48.64..48.64 rows=10 width=364) (actual time=0.552..
+0.555 rows=10 loops=3)
+                     Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                     Buffers: shared hit=33
+                     ->  Index Scan using pgbench_branches_pkey on pgbench_branches
+  (cost=0.14..48.64 rows=10 width=364) (actual time=0.102..0.317 rows=10 loops=3)
+                           Buffers: shared hit=33
+         ->  Hash  (cost=16.72..16.72 rows=10 width=8) (actual time=1.286..1.289 ro
+ws=10 loops=3)
+               Buckets: 1024  Batches: 1  Memory Usage: 9kB
+               Buffers: shared hit=14
+               ->  Merge Join  (cost=0.27..16.72 rows=10 width=8) (actual time=0.25
+8..1.035 rows=10 loops=3)
+                     Merge Cond: (pgbench_branches_1.bid = pgbench_branches_2.bid)
+                     Buffers: shared hit=14
+                     ->  Index Only Scan using pgbench_branches_pkey on pgbench_bra
+nches pgbench_branches_1  (cost=0.14..8.29 rows=10 width=4) (actual time=0.078..0.2
+48 rows=10 loops=3)
+                           Heap Fetches: 0
+                           Buffers: shared hit=8
+                     ->  Index Only Scan using pgbench_branches_pkey on pgbench_bra
+nches pgbench_branches_2  (cost=0.14..8.29 rows=10 width=4) (actual time=0.110..0.2
+48 rows=10 loops=3)
+                           Heap Fetches: 0
+                           Buffers: shared hit=6
+ Planning Time: 2.165 ms
+ Execution Time: 13948.301 ms
+(37 lignes)

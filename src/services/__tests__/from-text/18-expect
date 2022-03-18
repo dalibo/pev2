@@ -1,0 +1,114 @@
+{
+  "Plan": {
+    "Node Type": "Index Scan",
+    "Index Name": "id_contact_event_idx",
+    "Relation Name": "of_contact_event",
+    "Alias": "e",
+    "Startup Cost": 30,
+    "Total Cost": 34.33,
+    "Plan Rows": 1,
+    "Plan Width": 40,
+    "Actual Startup Time": 0.003,
+    "Actual Total Time": 0.003,
+    "Actual Rows": 1,
+    "Actual Loops": 19499,
+    "Index Cond": "(e.id_contact_event = CASE WHEN ((\"outer\".client_status_cc = 2) AND (\"outer\".client_status_unit = 2) AND (\"outer\".id_employee_responsible IS NULL) AND (\"outer\".id_unit_responsible IS NULL)) THEN (subplan) ELSE \"outer\".latest_event END)",
+    "Plans": [
+      {
+        "Node Type": "Limit",
+        "Startup Cost": 29.99,
+        "Total Cost": 30,
+        "Plan Rows": 1,
+        "Plan Width": 19,
+        "Actual Startup Time": 0.018,
+        "Actual Total Time": 0.018,
+        "Actual Rows": 1,
+        "Actual Loops": 5570,
+        "Parent Relationship": "SubPlan",
+        "Subplan Name": "SubPlan",
+        "Plans": [
+          {
+            "Node Type": "Sort",
+            "Startup Cost": 29.99,
+            "Total Cost": 30,
+            "Plan Rows": 4,
+            "Plan Width": 19,
+            "Actual Startup Time": 0.018,
+            "Actual Total Time": 0.018,
+            "Actual Rows": 1,
+            "Actual Loops": 5570,
+            "Sort Key": [
+              "status",
+              "date_registration",
+              "visit"
+            ],
+            "Plans": [
+              {
+                "Node Type": "Index Scan",
+                "Index Name": "idx_of_contact_event_id_contact_client",
+                "Relation Name": "of_contact_event",
+                "Alias": "ev2",
+                "Startup Cost": 0,
+                "Total Cost": 29.95,
+                "Plan Rows": 4,
+                "Plan Width": 19,
+                "Actual Startup Time": 0.006,
+                "Actual Total Time": 0.012,
+                "Actual Rows": 6,
+                "Actual Loops": 5570,
+                "Index Cond": "(id_contact_client = $0)",
+                "Filter": "(id_contact_event < $1)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Node Type": "Limit",
+        "Startup Cost": 29.99,
+        "Total Cost": 30,
+        "Plan Rows": 1,
+        "Plan Width": 19,
+        "Actual Loops": 0,
+        "Actual Rows": 0,
+        "Actual Total Time": 0,
+        "Parent Relationship": "SubPlan",
+        "Subplan Name": "SubPlan",
+        "Plans": [
+          {
+            "Node Type": "Sort",
+            "Startup Cost": 29.99,
+            "Total Cost": 30,
+            "Plan Rows": 4,
+            "Plan Width": 19,
+            "Actual Loops": 0,
+            "Actual Rows": 0,
+            "Actual Total Time": 0,
+            "Sort Key": [
+              "status",
+              "date_registration",
+              "visit"
+            ],
+            "Plans": [
+              {
+                "Node Type": "Index Scan",
+                "Index Name": "idx_of_contact_event_id_contact_client",
+                "Relation Name": "of_contact_event",
+                "Alias": "ev2",
+                "Startup Cost": 0,
+                "Total Cost": 29.95,
+                "Plan Rows": 4,
+                "Plan Width": 19,
+                "Actual Loops": 0,
+                "Actual Rows": 0,
+                "Actual Total Time": 0,
+                "Index Cond": "(id_contact_client = $0)",
+                "Filter": "(id_contact_event < $1)"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

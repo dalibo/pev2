@@ -1,0 +1,14 @@
+{
+  "Plan": {
+    "Node Type": "Seq Scan",
+    "Relation Name": "pg_class",
+    "Startup Cost": 0,
+    "Total Cost": 32.98,
+    "Plan Rows": 698,
+    "Plan Width": 776,
+    "Actual Rows": 698,
+    "Actual Loops": 1
+  },
+  "Planning Time": 0.051,
+  "Execution Time": 0.105
+}
