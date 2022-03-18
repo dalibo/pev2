@@ -1,0 +1,4 @@
+QUERY PLAN
+Seq Scan on cycle_item  (cost=0.00..2700507.40 rows=1334980 width=4)
+  Filter: (item_id = 4753)
+

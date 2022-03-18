@@ -1,0 +1,6 @@
+"GroupAggregate  (cost=265935.63..285867.54 rows=137462 width=26)"
+"  Filter: (count(*) > 1)"
+"  ->  Sort  (cost=265935.63..269372.16 rows=1374614 width=26)"
+"        Sort Key: latitude_decimal, longitude_decimal"
+"        ->  Seq Scan on temp_city  (cost=0.00..27121.14 rows=1374614 width=26)"
+

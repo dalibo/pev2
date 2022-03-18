@@ -1,0 +1,14 @@
+# JIT
+BEGIN; SET jit_above_cost = 10; EXPLAIN ANALYZE SELECT SUM(relpages) FROM pg_class; COMMIT;
+
+                                                 QUERY PLAN
+-------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=17.94..17.95 rows=1 width=8) (actual time=2.250..2.250 rows=1 loops=1)
+   ->  Seq Scan on pg_class  (cost=0.00..16.95 rows=395 width=4) (actual time=0.007..0.038 rows=397 loops=1)
+ Planning Time: 0.052 ms
+ JIT:
+   Functions: 3
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.340 ms, Inlining 0.000 ms, Optimization 0.168 ms, Emission 1.907 ms, Total 2.414 ms
+ Execution Time: 2.625 ms
+(8 lignes)

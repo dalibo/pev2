@@ -1,0 +1,53 @@
+{
+  "Plan": {
+    "Node Type": "Hash Join",
+    "Startup Cost": 6.65,
+    "Total Cost": 104.1,
+    "Plan Rows": 1600,
+    "Plan Width": 1363,
+    "Actual Startup Time": 0.002,
+    "Actual Total Time": 0.002,
+    "Actual Rows": 0,
+    "Actual Loops": 1,
+    "Hash Cond": "(\"outer\".uzytkownik_id = \"inner\".id)",
+    "Plans": [
+      {
+        "Node Type": "Seq Scan",
+        "Relation Name": "uprawnienie_uzytkownik",
+        "Alias": "uu",
+        "Startup Cost": 0,
+        "Total Cost": 26,
+        "Plan Rows": 1600,
+        "Plan Width": 17,
+        "Actual Startup Time": 0.001,
+        "Actual Total Time": 0.001,
+        "Actual Rows": 0,
+        "Actual Loops": 1
+      },
+      {
+        "Node Type": "Hash",
+        "Startup Cost": 6.12,
+        "Total Cost": 6.12,
+        "Plan Rows": 212,
+        "Plan Width": 1346,
+        "Actual Loops": 0,
+        "Actual Rows": 0,
+        "Actual Total Time": 0,
+        "Plans": [
+          {
+            "Node Type": "Seq Scan",
+            "Relation Name": "uprawnienie",
+            "Alias": "u",
+            "Startup Cost": 0,
+            "Total Cost": 6.12,
+            "Plan Rows": 212,
+            "Plan Width": 1346,
+            "Actual Loops": 0,
+            "Actual Rows": 0,
+            "Actual Total Time": 0
+          }
+        ]
+      }
+    ]
+  }
+}

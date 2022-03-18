@@ -1,0 +1,21 @@
+{
+  "Plan": {
+    "Node Type": "Tid Range Scan",
+    "Relation Name": "test",
+    "Startup Cost": 0,
+    "Total Cost": 142.05,
+    "Plan Rows": 9605,
+    "Plan Width": 4,
+    "Actual Startup Time": 0.019,
+    "Actual Total Time": 2.116,
+    "Actual Rows": 9600,
+    "Actual Loops": 1,
+    "TID Cond": "(ctid > '(400,0)'::tid)",
+    "Shared Hit Blocks": 43,
+    "Shared Read Blocks": 0,
+    "Shared Written Blocks": 0,
+    "Shared Dirtied Blocks": 0
+  },
+  "Planning Time": 0.079,
+  "Execution Time": 3.372
+}

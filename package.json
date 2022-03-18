@@ -10,19 +10,27 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.180",
     "bootstrap": "^4.6.1",
+    "clarinet": "^0.12.5",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "vue": "^3.2.31"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
-    "@types/node": "^16.11.25",
+    "@types/jest": "^27.4.1",
+    "@types/node": "^16.11.26",
     "@vitejs/plugin-vue": "^2.2.2",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^10.0.0",
     "@vue/tsconfig": "^0.1.3",
     "eslint": "^8.5.0",
     "eslint-plugin-vue": "^8.2.0",
+    "jest": "^27.5.1",
     "prettier": "^2.5.1",
+    "ts-jest": "^27.1.3",
+    "ts-node": "^10.7.0",
     "typescript": "~4.5.5",
     "vite": "^2.8.4",
     "vite-plugin-singlefile": "^0.7.1",

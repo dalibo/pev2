@@ -1,0 +1,77 @@
+{
+  "Plan": {
+    "Node Type": "Sort",
+    "Startup Cost": 148927.96,
+    "Total Cost": 149012.78,
+    "Plan Rows": 33927,
+    "Plan Width": 49,
+    "Actual Startup Time": 2906.084,
+    "Actual Total Time": 2946.819,
+    "Actual Rows": 24935,
+    "Actual Loops": 1,
+    "Sort Key": [
+      "ak.artikelnr_list"
+    ],
+    "Sort Method": "quicksort",
+    "Sort Space Used": "3536",
+    "Sort Space Type": "Memory",
+    "Plans": [
+      {
+        "Node Type": "Nested Loop",
+        "Startup Cost": 1.55,
+        "Total Cost": 146374.93,
+        "Plan Rows": 33927,
+        "Plan Width": 49,
+        "Actual Startup Time": 0.16,
+        "Actual Total Time": 2531.059,
+        "Actual Rows": 24935,
+        "Actual Loops": 1,
+        "Plans": [
+          {
+            "Node Type": "Seq Scan",
+            "Relation Name": "t_artikelkey",
+            "Alias": "ak",
+            "Startup Cost": 0,
+            "Total Cost": 2312.3,
+            "Plan Rows": 25130,
+            "Plan Width": 237,
+            "Actual Startup Time": 0.014,
+            "Actual Total Time": 85.614,
+            "Actual Rows": 25112,
+            "Actual Loops": 1
+          },
+          {
+            "Node Type": "Bitmap Heap Scan",
+            "Relation Name": "artikel_as",
+            "Alias": "aas",
+            "Startup Cost": 1.55,
+            "Total Cost": 5.63,
+            "Plan Rows": 6,
+            "Plan Width": 10,
+            "Actual Startup Time": 0.073,
+            "Actual Total Time": 0.074,
+            "Actual Rows": 1,
+            "Actual Loops": 25112,
+            "Recheck Cond": "((aas.artikelnrforvererbung)::text = ANY ((ARRAY[ak.keysum1, ak.keysum2, ak.keysum3, ak.keysum4, ak.keysum5, ak.keysum6])::text[]))",
+            "Filter": "((aas.aas_ask)::text = 'PRE'::text)",
+            "Plans": [
+              {
+                "Node Type": "Bitmap Index Scan",
+                "Index Name": "idx_artikel_as_artnrver",
+                "Startup Cost": 0,
+                "Total Cost": 1.55,
+                "Plan Rows": 6,
+                "Plan Width": 0,
+                "Actual Startup Time": 0.066,
+                "Actual Total Time": 0.066,
+                "Actual Rows": 1,
+                "Actual Loops": 25112,
+                "Index Cond": "((aas.artikelnrforvererbung)::text = ANY ((ARRAY[ak.keysum1, ak.keysum2, ak.keysum3, ak.keysum4, ak.keysum5, ak.keysum6])::text[]))"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

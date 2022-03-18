@@ -1,0 +1,7 @@
+# explain analyze select * from test as t where id = 1;
+                                                    QUERY PLAN
+------------------------------------------------------------------------------------------------------------------
+ Index Scan using test_pkey on test t  (cost=0.00..8.27 rows=1 width=4) (actual time=0.029..0.033 rows=1 loops=1)
+   Index Cond: (id = 1)
+ Total runtime: 0.083 ms
+(3 rows)

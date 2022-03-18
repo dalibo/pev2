@@ -1,0 +1,33 @@
+{
+  "Plan": {
+    "Node Type": "GroupAggregate",
+    "Startup Cost": 265935.63,
+    "Total Cost": 285867.54,
+    "Plan Rows": 137462,
+    "Plan Width": 26,
+    "Filter": "(count(*) > 1)",
+    "Plans": [
+      {
+        "Node Type": "Sort",
+        "Startup Cost": 265935.63,
+        "Total Cost": 269372.16,
+        "Plan Rows": 1374614,
+        "Plan Width": 26,
+        "Sort Key": [
+          "latitude_decimal",
+          "longitude_decimal"
+        ],
+        "Plans": [
+          {
+            "Node Type": "Seq Scan",
+            "Relation Name": "temp_city",
+            "Startup Cost": 0,
+            "Total Cost": 27121.14,
+            "Plan Rows": 1374614,
+            "Plan Width": 26
+          }
+        ]
+      }
+    ]
+  }
+}

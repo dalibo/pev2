@@ -1,0 +1,230 @@
+{
+  "Plan": {
+    "Node Type": "Limit",
+    "Startup Cost": 186.82,
+    "Total Cost": 186.82,
+    "Plan Rows": 1,
+    "Plan Width": 359,
+    "Actual Startup Time": 1352.355,
+    "Actual Total Time": 1352.405,
+    "Actual Rows": 50,
+    "Actual Loops": 1,
+    "Plans": [
+      {
+        "Node Type": "Sort",
+        "Startup Cost": 186.82,
+        "Total Cost": 186.82,
+        "Plan Rows": 1,
+        "Plan Width": 359,
+        "Actual Startup Time": 1352.354,
+        "Actual Total Time": 1352.373,
+        "Actual Rows": 50,
+        "Actual Loops": 1,
+        "Sort Key": [
+          "s.last_updated_date"
+        ],
+        "Sort Method": "top-N heapsort",
+        "Sort Space Used": "50",
+        "Sort Space Type": "Memory",
+        "Plans": [
+          {
+            "Node Type": "Nested Loop Join",
+            "Join Type": "Left",
+            "Startup Cost": 2.16,
+            "Total Cost": 186.81,
+            "Plan Rows": 1,
+            "Plan Width": 359,
+            "Actual Startup Time": 0.733,
+            "Actual Total Time": 1271.399,
+            "Actual Rows": 13988,
+            "Actual Loops": 1,
+            "Plans": [
+              {
+                "Node Type": "Nested Loop Join",
+                "Join Type": "Left",
+                "Startup Cost": 2.16,
+                "Total Cost": 186.49,
+                "Plan Rows": 1,
+                "Plan Width": 351,
+                "Actual Startup Time": 0.706,
+                "Actual Total Time": 1116.63,
+                "Actual Rows": 13988,
+                "Actual Loops": 1,
+                "Filter": "((mu.mls_id IS NULL) OR (mu.mls_update_id = (subplan)))",
+                "Plans": [
+                  {
+                    "Node Type": "Nested Loop",
+                    "Startup Cost": 2.16,
+                    "Total Cost": 19.03,
+                    "Plan Rows": 1,
+                    "Plan Width": 321,
+                    "Actual Startup Time": 0.676,
+                    "Actual Total Time": 204.019,
+                    "Actual Rows": 13988,
+                    "Actual Loops": 1,
+                    "Join Filter": "_st_contains(poly_inter_1.the_geom, s.centroid)",
+                    "Plans": [
+                      {
+                        "Node Type": "Subquery Scan poly_inter_1",
+                        "Startup Cost": 2.16,
+                        "Total Cost": 2.44,
+                        "Plan Rows": 1,
+                        "Plan Width": 32,
+                        "Actual Startup Time": 0.52,
+                        "Actual Total Time": 0.531,
+                        "Actual Rows": 1,
+                        "Actual Loops": 1,
+                        "Filter": "(st_geometrytype(poly_inter_1.the_geom) ~~* '%polygon%'::text)",
+                        "Plans": [
+                          {
+                            "Node Type": "Result",
+                            "Startup Cost": 2.16,
+                            "Total Cost": 2.18,
+                            "Plan Rows": 1,
+                            "Plan Width": 0,
+                            "Actual Startup Time": 0.433,
+                            "Actual Total Time": 0.441,
+                            "Actual Rows": 1,
+                            "Actual Loops": 1,
+                            "Plans": [
+                              {
+                                "Node Type": "Seq Scan",
+                                "Relation Name": "markets",
+                                "Startup Cost": 0,
+                                "Total Cost": 2.15,
+                                "Plan Rows": 1,
+                                "Plan Width": 32,
+                                "Actual Startup Time": 0.015,
+                                "Actual Total Time": 0.02,
+                                "Actual Rows": 1,
+                                "Actual Loops": 1,
+                                "Parent Relationship": "InitPlan",
+                                "Subplan Name": "InitPlan",
+                                "Filter": "((name)::text = 'seattle'::text)"
+                              },
+                              {
+                                "Node Type": "Result",
+                                "Startup Cost": 0,
+                                "Total Cost": 0.01,
+                                "Plan Rows": 1,
+                                "Plan Width": 0,
+                                "Actual Startup Time": 0.048,
+                                "Actual Total Time": 0.05,
+                                "Actual Rows": 1,
+                                "Actual Loops": 1,
+                                "Parent Relationship": "InitPlan",
+                                "Subplan Name": "InitPlan"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Node Type": "Index Scan",
+                        "Index Name": "listing_search_keys_centroid",
+                        "Relation Name": "listing_search_keys",
+                        "Alias": "s",
+                        "Startup Cost": 0,
+                        "Total Cost": 16.58,
+                        "Plan Rows": 1,
+                        "Plan Width": 421,
+                        "Actual Startup Time": 0.131,
+                        "Actual Total Time": 139.571,
+                        "Actual Rows": 13988,
+                        "Actual Loops": 1,
+                        "Index Cond": "(poly_inter_1.the_geom && s.centroid)",
+                        "Filter": "((NOT s.is_townhome) AND (s.property_type_id = ANY ('{3,6}'::bigint[])) AND (s.access_level <= 3) AND (s.listing_type_id = ANY ('{1,2,3}'::integer[])) AND (0 <> (s.search_status_id & 1)) AND (s.last_updated_date >= (('now'::text)::date - '7 days'::interval)))"
+                      }
+                    ]
+                  },
+                  {
+                    "Node Type": "Index Scan",
+                    "Index Name": "mls_updates_listing_id_and_field",
+                    "Relation Name": "mls_updates",
+                    "Alias": "mu",
+                    "Startup Cost": 0,
+                    "Total Cost": 4.19,
+                    "Plan Rows": 7,
+                    "Plan Width": 55,
+                    "Actual Startup Time": 0.01,
+                    "Actual Total Time": 0.012,
+                    "Actual Rows": 2,
+                    "Actual Loops": 13988,
+                    "Index Cond": "(mu.listing_id = s.listing_id)",
+                    "Filter": "(((mu.mls_column_updated)::text <> 'search_status_id'::text) OR (((mu.mls_column_old_value)::text <> '32'::text) AND ((mu.mls_column_new_value)::text <> '32'::text)))"
+                  },
+                  {
+                    "Node Type": "Limit",
+                    "Startup Cost": 23.31,
+                    "Total Cost": 23.31,
+                    "Plan Rows": 1,
+                    "Plan Width": 16,
+                    "Actual Startup Time": 0.03,
+                    "Actual Total Time": 0.031,
+                    "Actual Rows": 1,
+                    "Actual Loops": 22035,
+                    "Parent Relationship": "SubPlan",
+                    "Subplan Name": "SubPlan",
+                    "Plans": [
+                      {
+                        "Node Type": "Sort",
+                        "Startup Cost": 23.31,
+                        "Total Cost": 23.32,
+                        "Plan Rows": 7,
+                        "Plan Width": 16,
+                        "Actual Startup Time": 0.029,
+                        "Actual Total Time": 0.029,
+                        "Actual Rows": 1,
+                        "Actual Loops": 22035,
+                        "Sort Key": [
+                          "mu2.update_date"
+                        ],
+                        "Sort Method": "quicksort",
+                        "Sort Space Used": "25",
+                        "Sort Space Type": "Memory",
+                        "Plans": [
+                          {
+                            "Node Type": "Index Scan",
+                            "Index Name": "mls_updates_listing_id_and_field",
+                            "Relation Name": "mls_updates",
+                            "Alias": "mu2",
+                            "Startup Cost": 0,
+                            "Total Cost": 23.27,
+                            "Plan Rows": 7,
+                            "Plan Width": 16,
+                            "Actual Startup Time": 0.005,
+                            "Actual Total Time": 0.019,
+                            "Actual Rows": 12,
+                            "Actual Loops": 22035,
+                            "Index Cond": "(listing_id = $0)",
+                            "Filter": "(((mls_column_updated)::text <> 'search_status_id'::text) OR (((mls_column_old_value)::text <> '32'::text) AND ((mls_column_new_value)::text <> '32'::text)))"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "Node Type": "Index Scan",
+                "Index Name": "markets_pkey",
+                "Relation Name": "markets",
+                "Alias": "m",
+                "Startup Cost": 0,
+                "Total Cost": 0.27,
+                "Plan Rows": 1,
+                "Plan Width": 16,
+                "Actual Startup Time": 0.002,
+                "Actual Total Time": 0.003,
+                "Actual Rows": 1,
+                "Actual Loops": 13988,
+                "Index Cond": "(s.primary_market_id = m.market_id)"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Total Runtime": 1352.834
+}

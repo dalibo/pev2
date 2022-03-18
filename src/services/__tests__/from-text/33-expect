@@ -1,0 +1,55 @@
+{
+  "Plan": {
+    "Node Type": "Limit",
+    "Plans": [
+      {
+        "Node Type": "Incremental Sort",
+        "Sort Key": [
+          "t.a",
+          "t.b"
+        ],
+        "Presorted Key": [
+          "t.a"
+        ],
+        "Full-sort Groups": {
+          "Group Count": 1,
+          "Sort Methods Used": [
+            "quicksort"
+          ],
+          "Sort Space Memory": {
+            "Average Sort Space Used": 123,
+            "Peak Sort Space Used": 234
+          }
+        },
+        "Pre-sorted Groups": {
+          "Group Count": 5,
+          "Sort Methods Used": [
+            "top-N heapsort",
+            "quicksort"
+          ],
+          "Sort Space Memory": {
+            "Average Sort Space Used": 456,
+            "Peak Sort Space Used": 567 
+          }
+        },
+        "Plans": [
+          {
+            "Node Type": "Sort",
+            "Sort Key": [
+              "t.a"
+            ],
+            "Sort Method": "quicksort",
+            "Sort Space Used": "678",
+            "Sort Space Type": "Memory",
+            "Plans": [
+              {
+                "Node Type": "Seq Scan",
+                "Relation Name": "t"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

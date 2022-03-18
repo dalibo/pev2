@@ -1,0 +1,146 @@
+{
+  "Plan": {
+    "Node Type": "Gather",
+    "Startup Cost": 1048.76,
+    "Total Cost": 30335.69,
+    "Plan Rows": 50000,
+    "Plan Width": 457,
+    "Actual Startup Time": 16.449,
+    "Actual Total Time": 7326.941,
+    "Actual Rows": 1000000,
+    "Actual Loops": 1,
+    "Workers Planned": 2,
+    "Workers Launched": 2,
+    "Shared Hit Blocks": 153,
+    "Shared Read Blocks": 16929,
+    "Shared Written Blocks": 478,
+    "Shared Dirtied Blocks": 16329,
+    "Plans": [
+      {
+        "Node Type": "Hash Join",
+        "Startup Cost": 48.76,
+        "Total Cost": 24335.69,
+        "Plan Rows": 20833,
+        "Plan Width": 457,
+        "Actual Startup Time": 8.07,
+        "Actual Total Time": 6055.501,
+        "Actual Rows": 333333,
+        "Actual Loops": 3,
+        "Hash Cond": "(pgbench_accounts_2.bid = pgbench_branches.bid)",
+        "Shared Hit Blocks": 153,
+        "Shared Read Blocks": 16929,
+        "Shared Written Blocks": 478,
+        "Shared Dirtied Blocks": 16329,
+        "Plans": [
+          {
+            "Node Type": "Append",
+            "Parallel Aware": true,
+            "Startup Cost": 0,
+            "Total Cost": 23170,
+            "Plan Rows": 416667,
+            "Plan Width": 97,
+            "Actual Startup Time": 2.817,
+            "Actual Total Time": 4221.754,
+            "Actual Rows": 333333,
+            "Actual Loops": 3,
+            "Shared Hit Blocks": 0,
+            "Shared Read Blocks": 16920,
+            "Shared Written Blocks": 478,
+            "Shared Dirtied Blocks": 16329,
+            "Plans": [
+              {
+                "Node Type": "Seq Scan",
+                "Relation Name": "pgbench_accounts_2",
+                "Parallel Aware": true,
+                "Startup Cost": 0,
+                "Total Cost": 7034.57,
+                "Plan Rows": 138957,
+                "Plan Width": 97,
+                "Actual Startup Time": 0.917,
+                "Actual Total Time": 2549.397,
+                "Actual Rows": 333497,
+                "Actual Loops": 1,
+                "Shared Hit Blocks": 0,
+                "Shared Read Blocks": 5645,
+                "Shared Written Blocks": 96,
+                "Shared Dirtied Blocks": 5449
+              },
+              {
+                "Node Type": "Seq Scan",
+                "Relation Name": "pgbench_accounts_1",
+                "Parallel Aware": true,
+                "Startup Cost": 0,
+                "Total Cost": 7029.6,
+                "Plan Rows": 138860,
+                "Plan Width": 97,
+                "Actual Startup Time": 1.003,
+                "Actual Total Time": 2273.576,
+                "Actual Rows": 333263,
+                "Actual Loops": 1,
+                "Shared Hit Blocks": 0,
+                "Shared Read Blocks": 5641,
+                "Shared Written Blocks": 48,
+                "Shared Dirtied Blocks": 5450
+              },
+              {
+                "Node Type": "Seq Scan",
+                "Relation Name": "pgbench_accounts_3",
+                "Parallel Aware": true,
+                "Startup Cost": 0,
+                "Total Cost": 7022.5,
+                "Plan Rows": 138850,
+                "Plan Width": 97,
+                "Actual Startup Time": 2.193,
+                "Actual Total Time": 830.177,
+                "Actual Rows": 111080,
+                "Actual Loops": 3,
+                "Shared Hit Blocks": 0,
+                "Shared Read Blocks": 5634,
+                "Shared Written Blocks": 334,
+                "Shared Dirtied Blocks": 5430
+              }
+            ]
+          },
+          {
+            "Node Type": "Hash",
+            "Startup Cost": 48.64,
+            "Total Cost": 48.64,
+            "Plan Rows": 10,
+            "Plan Width": 364,
+            "Actual Startup Time": 4.995,
+            "Actual Total Time": 4.997,
+            "Actual Rows": 10,
+            "Actual Loops": 3,
+            "Buckets": 1024,
+            "Shared Hit Blocks": 26,
+            "Shared Read Blocks": 9,
+            "Shared Written Blocks": 0,
+            "Shared Dirtied Blocks": 0,
+            "Plans": [
+              {
+                "Node Type": "Index Scan",
+                "Index Name": "pgbench_branches_pkey",
+                "Relation Name": "pgbench_branches",
+                "Startup Cost": 0.14,
+                "Total Cost": 48.64,
+                "Plan Rows": 10,
+                "Plan Width": 364,
+                "Actual Startup Time": 0.284,
+                "Actual Total Time": 4.932,
+                "Actual Rows": 10,
+                "Actual Loops": 3,
+                "Shared Hit Blocks": 26,
+                "Shared Read Blocks": 9,
+                "Shared Written Blocks": 0,
+                "Shared Dirtied Blocks": 0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Planning Time": 25.266,
+  "Execution Time": 9321.807
+}
+

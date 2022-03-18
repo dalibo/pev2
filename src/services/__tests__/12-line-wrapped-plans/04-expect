@@ -1,0 +1,11 @@
+{
+  "Plan": {
+    "Node Type": "Seq Scan",
+    "Relation Name": "cycle_item",
+    "Startup Cost": 0,
+    "Total Cost": 2700507.4,
+    "Plan Rows": 1334980,
+    "Plan Width": 4,
+    "Filter": "(item_id = 4753)"
+  }
+}
