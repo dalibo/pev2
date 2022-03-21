@@ -1,0 +1,345 @@
+$connector-height: 12px;
+$connector-line: 2px solid darken($line-color, 10%);
+
+.bg-secondary-light {
+  background-color: $gray-light !important;
+}
+
+.plan-container {
+  font-family: $font-family-sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  .menu {
+    position: absolute;
+    z-index: 1;
+
+    &-hidden {
+
+      ul, h3 {
+        display: none;
+      }
+    }
+    right: 0;
+  }
+
+  .grab-bing {
+    cursor : -webkit-grab;
+    cursor : -moz-grab;
+    cursor : -o-grab;
+    cursor : grab;
+  }
+
+  .grab-bing:active {
+    cursor : -webkit-grabbing;
+    cursor : -moz-grabbing;
+    cursor : -o-grabbing;
+    cursor : grabbing;
+  }
+
+  .text-muted {
+    color: $gray !important;
+  }
+
+  .cursor-help {
+    cursor: help;
+  }
+
+  pre {
+    overflow: initial;
+  }
+}
+
+.plan {
+
+  ol, ul {
+    list-style: none;
+
+    .twod & {
+      padding: 0;
+    }
+  }
+
+  ul.main-plan, ul.node-children {
+    .twod & {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+  }
+  ul.node-children {
+    .twod & {
+      display: flex;
+      padding-top: $connector-height;
+      margin-top: -5px;
+    }
+  }
+
+  ul.init-plans {
+      /* Makes sure there a space at the bottom of CTE on Safari */
+      -webkit-flex: none;
+  }
+
+  ul {
+    .classic &:first-child {
+      padding-left: 0;
+      &>li::after,
+      &>li::before {
+        display: none;
+      }
+    }
+  }
+
+  ul.node-children {
+
+    position: relative;
+    transition: all 0.5s;
+
+    // twod connector
+    .twod &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      border-left: $connector-line;
+      height: $connector-height;
+      width: 0;
+    }
+
+    > li {
+      list-style-type: none;
+      position: relative;
+
+      .twod &:not(:first-child) {
+        padding-left: $padding-lg;
+      }
+
+      transition: all 0.5s;
+
+      .twod & {
+        padding-top: $connector-height;
+      }
+
+      // connectors
+      .twod & {
+        &:before, &:after {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 50%;
+          border-top: $connector-line;
+          width: 50%;
+          height: $connector-height;
+        }
+
+        &:after {
+          right: auto;
+          left: 50%;
+          border-left: $connector-line;
+        }
+
+        &:only-child {
+          padding-top: 0;
+          &:after, &:before {
+            display: none;
+          }
+        }
+
+        &:first-child::before, &:last-child::after {
+          border: 0 none;
+        }
+
+        &:last-child::before {
+          border-right: $connector-line;
+          border-radius: 0 $border-radius-lg 0 0;
+        }
+
+        &:first-child::after {
+          border-radius: $border-radius-lg 0 0 0;
+        }
+      }
+
+      .classic & {
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          left: -10px;
+        }
+
+        &::before {
+          border-top: $connector-line;
+          top: 22px;
+          width: 11px;
+          left: -10px;
+        }
+
+        &::after {
+          border-left: $connector-line;
+          height: calc(100% + #{$padding-sm} + 1px);
+          width: $border-radius-lg;
+          top: -5px;
+        }
+
+        &:last-child::after {
+          height: 29px;
+          border-bottom: $connector-line;
+          border-radius: 0 0 0 $border-radius-lg;
+        }
+        &:last-child::before {
+          left: (-10px + $border-radius-lg);
+          width: (11px - $border-radius-lg);
+        }
+      }
+
+      //hovers
+      .plan-node:hover+ul::before {
+        border-color: $highlight-color;
+      }
+
+      .plan-node:hover+ul li::after,
+      .plan-node:hover+ul li::before,
+      .plan-node:hover+ul ul::before{
+        border-color:  $highlight-color-dark;
+      }
+    }
+  }
+
+  ul.init-plans {
+    padding-left: 0;
+    display: block;
+
+    .twod & {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    > li {
+      .twod & {
+        margin-left: $padding-sm;
+        margin-right: $padding-sm;
+        margin-bottom: $padding-lg;
+      }
+    }
+  }
+
+  .subplan {
+    border: 1px solid $line-color;
+    border-radius: $border-radius-base;
+    background-color: lighten($gray-lightest, 2);
+    box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.1);
+    > h4 {
+      font-size: $font-size-sm;
+      margin-top: .5rem;
+      font-weight: 600;
+      font-style: italic;
+    }
+    padding: 0 $padding-lg ($padding-lg - 4px) $padding-lg;
+
+    .classic & {
+      margin-bottom: $padding-sm;
+      display: inline-block;
+    }
+
+    .twod & {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    &.flash {
+      animation: flash 1s;
+    }
+  }
+
+  .btn-close {
+    border-radius: 50%;
+    box-shadow: 0;
+    line-height: 1.5;
+    border: 1px solid $line-color;
+    background-color: #fff;
+    font-size: $font-size-sm;
+  }
+
+  button {
+    .fa-chevron-right {
+      display: inline-block;
+    }
+    .fa-chevron-down {
+      display: none;
+    }
+  }
+  button[aria-expanded='true'] {
+    .fa-chevron-right {
+      display: none !important;
+    }
+    .fa-chevron-down {
+      display: inline-block !important;
+    }
+  }
+}
+
+.plan-stats {
+  font-size: $font-size-base;
+
+  .stat-dropdown-container {
+    border: 1px solid $line-color;
+    padding: $padding-xl;
+    background-color: #fff;
+    position: absolute;
+    box-shadow: 0px 0px 10px 2px rgba(0,0,0,0.3);
+    border-radius: $border-radius-base;
+    margin-bottom: $padding-xl;
+    z-index: 6;
+    right: 0;
+    width: 300px;
+    max-height: 70vh;
+    overflow: auto;
+
+    .btn-close {
+      border-radius: 50%;
+      box-shadow: 0;
+      line-height: 1.5;
+      border: 1px solid $line-color;
+      background-color: #fff;
+      font-size: $font-size-sm;
+    }
+
+    h3 {
+      font-size: $font-size-lg;
+      width: 93%;
+      text-align: left;
+      border-bottom: 1px solid $line-color;
+      padding-bottom: $padding-base;
+      margin-bottom: $padding-lg;
+    }
+  }
+}
+
+.tippy-popper .tippy-tooltip {
+  text-align: left;
+}
+.tippy-popper .text-muted {
+  color: inherit !important;
+}
+
+.splitpanes {
+  &__pane {
+    transition: none !important;
+  }
+}
+
+.no-focus-outline:focus {
+  outline: none;
+}
+
+.table-nonfluid {
+  width: auto !important;
+}
+
+.more-info[title] {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: $gray;
+  cursor: help;
+}

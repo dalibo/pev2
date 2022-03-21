@@ -1,7 +1,7 @@
 import * as _ from "lodash"
-import * as moment from "moment"
-import momentDurationFormatSetup from "moment-duration-format"
-momentDurationFormatSetup(moment)
+//import * as moment from "moment"
+//import momentDurationFormatSetup from "moment-duration-format"
+//momentDurationFormatSetup(moment)
 import { EstimateDirection, nodePropTypes, PropType } from "@/enums"
 import hljs from "highlight.js/lib/core"
 import pgsql from "highlight.js/lib/languages/pgsql"
@@ -10,16 +10,15 @@ hljs.registerLanguage("pgsql", pgsql)
 import json from "highlight.js/lib/languages/json"
 hljs.registerLanguage("json", json)
 
-export function duration(value: number): string {
+export function duration(value: number | undefined): string {
   if (value === undefined) {
     return "N/A"
   }
   if (value < 1000) {
     return parseFloat(value.toPrecision(3)).toLocaleString() + "ms"
   }
-  return moment
-    .duration(value)
-    .format("w[w] d[d] h[h] m[m] s[s] SSS[ms]", { largest: 2 })
+  console.warn("Duration not formatted")
+  return value.toString()
 }
 
 export function cost(value: number): string {
@@ -130,10 +129,7 @@ export function list(value: string[] | string): string {
   return '<ul class="list-unstyled">' + compiled({ lines: value }) + "</ul>"
 }
 
-export function formatNodeProp(
-  key: string,
-  value: number | boolean | string[]
-): string {
+export function formatNodeProp(key: string, value: unknown): string {
   if (_.has(nodePropTypes, key)) {
     if (nodePropTypes[key] === PropType.duration) {
       return duration(value as number)

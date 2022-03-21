@@ -8,7 +8,7 @@ import {
   WorkerProp,
 } from "@/enums"
 import { splitBalanced } from "@/services/help-service"
-import type { IPlan, IPlanContent, SortGroups } from "@/interfaces"
+import type { IPlan, IPlanContent, JIT, SortGroups } from "@/interfaces"
 import { Node, Worker } from "@/interfaces"
 import moment from "moment"
 import clarinet from "clarinet"
@@ -760,7 +760,7 @@ export class PlanService {
       } else if (jitMatches) {
         let element
         if (elementsAtDepth.length === 0) {
-          root.JIT = {}
+          root.JIT = {} as JIT
           element = {
             node: root.JIT,
           }
@@ -774,7 +774,7 @@ export class PlanService {
             const worker: Worker = _.last(
               lastElement.node?.[NodeProp.WORKERS]
             ) as Worker
-            worker.JIT = {}
+            worker.JIT = {} as JIT
             element = {
               node: worker.JIT,
             }

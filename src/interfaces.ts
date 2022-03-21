@@ -1,7 +1,10 @@
 import type {
   BufferLocation,
+  HighlightType,
+  Orientation,
   SortGroupsProp,
   SortSpaceMemoryProp,
+  ViewMode,
 } from "@/enums"
 
 export interface IPlan {
@@ -25,9 +28,16 @@ export interface IPlanContent {
   maxDuration?: number
   maxBlocks?: IBlocksStats
   Triggers?: ITrigger[]
-  JIT?: object
+  JIT?: JIT
   "Query Text"?: string
-  [k: string]: Node | number | string | IBlocksStats | ITrigger[] | undefined
+  [k: string]:
+    | Node
+    | number
+    | string
+    | IBlocksStats
+    | ITrigger[]
+    | JIT
+    | undefined
 }
 
 export interface ITrigger {
@@ -46,14 +56,14 @@ export interface IPlanStats {
   maxBlocks?: IBlocksStats
   triggers?: ITrigger[]
   jitTime?: number
-  settings?: { [key: string]: string }
+  settings?: Settings
 }
 
 export type IBlocksStats = {
   [key in BufferLocation]?: number
 }
 
-import { NodeProp } from "@/enums"
+import { EstimateDirection, NodeProp } from "@/enums"
 
 // Class to create nodes when parsing text
 export class Node {
@@ -61,7 +71,7 @@ export class Node {
   ["Options"]?: Options;
   ["Timing"]?: Timing;
   ["Settings"]?: Settings;
-  [NodeProp.ACTUAL_LOOPS]?: number;
+  [NodeProp.ACTUAL_LOOPS]: number;
   [NodeProp.ACTUAL_ROWS]: number;
   [NodeProp.ACTUAL_ROWS_REVISED]?: number;
   [NodeProp.ACTUAL_STARTUP_TIME]?: number;
@@ -78,6 +88,11 @@ export class Node {
   [NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]?: number;
   [NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]?: number;
   [NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]?: number;
+  [NodeProp.PLANNER_ESTIMATE_DIRECTION]?: EstimateDirection;
+  [NodeProp.PLANNER_ESTIMATE_FACTOR]?: number;
+  [NodeProp.INDEX_NAME]?: string;
+  [NodeProp.NODE_TYPE]: string;
+  [NodeProp.PARALLEL_AWARE]: boolean;
   [NodeProp.PLANS]: Node[];
   [NodeProp.PLAN_ROWS]: number;
   [NodeProp.PLAN_ROWS_REVISED]?: number;
@@ -90,7 +105,6 @@ export class Node {
   [NodeProp.WORKERS_PLANNED]?: number;
   [NodeProp.WORKERS_PLANNED_BY_GATHER]?: number;
   [NodeProp.WORKERS_PLANNED_BY_GATHER]?: number;
-  [NodeProp.NODE_TYPE]: string;
   [k: string]:
     | Node[]
     | Options
@@ -200,9 +214,35 @@ export type Settings = {
 }
 
 export type SortGroups = {
-  [key in SortGroupsProp]: number | string | string[] | SortSpaceMemory
+  [SortGroupsProp.SORT_METHODS_USED]: string[]
+  [SortGroupsProp.SORT_SPACE_MEMORY]: SortSpaceMemory
+  [key: string]: number | string | string[] | SortSpaceMemory
 }
 
 export type SortSpaceMemory = {
   [key in SortSpaceMemoryProp]: number
+}
+
+export type StatsTableItemType = {
+  name: string
+  count: number
+  time: number
+  timePercent: number
+  nodes: Node[]
+}
+
+export type ViewOptions = {
+  menuHidden: boolean
+  showHighlightBar: boolean
+  showPlanStats: boolean
+  highlightType: HighlightType
+  viewMode: ViewMode
+  orientation: Orientation
+  showDiagram: boolean
+  diagramWidth: number
+}
+
+export interface JIT {
+  ["Timing"]: Timing
+  [key: string]: number | Timing
 }

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { keysToString, kilobytes } from "@/filters"
-import { SortGroup } from "@/interfaces"
+import type { SortGroups } from "@/interfaces"
 
 interface Props {
-  sortGroup: SortGroup
+  sortGroup: SortGroups
 }
 defineProps<Props>()
 </script>
