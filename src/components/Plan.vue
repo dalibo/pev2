@@ -99,21 +99,17 @@ onBeforeMount(() => {
   queryText.value = planJson["Query Text"] || props.planQuery
   plan.value = planService.createPlan("", planJson, queryText.value)
   const content = plan.value.content
-  planStats = {
-    executionTime:
-      (content["Execution Time"] as number) ||
-      (content["Total Runtime"] as number) ||
-      NaN,
-    planningTime: (content["Planning Time"] as number) || NaN,
-    maxRows: content.maxRows || NaN,
-    maxCost: content.maxCost || NaN,
-    maxDuration: content.maxDuration || NaN,
-    maxBlocks: content.maxBlocks || {},
-    triggers: content.Triggers || [],
-    jitTime:
-      (content.JIT && content.JIT.Timing && content.JIT.Timing.Total) || NaN,
-    settings: content.Settings as Settings,
-  }
+  planStats.executionTime =
+    content["Execution Time"] || content["Total Runtime"] || NaN
+  planStats.planningTime = (content["Planning Time"] as number) || NaN
+  planStats.maxRows = content.maxRows || NaN
+  planStats.maxCost = content.maxCost || NaN
+  planStats.maxDuration = content.maxDuration || NaN
+  planStats.maxBlocks = content.maxBlocks || {}
+  planStats.triggers = content.Triggers || []
+  planStats.jitTime =
+    (content.JIT && content.JIT.Timing && content.JIT.Timing.Total) || NaN
+  planStats.settings = content.Settings as Settings
 
   nextTick(() => {
     let nodeId = 1
