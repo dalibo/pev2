@@ -1,6 +1,6 @@
 # pev2
 
-This template should help get you started developing with Vue 3 in Vite.
+For the develoment of this project you need to have NPM version > 8 installed.
 
 ## Project Setup
 
