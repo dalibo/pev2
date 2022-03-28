@@ -1,0 +1,60 @@
+.plan-diagram {
+  line-height: 0.85em;
+  &.plan-diagram-top {
+    max-height: 30%;
+  }
+  // make sure diagram right column takes as much width as possible
+  table tr td:nth-child(3) {
+    width: 90%;
+  }
+  font-family: $font-family-sans-serif;
+
+  .legend ul li {
+    font-size: $font-size-base;
+    span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+  }
+
+  tbody::after {
+    content: '';
+    display: block;
+    height: $padding-lg;
+  }
+  th, td {
+    margin: 0;
+    color: $text-color;
+    white-space: nowrap;
+
+    &.node-index,
+    &.node-type,
+    &.subplan {
+      font-size: $font-size-base;
+    }
+    &.node-type {
+      font-weight: bold;
+    }
+  }
+  th {
+    font-size: $font-size-base;
+  }
+
+  tr.highlight {
+    box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.4);
+  }
+  tr.selected {
+    outline: 1px solid $highlight-color;
+    box-shadow: 0px 0px 5px 2px rgba($highlight-color,0.4);
+  }
+  tr.highlight,
+  tr.selected {
+    background-color: white;
+  }
+
+  .tree-lines {
+    font-family: 'monospace';
+  }
+}

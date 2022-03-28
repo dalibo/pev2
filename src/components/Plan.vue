@@ -22,6 +22,7 @@ import type {
   Settings,
 } from "@/interfaces"
 import Copy from "@/components/Copy.vue"
+import Diagram from "@/components/Diagram.vue"
 import PlanNode from "@/components/PlanNode.vue"
 import Stats from "@/components/Stats.vue"
 import { scrollChildIntoParentView } from "@/services/help-service"
@@ -101,7 +102,9 @@ onBeforeMount(() => {
   plan.value = planService.createPlan("", planJson, queryText.value)
   const content = plan.value.content
   planStats.executionTime =
-    content["Execution Time"] || content["Total Runtime"] || NaN
+    (content["Execution Time"] as number) ||
+    (content["Total Runtime"] as number) ||
+    NaN
   planStats.planningTime = (content["Planning Time"] as number) || NaN
   planStats.maxRows = content.maxRows || NaN
   planStats.maxCost = content.maxCost || NaN
@@ -502,9 +505,8 @@ const triggersTotalDuration = computed(() => {
                 <pane
                   :size="viewOptions.diagramWidth"
                   class="d-flex"
-                  v-if="viewOptions.showDiagram"
+                  v-if="viewOptions.showDiagram && plan"
                 >
-                  <!--
                   <diagram
                     ref="diagram"
                     :plan="plan"
@@ -515,7 +517,6 @@ const triggersTotalDuration = computed(() => {
                       <slot name="nodeindex" v-bind:node="node"></slot>
                     </template>
                   </diagram>
-                -->
                 </pane>
                 <pane
                   ref="planEl"
