@@ -114,6 +114,7 @@ onBeforeMount(() => {
   planStats.jitTime =
     (content.JIT && content.JIT.Timing && content.JIT.Timing.Total) || NaN
   planStats.settings = content.Settings as Settings
+  plan.value.planStats = planStats
 
   nextTick(() => {
     let nodeId = 1
