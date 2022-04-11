@@ -9,6 +9,7 @@ import {
   ref,
   watch,
 } from "vue"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { blocks, duration, rows, factor } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
 // import { scrollChildIntoParentView } from "@/services/help-service"
@@ -552,14 +553,15 @@ function onSelectedNodeChange(newVal: number) {
                   :key="'node' + index + 'estimation'"
                 >
                   <span class="text-muted small">
-                    <i
-                      class="fa fa-fw"
-                      :class="{
-                        'fa-arrow-down':
-                          row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
-                          EstimateDirection.under,
-                      }"
-                    ></i>
+                    <font-awesome-icon
+                      fixed-width
+                      icon="arrow-down"
+                      v-if="
+                        row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+                        EstimateDirection.under
+                      "
+                    ></font-awesome-icon>
+                    <i class="fa fa-fw" v-else />
                   </span>
                   <div
                     class="progress-bar"
@@ -602,14 +604,15 @@ function onSelectedNodeChange(newVal: number) {
                     aria-valuemax="100"
                   ></div>
                   <span class="text-muted small">
-                    <i
-                      class="fa fa-fw"
-                      :class="{
-                        'fa-arrow-up':
-                          row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
-                          EstimateDirection.over,
-                      }"
-                    ></i>
+                    <font-awesome-icon
+                      fixed-width
+                      icon="arrow-up"
+                      v-if="
+                        row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+                        EstimateDirection.over
+                      "
+                    ></font-awesome-icon>
+                    <i class="fa fa-fw" v-else />
                   </span>
                 </div>
                 <!-- cost -->
