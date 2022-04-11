@@ -38,6 +38,15 @@ import {
 } from "@/enums"
 import { duration, durationClass, json_, pgsql_ } from "@/filters"
 
+import { library } from "@fortawesome/fontawesome-svg-core"
+import { fas } from "@fortawesome/free-solid-svg-icons"
+import { far } from "@fortawesome/free-regular-svg-icons"
+import { fab } from "@fortawesome/free-brands-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+
+// Add all icons to the library
+library.add(fas, far, fab)
+
 interface Props {
   planSource: string
   planQuery: string
@@ -317,10 +326,11 @@ const triggersTotalDuration = computed(() => {
               <template v-if="!planStats.executionTime">
                 <span class="text-muted">
                   N/A
-                  <i
-                    class="fa fa-info-circle cursor-help"
+                  <font-awesome-icon
+                    icon="info-circle"
+                    class="cursor-help"
                     v-tippy="getHelpMessage('missing execution time')"
-                  ></i>
+                  ></font-awesome-icon>
                 </span>
               </template>
               <template v-else>
@@ -335,10 +345,11 @@ const triggersTotalDuration = computed(() => {
               <template v-if="!planStats.planningTime">
                 <span class="text-muted">
                   N/A
-                  <i
-                    class="fa fa-info-circle cursor-help"
+                  <font-awesome-icon
+                    icon="info-circle"
+                    class="cursor-help"
                     v-tippy="getHelpMessage('missing planning time')"
-                  ></i>
+                  ></font-awesome-icon>
                 </span>
               </template>
               <template v-else>
@@ -389,7 +400,10 @@ const triggersTotalDuration = computed(() => {
                   @click.prevent="showTriggers = !showTriggers"
                   class="bg-transparent border-0 p-0 m-0 pl-1"
                 >
-                  <i class="fa fa-caret-down text-muted"></i>
+                  <font-awesome-icon
+                    icon="caret-down"
+                    class="text-muted"
+                  ></font-awesome-icon>
                 </button>
                 <div
                   class="stat-dropdown-container text-left"
@@ -399,7 +413,7 @@ const triggersTotalDuration = computed(() => {
                     class="btn btn-close float-right"
                     v-on:click="showTriggers = false"
                   >
-                    <i class="fa fa-times"></i>
+                    <font-awesome-icon icon="times"></font-awesome-icon>
                   </button>
                   <h3>Triggers</h3>
                   <div
@@ -451,7 +465,10 @@ const triggersTotalDuration = computed(() => {
                 @click.prevent="showSettings = !showSettings"
                 class="bg-transparent border-0 p-0 m-0 pl-1"
               >
-                <i class="fa fa-caret-down text-muted"></i>
+                <font-awesome-icon
+                  icon="caret-down"
+                  class="text-muted"
+                ></font-awesome-icon>
               </button>
               <div
                 class="stat-dropdown-container text-left"
@@ -461,7 +478,7 @@ const triggersTotalDuration = computed(() => {
                   class="btn btn-close float-right"
                   v-on:click="showSettings = false"
                 >
-                  <i class="fa fa-times"></i>
+                  <font-awesome-icon icon="times"></font-awesome-icon>
                 </button>
                 <h3>PG Settings</h3>
                 <em class="text-muted d-block pb-2">
@@ -485,7 +502,8 @@ const triggersTotalDuration = computed(() => {
                 { 'text-primary': !viewOptions.menuHidden },
               ]"
             >
-              <i class="fa fa-cog p-0"></i> Settings
+              <font-awesome-icon icon="cog" class="p-0"></font-awesome-icon>
+              Settings
             </button>
           </div>
           <div class="flex-grow-1 d-flex overflow-hidden">
@@ -573,7 +591,8 @@ const triggersTotalDuration = computed(() => {
                   class="form-check-input"
                 />
                 <label for="showDiagram" class="form-check-label"
-                  ><i class="fa fa-align-left"></i> Diagram</label
+                  ><font-awesome-icon icon="align-left"></font-awesome-icon>
+                  Diagram</label
                 >
               </div>
               <hr />
@@ -616,7 +635,7 @@ const triggersTotalDuration = computed(() => {
                     }"
                     v-on:click="viewOptions.orientation = Orientation.TWOD"
                   >
-                    <i class="fa fa-sitemap"></i>
+                    <font-awesome-icon icon="sitemap"></font-awesome-icon>
                     2D
                   </button>
                   <button
@@ -626,7 +645,7 @@ const triggersTotalDuration = computed(() => {
                     }"
                     v-on:click="viewOptions.orientation = Orientation.CLASSIC"
                   >
-                    <i class="fa fa-list"></i>
+                    <font-awesome-icon icon="list"></font-awesome-icon>
                     classic
                   </button>
                 </div>

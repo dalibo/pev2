@@ -23,6 +23,7 @@ import {
   WorkerProp,
 } from "@/enums"
 import * as _ from "lodash"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
 interface Props {
   node: Node
@@ -476,15 +477,23 @@ function formattedProp(propName: keyof typeof NodeProp) {
           {{ index }}
         </div>
       </div>
-      <div class="collapse-handle" v-if="hasChildren">
-        <i
-          :class="[
-            'fa fa-fw',
-            { 'fa-compress': !collapsed, 'fa-expand': collapsed },
-          ]"
-          v-on:click.stop="collapsed = !collapsed"
-          title="Collpase or expand child nodes"
-        ></i>
+      <div
+        class="collapse-handle"
+        v-if="hasChildren"
+        v-on:click.stop="collapsed = !collapsed"
+      >
+        <font-awesome-icon
+          fixed-width
+          icon="expand"
+          v-if="collapsed"
+          title="Expand child nodes"
+        ></font-awesome-icon>
+        <font-awesome-icon
+          fixed-width
+          icon="compress"
+          v-else
+          title="Collpase child nodes"
+        ></font-awesome-icon>
       </div>
       <div class="plan-node-body card">
         <div
@@ -509,17 +518,23 @@ function formattedProp(propName: keyof typeof NodeProp) {
                   durationClass
                 "
                 v-tippy="'Slow'"
-                ><i class="fa fa-fw fa-clock"></i
-              ></span>
+                ><font-awesome-icon
+                  fixed-width
+                  icon="clock"
+                ></font-awesome-icon>
+              </span>
               <span
                 v-if="costClass"
                 :class="
-                  'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + costClass
+                  'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' +
+                  costClass
                 "
                 v-tippy="'Cost is high'"
-                ><i class="fa fa-fw fa-dollar-sign"></i
+                ><font-awesome-icon
+                  fixed-width
+                  icon="dollar-sign"
+                ></font-awesome-icon
               ></span>
-              <!--
               <span
                 v-if="estimationClass"
                 :class="
@@ -527,9 +542,11 @@ function formattedProp(propName: keyof typeof NodeProp) {
                   estimationClass
                 "
                 v-tippy="'Bad estimation for number of rows'"
-                ><i class="fa fa-fw fa-thumbs-down"></i
+                ><font-awesome-icon
+                  fixed-width
+                  icon="thumbs-down"
+                ></font-awesome-icon
               ></span>
-              -->
               <span
                 v-if="rowsRemovedClass"
                 :class="
@@ -537,8 +554,12 @@ function formattedProp(propName: keyof typeof NodeProp) {
                   rowsRemovedClass
                 "
                 v-tippy="filterTooltip"
-                ><i class="fa fa-fw fa-filter"></i
-              ></span>
+              >
+                <font-awesome-icon
+                  fixed-width
+                  icon="filter"
+                ></font-awesome-icon>
+              </span>
               <span
                 v-if="heapFetchesClass"
                 :class="
@@ -549,14 +570,23 @@ function formattedProp(propName: keyof typeof NodeProp) {
                   arrow: true,
                   content: 'Heap Fetches number is high',
                 }"
-                ><i class="fa fa-fw fa-exchange-alt"></i
-              ></span>
+              >
+                <font-awesome-icon
+                  fixed-width
+                  class="exchange-alt"
+                ></font-awesome-icon>
+              </span>
               <span
                 v-if="rowsRemoved && !rowsRemovedClass"
                 class="p-0 d-inline-block mb-0 ml-1 text-nowrap"
                 v-tippy="filterTooltip"
-                ><i class="fa fa-fw fa-filter text-muted"></i
-              ></span>
+              >
+                <font-awesome-icon
+                  fixed-width
+                  icon="filter"
+                  class="text-muted"
+                ></font-awesome-icon>
+              </span>
             </div>
             <span v-if="viewOptions.viewMode === ViewMode.FULL">
               <span class="node-duration text-warning" v-if="isNeverExecuted">
@@ -626,21 +656,25 @@ function formattedProp(propName: keyof typeof NodeProp) {
             </div>
             <div v-if="node[NodeProp.CTE_NAME]">
               <a class="text-reset" href="">
-                <i class="fa fa-search text-muted"></i>&nbsp;<span
+                <font-awesome-icon
+                  icon="search"
                   class="text-muted"
-                  >CTE</span
-                >
+                ></font-awesome-icon
+                >&nbsp;<span class="text-muted">CTE</span>
                 {{ node[NodeProp.CTE_NAME] }}
               </a>
             </div>
           </div>
 
           <div
-            v-if="!allWorkersLaunched && viewOptions.viewMode === ViewMode.FULL"
+            v-if="
+              !allWorkersLaunched && viewOptions.viewMode === ViewMode.FULL
+            "
             class="text-c-3 cursor-help"
             v-tippy="getHelpMessage('workers planned not launched')"
           >
-            <i class="fa fa-exclamation-triangle"></i>&nbsp;
+            <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon
+            >&nbsp;
             <span>Not all workers launched</span>
           </div>
           <div class="clearfix"></div>
@@ -749,7 +783,11 @@ function formattedProp(propName: keyof typeof NodeProp) {
           >
             <!-- general -->
             <div v-if="plan.isAnalyze">
-              <i class="fa fa-fw fa-clock text-muted"></i>
+              <font-awesome-icon
+                fixed-width
+                icon="clock"
+                class="text-muted"
+              ></font-awesome-icon>
               <b>Timing:</b>&nbsp;
               <span
                 :class="'p-0 px-1 rounded alert ' + durationClass"
@@ -762,7 +800,11 @@ function formattedProp(propName: keyof typeof NodeProp) {
               </template>
             </div>
             <div>
-              <i class="fa fa-fw fa-align-justify text-muted"></i>
+              <font-awesome-icon
+                fixed-width
+                icon="align-justify"
+                class="text-muted"
+              ></font-awesome-icon>
               <b>Rows:</b>
               <span class="px-1">{{
                 tilde + formattedProp("ACTUAL_ROWS_REVISED")
@@ -780,11 +822,13 @@ function formattedProp(propName: keyof typeof NodeProp) {
                 |
                 <span
                   v-if="plannerRowEstimateDirection === EstimateDirection.over"
-                  ><i class="fa fa-arrow-up"></i> over</span
+                  ><font-awesome-icon icon="arrow-up"></font-awesome-icon>
+                  over</span
                 >
                 <span
                   v-if="plannerRowEstimateDirection === EstimateDirection.under"
-                  ><i class="fa fa-arrow-down"></i> under</span
+                  ><font-awesome-icon icon="arrow-down"></font-awesome-icon>
+                  under</span
                 >
                 estimated
                 <span v-if="plannerRowEstimateValue != Infinity">
@@ -797,7 +841,11 @@ function formattedProp(propName: keyof typeof NodeProp) {
               </span>
             </div>
             <div v-if="rowsRemoved">
-              <i class="fa fa-fw fa-filter text-muted"></i>
+              <font-awesome-icon
+                fixed-width
+                icon="filter"
+                class="text-muted"
+              ></font-awesome-icon>
               <b> {{ NodeProp[rowsRemovedProp] }}: </b>
               <span>
                 <span class="px-1">{{
@@ -810,25 +858,35 @@ function formattedProp(propName: keyof typeof NodeProp) {
               </span>
             </div>
             <div v-if="node[NodeProp.HEAP_FETCHES]">
-              <i class="fa fa-fw fa-exchange-alt text-muted"></i>
+              <font-awesome-icon
+                fixed-width
+                icon="exchange-alt"
+                class="text-muted"
+              ></font-awesome-icon>
               <b>Heap Fetches:</b>&nbsp;
               <span
                 :class="'p-0 px-1 rounded alert ' + heapFetchesClass"
                 v-html="formattedProp('HEAP_FETCHES')"
               ></span>
               &nbsp;
-              <i
-                class="fa fa-fw fa-info-circle text-muted"
+              <font-awesome-icon
+                icon="info-circle"
+                fixed-width
+                class="text-muted"
                 v-if="heapFetchesClass"
                 v-tippy="{
                   arrow: true,
                   content:
                     'Visibility map may be out-of-date. Consider using VACUUM or change autovacuum settings.',
                 }"
-              ></i>
+              ></font-awesome-icon>
             </div>
             <div v-if="node[NodeProp.EXCLUSIVE_COST]">
-              <i class="fa fa-fw fa-dollar-sign text-muted"></i>
+              <font-awesome-icon
+                fixed-width
+                icon="dollar-sign"
+                class="text-muted"
+              ></font-awesome-icon>
               <b>Cost:</b>
               <span :class="'p-0 px-1 mr-1 alert ' + costClass">{{
                 formattedProp("EXCLUSIVE_COST")
@@ -838,7 +896,11 @@ function formattedProp(propName: keyof typeof NodeProp) {
               >
             </div>
             <div v-if="node[NodeProp.ACTUAL_LOOPS] > 1">
-              <i class="fa fa-fw fa-undo text-muted"></i>
+              <font-awesome-icon
+                fixed-width
+                icon="undo"
+                class="text-muted"
+              ></font-awesome-icon>
               <b>Loops:</b>
               <span class="px-1">{{ formattedProp("ACTUAL_LOOPS") }} </span>
             </div>
@@ -908,7 +970,9 @@ function formattedProp(propName: keyof typeof NodeProp) {
                 <td class="text-right bg-hatched"></td>
                 <td
                   class="text-right"
-                  v-html="formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'"
+                  v-html="
+                    formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'
+                  "
                 ></td>
               </tr>
               <tr>
@@ -990,10 +1054,11 @@ function formattedProp(propName: keyof typeof NodeProp) {
                 "
                 class="text-warning"
               >
-                <i
-                  class="fa fa-exclamation-triangle cursor-help"
+                <font-awesome-icon
+                  icon="exclamation-triangle"
+                  class="cursor-help"
                   v-tippy="getHelpMessage('fuzzy needs verbose')"
-                ></i>
+                ></font-awesome-icon>
               </em>
             </div>
             <div
@@ -1014,10 +1079,11 @@ function formattedProp(propName: keyof typeof NodeProp) {
             >
               <em>
                 Detailed information is not available.
-                <i
-                  class="fa fa-info-circle cursor-help"
+                <font-awesome-icon
+                  icon="exclamation-triangle"
+                  class="cursor-help"
                   v-tippy="getHelpMessage('workers detailed info missing')"
-                ></i>
+                ></font-awesome-icon>
               </em>
             </div>
 
@@ -1035,8 +1101,14 @@ function formattedProp(propName: keyof typeof NodeProp) {
                       :data-target="'#collapse-' + node.nodeId + '-' + index"
                       style="font-size: inherit"
                     >
-                      <i class="fa fa-chevron-right fa-fw"></i>
-                      <i class="fa fa-chevron-down fa-fw"></i>
+                      <font-awesome-icon
+                        fixed-width
+                        icon="chevron-right"
+                      ></font-awesome-icon>
+                      <font-awesome-icon
+                        fixed-width
+                        icon="chevron-down"
+                      ></font-awesome-icon>
                       Worker {{ worker[WorkerProp.WORKER_NUMBER] }}
                     </button>
                   </div>
