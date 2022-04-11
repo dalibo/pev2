@@ -1071,7 +1071,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
             <table class="table table-sm prop-list">
               <template v-for="(prop, key) in nodeProps" :key="key">
                 <tr v-if="shouldShowProp(prop.key, prop.value)">
-                  <td width="40%">{{ key }}</td>
+                  <td width="40%">{{ prop.key }}</td>
                   <td v-html="formatNodeProp(prop.key, prop.value)"></td>
                 </tr>
               </template>
