@@ -8,7 +8,14 @@ import {
   WorkerProp,
 } from "@/enums"
 import { splitBalanced } from "@/services/help-service"
-import type { IPlan, IPlanContent, JIT, SortGroups } from "@/interfaces"
+import type {
+  IBlocksStats,
+  IPlan,
+  IPlanContent,
+  IPlanStats,
+  JIT,
+  SortGroups,
+} from "@/interfaces"
 import { Node, Worker } from "@/interfaces"
 import moment from "moment"
 import clarinet from "clarinet"
@@ -49,7 +56,7 @@ export class PlanService {
       createdOn: new Date(),
       content: planContent,
       query: planQuery,
-      planStats: {},
+      planStats: {} as IPlanStats,
       ctes: [],
       isAnalyze: _.has(planContent.Plan, NodeProp.ACTUAL_ROWS),
       isVerbose: this.findOutputProperty(planContent.Plan),
@@ -126,7 +133,7 @@ export class PlanService {
     }
 
     if (!content.maxBlocks) {
-      content.maxBlocks = {}
+      content.maxBlocks = {} as IBlocksStats
     }
 
     function sumShared(o: Node): number {
@@ -456,7 +463,7 @@ export class PlanService {
   public fromText(text: string) {
     const lines = this.splitIntoLines(text)
 
-    const root: IPlanContent = {}
+    const root: IPlanContent = {} as IPlanContent
     type ElementAtDepth = [number, NodeElement | JitElement]
     // Array to keep reference to previous nodes with there depth
     const elementsAtDepth: ElementAtDepth[] = []

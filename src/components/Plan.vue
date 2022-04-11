@@ -50,16 +50,7 @@ const queryText = ref<string>("")
 const validationMessage = ref<string>("")
 const plan = ref<IPlan>()
 const planEl = ref()
-let planStats = reactive<IPlanStats>({
-  executionTime: NaN,
-  planningTime: NaN,
-  jitTime: NaN,
-  maxRows: NaN,
-  maxDuration: NaN,
-  maxBlocks: {} as IBlocksStats,
-  triggers: [] as ITrigger[],
-  settings: undefined,
-})
+let planStats = reactive<IPlanStats>({} as IPlanStats)
 const rootNode = ref<Node>()
 const zoomTo = ref<number>()
 const showSettings = ref<boolean>(false)
@@ -109,7 +100,7 @@ onBeforeMount(() => {
   planStats.maxRows = content.maxRows || NaN
   planStats.maxCost = content.maxCost || NaN
   planStats.maxDuration = content.maxDuration || NaN
-  planStats.maxBlocks = content.maxBlocks || {}
+  planStats.maxBlocks = content.maxBlocks || ({} as IBlocksStats)
   planStats.triggers = content.Triggers || []
   planStats.jitTime =
     (content.JIT && content.JIT.Timing && content.JIT.Timing.Total) || NaN
@@ -511,7 +502,6 @@ const triggersTotalDuration = computed(() => {
                   <diagram
                     ref="diagram"
                     :plan="plan"
-                    :eventBus="eventBus"
                     class="d-flex flex-column flex-grow-1 overflow-hidden plan-diagram"
                   >
                     <template v-slot:nodeindex="{ node }">

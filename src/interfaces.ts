@@ -21,7 +21,7 @@ export interface IPlan {
 }
 
 export interface IPlanContent {
-  Plan?: Node
+  Plan: Node
   maxRows?: number
   maxCost?: number
   maxTotalCost?: number
@@ -50,17 +50,17 @@ export interface ITrigger {
 export interface IPlanStats {
   executionTime?: number
   planningTime?: number
-  maxRows?: number
-  maxCost?: number
-  maxDuration?: number
-  maxBlocks?: IBlocksStats
+  maxRows: number
+  maxCost: number
+  maxDuration: number
+  maxBlocks: IBlocksStats
   triggers?: ITrigger[]
   jitTime?: number
   settings?: Settings
 }
 
 export type IBlocksStats = {
-  [key in BufferLocation]?: number
+  [key in BufferLocation]: number
 }
 
 import { EstimateDirection, NodeProp } from "@/enums"
@@ -73,21 +73,21 @@ export class Node {
   ["Settings"]?: Settings;
   [NodeProp.ACTUAL_LOOPS]: number;
   [NodeProp.ACTUAL_ROWS]: number;
-  [NodeProp.ACTUAL_ROWS_REVISED]?: number;
+  [NodeProp.ACTUAL_ROWS_REVISED]: number;
   [NodeProp.ACTUAL_STARTUP_TIME]?: number;
-  [NodeProp.ACTUAL_TOTAL_TIME]?: number;
-  [NodeProp.EXCLUSIVE_COST]?: number;
-  [NodeProp.EXCLUSIVE_DURATION]?: number;
-  [NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]?: number;
-  [NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]?: number;
-  [NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]?: number;
-  [NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]?: number;
-  [NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]?: number;
-  [NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]?: number;
-  [NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]?: number;
-  [NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]?: number;
-  [NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]?: number;
-  [NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]?: number;
+  [NodeProp.ACTUAL_TOTAL_TIME]: number;
+  [NodeProp.EXCLUSIVE_COST]: number;
+  [NodeProp.EXCLUSIVE_DURATION]: number;
+  [NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]: number;
+  [NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]: number;
+  [NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]: number;
+  [NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]: number;
+  [NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]: number;
+  [NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]: number;
+  [NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]: number;
+  [NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]: number;
+  [NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]: number;
+  [NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]: number;
   [NodeProp.PLANNER_ESTIMATE_DIRECTION]?: EstimateDirection;
   [NodeProp.PLANNER_ESTIMATE_FACTOR]?: number;
   [NodeProp.INDEX_NAME]?: string;
@@ -99,7 +99,7 @@ export class Node {
   [NodeProp.ROWS_REMOVED_BY_FILTER_REVISED]?: number;
   [NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED]?: number;
   [NodeProp.SUBPLAN_NAME]?: string;
-  [NodeProp.TOTAL_COST]?: number;
+  [NodeProp.TOTAL_COST]: number;
   [NodeProp.WORKERS]?: Worker[];
   [NodeProp.WORKERS_LAUNCHED]?: number;
   [NodeProp.WORKERS_PLANNED]?: number;
