@@ -11,7 +11,7 @@ import {
 } from "vue"
 import { blocks, duration, rows, factor } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
-import { scrollChildIntoParentView } from "@/services/help-service"
+// import { scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlan, Node } from "@/interfaces"
 /*
 import tippy, {
@@ -19,7 +19,7 @@ import tippy, {
 } from "tippy.js"
 */
 
-type RowType = Array<[number, Node, boolean, number[]]>
+type Row = [number, Node, boolean, number[]]
 
 interface Props {
   plan: IPlan
@@ -29,7 +29,7 @@ const props = defineProps<Props>()
 const selected = ref<number>()
 
 // The main plan + init plans (all flatten)
-let plans: Node[][] = [[]]
+let plans: Row[][] = [[]]
 let highlightedNode: Node | null = null
 // let tippyInstances: Instance[] = []
 // let tippySingleton!: CreateSingletonInstance
@@ -47,7 +47,7 @@ onBeforeMount((): void => {
   flatten(plans[0], 0, props.plan.content.Plan, true, [])
 
   _.each(props.plan.ctes, (cte) => {
-    const flat = [] as Node[]
+    const flat: Row[] = []
     flatten(flat, 0, cte, true, [])
     plans.push(flat)
   })
@@ -64,7 +64,7 @@ onBeforeMount((): void => {
   // chosen one
   const planBufferLocation = _.keys(props.plan.planStats.maxBlocks)
   if (_.indexOf(planBufferLocation, viewOptions.buffersMetric) === -1) {
-    viewOptions.buffersMetric = _.min(planBufferLocation)
+    viewOptions.buffersMetric = _.min(planBufferLocation) as BufferLocation
   }
 })
 
@@ -130,7 +130,7 @@ function timeTooltip(node: Node): string {
 }
 
 function rowsTooltip(node: Node): string {
-  return ["Rows: ", rows(node[NodeProp.ACTUAL_ROWS_REVISED])].join("")
+  return ["Rows: ", rows(node[NodeProp.ACTUAL_ROWS_REVISED] as number)].join("")
 }
 
 function estimateFactorTooltip(node: Node): string {
@@ -160,7 +160,7 @@ function estimateFactorTooltip(node: Node): string {
 }
 
 function costTooltip(node: Node): string {
-  return ["Cost: ", rows(node[NodeProp.EXCLUSIVE_COST])].join("")
+  return ["Cost: ", rows(node[NodeProp.EXCLUSIVE_COST] as number)].join("")
 }
 
 function buffersTooltip(node: Node): string {
@@ -169,7 +169,7 @@ function buffersTooltip(node: Node): string {
   let read
   let written
   let dirtied
-  switch (this.viewOptions.buffersMetric) {
+  switch (viewOptions.buffersMetric) {
     case BufferLocation.shared:
       hit = node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]
       read = node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]
@@ -224,12 +224,12 @@ function buffersTooltip(node: Node): string {
   return text
 }
 
-function nodeType(row: RowType[]): string {
+function nodeType(row: Row): string {
   return row[1][NodeProp.NODE_TYPE]
 }
 
 function flatten(
-  output: RowType[],
+  output: Row[],
   level: number,
   node: Node,
   isLast: boolean,
@@ -255,7 +255,7 @@ function flatten(
   }
 }
 
-function estimateFactorPercent(row: RowType[]): number {
+function estimateFactorPercent(row: Row): number {
   const node = row[1]
   if (node[NodeProp.PLANNER_ESTIMATE_FACTOR] === Infinity) {
     return 100
@@ -278,7 +278,7 @@ const maxEstimateFactor = computed((): number => {
         })
       )
     })
-  )
+  ) as number
   return max * 2 || 1
 })
 
@@ -286,7 +286,7 @@ const dataAvailable = computed((): boolean => {
   if (viewOptions.metric === Metric.buffers) {
     // if current Metric is buffers, view options for buffers should be
     // undefined if there's no buffer data
-    return viewOptions.buffersMetric
+    return !!viewOptions.buffersMetric
   }
   return true
 })
@@ -295,12 +295,15 @@ function isCTE(node: Node): boolean {
   return _.startsWith(node[NodeProp.SUBPLAN_NAME], "CTE")
 }
 
-watch(selected, onSelectedNodeChange)
+// watch(selected, onSelectedNodeChange)
 
 function onSelectedNodeChange(newVal: number) {
+  console.warn("FIXME ", newVal)
+  /*
   const el = (this.$refs["node_" + newVal] as Element[])[0] as Element
   const parent = this.$refs.container as Element
   scrollChildIntoParentView(parent, el, false)
+  */
 }
 </script>
 
@@ -357,7 +360,7 @@ function onSelectedNodeChange(newVal: number) {
               active: viewOptions.buffersMetric === BufferLocation.shared,
             }"
             v-on:click="viewOptions.buffersMetric = BufferLocation.shared"
-            :disabled="!plan.planStats.maxBlocks[BufferLocation.shared]"
+            :disabled="!plan.planStats.maxBlocks?.[BufferLocation.shared]"
           >
             shared
           </button>
@@ -367,7 +370,7 @@ function onSelectedNodeChange(newVal: number) {
               active: viewOptions.buffersMetric === BufferLocation.temp,
             }"
             v-on:click="viewOptions.buffersMetric = BufferLocation.temp"
-            :disabled="!plan.planStats.maxBlocks[BufferLocation.temp]"
+            :disabled="!plan.planStats.maxBlocks?.[BufferLocation.temp]"
           >
             temp
           </button>
@@ -377,7 +380,7 @@ function onSelectedNodeChange(newVal: number) {
               active: viewOptions.buffersMetric === BufferLocation.local,
             }"
             v-on:click="viewOptions.buffersMetric = BufferLocation.local"
-            :disabled="!plan.planStats.maxBlocks[BufferLocation.local]"
+            :disabled="!plan.planStats.maxBlocks?.[BufferLocation.local]"
           >
             local
           </button>
@@ -435,13 +438,7 @@ function onSelectedNodeChange(newVal: number) {
                     row[2] ? "└" : "├"
                   }}</template>
                 </span>
-                <a
-                  class="font-italic text-reset"
-                  href
-                  @click.prevent="
-                    eventBus.$emit('clickcte', row[1][NodeProp.SUBPLAN_NAME])
-                  "
-                >
+                <a class="font-italic text-reset" href="">
                   {{ row[1][NodeProp.SUBPLAN_NAME] }}
                 </a>
               </td>
@@ -450,11 +447,9 @@ function onSelectedNodeChange(newVal: number) {
               class="no-focus-outline node"
               :class="{
                 selected: row[1].nodeId === selected,
-                highlight: row[1].nodeId === highlightedNode,
+                highlight: row[1] === highlightedNode,
               }"
               :data-tippy-content="getTooltipContent(row[1])"
-              @mouseenter="eventBus.$emit('mouseovernode', row[1].nodeId)"
-              @mouseleave="eventBus.$emit('mouseoutnode', row[1].nodeId)"
               :ref="'node_' + row[1].nodeId"
             >
               <td class="node-index">
@@ -649,7 +644,7 @@ function onSelectedNodeChange(newVal: number) {
                   v-else-if="
                     viewOptions.metric == Metric.buffers &&
                     viewOptions.buffersMetric == BufferLocation.shared &&
-                    plan.planStats.maxBlocks[BufferLocation.shared]
+                    plan.planStats.maxBlocks?.[BufferLocation.shared]
                   "
                   :key="'node' + index + 'buffers_shared'"
                 >
@@ -660,7 +655,7 @@ function onSelectedNodeChange(newVal: number) {
                       'width: ' +
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] /
-                          plan.planStats.maxBlocks[BufferLocation.shared]) *
+                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
                           100
                       ) || 0) +
                       '%'
@@ -677,7 +672,7 @@ function onSelectedNodeChange(newVal: number) {
                       'width: ' +
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] /
-                          plan.planStats.maxBlocks[BufferLocation.shared]) *
+                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
                           100
                       ) || 0) +
                       '%'
@@ -694,7 +689,7 @@ function onSelectedNodeChange(newVal: number) {
                       'width: ' +
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
-                          plan.planStats.maxBlocks[BufferLocation.shared]) *
+                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
                           100
                       ) || 0) +
                       '%'
@@ -711,7 +706,7 @@ function onSelectedNodeChange(newVal: number) {
                       'width: ' +
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
-                          plan.planStats.maxBlocks[BufferLocation.shared]) *
+                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
                           100
                       ) || 0) +
                       '%'
@@ -729,7 +724,7 @@ function onSelectedNodeChange(newVal: number) {
                   v-else-if="
                     viewOptions.metric == Metric.buffers &&
                     viewOptions.buffersMetric == BufferLocation.temp &&
-                    plan.planStats.maxBlocks[BufferLocation.temp]
+                    plan.planStats.maxBlocks?.[BufferLocation.temp]
                   "
                   :key="'node' + index + 'buffers_temp'"
                 >
@@ -740,7 +735,7 @@ function onSelectedNodeChange(newVal: number) {
                       'width: ' +
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] /
-                          plan.planStats.maxBlocks[BufferLocation.temp]) *
+                          plan.planStats.maxBlocks?.[BufferLocation.temp]) *
                           100
                       ) || 0) +
                       '%'
@@ -757,7 +752,7 @@ function onSelectedNodeChange(newVal: number) {
                       'width: ' +
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
-                          plan.planStats.maxBlocks[BufferLocation.temp]) *
+                          plan.planStats.maxBlocks?.[BufferLocation.temp]) *
                           100
                       ) || 0) +
                       '%'
@@ -775,7 +770,7 @@ function onSelectedNodeChange(newVal: number) {
                   v-else-if="
                     viewOptions.metric == Metric.buffers &&
                     viewOptions.buffersMetric == BufferLocation.local &&
-                    plan.planStats.maxBlocks[BufferLocation.local]
+                    plan.planStats.maxBlocks?.[BufferLocation.local]
                   "
                   :key="'node' + index + 'buffers_local'"
                 >
@@ -786,7 +781,7 @@ function onSelectedNodeChange(newVal: number) {
                       'width: ' +
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
-                          plan.planStats.maxBlocks[BufferLocation.local]) *
+                          plan.planStats.maxBlocks?.[BufferLocation.local]) *
                           100
                       ) || 0) +
                       '%'
@@ -803,7 +798,7 @@ function onSelectedNodeChange(newVal: number) {
                       'width: ' +
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] /
-                          plan.planStats.maxBlocks[BufferLocation.local]) *
+                          plan.planStats.maxBlocks?.[BufferLocation.local]) *
                           100
                       ) || 0) +
                       '%'
@@ -820,7 +815,7 @@ function onSelectedNodeChange(newVal: number) {
                       'width: ' +
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
-                          plan.planStats.maxBlocks[BufferLocation.local]) *
+                          plan.planStats.maxBlocks?.[BufferLocation.local]) *
                           100
                       ) || 0) +
                       '%'
@@ -837,7 +832,7 @@ function onSelectedNodeChange(newVal: number) {
                       'width: ' +
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
-                          plan.planStats.maxBlocks[BufferLocation.local]) *
+                          plan.planStats?.maxBlocks?.[BufferLocation.local]) *
                           100
                       ) || 0) +
                       '%'
