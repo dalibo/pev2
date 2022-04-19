@@ -14,11 +14,9 @@ import { blocks, duration, rows, factor } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
 // import { scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlan, Node } from "@/interfaces"
-/*
-import tippy, {
-  Instance,
-} from "tippy.js"
-*/
+
+import tippy, { createSingleton } from "tippy.js"
+import type { CreateSingletonInstance, Instance } from "tippy.js"
 
 type Row = [number, Node, boolean, number[]]
 
@@ -32,8 +30,8 @@ const selected = ref<number>()
 // The main plan + init plans (all flatten)
 let plans: Row[][] = [[]]
 let highlightedNode: Node | null = null
-// let tippyInstances: Instance[] = []
-// let tippySingleton!: CreateSingletonInstance
+let tippyInstances: Instance[] = []
+let tippySingleton!: CreateSingletonInstance
 
 const viewOptions = reactive({
   metric: Metric.time,
@@ -81,7 +79,6 @@ function onViewOptionsChanged() {
 }
 
 function loadTooltips(): void {
-  /*
   if (tippySingleton) {
     tippySingleton.destroy()
   }
@@ -93,7 +90,6 @@ function loadTooltips(): void {
     delay: 100,
     allowHTML: true,
   })
-  */
 }
 
 function getTooltipContent(node: Node): string {
@@ -131,7 +127,9 @@ function timeTooltip(node: Node): string {
 }
 
 function rowsTooltip(node: Node): string {
-  return ["Rows: ", rows(node[NodeProp.ACTUAL_ROWS_REVISED] as number)].join("")
+  return ["Rows: ", rows(node[NodeProp.ACTUAL_ROWS_REVISED] as number)].join(
+    ""
+  )
 }
 
 function estimateFactorTooltip(node: Node): string {
