@@ -7,6 +7,7 @@ import {
   nextTick,
   onBeforeMount,
   onBeforeUnmount,
+  onMounted,
   watch,
 } from "vue"
 import { directive as vTippy } from "vue-tippy"
@@ -28,6 +29,7 @@ import Stats from "@/components/Stats.vue"
 import { scrollChildIntoParentView } from "@/services/help-service"
 import { PlanService } from "@/services/plan-service"
 import { HelpService } from "@/services/help-service"
+import Dragscroll from "@/dragscroll"
 import {
   CenterMode,
   HighlightMode,
@@ -135,6 +137,10 @@ onBeforeMount(() => {
     onHashChange()
   })
   window.addEventListener("hashchange", onHashChange)
+})
+
+onMounted(() => {
+  handleScroll()
 })
 
 onBeforeUnmount(() => {
@@ -257,6 +263,11 @@ function triggerDurationPercent(trigger: ITrigger) {
 const triggersTotalDuration = computed(() => {
   return _.sumBy(planStats.triggers, (o) => o.Time)
 })
+
+function handleScroll(): void {
+  const el: Element = planEl.value.$el as Element
+  new Dragscroll(el)
+}
 </script>
 
 <template>
