@@ -1173,11 +1173,6 @@ function formattedProp(propName: keyof typeof NodeProp) {
     <ul v-if="plans" :class="['node-children', { collapsed: collapsed }]">
       <li v-for="subnode in plans" :key="subnode.nodeId">
         <plan-node :node="subnode" :plan="plan" :viewOptions="viewOptions">
-          <!--
-          <template v-slot:nodeindex="{ node }">
-            <slot name="nodeindex" v-bind:node="node"></slot>
-          </template>
-          -->
         </plan-node>
       </li>
     </ul>
