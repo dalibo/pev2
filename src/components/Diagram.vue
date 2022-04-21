@@ -2,6 +2,7 @@
 import * as _ from "lodash"
 import {
   computed,
+  inject,
   nextTick,
   onBeforeMount,
   onMounted,
@@ -12,7 +13,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { blocks, duration, rows, factor } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
-// import { scrollChildIntoParentView } from "@/services/help-service"
+import { scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlan, Node } from "@/interfaces"
 
 import tippy, { createSingleton } from "tippy.js"
@@ -24,8 +25,11 @@ interface Props {
   plan: IPlan
 }
 const props = defineProps<Props>()
+const container = ref(null) // The container element
 
-const selected = ref<number>()
+const selectedNode = inject("selectedNode")
+
+const rowRefs: Element[] = []
 
 // The main plan + init plans (all flatten)
 let plans: Row[][] = [[]]
@@ -294,15 +298,18 @@ function isCTE(node: Node): boolean {
   return _.startsWith(node[NodeProp.SUBPLAN_NAME], "CTE")
 }
 
-// watch(selected, onSelectedNodeChange)
+watch(
+  () => selectedNode,
+  (newVal) => {
+    if (!container.value) {
+      return
+    }
+    scrollChildIntoParentView(container.value, rowRefs[newVal as number], false)
+  }
+)
 
-function onSelectedNodeChange(newVal: number) {
-  console.warn("FIXME ", newVal)
-  /*
-  const el = (this.$refs["node_" + newVal] as Element[])[0] as Element
-  const parent = this.$refs.container as Element
-  scrollChildIntoParentView(parent, el, false)
-  */
+function setRowRef(nodeId: number, el: Element) {
+  rowRefs[nodeId] = el
 }
 </script>
 
@@ -445,11 +452,15 @@ function onSelectedNodeChange(newVal: number) {
             <tr
               class="no-focus-outline node"
               :class="{
-                selected: row[1].nodeId === selected,
+                selected: row[1].nodeId === selectedNode,
                 highlight: row[1] === highlightedNode,
               }"
               :data-tippy-content="getTooltipContent(row[1])"
-              :ref="'node_' + row[1].nodeId"
+              :ref="
+                (el) => {
+                  setRowRef(row[1].nodeId, el as Element)
+                }
+              "
             >
               <td class="node-index">
                 <a
