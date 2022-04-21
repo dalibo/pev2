@@ -567,19 +567,16 @@ function handleScroll(): void {
                     v-if="plan && plan.ctes && plan.ctes.length"
                   >
                     <li v-for="node in plan.ctes" :key="node.nodeId">
-                      <!--
                       <plan-node
                         :node="node"
                         :plan="plan"
                         :viewOptions="viewOptions"
-                        :eventBus="eventBus"
                         ref="root"
                       >
                         <template v-slot:nodeindex="{ node }">
                           <slot name="nodeindex" v-bind:node="node"></slot>
                         </template>
                       </plan-node>
-                      -->
                     </li>
                   </ul>
                 </pane>
