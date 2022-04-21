@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, reactive, ref, watch } from "vue"
+import {
+  computed,
+  getCurrentInstance,
+  inject,
+  onBeforeMount,
+  reactive,
+  ref,
+  watch,
+} from "vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions, Worker } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
@@ -25,12 +33,16 @@ import {
 import * as _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
+const register = inject("register")
+const selectedNode = inject("selectedNode")
+
 interface Props {
   node: Node
   plan: IPlan
   viewOptions: ViewOptions
 }
 const props = defineProps<Props>()
+const el = ref<Element>(null) // The .plan-node Element
 
 const viewOptions = reactive<ViewOptions>(props.viewOptions)
 const node = reactive<Node>(props.node)
@@ -43,7 +55,6 @@ const nodeProps = ref<
 >()
 
 const executionTimePercent = ref<number>(NaN)
-const selected = ref<boolean>(false)
 // UI flags
 const showDetails = ref<boolean>(false)
 const collapsed = ref<boolean>(false)
@@ -132,6 +143,7 @@ onBeforeMount(() => {
   plans.value = node[NodeProp.PLANS]
   plannerRowEstimateDirection.value = node[NodeProp.PLANNER_ESTIMATE_DIRECTION]
   plannerRowEstimateValue.value = node[NodeProp.PLANNER_ESTIMATE_FACTOR]
+  register(getCurrentInstance())
 })
 
 function calculateDuration() {
@@ -451,13 +463,14 @@ function formattedProp(propName: keyof typeof NodeProp) {
       {{ node[NodeProp.SUBPLAN_NAME] }}
     </h4>
     <div
+      ref="el"
       :class="[
         'text-left plan-node',
         {
           detailed: showDetails,
           'never-executed': isNeverExecuted,
           parallel: workersPlannedCount,
-          selected: selected,
+          selected: selectedNode == node.nodeId,
         },
       ]"
     >
