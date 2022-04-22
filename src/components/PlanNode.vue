@@ -622,8 +622,8 @@ function formattedProp(propName: keyof typeof NodeProp) {
               v-if="node[NodeProp.RELATION_NAME]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-muted">on&nbsp;</span
-              ><span v-if="node[NodeProp.SCHEMA]"
+              <span class="text-muted">on</span>
+              <span v-if="node[NodeProp.SCHEMA]"
                 >{{ node[NodeProp.SCHEMA] }}.</span
               >{{ node[NodeProp.RELATION_NAME] }}
               <span v-if="node[NodeProp.ALIAS]">
@@ -635,7 +635,8 @@ function formattedProp(propName: keyof typeof NodeProp) {
               v-if="node[NodeProp.GROUP_KEY]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-muted">by</span>&nbsp;<span
+              <span class="text-muted">by</span>
+              <span
                 v-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
               ></span>
             </div>
@@ -661,7 +662,8 @@ function formattedProp(propName: keyof typeof NodeProp) {
               v-if="node[NodeProp.INDEX_NAME]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-muted">using</span>&nbsp;<span
+              <span class="text-muted">using</span>
+              <span
                 v-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
               ></span>
             </div>
@@ -669,7 +671,8 @@ function formattedProp(propName: keyof typeof NodeProp) {
               v-if="node[NodeProp.HASH_CONDITION]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-muted">on</span>&nbsp;<span
+              <span class="text-muted">on</span>
+              <span
                 v-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
               ></span>
             </div>
@@ -678,8 +681,8 @@ function formattedProp(propName: keyof typeof NodeProp) {
                 <font-awesome-icon
                   icon="search"
                   class="text-muted"
-                ></font-awesome-icon
-                >&nbsp;<span class="text-muted">CTE</span>
+                ></font-awesome-icon>
+                <span class="text-muted">CTE</span>
                 {{ node[NodeProp.CTE_NAME] }}
               </a>
             </div>
@@ -692,8 +695,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
             class="text-c-3 cursor-help"
             v-tippy="getHelpMessage('workers planned not launched')"
           >
-            <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon
-            >&nbsp;
+            <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon>
             <span>Not all workers launched</span>
           </div>
           <div class="clearfix"></div>
@@ -718,8 +720,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
               ></div>
             </div>
             <span class="node-bar-label" v-if="shouldShowNodeBarLabel()">
-              <span class="text-muted">{{ viewOptions.highlightType }}:</span
-              >&nbsp;
+              <span class="text-muted">{{ viewOptions.highlightType }}:</span>
               <span v-html="highlightValue"></span>
             </span>
           </div>
@@ -730,8 +731,8 @@ function formattedProp(propName: keyof typeof NodeProp) {
             v-if="getNodeTypeDescription(node[NodeProp.NODE_TYPE])"
             class="node-description"
           >
-            <span class="node-type">{{ node[NodeProp.NODE_TYPE] }} Node</span
-            >&nbsp;<span
+            <span class="node-type">{{ node[NodeProp.NODE_TYPE] }} Node</span>
+            <span
               v-html="getNodeTypeDescription(node[NodeProp.NODE_TYPE])"
             ></span>
           </div>
@@ -807,7 +808,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
                 icon="clock"
                 class="text-muted"
               ></font-awesome-icon>
-              <b>Timing:</b>&nbsp;
+              <b>Timing:</b>
               <span
                 :class="'p-0 px-1 rounded alert ' + durationClass"
                 v-html="formattedProp('EXCLUSIVE_DURATION')"
@@ -884,12 +885,11 @@ function formattedProp(propName: keyof typeof NodeProp) {
                 icon="exchange-alt"
                 class="text-muted"
               ></font-awesome-icon>
-              <b>Heap Fetches:</b>&nbsp;
+              <b>Heap Fetches:</b>
               <span
                 :class="'p-0 px-1 rounded alert ' + heapFetchesClass"
                 v-html="formattedProp('HEAP_FETCHES')"
               ></span>
-              &nbsp;
               <font-awesome-icon
                 icon="info-circle"
                 fixed-width

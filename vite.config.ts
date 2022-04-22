@@ -41,7 +41,16 @@ const build = process.env.LIB
 // https://vitejs.dev/config/
 export default defineConfig({
   build: build,
-  plugins: [vue(), viteSingleFile()],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          whitespace: "preserve",
+        },
+      },
+    }),
+    viteSingleFile(),
+  ],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
