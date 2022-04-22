@@ -377,7 +377,7 @@ const filterTooltip = computed((): string => {
 const workersLaunchedCount = computed((): number => {
   console.warn("Make sure it works for workers that are not array")
   const workers = node[NodeProp.WORKERS] as Worker[]
-  return workers.length as number
+  return workers ? workers.length : NaN
 })
 
 const workersPlannedCount = computed((): number => {
