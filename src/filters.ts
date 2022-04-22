@@ -1,7 +1,4 @@
 import * as _ from "lodash"
-//import * as moment from "moment"
-//import momentDurationFormatSetup from "moment-duration-format"
-//momentDurationFormatSetup(moment)
 import { EstimateDirection, nodePropTypes, PropType } from "@/enums"
 import hljs from "highlight.js/lib/core"
 import pgsql from "highlight.js/lib/languages/pgsql"
@@ -14,11 +11,35 @@ export function duration(value: number | undefined): string {
   if (value === undefined) {
     return "N/A"
   }
-  if (value < 1000) {
-    return parseFloat(value.toPrecision(3)).toLocaleString() + "ms"
+  const result: string[] = []
+  let denominator: number = 1000 * 60 * 60 * 24
+  const days = Math.floor(value / denominator)
+  if (days) {
+    result.push(days + "d")
   }
-  console.warn("Duration not formatted")
-  return value.toString()
+  let remainder = value % denominator
+  denominator /= 24
+  const hours = Math.floor(remainder / denominator)
+  if (hours) {
+    result.push(hours + "h")
+  }
+  remainder = remainder % denominator
+  denominator /= 60
+  const minutes = Math.floor(remainder / denominator)
+  if (minutes) {
+    result.push(minutes + "m")
+  }
+  remainder = remainder % denominator
+  denominator /= 60
+  const seconds = Math.floor(remainder / denominator)
+  if (seconds) {
+    result.push(seconds + "s")
+  }
+  remainder = remainder % denominator
+  const milliseconds = parseFloat(remainder.toPrecision(3))
+  result.push(milliseconds.toLocaleString() + "ms")
+
+  return result.slice(0, 2).join(" ")
 }
 
 export function cost(value: number): string {
