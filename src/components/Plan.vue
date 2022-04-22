@@ -70,6 +70,7 @@ const zoomTo = ref<number>()
 const showSettings = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
 const selectedNode = ref<number>(NaN)
+const highlightedNode = ref<number>(NaN)
 const planNodes: { [key: number]: typeof PlanNode } = {}
 
 const viewOptions = reactive({
@@ -178,6 +179,7 @@ function registerNode(node: typeof PlanNode) {
 
 provide("register", registerNode)
 provide("selectedNode", selectedNode)
+provide("highlightedNode", highlightedNode)
 
 function selectNode(nodeId: number) {
   selectedNode.value = nodeId
