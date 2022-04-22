@@ -270,6 +270,9 @@ const triggersTotalDuration = computed(() => {
 })
 
 function handleScroll(): void {
+  if (!planEl.value) {
+    return
+  }
   const el: Element = planEl.value.$el as Element
   new Dragscroll(el)
 }
