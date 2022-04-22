@@ -35,6 +35,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
 const register = inject("register")
 const selectedNode = inject("selectedNode")
+const highlightedNode = inject("highlightedNode")
 
 interface Props {
   node: Node
@@ -471,6 +472,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
           'never-executed': isNeverExecuted,
           parallel: workersPlannedCount,
           selected: selectedNode == node.nodeId,
+          highlight: highlightedNode == node.nodeId,
         },
       ]"
     >
@@ -508,7 +510,11 @@ function formattedProp(propName: keyof typeof NodeProp) {
           title="Collpase child nodes"
         ></font-awesome-icon>
       </div>
-      <div class="plan-node-body card">
+      <div
+        class="plan-node-body card"
+        @mouseenter="highlightedNode = node.nodeId"
+        @mouseleave="highlightedNode = null"
+      >
         <div
           class="card-body header no-focus-outline"
           v-on:click.stop="showDetails = !showDetails"
@@ -839,7 +845,9 @@ function formattedProp(propName: keyof typeof NodeProp) {
                   over</span
                 >
                 <span
-                  v-if="plannerRowEstimateDirection === EstimateDirection.under"
+                  v-if="
+                    plannerRowEstimateDirection === EstimateDirection.under
+                  "
                   ><font-awesome-icon icon="arrow-down"></font-awesome-icon>
                   under</span
                 >

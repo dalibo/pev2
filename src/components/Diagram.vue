@@ -28,12 +28,12 @@ const props = defineProps<Props>()
 const container = ref(null) // The container element
 
 const selectedNode = inject("selectedNode")
+const highlightedNode = inject("highlightedNode")
 
 const rowRefs: Element[] = []
 
 // The main plan + init plans (all flatten)
 let plans: Row[][] = [[]]
-let highlightedNode: Node | null = null
 let tippyInstances: Instance[] = []
 let tippySingleton!: CreateSingletonInstance
 
@@ -54,14 +54,6 @@ onBeforeMount((): void => {
     flatten(flat, 0, cte, true, [])
     plans.push(flat)
   })
-  /*
-  eventBus.$on("mouseovernode", (node: Node) => {
-    highlightedNode = node
-  })
-  eventBus.$on("mouseoutnode", () => {
-    highlightedNode = null
-  })
-  */
 
   // switch to the first buffers tab if data not available for the currently
   // chosen one
@@ -453,7 +445,7 @@ function setRowRef(nodeId: number, el: Element) {
               class="no-focus-outline node"
               :class="{
                 selected: row[1].nodeId === selectedNode,
-                highlight: row[1] === highlightedNode,
+                highlight: row[1].nodeId === highlightedNode,
               }"
               :data-tippy-content="getTooltipContent(row[1])"
               :ref="
@@ -461,6 +453,8 @@ function setRowRef(nodeId: number, el: Element) {
                   setRowRef(row[1].nodeId, el as Element)
                 }
               "
+              @mouseenter="highlightedNode = row[1].nodeId"
+              @mouseleave="highlightedNode = null"
             >
               <td class="node-index">
                 <a
