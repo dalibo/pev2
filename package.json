@@ -7,7 +7,9 @@
     "build-lib": "vue-tsc --noEmit && LIB=true vite build",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "prepare": "husky install",
+    "test": "jest"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
@@ -50,6 +52,7 @@
     "typescript": "~4.5.5",
     "vite": "^2.8.4",
     "vite-plugin-singlefile": "^0.7.1",
-    "vue-tsc": "^0.31.4"
+    "vue-tsc": "^0.31.4",
+    "husky": "^7.0.0"
   }
 }
