@@ -33,9 +33,12 @@ import {
 import * as _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
-const register = inject("register")
-const selectedNode = inject("selectedNode")
-const highlightedNode = inject("highlightedNode")
+type registerFn = {
+  (node: object): void
+}
+const register = inject("register") as registerFn
+const selectedNode = inject<number | null>("selectedNode", null)
+const highlightedNode = inject<number | null>("highlightedNode", null)
 
 interface Props {
   node: Node
@@ -43,7 +46,7 @@ interface Props {
   viewOptions: ViewOptions
 }
 const props = defineProps<Props>()
-const el = ref<Element>(null) // The .plan-node Element
+const el = ref<Element | null>(null) // The .plan-node Element
 
 const viewOptions = reactive<ViewOptions>(props.viewOptions)
 const node = reactive<Node>(props.node)
@@ -144,7 +147,7 @@ onBeforeMount(() => {
   plans.value = node[NodeProp.PLANS]
   plannerRowEstimateDirection.value = node[NodeProp.PLANNER_ESTIMATE_DIRECTION]
   plannerRowEstimateValue.value = node[NodeProp.PLANNER_ESTIMATE_FACTOR]
-  register(getCurrentInstance())
+  register(getCurrentInstance() as object)
 })
 
 function calculateDuration() {
