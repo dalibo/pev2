@@ -548,8 +548,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
               <span
                 v-if="costClass"
                 :class="
-                  'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' +
-                  costClass
+                  'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + costClass
                 "
                 v-tippy="'Cost is high'"
                 ><font-awesome-icon
@@ -692,9 +691,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
           </div>
 
           <div
-            v-if="
-              !allWorkersLaunched && viewOptions.viewMode === ViewMode.FULL
-            "
+            v-if="!allWorkersLaunched && viewOptions.viewMode === ViewMode.FULL"
             class="text-c-3 cursor-help"
             v-tippy="getHelpMessage('workers planned not launched')"
           >
@@ -849,9 +846,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
                   over</span
                 >
                 <span
-                  v-if="
-                    plannerRowEstimateDirection === EstimateDirection.under
-                  "
+                  v-if="plannerRowEstimateDirection === EstimateDirection.under"
                   ><font-awesome-icon icon="arrow-down"></font-awesome-icon>
                   under</span
                 >
@@ -994,9 +989,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
                 <td class="text-right bg-hatched"></td>
                 <td
                   class="text-right"
-                  v-html="
-                    formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'
-                  "
+                  v-html="formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'"
                 ></td>
               </tr>
               <tr>

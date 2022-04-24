@@ -123,9 +123,7 @@ function timeTooltip(node: Node): string {
 }
 
 function rowsTooltip(node: Node): string {
-  return ["Rows: ", rows(node[NodeProp.ACTUAL_ROWS_REVISED] as number)].join(
-    ""
-  )
+  return ["Rows: ", rows(node[NodeProp.ACTUAL_ROWS_REVISED] as number)].join("")
 }
 
 function estimateFactorTooltip(node: Node): string {
