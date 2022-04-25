@@ -17,7 +17,6 @@ import type {
   SortGroups,
 } from "@/interfaces"
 import { Node, Worker } from "@/interfaces"
-import moment from "moment"
 import clarinet from "clarinet"
 
 interface NodeElement {
@@ -52,7 +51,7 @@ export class PlanService {
 
     const plan: IPlan = {
       id: NodeProp.PEV_PLAN_TAG + new Date().getTime().toString(),
-      name: planName || "plan created on " + moment().format("LLL"),
+      name: planName || "plan created on " + new Date().toDateString(),
       createdOn: new Date(),
       content: planContent,
       query: planQuery,
