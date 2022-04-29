@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import * as _ from "lodash"
+import type { Emitter } from "mitt"
 import {
   computed,
   inject,
@@ -14,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { blocks, duration, rows, factor } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
 import { scrollChildIntoParentView } from "@/services/help-service"
-import type { IPlan, Node } from "@/interfaces"
+import type { Events, IPlan, Node } from "@/interfaces"
 
 import tippy, { createSingleton } from "tippy.js"
 import type { CreateSingletonInstance, Instance } from "tippy.js"
@@ -29,6 +30,7 @@ const container = ref(null) // The container element
 
 const selectedNode = inject("selectedNode")
 const highlightedNode = inject("highlightedNode")
+const emitter = inject<Emitter<Events>>("emitter")
 
 const rowRefs: Element[] = []
 
@@ -434,7 +436,11 @@ function setRowRef(nodeId: number, el: Element) {
                     row[2] ? "└" : "├"
                   }}</template>
                 </span>
-                <a class="font-italic text-reset" href="">
+                <a
+                  class="font-italic text-reset"
+                  href=""
+                  @click.prevent="emitter?.emit('clickcte', row[1][NodeProp.SUBPLAN_NAME] as string)"
+                >
                   {{ row[1][NodeProp.SUBPLAN_NAME] }}
                 </a>
               </td>

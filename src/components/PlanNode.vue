@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { Emitter } from "mitt"
 import {
   computed,
   getCurrentInstance,
@@ -9,7 +10,7 @@ import {
   watch,
 } from "vue"
 import { directive as vTippy } from "vue-tippy"
-import type { IPlan, Node, ViewOptions, Worker } from "@/interfaces"
+import type { Events, IPlan, Node, ViewOptions, Worker } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
 import { numberToColorHsl } from "@/services/color-service"
 import {
@@ -47,6 +48,9 @@ interface Props {
 }
 const props = defineProps<Props>()
 const el = ref<Element | null>(null) // The .plan-node Element
+const outerEl = ref<Element | null>(null) // The outer Element, useful for CTE and subplans
+
+const emitter = inject<Emitter<Events>>("emitter")
 
 const viewOptions = reactive<ViewOptions>(props.viewOptions)
 const node = reactive<Node>(props.node)
@@ -457,6 +461,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
 
 <template>
   <div
+    ref="outerEl"
     :class="{
       subplan: node[NodeProp.SUBPLAN_NAME],
       'd-flex flex-column align-items-center':
@@ -679,7 +684,13 @@ function formattedProp(propName: keyof typeof NodeProp) {
               ></span>
             </div>
             <div v-if="node[NodeProp.CTE_NAME]">
-              <a class="text-reset" href="">
+              <a
+                class="text-reset"
+                href=""
+                @click.stop.prevent="
+                  emitter?.emit('clickcte', 'CTE ' + node[NodeProp.CTE_NAME])
+                "
+              >
                 <font-awesome-icon
                   icon="search"
                   class="text-muted"
