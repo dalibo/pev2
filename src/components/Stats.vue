@@ -2,7 +2,9 @@
 import * as _ from "lodash"
 import { computed, onBeforeMount, reactive, ref } from "vue"
 import type { IPlan, Node, StatsTableItemType } from "@/interfaces"
-import { NodeProp } from "@/enums"
+import { NodeProp, SortDirection } from "@/enums"
+import SortedTable from "@/components/SortedTable.vue"
+import SortLink from "@/components/SortLink.vue"
 import StatsTableItem from "@/components/StatsTableItem.vue"
 
 interface Props {
@@ -96,41 +98,101 @@ const perIndex = computed(() => {
 <template>
   <div class="p-2 small stats">
     <h6 class="mt-2">Per table stats</h6>
-    <table>
-      <stats-table-item
-        v-for="(value, index) in perTable"
-        :key="index"
-        :value="value"
-        :executionTime="executionTime"
-      ></stats-table-item>
+    <sorted-table
+      class="table table-nonfluid table-sm table-bordered align-top"
+      :values="perTable"
+      sort="time"
+      :dir="SortDirection.desc"
+    >
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">
+            <sort-link name="name" class="text-white">Table</sort-link>
+          </th>
+          <th scope="col" class="text-right">
+            <sort-link name="count" class="text-white">Count</sort-link>
+          </th>
+          <th scope="col" colspan="2" class="text-right">
+            <sort-link name="time" class="text-white">Time</sort-link>
+          </th>
+        </tr>
+      </thead>
+      <template v-slot:body="sort">
+        <template v-for="value in sort.values" :key="value">
+          <stats-table-item
+            :value="value as StatsTableItemType"
+            :executionTime="executionTime"
+          ></stats-table-item>
+        </template>
+      </template>
       <tbody v-if="!perTable.length">
         <tr>
           <td colspan="3" class="text-center font-italic">No tables used</td>
         </tr>
       </tbody>
-    </table>
+    </sorted-table>
     <h6>Per node type stats</h6>
-    <table>
-      <stats-table-item
-        v-for="(value, index) in perNodeType"
-        :key="index"
-        :value="value"
-        :executionTime="executionTime"
-      ></stats-table-item>
-    </table>
+    <sorted-table
+      class="table table-nonfluid table-sm table-bordered align-top"
+      :values="perNodeType"
+      sort="time"
+      :dir="SortDirection.desc"
+    >
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">
+            <sort-link name="name" class="text-white">Node Type</sort-link>
+          </th>
+          <th scope="col" class="text-right">
+            <sort-link name="count" class="text-white">Count</sort-link>
+          </th>
+          <th scope="col" colspan="2" class="text-right">
+            <sort-link name="time" class="text-white">Time</sort-link>
+          </th>
+        </tr>
+      </thead>
+      <template v-slot:body="sort">
+        <template v-for="value in sort.values" :key="value">
+          <stats-table-item
+            :value="value as StatsTableItemType"
+            :executionTime="executionTime"
+          ></stats-table-item>
+        </template>
+      </template>
+    </sorted-table>
     <h6>Per index stats</h6>
-    <table>
-      <stats-table-item
-        v-for="(value, index) in perIndex"
-        :key="index"
-        :value="value"
-        :executionTime="executionTime"
-      ></stats-table-item>
+    <sorted-table
+      class="table table-nonfluid table-sm table-bordered align-top"
+      :values="perIndex"
+      sort="time"
+      :dir="SortDirection.desc"
+    >
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">
+            <sort-link name="name" class="text-white">Index</sort-link>
+          </th>
+          <th scope="col" class="text-right">
+            <sort-link name="count" class="text-white">Count</sort-link>
+          </th>
+          <th scope="col" colspan="2" class="text-right">
+            <sort-link name="time" class="text-white">Time</sort-link>
+          </th>
+        </tr>
+      </thead>
+      <template v-slot:body="sort">
+        <template v-for="value in sort.values" :key="value">
+          <stats-table-item
+            :value="value as StatsTableItemType"
+            :executionTime="executionTime"
+          ></stats-table-item>
+        </template>
+      </template>
       <tbody v-if="!perIndex.length">
         <tr>
           <td colspan="3" class="text-center font-italic">No index used</td>
         </tr>
       </tbody>
-    </table>
+    </sorted-table>
   </div>
 </template>
