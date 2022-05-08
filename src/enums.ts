@@ -26,6 +26,11 @@ export class HighlightType {
   public static COST = "cost"
 }
 
+export enum SortDirection {
+  asc = "asc",
+  desc = "desc",
+}
+
 export enum EstimateDirection {
   over = 1,
   under = 2,
