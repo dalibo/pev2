@@ -4,6 +4,7 @@ import { ref } from "vue"
 import type { Node, StatsTableItemType } from "@/interfaces"
 import { NodeProp } from "@/enums"
 import { duration, durationClass, percent } from "@/filters"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
 interface Props {
   value: StatsTableItemType
@@ -30,13 +31,16 @@ function durationPercent(node: Node) {
       class="user-select-none"
     >
       <th>
-        <i
-          class="fa fa-fw"
-          :class="{
-            'fa-chevron-right': !expanded,
-            'fa-chevron-down': expanded,
-          }"
-        ></i>
+        <font-awesome-icon
+          fixed-width
+          icon="chevron-down"
+          v-if="expanded"
+        ></font-awesome-icon>
+        <font-awesome-icon
+          fixed-width
+          icon="chevron-right"
+          v-else
+        ></font-awesome-icon>
         {{ props.value.name }}
       </th>
       <th class="text-right">{{ props.value.count }}</th>
