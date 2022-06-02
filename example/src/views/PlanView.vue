@@ -10,8 +10,8 @@ const planData = inject("planData")
   <main-layout>
     <plan
       v-if="planData[0]"
-      :plan-source="planData[0].value"
-      :plan-query="planData[1].value"
+      :plan-source="planData[0]"
+      :plan-query="planData[1]"
     />
   </main-layout>
 </template>
