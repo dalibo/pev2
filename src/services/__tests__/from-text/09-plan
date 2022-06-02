@@ -1,9 +1,0 @@
-# explain select * from test t1 join test t2 on t1.id = t2.id + 1 limit 1;
-                                     QUERY PLAN
--------------------------------------------------------------------------------------
- Limit  (cost=0.00..0.34 rows=1 width=8)
-   ->  Nested Loop  (cost=0.00..335.20 rows=1000 width=8)
-         ->  Seq Scan on test t2  (cost=0.00..14.00 rows=1000 width=4)
-         ->  Index Scan using test_pkey on test t1  (cost=0.00..0.31 rows=1 width=4)
-               Index Cond: (t1.id = (t2.id + 1))
-(5 rows)

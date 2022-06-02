@@ -1,7 +1,0 @@
-explain (analyze, timing off) select * from pg_class ;
-                                      QUERY PLAN                                       
----------------------------------------------------------------------------------------
- Seq Scan on pg_class  (cost=0.00..32.98 rows=698 width=776) (actual rows=698 loops=1)
- Planning Time: 0.051 ms
- Execution Time: 0.105 ms
-(3 lignes)

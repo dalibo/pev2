@@ -1,5 +1,0 @@
-# explain select 1;
-                QUERY PLAN
-------------------------------------------
- Result  (cost=0.00..0.01 rows=1 width=0)
-(1 row)

@@ -1,5 +1,0 @@
- Bitmap Heap Scan on poi  (cost=39.88..3946.78 rows=1113 width=323)
-   Recheck Cond: ((poi_id >= 100) AND (poi_id <= 3000))
-   ->  Bitmap Index Scan on poi_pkey  (cost=0.00..39.60 rows=1113 width=0)
-         Index Cond: ((poi_id >= 100) AND (poi_id <= 3000))
-

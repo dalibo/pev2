@@ -1,2 +1,0 @@
-"Limit  (cost=0.00..0.08 rows=2 width=190) (actual time=0.033..0.043 rows=2 loops=1)"
-"  ->  Seq Scan on pg_class  (cost=0.00..13.61 rows=361 width=190) (actual time=0.028..0.030 rows=2 loops=1)"

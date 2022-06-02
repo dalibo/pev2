@@ -1,8 +1,0 @@
-                                                 QUERY PLAN                                                 
-------------------------------------------------------------------------------------------------------------
- Tid Range Scan on test  (cost=0.00..142.05 rows=9605 width=4) (actual time=0.019..2.116 rows=9600 loops=1)
-   TID Cond: (ctid > '(400,0)'::tid)
-   Buffers: shared hit=43
- Planning Time: 0.079 ms
- Execution Time: 3.372 ms
-(5 rows)

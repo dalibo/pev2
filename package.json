@@ -1,107 +1,29 @@
 {
   "name": "pev2",
-  "keywords": [
-    "PostgreSQL",
-    "vuejs",
-    "SQL",
-    "plan"
-  ],
-  "version": "0.24.0",
-  "main": "./dist/pev2.common.js",
-  "files": [
-    "dist/*"
-  ],
+  "version": "1.0.0",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "lint": "vue-cli-service lint",
-    "build": "vue-cli-service build --target lib --name pev2 ./src/components/Plan.vue && EXTRACT_CSS=true vue-cli-service build --target lib --name pev2 ./src/components/Plan.vue --dest ./dist/components && cp -R ./src/assets/scss ./dist/scss",
-    "build-app": "vue-cli-service build --dest dist-app",
-    "test:unit": "jest",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview --port 5050",
+    "typecheck": "vue-tsc --noEmit",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@types/dragscroll": "0.0.0",
-    "@types/highlight.js": "^9.12.4",
-    "@types/lodash": "^4.14.178",
-    "@types/moment-duration-format": "^2.2.3",
     "bootstrap": "^4.6.1",
-    "clarinet": "^0.12.3",
-    "core-js": "^3.21.0",
-    "highlight.js": "^10.7.2",
-    "jquery": "^3.6.0",
-    "lodash": "^4.17.21",
-    "moment": "^2.29.1",
-    "moment-duration-format": "^2.3.2",
-    "popper.js": "^1.16.1",
-    "splitpanes": "^2.3.8",
-    "tippy.js": "^6.3.7",
-    "vue": "^2.6.14",
-    "vue-class-component": "^7.2.6",
-    "vue-clipboard3": "^1.0.1",
-    "vue-fragment": "^1.5.2",
-    "vue-property-decorator": "^8.5.1",
-    "vue-sorted-table": "^1.3.0",
-    "vue-tippy": "^4.13.0"
+    "vue": "^3.2.31"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.0",
-    "@types/jest": "^25.1.2",
-    "@vue/cli-plugin-babel": "^4.0.5",
-    "@vue/cli-plugin-typescript": "^4.4.1",
-    "@vue/cli-service": "^4.0.5",
-    "@vue/test-utils": "^1.0.0-beta.29",
-    "babel-core": "^6.26.3",
-    "husky": "^4.2.2",
-    "jest": "^25.3.0",
-    "lint-staged": "^10.0.7",
-    "moment-locales-webpack-plugin": "^1.1.0",
-    "node-sass": "^4.14.1",
-    "prettier": "2.0.5",
-    "raw-loader": "^4.0.2",
-    "sass-loader": "^8.0.0",
-    "snyk": "^1.334.0",
-    "ts-jest": "^25.2.0",
-    "typescript": "^4.6.2",
-    "vue-jest": "^3.0.5",
-    "vue-router": "^3.1.3",
-    "vue-template-compiler": "^2.6.14"
-  },
-  "gitHooks": {
-    "pre-commit": "lint-staged blah"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "vue-cli-service lint"
-    ],
-    "*.vue": [
-      "vue-cli-service lint"
-    ],
-    "*.{js,css,json,md}": [
-      "prettier --write"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "ts",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      ".*\\.(vue)$": "vue-jest",
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testURL": "http://localhost/",
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    }
-  },
-  "snyk": true
+    "@rushstack/eslint-patch": "^1.1.0",
+    "@types/node": "^16.11.25",
+    "@vitejs/plugin-vue": "^2.2.2",
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "@vue/eslint-config-typescript": "^10.0.0",
+    "@vue/tsconfig": "^0.1.3",
+    "eslint": "^8.5.0",
+    "eslint-plugin-vue": "^8.2.0",
+    "prettier": "^2.5.1",
+    "typescript": "~4.5.5",
+    "vite": "^2.8.4",
+    "vue-tsc": "^0.31.4"
+  }
 }
