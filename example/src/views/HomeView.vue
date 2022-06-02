@@ -54,7 +54,7 @@ const samples = ref<Sample[]>([
 ])
 
 function submitPlan() {
-  setPlanData(planInput, queryInput)
+  setPlanData(planInput.value, queryInput.value)
 }
 
 onMounted(() => {

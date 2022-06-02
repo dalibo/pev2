@@ -27,6 +27,7 @@ function setPlanData(plan, query) {
   currentPath.value = "/plan"
 }
 provide("setPlanData", setPlanData)
+window.setPlanData = setPlanData
 </script>
 
 <template>
