@@ -1,1 +1,0 @@
-Seq Scan on tenk1  (cost=0.00..333.00 rows=10000 width=148)

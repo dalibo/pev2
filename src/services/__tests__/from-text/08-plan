@@ -1,6 +1,0 @@
-# explain select * from test limit 1;
-                          QUERY PLAN
---------------------------------------------------------------
- Limit  (cost=0.00..0.01 rows=1 width=4)
-   ->  Seq Scan on test  (cost=0.00..14.00 rows=1000 width=4)
-(2 rows)

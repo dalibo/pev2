@@ -1,8 +1,0 @@
-# explain analyze select 1 = (select 1);
-                                         QUERY PLAN
---------------------------------------------------------------------------------------------
- Result  (cost=0.01..0.02 rows=1 width=0) (actual time=0.033..0.035 rows=1 loops=1)
-   InitPlan
-     ->  Result  (cost=0.00..0.01 rows=1 width=0) (actual time=0.003..0.005 rows=1 loops=1)
- Total runtime: 0.234 ms
-(4 rows)

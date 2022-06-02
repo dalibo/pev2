@@ -1,2 +1,0 @@
- Index Scan using test_pkey on test t  (cost=0.00..8.27 rows=1 width=4) (actual time=0.029..0.033 rows=1 loops=1)
-   Index Cond: (id = 1)
