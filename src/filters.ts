@@ -1,5 +1,7 @@
 import * as _ from "lodash"
+import { createApp } from "vue"
 import { EstimateDirection, nodePropTypes, PropType } from "@/enums"
+import SortGroup from "@/components/SortGroup.vue"
 import hljs from "highlight.js/lib/core"
 import pgsql from "highlight.js/lib/languages/pgsql"
 hljs.registerLanguage("pgsql", pgsql)
@@ -150,6 +152,13 @@ export function list(value: string[] | string): string {
   return '<ul class="list-unstyled">' + compiled({ lines: value }) + "</ul>"
 }
 
+function sortGroups(value: string): string {
+  const app = createApp(SortGroup, { sortGroup: value }).mount(
+    document.createElement("div")
+  )
+  return app.$el.outerHTML
+}
+
 export function formatNodeProp(key: string, value: unknown): string {
   if (_.has(nodePropTypes, key)) {
     if (nodePropTypes[key] === PropType.duration) {
@@ -184,8 +193,7 @@ export function formatNodeProp(key: string, value: unknown): string {
     } else if (nodePropTypes[key] === PropType.list) {
       return list(value as string[])
     } else if (nodePropTypes[key] === PropType.sortGroups) {
-      console.error("Sort groups not implemented")
-      //return sortGroups(value)
+      return sortGroups(value as string)
     }
   }
   return _.escape(value as unknown as string)
