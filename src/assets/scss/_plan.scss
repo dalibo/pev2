@@ -343,3 +343,7 @@ $connector-line: 2px solid darken($line-color, 10%);
   text-decoration-color: $gray;
   cursor: help;
 }
+
+foreignObject {
+  overflow: visible;
+}
