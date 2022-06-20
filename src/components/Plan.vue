@@ -27,19 +27,18 @@ import type {
 } from "@/interfaces"
 import Copy from "@/components/Copy.vue"
 import Diagram from "@/components/Diagram.vue"
-import PlanNode from "@/components/PlanNode.vue"
+import type PlanNode from "@/components/PlanNode.vue"
+import PlanNodeContainer from "@/components/PlanNodeContainer.vue"
 import Stats from "@/components/Stats.vue"
 import { scrollChildIntoParentView } from "@/services/help-service"
 import { PlanService } from "@/services/plan-service"
 import { HelpService } from "@/services/help-service"
-import Dragscroll from "@/dragscroll"
 import {
   CenterMode,
   HighlightMode,
   HighlightType,
   NodeProp,
   Orientation,
-  ViewMode,
 } from "@/enums"
 import { duration, durationClass, json_, pgsql_ } from "@/filters"
 
@@ -50,6 +49,9 @@ import { fas } from "@fortawesome/free-solid-svg-icons"
 import { far } from "@fortawesome/free-regular-svg-icons"
 import { fab } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import * as d3 from "d3"
+
+import { linkVertical } from "d3-shape"
 
 // Add all icons to the library
 library.add(fas, far, fab)
@@ -84,7 +86,6 @@ const viewOptions = reactive({
   showHighlightBar: false,
   showPlanStats: true,
   highlightType: HighlightType.NONE,
-  viewMode: ViewMode.FULL,
   orientation: Orientation.TWOD,
   showDiagram: true,
   diagramWidth: 20,
@@ -94,6 +95,22 @@ const planService = new PlanService()
 
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
+
+const paddingBottom = 50
+const transform = ref("")
+const scale = ref(1)
+const edgeWeight = computed(() => {
+  return d3.scaleLinear().domain([0, planStats.maxRows]).range([1, 30])
+})
+const zoomListener = d3
+  .zoom()
+  .scaleExtent([0.1, 3])
+  .on("zoom", function (e) {
+    transform.value = e.transform
+    scale.value = e.transform.k
+  })
+const nodeSize: [number, number] = [200, 80]
+const layoutRootNode = ref<null | d3.HierarchyPointNode<Node>>(null)
 
 onBeforeMount(() => {
   const savedOptions = localStorage.getItem("viewOptions")
@@ -146,11 +163,25 @@ onBeforeMount(() => {
     onHashChange()
   })
   window.addEventListener("hashchange", onHashChange)
+
+  const layout = d3
+    .tree<Node>()
+    .nodeSize(nodeSize)
+    .separation((a, b) => (a.parent == b.parent ? 1 : 1.3))
+
+  layoutRootNode.value = layout(
+    d3.hierarchy(planJson.Plan, (v: Node) => v.Plans)
+  )
 })
 
 onMounted(() => {
-  handleScroll()
   emitter.on("clickcte", onClickCte)
+  d3.select(planEl.value.$el).call(zoomListener)
+  nextTick(() => {
+    const rect = planEl.value.$el.getBoundingClientRect()
+    const transX = rect.width / 2
+    zoomListener.translateBy(d3.select(planEl.value.$el), transX, 10)
+  })
 })
 
 onBeforeUnmount(() => {
@@ -162,6 +193,21 @@ watch(viewOptions, onViewOptionsChanged)
 function onViewOptionsChanged() {
   localStorage.setItem("viewOptions", JSON.stringify(viewOptions))
 }
+
+const lineGen = computed(() => {
+  return function (link: d3.HierarchyPointLink<Node>) {
+    const source = link.source
+    const target = link.target
+    const pathD = linkVertical()({
+      source: [
+        source.x + nodeSize[0] / 2,
+        source.y + nodeSize[1] - paddingBottom,
+      ],
+      target: [target.x + nodeSize[0] / 2, target.y],
+    })
+    return pathD ? pathD : undefined
+  }
+})
 
 function onHashChange(): void {
   const reg = /#([a-zA-Z]*)(\/node\/([0-9]*))*/
@@ -277,14 +323,6 @@ const triggersTotalDuration = computed(() => {
   return _.sumBy(planStats.triggers, (o) => o.Time)
 })
 
-function handleScroll(): void {
-  if (!planEl.value) {
-    return
-  }
-  const el: Element = planEl.value.$el as Element
-  new Dragscroll(el)
-}
-
 function onClickCte(subplanName: string): void {
   const cmp = _.find(planNodes, (o) => {
     return (
@@ -364,7 +402,7 @@ function onClickCte(subplanName: string): void {
         <!-- Plan tab -->
         <div
           class="d-flex flex-column flex-grow-1 overflow-hidden"
-          :class="[viewOptions.viewMode, viewOptions.orientation]"
+          :class="[viewOptions.orientation]"
         >
           <div
             class="plan-stats flex-shrink-0 d-flex border-bottom border-top form-inline"
@@ -577,32 +615,31 @@ function onClickCte(subplanName: string): void {
                   ref="planEl"
                   class="plan d-flex flex-column flex-grow-1 grab-bing overflow-auto"
                 >
-                  <ul class="main-plan p-2 mb-0">
-                    <li>
-                      <plan-node
-                        :node="rootNode"
+                  <svg width="100%" height="100%">
+                    <g :transform="transform">
+                      <!-- Links -->
+                      <path
+                        v-for="(link, index) in layoutRootNode?.links()"
+                        :key="`link${index}`"
+                        :d="lineGen(link)"
+                        stroke="grey"
+                        :stroke-width="
+                          edgeWeight(link.target.data['Actual Rows'])
+                        "
+                        stroke-linecap="square"
+                        fill="none"
+                      />
+                      <plan-node-container
+                        v-for="(item, index) in layoutRootNode?.descendants()"
+                        :key="index"
+                        :node="item"
                         :plan="plan"
                         :viewOptions="viewOptions"
-                        v-if="plan && rootNode"
+                        :width="nodeSize[0]"
                         ref="root"
-                      >
-                      </plan-node>
-                    </li>
-                  </ul>
-                  <ul
-                    class="init-plans p-2 mb-0"
-                    v-if="plan && plan.ctes && plan.ctes.length"
-                  >
-                    <li v-for="node in plan.ctes" :key="node.nodeId">
-                      <plan-node
-                        :node="node"
-                        :plan="plan"
-                        :viewOptions="viewOptions"
-                        ref="root"
-                      >
-                      </plan-node>
-                    </li>
-                  </ul>
+                      ></plan-node-container>
+                    </g>
+                  </svg>
                 </pane>
               </splitpanes>
             </div>
@@ -631,35 +668,6 @@ function onClickCte(subplanName: string): void {
                   ><font-awesome-icon icon="align-left"></font-awesome-icon>
                   Diagram</label
                 >
-              </div>
-              <hr />
-              <label class="text-uppercase">Density</label>
-              <div class="form-group">
-                <div class="btn-group btn-group-sm">
-                  <button
-                    class="btn btn-outline-secondary"
-                    :class="{ active: viewOptions.viewMode == ViewMode.FULL }"
-                    v-on:click="viewOptions.viewMode = ViewMode.FULL"
-                  >
-                    full
-                  </button>
-                  <button
-                    class="btn btn-outline-secondary"
-                    :class="{
-                      active: viewOptions.viewMode == ViewMode.COMPACT,
-                    }"
-                    v-on:click="viewOptions.viewMode = ViewMode.COMPACT"
-                  >
-                    compact
-                  </button>
-                  <button
-                    class="btn btn-outline-secondary"
-                    :class="{ active: viewOptions.viewMode == ViewMode.DOT }"
-                    v-on:click="viewOptions.viewMode = ViewMode.DOT"
-                  >
-                    dot
-                  </button>
-                </div>
               </div>
               <hr />
               <label class="text-uppercase">Orientation</label>
@@ -783,4 +791,8 @@ function onClickCte(subplanName: string): void {
 @import "../assets/scss/pev2";
 @import "splitpanes/dist/splitpanes.css";
 @import "highlight.js/scss/stackoverflow-light.scss";
+
+path {
+  opacity: 0.5;
+}
 </style>

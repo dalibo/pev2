@@ -37,12 +37,6 @@ export enum EstimateDirection {
   none = 3,
 }
 
-export class ViewMode {
-  public static FULL = "full"
-  public static COMPACT = "compact"
-  public static DOT = "dot"
-}
-
 export class Orientation {
   public static TWOD = "twod"
   public static CLASSIC = "classic"
