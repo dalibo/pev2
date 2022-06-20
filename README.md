@@ -12,9 +12,9 @@ To use the explain vizualizer you can choose one of the following options:
 This service is provided by `Dalibo` and can help you to share your plans with
 colleagues or customers.
 
-## Portable (on a USB stick)
+## All-in-one local (no installation, no network)
 
-PEV2 can be run locally.
+PEV2 can be run locally without any external internet resource.
 
 Simply download
 [index.html]thub.com/dalibo/pev2/releases/latest/download/index.html),
