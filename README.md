@@ -20,7 +20,9 @@ Simply download
 [index.html]thub.com/dalibo/pev2/releases/latest/download/index.html),
 open it in your favorite internet browser.
 
-### Integrated in a web application
+## Integrated in a web application
+
+### With build tools
 
 PEV2 can be integrated as a component in a web application.
 
@@ -68,6 +70,38 @@ add the following in you header (or load them with your favorite bundler).
 ```
 
 For a complete example, see [this codesandbox][codesandbox].
+
+### Without building tools
+
+```html
+<script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/pev2/dist/pev2.umd.min.js"></script>
+<link
+  href="https://unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link rel="stylesheet" href="https://unpkg.com/pev2/dist/style.css" />
+
+<div id="app">
+  <pev2 :plan-source="plan" plan-query="" />
+</div>
+
+<script>
+  const { createApp } = Vue
+
+  const plan = "Seq Scan on foo  (cost=0.00..155.00 rows=10000 width=4)"
+
+  const app = createApp({
+    data() {
+      return {
+        plan: plan,
+      }
+    },
+  })
+  app.component("pev2", pev2.Plan)
+  app.mount("#app")
+</script>
+```
 
 # Disclaimer
 
