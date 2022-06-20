@@ -1,6 +1,17 @@
 {
   "name": "pev2",
   "version": "1.1.0",
+  "homepage": "https://github.com/dalibo/pev2",
+  "license": "PostgreSQL license",
+  "files": ["dist"],
+  "main": "./dist/pev.umd.js",
+  "module": "./dist/pev.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/pev2.es.js",
+      "require": "./dist/pev2.umd.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
