@@ -59,7 +59,7 @@ Then add the `PEV2` component to your template:
 </div>
 ```
 
-`PEV2` requires `Bootstrap (CSS)` and `FontAwesome` to work so don't forget to
+`PEV2` requires `Bootstrap (CSS)` to work so don't forget to
 add the following in you header (or load them with your favorite bundler).
 
 ```html
