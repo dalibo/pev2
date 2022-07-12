@@ -12,7 +12,8 @@
     ".": {
       "import": "./dist/pev2.es.js",
       "require": "./dist/pev2.umd.js"
-    }
+    },
+    "./dist/style.css": "./dist/style.css"
   },
   "scripts": {
     "dev": "vite",
