@@ -111,6 +111,9 @@ const zoomListener = d3
   })
 const nodeSize: [number, number] = [200, 80]
 const layoutRootNode = ref<null | d3.HierarchyPointNode<Node>>(null)
+// computed position + rootNode
+const ctes = ref<[[number, number], d3.HierarchyPointNode<Node>][]>([])
+const toCteLinks = ref<d3.HierarchyPointLink<Node>[]>([])
 
 onBeforeMount(() => {
   const savedOptions = localStorage.getItem("viewOptions")
@@ -172,6 +175,46 @@ onBeforeMount(() => {
   layoutRootNode.value = layout(
     d3.hierarchy(planJson.Plan, (v: Node) => v.Plans)
   )
+
+  _.each(plan.value.ctes, (cte) => {
+    if (!layoutRootNode.value) {
+      return
+    }
+    const mainLayoutExtent = getLayoutExtent(layoutRootNode.value)
+    const cteRootNode = layout(d3.hierarchy(cte, (v: Node) => v.Plans))
+    const currentCteExtent = getLayoutExtent(cteRootNode)
+    const position: [number, number] = [
+      mainLayoutExtent[0] - currentCteExtent[0],
+      mainLayoutExtent[3] + 150,
+    ]
+    // loop through previous ctes
+    _.each(ctes.value, (cte) => {
+      const extent = getLayoutExtent(cte[1])
+      position[0] += extent[1] - extent[0] + nodeSize[0] * 1.2
+    })
+    ctes.value.push([position, cteRootNode])
+  })
+
+  // compute links from node to CTE
+  _.each(layoutRootNode.value.descendants(), (source) => {
+    if (_.has(source.data, NodeProp.CTE_NAME)) {
+      const cte = _.find(ctes.value, (cteNode) => {
+        return (
+          cteNode[1].data[NodeProp.SUBPLAN_NAME] ==
+          "CTE " + source.data[NodeProp.CTE_NAME]
+        )
+      })
+      if (cte) {
+        const target = cte[1].copy()
+        target.x = cte[0][0]
+        target.y = cte[0][1]
+        toCteLinks.value.push({
+          source: source,
+          target: target,
+        })
+      }
+    }
+  })
 })
 
 onMounted(() => {
@@ -331,6 +374,39 @@ function onClickCte(subplanName: string): void {
     )
   })
   cmp && highlightEl(cmp.refs.outerEl, CenterMode.visible, HighlightMode.flash)
+}
+
+function getLayoutExtent(
+  layoutRootNode: d3.HierarchyPointNode<Node>
+): [number, number, number, number] {
+  const minX =
+    _.min(
+      _.map(layoutRootNode.descendants(), (childNode) => {
+        return childNode.x
+      })
+    ) || 0
+
+  const maxX =
+    _.max(
+      _.map(layoutRootNode.descendants(), (childNode) => {
+        return childNode.x
+      })
+    ) || 0
+
+  const minY =
+    _.min(
+      _.map(layoutRootNode.descendants(), (childNode) => {
+        return childNode.y
+      })
+    ) || 0
+
+  const maxY =
+    _.max(
+      _.map(layoutRootNode.descendants(), (childNode) => {
+        return childNode.y
+      })
+    ) || 0
+  return [minX, maxX, minY, maxY]
 }
 </script>
 
@@ -619,6 +695,17 @@ function onClickCte(subplanName: string): void {
                     <g :transform="transform">
                       <!-- Links -->
                       <path
+                        v-for="(link, index) in toCteLinks"
+                        :key="`linkcte${index}`"
+                        :d="lineGen(link)"
+                        stroke="#B3D7D7"
+                        :stroke-width="
+                          edgeWeight(link.target.data['Actual Rows'])
+                        "
+                        stroke-linecap="square"
+                        fill="none"
+                      />
+                      <path
                         v-for="(link, index) in layoutRootNode?.links()"
                         :key="`link${index}`"
                         :d="lineGen(link)"
@@ -638,6 +725,49 @@ function onClickCte(subplanName: string): void {
                         :width="nodeSize[0]"
                         ref="root"
                       ></plan-node-container>
+                      <g
+                        v-for="cte in ctes"
+                        :key="cte[1].data.nodeId"
+                        :transform="`translate(${cte[0][0]}, ${cte[0][1]})`"
+                      >
+                        <rect
+                          :x="getLayoutExtent(cte[1])[0] - padding / 4"
+                          :y="-padding / 2"
+                          :width="
+                            getLayoutExtent(cte[1])[1] +
+                            nodeSize[0] -
+                            getLayoutExtent(cte[1])[0] +
+                            padding / 2
+                          "
+                          :height="getLayoutExtent(cte[1])[3] + nodeSize[1]"
+                          stroke="#cfcfcf"
+                          stroke-width="2"
+                          fill="#cfcfcf"
+                          fill-opacity="10%"
+                          rx="5"
+                          ry="5"
+                        ></rect>
+                        <path
+                          v-for="(link, index) in cte[1].links()"
+                          :key="`link${index}`"
+                          :d="lineGen(link)"
+                          stroke="grey"
+                          :stroke-width="
+                            edgeWeight(link.target.data['Actual Rows'])
+                          "
+                          stroke-linecap="square"
+                          fill="none"
+                        />
+                        <plan-node-container
+                          v-for="(item, index) in cte[1].descendants()"
+                          :key="index"
+                          :node="item"
+                          :plan="plan"
+                          :viewOptions="viewOptions"
+                          :width="nodeSize[0]"
+                          ref="root"
+                        ></plan-node-container>
+                      </g>
                     </g>
                   </svg>
                 </pane>
@@ -791,8 +921,4 @@ function onClickCte(subplanName: string): void {
 @import "../assets/scss/pev2";
 @import "splitpanes/dist/splitpanes.css";
 @import "highlight.js/scss/stackoverflow-light.scss";
-
-path {
-  opacity: 0.5;
-}
 </style>

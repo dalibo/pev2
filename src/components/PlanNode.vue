@@ -308,15 +308,7 @@ const isNeverExecuted = computed((): boolean => {
 </script>
 
 <template>
-  <div
-    ref="outerEl"
-    :class="{
-      subplan: node[NodeProp.SUBPLAN_NAME],
-    }"
-  >
-    <h4 v-if="node[NodeProp.SUBPLAN_NAME]">
-      {{ node[NodeProp.SUBPLAN_NAME] }}
-    </h4>
+  <div ref="outerEl">
     <div
       ref="el"
       :class="[
@@ -329,6 +321,11 @@ const isNeverExecuted = computed((): boolean => {
         },
       ]"
     >
+      <div v-if="node[NodeProp.SUBPLAN_NAME]" class="fixed-bottom text-center">
+        <b class="bg-light font-italic px-1">
+          {{ node[NodeProp.SUBPLAN_NAME] }}
+        </b>
+      </div>
       <div class="workers text-muted py-0 px-1" v-if="workersPlannedCount">
         <div
           v-for="index in workersPlannedCountReversed"
