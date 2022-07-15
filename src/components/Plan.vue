@@ -96,7 +96,7 @@ const planService = new PlanService()
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
 
-const paddingBottom = 50
+const padding = 60
 const transform = ref("")
 const scale = ref(1)
 const edgeWeight = computed(() => {
@@ -109,7 +109,7 @@ const zoomListener = d3
     transform.value = e.transform
     scale.value = e.transform.k
   })
-const nodeSize: [number, number] = [200, 80]
+const nodeSize: [number, number] = [200, 40 + padding]
 const layoutRootNode = ref<null | d3.HierarchyPointNode<Node>>(null)
 // computed position + rootNode
 const ctes = ref<[[number, number], d3.HierarchyPointNode<Node>][]>([])
@@ -190,7 +190,7 @@ onBeforeMount(() => {
     // loop through previous ctes
     _.each(ctes.value, (cte) => {
       const extent = getLayoutExtent(cte[1])
-      position[0] += extent[1] - extent[0] + nodeSize[0] * 1.2
+      position[0] += extent[1] - extent[0] + nodeSize[0] + padding * 2
     })
     ctes.value.push([position, cteRootNode])
   })
@@ -242,10 +242,7 @@ const lineGen = computed(() => {
     const source = link.source
     const target = link.target
     const pathD = linkVertical()({
-      source: [
-        source.x + nodeSize[0] / 2,
-        source.y + nodeSize[1] - paddingBottom,
-      ],
+      source: [source.x + nodeSize[0] / 2, source.y + nodeSize[1] - padding],
       target: [target.x + nodeSize[0] / 2, target.y],
     })
     return pathD ? pathD : undefined
