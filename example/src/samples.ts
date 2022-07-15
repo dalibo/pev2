@@ -2866,6 +2866,28 @@ WHEN MATCHED THEN
   UPDATE SET filler=t2b.filler, x=null ;
 `
 
+export const plan9_source = `Append (actual time=102.409..302.675 rows=3 loops=1)
+  CTE init
+    ->  Append (actual time=102.397..302.649 rows=2 loops=1)
+          ->  Function Scan on pg_sleep pg_sleep_for (actual time=102.396..102.398 rows=1 loops=1)
+          ->  Function Scan on pg_sleep pg_sleep_for_1 (actual time=200.243..200.245 rows=1 loops=1)
+  ->  Limit (actual time=102.407..102.409 rows=1 loops=1)
+        ->  CTE Scan on init init_1 (actual time=102.402..102.402 rows=1 loops=1)
+  ->  CTE Scan on init (actual time=0.001..200.256 rows=2 loops=1)
+Planning Time: 47.003 ms
+Execution Time: 303.905 ms
+`
+
+export const plan9_query = `WITH init AS (
+ SELECT * FROM pg_sleep_for('100ms')
+ UNION ALL
+ SELECT * FROM pg_sleep_for('200ms')
+)
+(SELECT * FROM init LIMIT 1)
+UNION ALL
+(SELECT * FROM init);
+`
+
 export const plan8_source = String.raw`{
   "Plan": {
     "Node Type": "Hash Join",
