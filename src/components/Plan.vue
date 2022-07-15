@@ -51,8 +51,6 @@ import { fab } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import * as d3 from "d3"
 
-import { linkVertical } from "d3-shape"
-
 // Add all icons to the library
 library.add(fas, far, fab)
 
@@ -215,6 +213,32 @@ onBeforeMount(() => {
       }
     }
   })
+
+  // compute links from node in CTE to other CTE
+  _.each(ctes.value, (cte) => {
+    _.each(cte[1].descendants(), (sourceCte) => {
+      if (_.has(sourceCte.data, NodeProp.CTE_NAME)) {
+        const targetCte = _.find(ctes.value, (cteNode) => {
+          return (
+            cteNode[1].data[NodeProp.SUBPLAN_NAME] ==
+            "CTE " + sourceCte.data[NodeProp.CTE_NAME]
+          )
+        })
+        if (targetCte) {
+          const source = sourceCte.copy()
+          source.x = sourceCte.x + cte[0][0]
+          source.y = sourceCte.y + cte[0][1]
+          const target = targetCte[1].copy()
+          target.x = targetCte[0][0]
+          target.y = targetCte[0][1]
+          toCteLinks.value.push({
+            source: source,
+            target: target,
+          })
+        }
+      }
+    })
+  })
 })
 
 onMounted(() => {
@@ -241,11 +265,18 @@ const lineGen = computed(() => {
   return function (link: d3.HierarchyPointLink<Node>) {
     const source = link.source
     const target = link.target
-    const pathD = linkVertical()({
-      source: [source.x + nodeSize[0] / 2, source.y + nodeSize[1] - padding],
-      target: [target.x + nodeSize[0] / 2, target.y],
-    })
-    return pathD ? pathD : undefined
+    const k = Math.abs(target.y - source.y)
+    const path = d3.path()
+    path.moveTo(source.x + nodeSize[0] / 2, source.y + nodeSize[1] - padding)
+    path.bezierCurveTo(
+      source.x + nodeSize[0] / 2,
+      source.y + k / 2 + nodeSize[1] - padding,
+      target.x + nodeSize[0] / 2,
+      target.y - k / 2,
+      target.x + nodeSize[0] / 2,
+      target.y
+    )
+    return path.toString()
   }
 })
 
@@ -699,7 +730,7 @@ function getLayoutExtent(
                         :stroke-width="
                           edgeWeight(link.target.data['Actual Rows'])
                         "
-                        stroke-linecap="square"
+                        stroke-dasharray="1em"
                         fill="none"
                       />
                       <path
