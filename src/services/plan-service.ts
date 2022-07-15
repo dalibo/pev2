@@ -63,7 +63,7 @@ export class PlanService {
 
     this.nodeId = 1
     this.processNode(planContent.Plan, plan)
-    this.calculateMaximums(plan.content)
+    this.calculateMaximums(plan)
     return plan
   }
 
@@ -104,35 +104,39 @@ export class PlanService {
     this.calculateExclusives(node)
   }
 
-  public calculateMaximums(content: IPlanContent) {
+  public calculateMaximums(plan: IPlan) {
     type recurseItemType = Array<[Node, recurseItemType]>
     function recurse(nodes: Node[]): recurseItemType {
       return _.map(nodes, (node) => [node, recurse(node[NodeProp.PLANS])])
     }
-    const flat = _.flattenDeep(recurse([content.Plan as Node]))
+    let flat: Node[] = []
+    flat = flat.concat(_.flattenDeep(recurse([plan.content.Plan as Node])))
+    _.each(plan.ctes, (cte) => {
+      flat = flat.concat(_.flattenDeep(recurse([cte as Node])))
+    })
 
     const largest = _.maxBy(flat, NodeProp.ACTUAL_ROWS)
     if (largest) {
-      content.maxRows = largest[NodeProp.ACTUAL_ROWS] as number
+      plan.content.maxRows = largest[NodeProp.ACTUAL_ROWS] as number
     }
 
     const costliest = _.maxBy(flat, NodeProp.EXCLUSIVE_COST)
     if (costliest) {
-      content.maxCost = costliest[NodeProp.EXCLUSIVE_COST] as number
+      plan.content.maxCost = costliest[NodeProp.EXCLUSIVE_COST] as number
     }
 
     const totalCostliest = _.maxBy(flat, NodeProp.TOTAL_COST)
     if (totalCostliest) {
-      content.maxTotalCost = totalCostliest[NodeProp.TOTAL_COST] as number
+      plan.content.maxTotalCost = totalCostliest[NodeProp.TOTAL_COST] as number
     }
 
     const slowest = _.maxBy(flat, NodeProp.EXCLUSIVE_DURATION)
     if (slowest) {
-      content.maxDuration = slowest[NodeProp.EXCLUSIVE_DURATION] as number
+      plan.content.maxDuration = slowest[NodeProp.EXCLUSIVE_DURATION] as number
     }
 
-    if (!content.maxBlocks) {
-      content.maxBlocks = {} as IBlocksStats
+    if (!plan.content.maxBlocks) {
+      plan.content.maxBlocks = {} as IBlocksStats
     }
 
     function sumShared(o: Node): number {
@@ -147,7 +151,7 @@ export class PlanService {
       return sumShared(o)
     }) as Node
     if (highestShared && sumShared(highestShared)) {
-      content.maxBlocks[BufferLocation.shared] = sumShared(highestShared)
+      plan.content.maxBlocks[BufferLocation.shared] = sumShared(highestShared)
     }
 
     function sumTemp(o: Node): number {
@@ -160,7 +164,7 @@ export class PlanService {
       return sumTemp(o)
     }) as Node
     if (highestTemp && sumTemp(highestTemp)) {
-      content.maxBlocks[BufferLocation.temp] = sumTemp(highestTemp)
+      plan.content.maxBlocks[BufferLocation.temp] = sumTemp(highestTemp)
     }
 
     function sumLocal(o: Node) {
@@ -175,7 +179,7 @@ export class PlanService {
       return sumLocal(o)
     })
     if (highestLocal && sumLocal(highestLocal)) {
-      content.maxBlocks[BufferLocation.local] = sumLocal(highestLocal)
+      plan.content.maxBlocks[BufferLocation.local] = sumLocal(highestLocal)
     }
   }
 
