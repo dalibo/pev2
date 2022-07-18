@@ -744,6 +744,7 @@ function getLayoutExtent(
                         :plan="plan"
                         :viewOptions="viewOptions"
                         :width="nodeSize[0]"
+                        height="1"
                         ref="root"
                       ></plan-node-container>
                       <g
@@ -788,6 +789,7 @@ function getLayoutExtent(
                           :plan="plan"
                           :viewOptions="viewOptions"
                           :width="nodeSize[0]"
+                          height="1"
                           ref="root"
                         ></plan-node-container>
                       </g>
