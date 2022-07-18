@@ -1,7 +1,6 @@
 import type {
   BufferLocation,
   HighlightType,
-  Orientation,
   SortGroupsProp,
   SortSpaceMemoryProp,
 } from "@/enums"
@@ -237,7 +236,6 @@ export type ViewOptions = {
   showHighlightBar: boolean
   showPlanStats: boolean
   highlightType: HighlightType
-  orientation: Orientation
   showDiagram: boolean
   diagramWidth: number
 }

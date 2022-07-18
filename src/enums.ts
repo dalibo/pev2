@@ -37,11 +37,6 @@ export enum EstimateDirection {
   none = 3,
 }
 
-export class Orientation {
-  public static TWOD = "twod"
-  public static CLASSIC = "classic"
-}
-
 export enum CenterMode {
   center,
   visible,
