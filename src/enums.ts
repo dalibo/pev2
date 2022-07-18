@@ -43,12 +43,6 @@ export enum CenterMode {
   none,
 }
 
-export enum HighlightMode {
-  flash = 1,
-  highlight = 2,
-  showdetails = 4,
-}
-
 export enum NodeProp {
   // plan property keys
   NODE_TYPE = "Node Type",

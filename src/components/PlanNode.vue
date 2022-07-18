@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import {
   computed,
-  getCurrentInstance,
   h,
   inject,
   onBeforeMount,
@@ -19,10 +18,6 @@ import { EstimateDirection, HighlightType, NodeProp } from "@/enums"
 import * as _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
-type registerFn = {
-  (node: object): void
-}
-const register = inject("register") as registerFn
 const selectedNode = inject<number | null>("selectedNode", null)
 const highlightedNode = inject<number | null>("highlightedNode", null)
 
@@ -67,7 +62,6 @@ onBeforeMount(() => {
   plans.value = node[NodeProp.PLANS]
   plannerRowEstimateDirection.value = node[NodeProp.PLANNER_ESTIMATE_DIRECTION]
   plannerRowEstimateValue.value = node[NodeProp.PLANNER_ESTIMATE_FACTOR]
-  register(getCurrentInstance() as object)
 })
 
 onMounted(async () => {
