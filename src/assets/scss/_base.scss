@@ -67,18 +67,6 @@ $buffers-colors: (
   }
 }
 
-@keyframes flash {
-  0% {
-    background: $plan-node-bg;
-  }
-  20% {
-    background: $flash-color;
-  }
-  100% {
-    background: $plan-node-bg;
-  }
-}
-
 /*
  * Used with @extend in .plan-node.never-executed
  */

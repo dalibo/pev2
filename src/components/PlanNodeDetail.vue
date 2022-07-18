@@ -347,7 +347,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
 </script>
 
 <template>
-  <div class="plan-node plan-node-detail">
+  <div class="plan-node plan-node-detail" style="width: 400px">
     <div class="plan-node-body card">
       <div class="card-body header">
         <header class="mb-0">

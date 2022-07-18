@@ -146,10 +146,6 @@ $bg-color: #fff;
     @extend %bg-hatched;
   }
 
-  &.flash .plan-node-body {
-    animation: flash 1s;
-  }
-
   .workers {
     position: absolute;
     left: -1px;
@@ -209,8 +205,4 @@ $bg-color: #fff;
 .node-bar-label {
   text-align: left;
   display: block;
-}
-
-.plan-node-detail {
-  width: 400px;
 }
