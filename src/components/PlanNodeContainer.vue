@@ -5,7 +5,7 @@ defineProps(["node", "plan", "viewOptions"])
 </script>
 
 <template>
-  <foreignObject :x="node.x" :y="node.y">
+  <foreignObject>
     <plan-node
       :node="node.data"
       :plan="plan"
