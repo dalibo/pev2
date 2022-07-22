@@ -115,9 +115,9 @@ export class PlanService {
       flat = flat.concat(_.flattenDeep(recurse([cte as Node])))
     })
 
-    const largest = _.maxBy(flat, NodeProp.ACTUAL_ROWS)
+    const largest = _.maxBy(flat, NodeProp.ACTUAL_ROWS_REVISED)
     if (largest) {
-      plan.content.maxRows = largest[NodeProp.ACTUAL_ROWS] as number
+      plan.content.maxRows = largest[NodeProp.ACTUAL_ROWS_REVISED] as number
     }
 
     const costliest = _.maxBy(flat, NodeProp.EXCLUSIVE_COST)
