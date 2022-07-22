@@ -390,6 +390,10 @@ function getLayoutExtent(
     ) || 0
   return [minX, maxX, minY, maxY]
 }
+
+function isNeverExecuted(node: Node): boolean {
+  return !!planStats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
+}
 </script>
 
 <template>
@@ -689,6 +693,9 @@ function getLayoutExtent(
                         v-for="(link, index) in layoutRootNode?.links()"
                         :key="`link${index}`"
                         :d="lineGen(link, false)"
+                        :class="{
+                          'never-executed': isNeverExecuted(link.target.data),
+                        }"
                         stroke="grey"
                         :stroke-width="
                           edgeWeight(
@@ -888,5 +895,9 @@ function getLayoutExtent(
 
 path {
   stroke-linecap: butt;
+  &.never-executed {
+    stroke-dasharray: 0.5em;
+    stroke-opacity: 0.5;
+  }
 }
 </style>
