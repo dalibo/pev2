@@ -728,9 +728,10 @@ function getLayoutExtent(
                         :d="lineGen(link)"
                         stroke="#B3D7D7"
                         :stroke-width="
-                          edgeWeight(link.target.data['Actual Rows'])
+                          edgeWeight(
+                            link.target.data[NodeProp.ACTUAL_ROWS_REVISED]
+                          )
                         "
-                        stroke-dasharray="1em"
                         fill="none"
                       />
                       <path
@@ -739,7 +740,9 @@ function getLayoutExtent(
                         :d="lineGen(link)"
                         stroke="grey"
                         :stroke-width="
-                          edgeWeight(link.target.data['Actual Rows'])
+                          edgeWeight(
+                            link.target.data[NodeProp.ACTUAL_ROWS_REVISED]
+                          )
                         "
                         stroke-linecap="square"
                         fill="none"
@@ -781,7 +784,9 @@ function getLayoutExtent(
                           :d="lineGen(link)"
                           stroke="grey"
                           :stroke-width="
-                            edgeWeight(link.target.data['Actual Rows'])
+                            edgeWeight(
+                              link.target.data[NodeProp.ACTUAL_ROWS_REVISED]
+                            )
                           "
                           stroke-linecap="square"
                           fill="none"
