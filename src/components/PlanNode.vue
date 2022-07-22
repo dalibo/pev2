@@ -188,7 +188,7 @@ function calculateRowsRemoved() {
       NodeProp[rowsRemovedProp.value as NodePropStrings]
     ] as number
     rowsRemoved.value = removed
-    const actual = node[NodeProp.ACTUAL_ROWS]
+    const actual = node[NodeProp.ACTUAL_ROWS_REVISED]
     rowsRemovedPercent.value = _.floor((removed / (removed + actual)) * 100)
     if (rowsRemovedPercent.value === 100) {
       rowsRemovedPercentString.value = ">99"
@@ -261,7 +261,7 @@ function calculateBar(): void {
       highlightValue.value = duration(value)
       break
     case HighlightType.ROWS:
-      value = node[NodeProp.ACTUAL_ROWS]
+      value = node[NodeProp.ACTUAL_ROWS_REVISED]
       if (value === undefined) {
         highlightValue.value = null
         break
