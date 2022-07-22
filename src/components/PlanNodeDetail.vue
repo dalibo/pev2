@@ -3,7 +3,7 @@ import { computed, onBeforeMount, reactive, ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions, Worker } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
-import { formatNodeProp, keysToString, sortKeys } from "@/filters"
+import { formatNodeProp } from "@/filters"
 import {
   EstimateDirection,
   NodeProp,
@@ -13,6 +13,7 @@ import {
 } from "@/enums"
 import * as _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import PlanNodeContext from "@/components/PlanNodeContext.vue"
 
 interface Props {
   node: Node
@@ -437,61 +438,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
             </span>
           </span>
         </header>
-        <div class="text-left text-monospace">
-          <div v-if="node[NodeProp.RELATION_NAME]" class="line-clamp-2">
-            <span class="text-muted">on</span>
-            <span v-if="node[NodeProp.SCHEMA]"
-              >{{ node[NodeProp.SCHEMA] }}.</span
-            >{{ node[NodeProp.RELATION_NAME] }}
-            <span v-if="node[NodeProp.ALIAS]">
-              <span class="text-muted">as</span>
-              {{ node[NodeProp.ALIAS] }}
-            </span>
-          </div>
-          <div v-if="node[NodeProp.GROUP_KEY]" class="line-clamp-2">
-            <span class="text-muted">by</span>
-            <span
-              v-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
-            ></span>
-          </div>
-          <div v-if="node[NodeProp.SORT_KEY]" class="line-clamp-2">
-            <span class="text-muted">by</span>
-            <span
-              v-html="
-                sortKeys(
-                  node[NodeProp.SORT_KEY] as string[],
-                  node[NodeProp.PRESORTED_KEY] as string[]
-                )
-              "
-            ></span>
-          </div>
-          <div v-if="node[NodeProp.JOIN_TYPE]">
-            {{ node[NodeProp.JOIN_TYPE] }}
-            <span class="text-muted">join</span>
-          </div>
-          <div v-if="node[NodeProp.INDEX_NAME]" class="line-clamp-2">
-            <span class="text-muted">using</span>
-            <span
-              v-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
-            ></span>
-          </div>
-          <div v-if="node[NodeProp.HASH_CONDITION]" class="line-clamp-2">
-            <span class="text-muted">on</span>
-            <span
-              v-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
-            ></span>
-          </div>
-          <div v-if="node[NodeProp.CTE_NAME]">
-            <a class="text-reset" href="">
-              <font-awesome-icon
-                icon="search"
-                class="text-muted"
-              ></font-awesome-icon>
-              <span class="text-muted">CTE</span>
-              {{ node[NodeProp.CTE_NAME] }}
-            </a>
-          </div>
-        </div>
+        <plan-node-context :node="node"></plan-node-context>
         <div
           v-if="!allWorkersLaunched"
           class="text-c-3 cursor-help"

@@ -84,11 +84,15 @@ const planService = new PlanService()
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
 
-const padding = 60
+// Vertical padding between 2 nodes in the tree layout
+const padding = 40
 const transform = ref("")
 const scale = ref(1)
 const edgeWeight = computed(() => {
-  return d3.scaleLinear().domain([0, planStats.maxRows]).range([1, 30])
+  return d3
+    .scaleLinear()
+    .domain([0, planStats.maxRows])
+    .range([1, padding / 1.5])
 })
 const zoomListener = d3
   .zoom()
@@ -97,7 +101,9 @@ const zoomListener = d3
     transform.value = e.transform
     scale.value = e.transform.k
   })
-const nodeSize: [number, number] = [200, 40 + padding]
+// Approximate maximum height for a node rectangle (when there's a lot of context)
+const maxNodeHeight = 70
+const nodeSize: [number, number] = [200, maxNodeHeight + padding]
 const layoutRootNode = ref<null | d3.HierarchyPointNode<Node>>(null)
 // computed position + rootNode
 const ctes = ref<d3.HierarchyPointNode<Node>[]>([])
@@ -240,15 +246,19 @@ function onViewOptionsChanged() {
 }
 
 const lineGen = computed(() => {
-  return function (link: d3.HierarchyPointLink<Node>) {
+  return function (link: d3.HierarchyPointLink<Node>, isCte: boolean) {
+    isCte = !!isCte
     const source = link.source
     const target = link.target
-    const k = Math.abs(target.y - source.y)
+    const k = Math.abs(target.y - source.y) - maxNodeHeight
     const path = d3.path()
-    path.moveTo(source.x + nodeSize[0] / 2, source.y + nodeSize[1] - padding)
+    path.moveTo(source.x + nodeSize[0] / 2, source.y)
+    if (isCte) {
+      path.lineTo(source.x + nodeSize[0] / 2, source.y + maxNodeHeight)
+    }
     path.bezierCurveTo(
       source.x + nodeSize[0] / 2,
-      source.y + k / 2 + nodeSize[1] - padding,
+      source.y + maxNodeHeight + k / 2,
       target.x + nodeSize[0] / 2,
       target.y - k / 2,
       target.x + nodeSize[0] / 2,
@@ -666,7 +676,7 @@ function getLayoutExtent(
                       <path
                         v-for="(link, index) in toCteLinks"
                         :key="`linkcte${index}`"
-                        :d="lineGen(link)"
+                        :d="lineGen(link, true)"
                         stroke="#B3D7D7"
                         :stroke-width="
                           edgeWeight(
@@ -678,7 +688,7 @@ function getLayoutExtent(
                       <path
                         v-for="(link, index) in layoutRootNode?.links()"
                         :key="`link${index}`"
-                        :d="lineGen(link)"
+                        :d="lineGen(link, false)"
                         stroke="grey"
                         :stroke-width="
                           edgeWeight(
@@ -725,7 +735,7 @@ function getLayoutExtent(
                         <path
                           v-for="(link, index) in cte.links()"
                           :key="`link${index}`"
-                          :d="lineGen(link)"
+                          :d="lineGen(link, false)"
                           stroke="grey"
                           :stroke-width="
                             edgeWeight(
@@ -875,4 +885,8 @@ function getLayoutExtent(
 @import "../assets/scss/pev2";
 @import "splitpanes/dist/splitpanes.css";
 @import "highlight.js/scss/stackoverflow-light.scss";
+
+path {
+  stroke-linecap: butt;
+}
 </style>
