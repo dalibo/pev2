@@ -10,6 +10,7 @@ import {
   watch,
 } from "vue"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
+import PlanNodeContext from "@/components/PlanNodeContext.vue"
 import { directive as vTippy, useTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions, Worker } from "@/interfaces"
 import { numberToColorHsl } from "@/services/color-service"
@@ -435,6 +436,7 @@ const isNeverExecuted = computed((): boolean => {
               </span>
             </span>
           </header>
+          <plan-node-context :node="node"></plan-node-context>
 
           <div
             v-if="
