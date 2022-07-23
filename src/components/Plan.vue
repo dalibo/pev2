@@ -95,7 +95,7 @@ const edgeWeight = computed(() => {
   return d3
     .scaleLinear()
     .domain([0, planStats.maxRows])
-    .range([1, padding / 1.5])
+    .range([2, padding / 1.5])
 })
 const zoomListener = d3
   .zoom()
@@ -301,6 +301,18 @@ const lineGen = computed(() => {
       target.y
     )
     return path.toString()
+  }
+})
+
+const durationAnimationGen = computed(() => {
+  const scale = d3
+    .scaleLinear()
+    .domain([0, planStats.maxDuration])
+    .range([2, 20])
+  return function (link: d3.HierarchyPointLink<Node>) {
+    const time = scale(link.target.data[NodeProp.EXCLUSIVE_DURATION])
+    const s = `animation: dash ${time}s linear infinite`
+    return s
   }
 })
 
@@ -733,6 +745,8 @@ function isNeverExecuted(node: Node): boolean {
                             link.target.data[NodeProp.ACTUAL_ROWS_REVISED]
                           )
                         "
+                        stroke-dasharray="1em"
+                        :style="durationAnimationGen(link)"
                         fill="none"
                       />
                       <path
@@ -749,6 +763,7 @@ function isNeverExecuted(node: Node): boolean {
                           )
                         "
                         stroke-linecap="square"
+                        :style="durationAnimationGen(link)"
                         fill="none"
                       />
                       <foreignObject
@@ -798,6 +813,7 @@ function isNeverExecuted(node: Node): boolean {
                             )
                           "
                           stroke-linecap="square"
+                          :style="durationAnimationGen(link)"
                           fill="none"
                         />
                         <foreignObject
@@ -932,9 +948,17 @@ function isNeverExecuted(node: Node): boolean {
 
 path {
   stroke-linecap: butt;
+  stroke-dasharray: 2em;
   &.never-executed {
-    stroke-dasharray: 0.5em;
-    stroke-opacity: 0.5;
+    stroke-dasharray: 0;
+    stroke-opacity: 0.2;
+    animation: none !important;
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 1000;
   }
 }
 </style>
