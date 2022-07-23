@@ -430,11 +430,6 @@ const isNeverExecuted = computed((): boolean => {
                 ></font-awesome-icon>
               </span>
             </div>
-            <span>
-              <span class="node-duration text-warning" v-if="isNeverExecuted">
-                Never executed
-              </span>
-            </span>
           </header>
           <plan-node-context :node="node"></plan-node-context>
 
