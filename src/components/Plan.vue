@@ -28,9 +28,10 @@ import type {
 import Copy from "@/components/Copy.vue"
 import Diagram from "@/components/Diagram.vue"
 import PlanNodeContainer from "@/components/PlanNodeContainer.vue"
+import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
 import Stats from "@/components/Stats.vue"
 import { PlanService } from "@/services/plan-service"
-import { HelpService } from "@/services/help-service"
+import { HelpService, findNodeById } from "@/services/help-service"
 import { HighlightType, NodeProp } from "@/enums"
 import { duration, durationClass, json_, pgsql_ } from "@/filters"
 
@@ -654,13 +655,20 @@ function isNeverExecuted(node: Node): boolean {
           </div>
           <div class="flex-grow-1 d-flex overflow-hidden">
             <div class="flex-grow-1 overflow-hidden">
+              <plan-node-detail
+                :node="findNodeById(plan, selectedNode)"
+                :plan="plan"
+                :viewOptions="viewOptions"
+                v-if="selectedNode && plan"
+                :key="selectedNode"
+              ></plan-node-detail>
               <splitpanes
                 class="default-theme"
                 @resize="viewOptions.diagramWidth = $event[0].size"
               >
                 <pane
                   :size="viewOptions.diagramWidth"
-                  class="d-flex"
+                  class="d-flex flex-column"
                   v-if="viewOptions.showDiagram && plan"
                 >
                   <diagram
