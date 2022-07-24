@@ -1,17 +1,7 @@
 <script lang="ts" setup>
-import {
-  computed,
-  h,
-  inject,
-  onBeforeMount,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-} from "vue"
-import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
+import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
-import { directive as vTippy, useTippy } from "vue-tippy"
+import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions, Worker } from "@/interfaces"
 import { numberToColorHsl } from "@/services/color-service"
 import { cost, duration, rows } from "@/filters"
@@ -63,23 +53,6 @@ onBeforeMount(() => {
   plans.value = node[NodeProp.PLANS]
   plannerRowEstimateDirection.value = node[NodeProp.PLANNER_ESTIMATE_DIRECTION]
   plannerRowEstimateValue.value = node[NodeProp.PLANNER_ESTIMATE_FACTOR]
-})
-
-onMounted(async () => {
-  const content = h(PlanNodeDetail, {
-    node: props.node,
-    plan: props.plan,
-    viewOptions: props.viewOptions,
-  })
-  useTippy(outerEl, {
-    content: content,
-    allowHTML: true,
-    interactive: true,
-    appendTo: () => document.body,
-    placement: "right",
-    maxWidth: "none",
-    arrow: false,
-  })
 })
 
 function calculateDuration() {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, reactive, ref } from "vue"
+import { computed, inject, onBeforeMount, reactive, ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions, Worker } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
@@ -30,6 +30,7 @@ const nodeProps = ref<
     value: unknown
   }[]
 >()
+const selectedNode = inject("selectedNode")
 
 const executionTimePercent = ref<number>(NaN)
 // UI flags
@@ -109,6 +110,7 @@ const notMiscProperties: string[] = [
 ]
 
 onBeforeMount(() => {
+  console.log("before mount")
   calculateProps()
   calculateDuration()
   calculateCost()
@@ -348,7 +350,10 @@ function formattedProp(propName: keyof typeof NodeProp) {
 </script>
 
 <template>
-  <div class="plan-node plan-node-detail" style="width: 400px">
+  <div
+    class="plan-node plan-node-detail position-absolute m-2"
+    style="width: 400px; right: 0; z-index: 2"
+  >
     <div class="plan-node-body card">
       <div class="card-body header">
         <header class="mb-0">
@@ -362,6 +367,14 @@ function formattedProp(propName: keyof typeof NodeProp) {
             {{ getNodeName() }}
           </h4>
           <div class="float-right">
+            <button
+              type="button"
+              class="close ml-2"
+              aria-label="Close"
+              @click.stop="selectedNode = null"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
             <span
               v-if="durationClass"
               :class="
@@ -417,7 +430,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
             >
               <font-awesome-icon
                 fixed-width
-                class="exchange-alt"
+                icon="exchange-alt"
               ></font-awesome-icon>
             </span>
             <span
