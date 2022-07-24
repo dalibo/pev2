@@ -35,6 +35,7 @@ import Diagram from "@/components/Diagram.vue"
 import PlanNode from "@/components/PlanNode.vue"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
 import Stats from "@/components/Stats.vue"
+import LinkPath from "@/components/LinkPath.vue"
 import { PlanService } from "@/services/plan-service"
 import { HelpService, findNodeById } from "@/services/help-service"
 import { HighlightType, NodeProp } from "@/enums"
@@ -304,15 +305,13 @@ const lineGen = computed(() => {
   }
 })
 
-const durationAnimationGen = computed(() => {
+const durationGen = computed(() => {
   const scale = d3
     .scaleLinear()
     .domain([0, planStats.maxDuration])
-    .range([2, 20])
+    .range([0.3, 5])
   return function (link: d3.HierarchyPointLink<Node>) {
-    const time = scale(link.target.data[NodeProp.EXCLUSIVE_DURATION])
-    const s = `animation: dash ${time}s linear infinite`
-    return s
+    return scale(link.target.data[NodeProp.EXCLUSIVE_DURATION])
   }
 })
 
@@ -735,7 +734,7 @@ function isNeverExecuted(node: Node): boolean {
                   <svg width="100%" height="100%">
                     <g :transform="transform">
                       <!-- Links -->
-                      <path
+                      <link-path
                         v-for="(link, index) in toCteLinks"
                         :key="`linkcte${index}`"
                         :d="lineGen(link)"
@@ -745,25 +744,23 @@ function isNeverExecuted(node: Node): boolean {
                             link.target.data[NodeProp.ACTUAL_ROWS_REVISED]
                           )
                         "
-                        stroke-dasharray="1em"
-                        :style="durationAnimationGen(link)"
+                        :duration="durationGen(link)"
                         fill="none"
                       />
-                      <path
+                      <link-path
                         v-for="(link, index) in layoutRootNode?.links()"
                         :key="`link${index}`"
                         :d="lineGen(link)"
                         :class="{
                           'never-executed': isNeverExecuted(link.target.data),
                         }"
-                        stroke="grey"
                         :stroke-width="
                           edgeWeight(
                             link.target.data[NodeProp.ACTUAL_ROWS_REVISED]
                           )
                         "
                         stroke-linecap="square"
-                        :style="durationAnimationGen(link)"
+                        :duration="durationGen(link)"
                         fill="none"
                       />
                       <foreignObject
@@ -802,7 +799,7 @@ function isNeverExecuted(node: Node): boolean {
                           rx="5"
                           ry="5"
                         ></rect>
-                        <path
+                        <link-path
                           v-for="(link, index) in cte.links()"
                           :key="`link${index}`"
                           :d="lineGen(link)"
@@ -813,7 +810,7 @@ function isNeverExecuted(node: Node): boolean {
                             )
                           "
                           stroke-linecap="square"
-                          :style="durationAnimationGen(link)"
+                          :duration="durationGen(link)"
                           fill="none"
                         />
                         <foreignObject
@@ -948,17 +945,9 @@ function isNeverExecuted(node: Node): boolean {
 
 path {
   stroke-linecap: butt;
-  stroke-dasharray: 2em;
   &.never-executed {
-    stroke-dasharray: 0;
+    stroke-dasharray: 1em;
     stroke-opacity: 0.2;
-    animation: none !important;
-  }
-}
-
-@keyframes dash {
-  to {
-    stroke-dashoffset: 1000;
   }
 }
 </style>
