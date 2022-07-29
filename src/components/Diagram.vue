@@ -537,8 +537,8 @@ function setRowRef(nodeId: number, el: Element) {
                   >#{{ row[1].nodeId }}
                 </span>
               </td>
-              <td class="node-type pr-2">
-                <span class="tree-lines">
+              <td class="node-type pr-2 position-relative">
+                <span class="tree-lines text-muted">
                   <template v-for="i in _.range(row[0])">
                     <template v-if="_.indexOf(row[3], i) != -1">│</template
                     ><template v-else-if="i !== 0">&emsp;</template> </template
@@ -553,81 +553,10 @@ function setRowRef(nodeId: number, el: Element) {
                   </template>
                 </span>
                 {{ nodeType(row) }}
-              </td>
-              <td>
-                <!-- time -->
                 <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-if="viewOptions.metric == Metric.time"
-                  :key="'node' + index + 'time'"
-                >
-                  <div
-                    class="progress-bar border-secondary bg-secondary"
-                    :class="{
-                      'border-left': row[1][NodeProp.EXCLUSIVE_DURATION] > 0,
-                    }"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (row[1][NodeProp.EXCLUSIVE_DURATION] /
-                        (plan.planStats.executionTime ||
-                          plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
-                        100 +
-                      '%; height:5px;'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="progress-bar bg-secondary-light"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      ((row[1][NodeProp.ACTUAL_TOTAL_TIME] -
-                        row[1][NodeProp.EXCLUSIVE_DURATION]) /
-                        (plan.planStats.executionTime ||
-                          plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
-                        100 +
-                      '%; height:5px;'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-                <!-- rows -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="viewOptions.metric == Metric.rows"
-                  :key="'node' + index + 'rows'"
-                >
-                  <div
-                    class="bg-secondary"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      Math.round(
-                        (row[1][NodeProp.ACTUAL_ROWS_REVISED] /
-                          plan.planStats.maxRows) *
-                          100
-                      ) +
-                      '%'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                </div>
-                <!-- estimation -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent justify-content-center"
-                  style="height: 10px"
-                  v-else-if="viewOptions.metric == Metric.estimate_factor"
-                  :key="'node' + index + 'estimation'"
+                  class="float-right"
+                  ￼
+                  v-if="viewOptions.metric == Metric.estimate_factor"
                 >
                   <span class="text-muted small">
                     <font-awesome-icon
@@ -637,54 +566,11 @@ function setRowRef(nodeId: number, el: Element) {
                         row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
                         EstimateDirection.under
                       "
-                    ></font-awesome-icon>
-                    <i class="fa fa-fw" v-else />
-                  </span>
-                  <div
-                    class="progress-bar"
-                    :class="[
-                      row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
-                      EstimateDirection.under
-                        ? 'bg-secondary'
-                        : 'bg-transparent',
-                    ]"
-                    role="progressbar"
-                    :style="
-                      'width: ' + estimateFactorPercent(row) + '%; height:5px;'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="progress-bar border-left"
-                    role="progressbar"
-                    style="width: 1px; height: 5px"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="progress-bar"
-                    :class="[
-                      row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
-                      EstimateDirection.over
-                        ? 'bg-secondary'
-                        : 'bg-transparent',
-                    ]"
-                    role="progressbar"
-                    :style="
-                      'width: ' + estimateFactorPercent(row) + '%; height:5px;'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <span class="text-muted small">
-                    <font-awesome-icon
+                    ></font-awesome-icon
+                    ><font-awesome-icon
                       fixed-width
                       icon="arrow-up"
-                      v-if="
+                      v-else-if="
                         row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
                         EstimateDirection.over
                       "
@@ -692,302 +578,445 @@ function setRowRef(nodeId: number, el: Element) {
                     <i class="fa fa-fw" v-else />
                   </span>
                 </div>
-                <!-- cost -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="viewOptions.metric == Metric.cost"
-                  :key="'node' + index + 'cost'"
-                >
+                <div class="position-absolute" style="width: 100%; bottom: 0">
+                  <!-- time -->
                   <div
-                    class="bg-secondary"
-                    :class="{
-                      'border-secondary border-left':
-                        row[1][NodeProp.EXCLUSIVE_COST] > 0,
-                    }"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_COST] /
-                          plan.planStats.maxCost) *
-                          100
-                      ) +
-                      '%'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                </div>
-                <!-- buffers shared -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="
-                    viewOptions.metric == Metric.buffers &&
-                    viewOptions.buffersMetric == BufferLocation.shared &&
-                    plan.planStats.maxBlocks?.[BufferLocation.shared]
-                  "
-                  :key="'node' + index + 'buffers_shared'"
-                >
+                    class="progress rounded-0 align-items-center"
+                    style="height: 2px"
+                    v-if="viewOptions.metric == Metric.time"
+                    :key="'node' + index + 'time'"
+                  >
+                    <div
+                      class="progress-bar border-secondary bg-primary"
+                      :class="{
+                        'border-left': row[1][NodeProp.EXCLUSIVE_DURATION] > 0,
+                      }"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (row[1][NodeProp.EXCLUSIVE_DURATION] /
+                          (plan.planStats.executionTime ||
+                            plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
+                          100 +
+                        '%; height:5px;'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                    <div
+                      class="progress-bar bg-primary-light"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        ((row[1][NodeProp.ACTUAL_TOTAL_TIME] -
+                          row[1][NodeProp.EXCLUSIVE_DURATION]) /
+                          (plan.planStats.executionTime ||
+                            plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
+                          100 +
+                        '%; height:5px;'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                  <!-- rows -->
                   <div
-                    class="bg-hit"
-                    :class="{
-                      'border-left border-hit':
-                        row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] > 0,
-                    }"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
+                    class="progress rounded-0 align-items-center bg-transparent"
+                    style="height: 2px"
+                    v-else-if="viewOptions.metric == Metric.rows"
+                    :key="'node' + index + 'rows'"
+                  >
+                    <div
+                      class="bg-primary"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        Math.round(
+                          (row[1][NodeProp.ACTUAL_ROWS_REVISED] /
+                            plan.planStats.maxRows) *
+                            100
+                        ) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                  </div>
+                  <!-- estimation -->
                   <div
-                    class="bg-read"
-                    role="progressbar"
-                    :class="{
-                      'border-left border-read':
-                        row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] > 0,
-                    }"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
+                    class="progress rounded-0 align-items-center bg-transparent justify-content-center"
+                    style="height: 10px"
+                    v-else-if="viewOptions.metric == Metric.estimate_factor"
+                    :key="'node' + index + 'estimation'"
+                  >
+                    <span class="text-muted small">
+                      <font-awesome-icon
+                        fixed-width
+                        icon="arrow-down"
+                        v-if="
+                          row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+                          EstimateDirection.under
+                        "
+                      ></font-awesome-icon>
+                      <i class="fa fa-fw" v-else />
+                    </span>
+                    <div
+                      class="progress-bar"
+                      :class="[
+                        row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+                        EstimateDirection.under
+                          ? 'bg-primary'
+                          : 'bg-transparent',
+                      ]"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        estimateFactorPercent(row) +
+                        '%; height:5px;'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                    <div
+                      class="progress-bar border-left"
+                      role="progressbar"
+                      style="width: 1px; height: 2px"
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                    <div
+                      class="progress-bar"
+                      :class="[
+                        row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+                        EstimateDirection.over
+                          ? 'bg-primary'
+                          : 'bg-transparent',
+                      ]"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        estimateFactorPercent(row) +
+                        '%; height:5px;'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                    <span class="text-muted small">
+                      <font-awesome-icon
+                        fixed-width
+                        icon="arrow-up"
+                        v-if="
+                          row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+                          EstimateDirection.over
+                        "
+                      ></font-awesome-icon>
+                      <i class="fa fa-fw" v-else />
+                    </span>
+                  </div>
+                  <!-- cost -->
                   <div
-                    class="bg-dirtied"
-                    :class="{
-                      'border-left border-dirtied':
-                        row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] > 0,
-                    }"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
+                    class="progress rounded-0 align-items-center bg-transparent"
+                    style="height: 2px"
+                    v-else-if="viewOptions.metric == Metric.cost"
+                    :key="'node' + index + 'cost'"
+                  >
+                    <div
+                      class="bg-primary"
+                      :class="{
+                        'border-secondary border-left':
+                          row[1][NodeProp.EXCLUSIVE_COST] > 0,
+                      }"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_COST] /
+                            plan.planStats.maxCost) *
+                            100
+                        ) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                  </div>
+                  <!-- buffers shared -->
                   <div
-                    class="bg-written"
-                    :class="{
-                      'border-left border-written':
-                        row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] > 0,
-                    }"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                          100
-                      ) || 0) +
-                      '%'
+                    class="progress rounded-0 align-items-center bg-transparent"
+                    style="height: 2px"
+                    v-else-if="
+                      viewOptions.metric == Metric.buffers &&
+                      viewOptions.buffersMetric == BufferLocation.shared &&
+                      plan.planStats.maxBlocks?.[BufferLocation.shared]
                     "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                </div>
-                <!-- buffers temp -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="
-                    viewOptions.metric == Metric.buffers &&
-                    viewOptions.buffersMetric == BufferLocation.temp &&
-                    plan.planStats.maxBlocks?.[BufferLocation.temp]
-                  "
-                  :key="'node' + index + 'buffers_temp'"
-                >
+                    :key="'node' + index + 'buffers_shared'"
+                  >
+                    <div
+                      class="bg-hit"
+                      :class="{
+                        'border-left border-hit':
+                          row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] > 0,
+                      }"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                    <div
+                      class="bg-read"
+                      role="progressbar"
+                      :class="{
+                        'border-left border-read':
+                          row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] > 0,
+                      }"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                    <div
+                      class="bg-dirtied"
+                      :class="{
+                        'border-left border-dirtied':
+                          row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] > 0,
+                      }"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                    <div
+                      class="bg-written"
+                      :class="{
+                        'border-left border-written':
+                          row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] > 0,
+                      }"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                  </div>
+                  <!-- buffers temp -->
                   <div
-                    class="bg-read"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.temp]) *
-                          100
-                      ) || 0) +
-                      '%'
+                    class="progress rounded-0 align-items-center bg-transparent"
+                    style="height: 2px"
+                    v-else-if="
+                      viewOptions.metric == Metric.buffers &&
+                      viewOptions.buffersMetric == BufferLocation.temp &&
+                      plan.planStats.maxBlocks?.[BufferLocation.temp]
                     "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
+                    :key="'node' + index + 'buffers_temp'"
+                  >
+                    <div
+                      class="bg-read"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.temp]) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                    <div
+                      class="bg-written"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.temp]) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                  </div>
+                  <!-- buffers local -->
                   <div
-                    class="bg-written"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.temp]) *
-                          100
-                      ) || 0) +
-                      '%'
+                    class="progress rounded-0 align-items-center bg-transparent"
+                    style="height: 2px"
+                    v-else-if="
+                      viewOptions.metric == Metric.buffers &&
+                      viewOptions.buffersMetric == BufferLocation.local &&
+                      plan.planStats.maxBlocks?.[BufferLocation.local]
                     "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                </div>
-                <!-- buffers local -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="
-                    viewOptions.metric == Metric.buffers &&
-                    viewOptions.buffersMetric == BufferLocation.local &&
-                    plan.planStats.maxBlocks?.[BufferLocation.local]
-                  "
-                  :key="'node' + index + 'buffers_local'"
-                >
+                    :key="'node' + index + 'buffers_local'"
+                  >
+                    <div
+                      class="bg-hit"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.local]) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                    <div
+                      class="bg-read"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.local]) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                    <div
+                      class="bg-dirtied"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.local]) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                    <div
+                      class="bg-written"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
+                            plan.planStats?.maxBlocks?.[BufferLocation.local]) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                  </div>
+                  <!-- io -->
                   <div
-                    class="bg-hit"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                          100
-                      ) || 0) +
-                      '%'
+                    class="progress rounded-0 align-items-center bg-transparent"
+                    style="height: 2px"
+                    v-else-if="
+                      viewOptions.metric == Metric.io &&
+                      (plan.content.Plan[NodeProp['IO_READ_TIME']] ||
+                        plan.content.Plan[NodeProp['IO_WRITE_TIME']])
                     "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                  <div
-                    class="bg-read"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                  <div
-                    class="bg-dirtied"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                  <div
-                    class="bg-written"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
-                          plan.planStats?.maxBlocks?.[BufferLocation.local]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                </div>
-                <!-- io -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="
-                    viewOptions.metric == Metric.io &&
-                    (plan.content.Plan[NodeProp['IO_READ_TIME']] ||
-                      plan.content.Plan[NodeProp['IO_WRITE_TIME']])
-                  "
-                  :key="'node' + index + 'io_read'"
-                >
-                  <div
-                    class="bg-read"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_IO_READ_TIME] /
-                          plan.planStats?.maxIo) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                  <div
-                    class="bg-written"
-                    role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
-                          plan.planStats?.maxIo) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
+                    :key="'node' + index + 'io_read'"
+                  >
+                    <div
+                      class="bg-read"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_IO_READ_TIME] /
+                            plan.planStats?.maxIo) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                    <div
+                      class="bg-written"
+                      role="progressbar"
+                      :style="
+                        'width: ' +
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
+                            plan.planStats?.maxIo) *
+                            100
+                        ) || 0) +
+                        '%'
+                      "
+                      aria-valuenow="15"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="height: 2px"
+                    ></div>
+                  </div>
                 </div>
               </td>
             </tr>

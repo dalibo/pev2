@@ -4,16 +4,8 @@
     max-height: 30%;
   }
   // make sure diagram right column takes as much width as possible
-  table tr td:nth-child(3) {
-    width: 50%;
-  }
-
   table tr td:nth-child(2) {
-    max-width: 0;
-    width: 60%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    width: 99%;
   }
 
   font-family: $font-family-sans-serif;

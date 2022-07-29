@@ -55,7 +55,7 @@ $alert-color: #FB4418;
 
 
 $severity-colors: (
-  1: #ccc,
+  1: #999,
   2: #FDDB61,
   3: #e80,
   4: #800
@@ -67,3 +67,11 @@ $yiq-contrasted-threshold:  150 !default;
 // Customize the light and dark text colors for use in our YIQ color contrast function.
 $yiq-text-dark:             $gray-darkest !default;
 $yiq-text-light:            $white !default;
+
+.bg-secondary-light {
+  background-color: #e9e9e9 !important;
+}
+
+.bg-primary-light {
+  background-color: lighten(desaturate(#007bff, 20%), 35%) !important;
+}
