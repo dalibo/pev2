@@ -431,7 +431,7 @@ function setRowRef(nodeId: number, el: Element) {
                 <span class="tree-lines">
                   <template v-for="i in _.range(row[0])">
                     <template v-if="_.indexOf(row[3], i) != -1">│</template
-                    ><template v-else-if="i !== 0">&nbsp;</template> </template
+                    ><template v-else-if="i !== 0">&emsp;</template> </template
                   ><template v-if="index !== 0">{{
                     row[2] ? "└" : "├"
                   }}</template>
@@ -471,14 +471,14 @@ function setRowRef(nodeId: number, el: Element) {
                 <span class="tree-lines">
                   <template v-for="i in _.range(row[0])">
                     <template v-if="_.indexOf(row[3], i) != -1">│</template
-                    ><template v-else-if="i !== 0">&nbsp;</template> </template
+                    ><template v-else-if="i !== 0">&emsp;</template> </template
                   ><template v-if="index !== 0">
                     <template v-if="!row[1][NodeProp.SUBPLAN_NAME]">{{
                       row[2] ? "└" : "├"
                     }}</template
                     ><template v-else>
                       <template v-if="!row[2]">│</template
-                      ><template v-else>&nbsp;</template>
+                      ><template v-else>&emsp;</template>
                     </template>
                   </template>
                 </span>
