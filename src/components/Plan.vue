@@ -25,6 +25,7 @@ import type {
   Node,
   Settings,
 } from "@/interfaces"
+import { SelectNodeKey } from "@/symbols"
 import Copy from "@/components/Copy.vue"
 import Diagram from "@/components/Diagram.vue"
 import PlanNodeContainer from "@/components/PlanNodeContainer.vue"
@@ -66,7 +67,8 @@ const rootNode = ref<Node>()
 const zoomTo = ref<number>()
 const showSettings = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
-const selectedNode = ref<number>(NaN)
+const selectedNodeId = ref<number>(NaN)
+const selectedNode = ref<Node | undefined>(undefined)
 const highlightedNode = ref<number>(NaN)
 
 const emitter = mitt<Events>()
@@ -246,6 +248,15 @@ function onViewOptionsChanged() {
   localStorage.setItem("viewOptions", JSON.stringify(viewOptions))
 }
 
+watch(selectedNodeId, onSelectedNode)
+
+function onSelectedNode(v: number) {
+  window.location.hash = v ? "plan/node/" + v : ""
+  if (plan.value && v) {
+    selectedNode.value = findNodeById(plan.value, v)
+  }
+}
+
 const lineGen = computed(() => {
   return function (link: d3.HierarchyPointLink<Node>, isCte: boolean) {
     isCte = !!isCte
@@ -275,24 +286,32 @@ function onHashChange(): void {
   if (matches) {
     const tab = matches[1] || "plan"
     setActiveTab(tab)
-    const nodeId = matches[3]
-    if (nodeId !== undefined) {
+    const nodeId = parseInt(matches[3], 0)
+    if (
+      tab == "plan" &&
+      nodeId !== undefined &&
+      nodeId != selectedNodeId.value
+    ) {
       // Delayed to make sure the tab has changed before recentering
       setTimeout(() => {
-        selectNode(parseInt(nodeId, 0))
+        selectNode(nodeId, true)
       }, 1)
     }
   }
 }
 
-provide("selectedNode", selectedNode)
+provide("selectedNodeId", selectedNodeId)
 provide("highlightedNode", highlightedNode)
 provide("emitter", emitter)
 
-function selectNode(nodeId: number) {
-  selectedNode.value = nodeId
-  centerNode(nodeId)
+function selectNode(nodeId: number, center: boolean): void {
+  center = !!center
+  selectedNodeId.value = nodeId
+  if (center) {
+    centerNode(nodeId)
+  }
 }
+provide(SelectNodeKey, selectNode)
 
 function centerNode(nodeId: number): void {
   const rect = planEl.value.$el.getBoundingClientRect()
@@ -656,11 +675,11 @@ function isNeverExecuted(node: Node): boolean {
           <div class="flex-grow-1 d-flex overflow-hidden">
             <div class="flex-grow-1 overflow-hidden">
               <plan-node-detail
-                :node="findNodeById(plan, selectedNode)"
+                :node="selectedNode"
                 :plan="plan"
                 :viewOptions="viewOptions"
-                v-if="selectedNode && plan"
-                :key="selectedNode"
+                v-if="selectedNodeId && plan && selectedNode"
+                :key="selectedNodeId"
               ></plan-node-detail>
               <splitpanes
                 class="default-theme"

@@ -17,6 +17,7 @@ import { blocks, duration, rows, factor } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
 import { scrollChildIntoParentView } from "@/services/help-service"
 import type { Events, IPlan, Node } from "@/interfaces"
+import { SelectNodeKey } from "@/symbols"
 
 import tippy, { createSingleton } from "tippy.js"
 import type { CreateSingletonInstance, Instance } from "tippy.js"
@@ -29,7 +30,11 @@ interface Props {
 const props = defineProps<Props>()
 const container = ref(null) // The container element
 
-const selectedNode = inject<Ref<number>>("selectedNode")
+const selectedNodeId = inject<Ref<number>>("selectedNodeId")
+const selectNode = inject(SelectNodeKey)
+if (!selectNode) {
+  throw new Error(`Could not resolve ${SelectNodeKey.description}`)
+}
 const highlightedNode = inject("highlightedNode")
 const emitter = inject<Emitter<Events>>("emitter")
 
@@ -292,7 +297,7 @@ function isCTE(node: Node): boolean {
 }
 
 watch(
-  () => selectedNode?.value,
+  () => selectedNodeId?.value,
   (newVal) => {
     if (!container.value) {
       return
@@ -449,7 +454,7 @@ function setRowRef(nodeId: number, el: Element) {
             <tr
               class="no-focus-outline node"
               :class="{
-                selected: row[1].nodeId === selectedNode,
+                selected: row[1].nodeId === selectedNodeId,
                 highlight: row[1].nodeId === highlightedNode,
               }"
               :data-tippy-content="getTooltipContent(row[1])"
@@ -460,13 +465,12 @@ function setRowRef(nodeId: number, el: Element) {
               "
               @mouseenter="highlightedNode = row[1].nodeId"
               @mouseleave="highlightedNode = null"
+              @click.prevent="selectNode(row[1].nodeId, true)"
             >
               <td class="node-index">
-                <a
-                  class="font-weight-normal small"
-                  :href="'#plan/node/' + row[1].nodeId"
-                  >#{{ row[1].nodeId }}</a
-                >
+                <span class="font-weight-normal small"
+                  >#{{ row[1].nodeId }}
+                </span>
               </td>
               <td class="node-type pr-2">
                 <span class="tree-lines">

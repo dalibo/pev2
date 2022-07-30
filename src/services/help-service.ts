@@ -1,3 +1,4 @@
+import * as _ from "lodash"
 import type { IPlan, Node } from "@/interfaces"
 
 export class HelpService {
@@ -233,15 +234,38 @@ export function splitBalanced(input: string, split: string) {
 }
 
 export function findNodeById(plan: IPlan, id: number): Node | undefined {
-  let o = plan.content.Plan
-  if (o && o.Plans) {
-    o.Plans.some(function iter(child: Node): boolean | undefined {
+  let o: Node | undefined = undefined
+  const root = plan.content.Plan
+  if (root.nodeId == id) {
+    return root
+  }
+  if (root && root.Plans) {
+    root.Plans.some(function iter(child: Node): boolean | undefined {
       if (child.nodeId === id) {
         o = child
         return true
       }
       return child.Plans && child.Plans.some(iter)
     })
+    if (!o && plan.ctes) {
+      _.each(plan.ctes, (cte) => {
+        if (cte.nodeId == id) {
+          o = cte
+          return false
+        } else if (cte.Plans) {
+          cte.Plans.some(function iter(child: Node): boolean | undefined {
+            if (child.nodeId === id) {
+              o = child
+              return true
+            }
+            return child.Plans && child.Plans.some(iter)
+          })
+          if (o) {
+            return false
+          }
+        }
+      })
+    }
   }
   return o
 }
