@@ -267,16 +267,13 @@ function onSelectedNode(v: number) {
 }
 
 const lineGen = computed(() => {
-  return function (link: d3.HierarchyPointLink<Node>, isCte: boolean) {
-    isCte = !!isCte
+  return function (link: d3.HierarchyPointLink<Node>) {
     const source = link.source
     const target = link.target
     const k = Math.abs(target.y - source.y) - maxNodeHeight
     const path = d3.path()
     path.moveTo(source.x + nodeSize[0] / 2, source.y)
-    if (isCte) {
-      path.lineTo(source.x + nodeSize[0] / 2, source.y + maxNodeHeight)
-    }
+    path.lineTo(source.x + nodeSize[0] / 2, source.y + maxNodeHeight)
     path.bezierCurveTo(
       source.x + nodeSize[0] / 2,
       source.y + maxNodeHeight + k / 2,
@@ -716,7 +713,7 @@ function isNeverExecuted(node: Node): boolean {
                       <path
                         v-for="(link, index) in toCteLinks"
                         :key="`linkcte${index}`"
-                        :d="lineGen(link, true)"
+                        :d="lineGen(link)"
                         stroke="#B3D7D7"
                         :stroke-width="
                           edgeWeight(
@@ -728,7 +725,7 @@ function isNeverExecuted(node: Node): boolean {
                       <path
                         v-for="(link, index) in layoutRootNode?.links()"
                         :key="`link${index}`"
-                        :d="lineGen(link, false)"
+                        :d="lineGen(link)"
                         :class="{
                           'never-executed': isNeverExecuted(link.target.data),
                         }"
@@ -778,7 +775,7 @@ function isNeverExecuted(node: Node): boolean {
                         <path
                           v-for="(link, index) in cte.links()"
                           :key="`link${index}`"
-                          :d="lineGen(link, false)"
+                          :d="lineGen(link)"
                           stroke="grey"
                           :stroke-width="
                             edgeWeight(
