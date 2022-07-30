@@ -64,7 +64,6 @@ const plan = ref<IPlan>()
 const planEl = ref()
 let planStats = reactive<IPlanStats>({} as IPlanStats)
 const rootNode = ref<Node>()
-const zoomTo = ref<number>()
 const showSettings = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
 const selectedNodeId = ref<number>(NaN)
@@ -147,16 +146,6 @@ onBeforeMount(() => {
   plan.value.planStats = planStats
 
   nextTick(() => {
-    let nodeId = 1
-    if (zoomTo.value) {
-      nodeId = zoomTo.value
-    }
-    centerNode(nodeId)
-    // build the diagram structure
-    // with level and reference to PlanNode components for interaction
-    if (!plan.value) {
-      return
-    }
     onHashChange()
   })
   window.addEventListener("hashchange", onHashChange)
@@ -232,9 +221,29 @@ onBeforeMount(() => {
 onMounted(() => {
   d3.select(planEl.value.$el).call(zoomListener)
   nextTick(() => {
-    const rect = planEl.value.$el.getBoundingClientRect()
-    const transX = rect.width / 2
-    zoomListener.translateBy(d3.select(planEl.value.$el), transX, 10)
+    if (layoutRootNode.value) {
+      const extent = getLayoutExtent(layoutRootNode.value)
+      const x0 = extent[0]
+      const y0 = extent[2]
+      const x1 = extent[1]
+      const y1 = extent[3]
+      const rect = planEl.value.$el.getBoundingClientRect()
+
+      d3.select(planEl.value.$el)
+        .transition()
+        .call(
+          zoomListener.transform,
+          d3.zoomIdentity
+            .translate(rect.width / 2 - nodeSize[0] / 2, 10)
+            .scale(
+              Math.min(
+                1,
+                0.8 / Math.max((x1 - x0) / rect.width, (y1 - y0) / rect.height)
+              )
+            )
+            .translate(-(x0 + x1) / 2, 10)
+        )
+    }
   })
 })
 
