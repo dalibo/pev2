@@ -247,4 +247,5 @@ export interface JIT {
 
 export type Events = {
   clickcte: string
+  selectNode: number
 }

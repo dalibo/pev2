@@ -30,7 +30,7 @@ const nodeProps = ref<
     value: unknown
   }[]
 >()
-const selectedNode = inject("selectedNode")
+const selectedNodeId = inject("selectedNodeId")
 
 const executionTimePercent = ref<number>(NaN)
 // UI flags
@@ -110,7 +110,6 @@ const notMiscProperties: string[] = [
 ]
 
 onBeforeMount(() => {
-  console.log("before mount")
   calculateProps()
   calculateDuration()
   calculateCost()
@@ -358,12 +357,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
       <div class="card-body header">
         <header class="mb-0">
           <h4 class="text-body">
-            <a
-              class="font-weight-normal small"
-              :href="'#plan/node/' + node.nodeId"
-              @click.stop
-              >#{{ node.nodeId }}</a
-            >
+            <span class="font-weight-normal small">#{{ node.nodeId }} </span>
             {{ getNodeName() }}
           </h4>
           <div class="float-right">
@@ -371,7 +365,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
               type="button"
               class="close ml-2"
               aria-label="Close"
-              @click.stop="selectedNode = null"
+              @click.stop="selectedNodeId = null"
             >
               <span aria-hidden="true">&times;</span>
             </button>

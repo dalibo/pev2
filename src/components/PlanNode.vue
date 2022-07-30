@@ -3,14 +3,19 @@ import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions, Worker } from "@/interfaces"
+import { SelectNodeKey } from "@/symbols"
 import { numberToColorHsl } from "@/services/color-service"
 import { cost, duration, rows } from "@/filters"
 import { EstimateDirection, HighlightType, NodeProp } from "@/enums"
 import * as _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
-const selectedNode = inject<number | null>("selectedNode", null)
+const selectedNodeId = inject<number | null>("selectedNodeId", null)
 const highlightedNode = inject<number | null>("highlightedNode", null)
+const selectNode = inject(SelectNodeKey)
+if (!selectNode) {
+  throw new Error(`Could not resolve ${SelectNodeKey.description}`)
+}
 
 interface Props {
   node: Node
@@ -276,7 +281,7 @@ const isNeverExecuted = computed((): boolean => {
 </script>
 
 <template>
-  <div ref="outerEl">
+  <div ref="outerEl" @click.prevent="selectNode(node.nodeId, false)">
     <div
       ref="el"
       :class="[
@@ -284,7 +289,7 @@ const isNeverExecuted = computed((): boolean => {
         {
           'never-executed': isNeverExecuted,
           parallel: workersPlannedCount,
-          selected: selectedNode == node.nodeId,
+          selected: selectedNodeId == node.nodeId,
           highlight: highlightedNode == node.nodeId,
         },
       ]"
@@ -318,12 +323,9 @@ const isNeverExecuted = computed((): boolean => {
         <div class="card-body header no-focus-outline">
           <header class="mb-0">
             <h4 class="text-body">
-              <a
-                class="font-weight-normal small"
-                :href="'#plan/node/' + node.nodeId"
-                @click.stop
-                >#{{ node.nodeId }}</a
-              >
+              <span class="font-weight-normal small" @click.stop>
+                #{{ node.nodeId }}
+              </span>
               {{ getNodeName() }}
             </h4>
             <div class="float-right">
@@ -435,3 +437,9 @@ const isNeverExecuted = computed((): boolean => {
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.plan-node {
+  cursor: pointer;
+}
+</style>
