@@ -299,7 +299,7 @@ function isCTE(node: Node): boolean {
 watch(
   () => selectedNodeId?.value,
   (newVal) => {
-    if (!container.value) {
+    if (!container.value || !newVal) {
       return
     }
     scrollChildIntoParentView(container.value, rowRefs[newVal as number], false)
