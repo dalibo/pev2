@@ -11,7 +11,7 @@ import * as _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
 const selectedNodeId = inject<number | null>("selectedNodeId", null)
-const highlightedNode = inject<number | null>("highlightedNode", null)
+const highlightedNodeId = inject<number | null>("highlightedNodeId", null)
 const selectNode = inject(SelectNodeKey)
 if (!selectNode) {
   throw new Error(`Could not resolve ${SelectNodeKey.description}`)
@@ -290,7 +290,7 @@ const isNeverExecuted = computed((): boolean => {
           'never-executed': isNeverExecuted,
           parallel: workersPlannedCount,
           selected: selectedNodeId == node.nodeId,
-          highlight: highlightedNode == node.nodeId,
+          highlight: highlightedNodeId == node.nodeId,
         },
       ]"
     >
@@ -317,8 +317,8 @@ const isNeverExecuted = computed((): boolean => {
       </div>
       <div
         class="plan-node-body card"
-        @mouseenter="highlightedNode = node.nodeId"
-        @mouseleave="highlightedNode = null"
+        @mouseenter="highlightedNodeId = node.nodeId"
+        @mouseleave="highlightedNodeId = null"
       >
         <div class="card-body header no-focus-outline">
           <header class="mb-0">
