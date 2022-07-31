@@ -705,7 +705,7 @@ function isNeverExecuted(node: Node): boolean {
                 </pane>
                 <pane
                   ref="planEl"
-                  class="plan d-flex flex-column flex-grow-1 grab-bing overflow-auto"
+                  class="plan grab-bing"
                 >
                   <svg width="100%" height="100%">
                     <g :transform="transform">
