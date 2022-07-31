@@ -421,7 +421,11 @@ function setRowRef(nodeId: number, el: Element) {
       </div>
     </div>
     <div class="overflow-auto flex-grow-1" ref="container">
-      <table class="m-1" v-if="dataAvailable">
+      <table
+        class="m-1"
+        v-if="dataAvailable"
+        :class="{ highlight: !!highlightedNodeId }"
+      >
         <tbody v-for="(flat, index) in plans" :key="index">
           <tr v-if="index === 0 && plans.length > 1">
             <th colspan="3" class="subplan">Main Query Plan</th>
