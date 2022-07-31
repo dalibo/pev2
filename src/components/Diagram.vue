@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as _ from "lodash"
 import type { Emitter } from "mitt"
+import type { Ref } from "vue"
 import {
   computed,
   inject,
@@ -28,7 +29,7 @@ interface Props {
 const props = defineProps<Props>()
 const container = ref(null) // The container element
 
-const selectedNode = inject("selectedNode")
+const selectedNode = inject<Ref<number>>("selectedNode")
 const highlightedNode = inject("highlightedNode")
 const emitter = inject<Emitter<Events>>("emitter")
 
@@ -291,7 +292,7 @@ function isCTE(node: Node): boolean {
 }
 
 watch(
-  () => selectedNode,
+  () => selectedNode?.value,
   (newVal) => {
     if (!container.value) {
       return
