@@ -35,7 +35,7 @@ const selectNode = inject(SelectNodeKey)
 if (!selectNode) {
   throw new Error(`Could not resolve ${SelectNodeKey.description}`)
 }
-const highlightedNode = inject("highlightedNode")
+const highlightedNodeId = inject("highlightedNodeId")
 const emitter = inject<Emitter<Events>>("emitter")
 
 const rowRefs: Element[] = []
@@ -455,7 +455,7 @@ function setRowRef(nodeId: number, el: Element) {
               class="no-focus-outline node"
               :class="{
                 selected: row[1].nodeId === selectedNodeId,
-                highlight: row[1].nodeId === highlightedNode,
+                highlight: row[1].nodeId === highlightedNodeId,
               }"
               :data-tippy-content="getTooltipContent(row[1])"
               :ref="
@@ -463,8 +463,8 @@ function setRowRef(nodeId: number, el: Element) {
                   setRowRef(row[1].nodeId, el as Element)
                 }
               "
-              @mouseenter="highlightedNode = row[1].nodeId"
-              @mouseleave="highlightedNode = null"
+              @mouseenter="highlightedNodeId = row[1].nodeId"
+              @mouseleave="highlightedNodeId = null"
               @click.prevent="selectNode(row[1].nodeId, true)"
             >
               <td class="node-index">

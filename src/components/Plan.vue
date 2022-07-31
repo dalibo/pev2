@@ -68,7 +68,7 @@ const showSettings = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
 const selectedNodeId = ref<number>(NaN)
 const selectedNode = ref<Node | undefined>(undefined)
-const highlightedNode = ref<number>(NaN)
+const highlightedNodeId = ref<number>(NaN)
 
 const emitter = mitt<Events>()
 
@@ -307,7 +307,7 @@ function onHashChange(): void {
 }
 
 provide("selectedNodeId", selectedNodeId)
-provide("highlightedNode", highlightedNode)
+provide("highlightedNodeId", highlightedNodeId)
 provide("emitter", emitter)
 
 function selectNode(nodeId: number, center: boolean): void {
