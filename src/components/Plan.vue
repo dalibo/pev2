@@ -13,10 +13,8 @@ import {
 } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import { Splitpanes, Pane } from "splitpanes"
-import mitt from "mitt"
 
 import type {
-  Events,
   IBlocksStats,
   IPlan,
   IPlanContent,
@@ -69,8 +67,6 @@ const showTriggers = ref<boolean>(false)
 const selectedNodeId = ref<number>(NaN)
 const selectedNode = ref<Node | undefined>(undefined)
 const highlightedNodeId = ref<number>(NaN)
-
-const emitter = mitt<Events>()
 
 const viewOptions = reactive({
   menuHidden: true,
@@ -324,7 +320,6 @@ function onHashChange(): void {
 
 provide("selectedNodeId", selectedNodeId)
 provide("highlightedNodeId", highlightedNodeId)
-provide("emitter", emitter)
 
 function selectNode(nodeId: number, center: boolean): void {
   center = !!center
