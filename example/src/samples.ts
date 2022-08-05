@@ -2756,74 +2756,115 @@ export const plan6_source = `"Limit  (cost=1.27..3878.21 rows=5 width=172) (actu
 "Planning Time: 2.916 ms"
 "Execution Time: 2.900 ms"`
 
-export const plan7_source = `Sort  (cost=55235.15..55247.04 rows=4758 width=1128) (actual time=132.733..133.642 rows=22577 loops=1)
+export const plan7_source = String.raw`
+                                                                         QUERY PLAN
+═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+ Merge on public.t1  (cost=1824058.07..1336099696.57 rows=0 width=0) (actual time=16254.981..16254.984 rows=0 loops=1)
+   Tuples: deleted=2499999
+   Buffers: shared hit=5002762 read=51294 dirtied=13514 written=8006, local hit=7541658 read=25779 dirtied=46608 written=67441, temp read=98262 written=150446
+   WAL: records=2500630 fpi=8047 bytes=200763653
+   CTE t2bb
+     ->  Update on pg_temp.t2  (cost=0.00..54898.62 rows=2912462 width=14) (actual time=244.180..2939.572 rows=2499999 loops=1)
+           Output: t2.i, t2.x, t2.filler
+           Buffers: local hit=7541658 read=25779 dirtied=46608 written=67441
+           ->  Seq Scan on pg_temp.t2  (cost=0.00..54898.62 rows=2912462 width=14) (actual time=226.341..690.083 rows=2499999 loops=1)
+                 Output: NULL::double precision, t2.ctid
+                 Buffers: local read=25774 dirtied=25774 written=25771
+   CTE t2b
+     ->  Sort  (cost=650151.19..657432.35 rows=2912462 width=52) (actual time=5387.848..5800.321 rows=2499999 loops=1)
+           Output: t2bb.i, t2bb.x, t2bb.filler, (random())
+           Sort Key: (random())
+           Sort Method: external merge  Disk: 141936kB
+           Buffers: shared hit=3, local hit=7541658 read=25779 dirtied=46608 written=67441, temp read=35480 written=49892
+           ->  CTE Scan on t2bb  (cost=0.00..65530.39 rows=2912462 width=52) (actual time=244.188..3856.231 rows=2499999 loops=1)
+                 Output: t2bb.i, t2bb.x, t2bb.filler, random()
+                 Buffers: local hit=7541658 read=25779 dirtied=46608 written=67441, temp written=14343
+   ->  Merge Left Join  (cost=1111727.10..1335387365.61 rows=88949720377 width=42) (actual time=10989.361..12903.243 rows=2499999 loops=1)
+         Output: t1.ctid, t2b.i, t2b.filler
+         Merge Cond: (t2b.i = t1.i)
+         Buffers: shared hit=15647 read=38411 dirtied=631, local hit=7541658 read=25779 dirtied=46608 written=67441, temp read=98262 written=150446
+         WAL: records=631 fpi=631 bytes=5182403
+         ->  Sort  (cost=530235.49..537516.64 rows=2912462 width=36) (actual time=7556.652..7928.837 rows=2499999 loops=1)
+               Output: t2b.i, t2b.filler
+               Sort Key: t2b.i
+               Sort Method: external merge  Disk: 115072kB
+               Buffers: shared hit=3, local hit=7541658 read=25779 dirtied=46608 written=67441, temp read=64238 written=96414
+               ->  CTE Scan on t2b  (cost=0.00..58249.24 rows=2912462 width=36) (actual time=5387.869..6356.641 rows=2499999 loops=1)
+                     Output: t2b.i, t2b.filler
+                     Buffers: shared hit=3, local hit=7541658 read=25779 dirtied=46608 written=67441, temp read=35480 written=67592
+         ->  Materialize  (cost=1012385.82..1042926.89 rows=6108215 width=10) (actual time=3432.664..4124.070 rows=2500000 loops=1)
+               Output: t1.ctid, t1.i
+               Buffers: shared hit=15644 read=38411 dirtied=631, temp read=34024 written=54032
+               WAL: records=631 fpi=631 bytes=5182403
+               ->  Sort  (cost=1012385.82..1027656.36 rows=6108215 width=10) (actual time=3432.659..3773.369 rows=2500000 loops=1)
+                     Output: t1.ctid, t1.i
+                     Sort Key: t1.i
+                     Sort Method: external merge  Disk: 215352kB
+                     Buffers: shared hit=15644 read=38411 dirtied=631, temp read=34024 written=54032
+                     WAL: records=631 fpi=631 bytes=5182403
+                     ->  Seq Scan on public.t1  (cost=0.00..115137.15 rows=6108215 width=10) (actual time=0.031..1073.371 rows=10000000 loops=1)
+                           Output: t1.ctid, t1.i
+                           Buffers: shared hit=15644 read=38411 dirtied=631
+                           WAL: records=631 fpi=631 bytes=5182403
+ Planning:
+   Buffers: shared hit=21 read=7
+ Planning Time: 0.237 ms
+ JIT:
+   Functions: 20
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 0.948 ms, Inlining 76.071 ms, Optimization 97.998 ms, Emission 70.028 ms, Total 245.045 ms
+ Execution Time: 16365.829 ms
+(55 lignes)
+`
 
-  Sort Key: (COALESCE(t_energy.te_source_file, t_quality.tq_source_file)), (COALESCE(t_energy.te_meter_id, t_quality.tq_meter_id)), (COALESCE(t_energy.te_frame_date, t_quality.tq_frame_date))
+export const plan7_query = String.raw`
+-- créer un plan avec tous les writtent/buffers/shared/local/temp à la fois
 
-  Sort Method: quicksort  Memory: 7358kB
+\timing off
 
-  CTE t_quality
+\set NB 10000000
+\set MINIMUM :NB/4
 
-    ->  Subquery Scan on x  (cost=26084.17..26602.15 rows=4604 width=283) (actual time=47.040..54.620 rows=12101 loops=1)
 
-          Filter: (x.r < 2)
+SET synchronous_commit TO off;
 
-          Rows Removed by Filter: 29
+\set ON_ERROR_STOP 1
 
-          ->  WindowAgg  (cost=26084.17..26429.49 rows=13813 width=287) (actual time=47.037..53.332 rows=12130 loops=1)
+\set ECHO queries
 
-                ->  Sort  (cost=26084.17..26118.70 rows=13813 width=279) (actual time=47.026..47.503 rows=12130 loops=1)
+DROP TABLE  IF EXISTS t1, t2 ;
 
-                      Sort Key: t.meter_id, t.frame_date, t.num_ligne DESC
+CREATE TABLE t1 (i int GENERATED BY DEFAULT AS IDENTITY, x float DEFAULT random(), filler text DEFAULT NULL) ;
 
-                      Sort Method: quicksort  Memory: 3607kB
+CREATE TEMP TABLE t2 (LIKE t1);
+VACUUM (ANALYZE,VERBOSE) t1,t2;
 
-                      ->  Index Scan using source_file_type_ligne_201904 on kaifa_load_profiles_201904 t  (cost=0.69..25134.27 rows=13813 width=279) (actual time=1.120..18.338 rows=12130 loops=1)
+\d+ t1
+\d+ t2
 
-                            Index Cond: ((source_file = '/srv/acquisition/LP_20190429223000_24990_0-numerote.txt'::text) AND (type_ligne = 'QUALITY'::text))
+INSERT INTO t1 SELECT FROM generate_series (1,:NB) i ;
 
-  CTE t_energy
+INSERT INTO t2 SELECT i,x,md5(i::text) FROM t1 WHERE i < :MINIMUM ;
 
-    ->  Subquery Scan on x_1  (cost=26955.50..27490.74 rows=4758 width=382) (actual time=30.821..38.989 rows=12844 loops=1)
+\dt+ t?
 
-          Filter: (x_1.r < 2)
+SET work_mem TO '4MB' ;
 
-          Rows Removed by Filter: 16
+\echo "Mise à jour de t1 à partir d'une version de T2 elle même modifée"
 
-          ->  WindowAgg  (cost=26955.50..27312.32 rows=14273 width=386) (actual time=30.820..37.670 rows=12860 loops=1)
-
-                ->  Sort  (cost=26955.50..26991.18 rows=14273 width=378) (actual time=30.814..31.252 rows=12860 loops=1)
-
-                      Sort Key: t_1.meter_id, t_1.frame_date, t_1.num_ligne DESC
-
-                      Sort Method: quicksort  Memory: 2193kB
-
-                      ->  Index Scan using source_file_type_ligne_201904 on kaifa_load_profiles_201904 t_1  (cost=0.69..25970.59 rows=14273 width=378) (actual time=0.403..6.428 rows=12860 loops=1)
-
-                            Index Cond: ((source_file = '/srv/acquisition/LP_20190429223000_24990_0-numerote.txt'::text) AND (type_ligne = 'ENERGY'::text))
-
-  ->  Merge Full Join  (cost=757.98..851.63 rows=4758 width=1128) (actual time=114.277..123.103 rows=22577 loops=1)
-
-        Merge Cond: ((t_quality.tq_source_file = t_energy.te_source_file) AND (t_quality.tq_meter_id = t_energy.te_meter_id) AND (t_quality.tq_frame_date = t_energy.te_frame_date))
-
-        ->  Sort  (cost=372.20..383.71 rows=4604 width=496) (actual time=65.897..66.323 rows=12101 loops=1)
-
-              Sort Key: t_quality.tq_source_file, t_quality.tq_meter_id, t_quality.tq_frame_date
-
-              Sort Method: quicksort  Memory: 3599kB
-
-              ->  CTE Scan on t_quality  (cost=0.00..92.08 rows=4604 width=496) (actual time=47.043..61.095 rows=12101 loops=1)
-
-        ->  Sort  (cost=385.78..397.68 rows=4758 width=496) (actual time=48.371..48.779 rows=12844 loops=1)
-
-              Sort Key: t_energy.te_source_file, t_energy.te_meter_id, t_energy.te_frame_date
-
-              Sort Method: quicksort  Memory: 2202kB
-
-              ->  CTE Scan on t_energy  (cost=0.00..95.16 rows=4758 width=496) (actual time=30.824..44.152 rows=12844 loops=1)
-
-Planning time: 2.040 ms
-Execution time: 136.448 ms`
+EXPLAIN (ANALYZE,BUFFERS,VERBOSE,SETTINGS,WAL)
+WITH t2bb AS ( UPDATE t2 SET x=null RETURNING * ),
+t2b AS ( SELECT * FROM t2bb ORDER BY random())
+MERGE INTO t1
+USING t2b
+ON (t1.i=t2b.i)
+WHEN NOT MATCHED AND t2b.i >= :MINIMUM THEN
+  INSERT VALUES (t2b.i, null, t2b.filler)
+WHEN MATCHED AND t2b.i < :MINIMUM THEN
+  DELETE
+WHEN MATCHED THEN
+  UPDATE SET filler=t2b.filler, x=null ;
+`
 
 export const plan8_source = String.raw`{
   "Plan": {
