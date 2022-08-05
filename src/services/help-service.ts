@@ -75,6 +75,9 @@ export function scrollChildIntoParentView(
   shouldCenter: boolean,
   done?: () => void
 ) {
+  if (!child) {
+    return
+  }
   // Where is the parent on page
   const parentRect = parent.getBoundingClientRect()
   // Where is the child
