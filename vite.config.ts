@@ -32,9 +32,6 @@ const build = process.env.LIB
       brotliSize: false,
       rollupOptions: {
         inlineDynamicImports: true,
-        output: {
-          manualChunks: () => "everything.js",
-        },
       },
     }
 
