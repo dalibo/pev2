@@ -107,7 +107,7 @@ const maxNodeHeight = computed(() => {
   return viewOptions.highlightType == HighlightType.NONE ? 70 : 100
 })
 const nodeSize = computed<[number, number]>(() => {
-  return [200, maxNodeHeight.value + padding]
+  return [240, maxNodeHeight.value + padding]
 })
 const layoutRootNode = ref<null | d3.HierarchyPointNode<Node>>(null)
 // computed position + rootNode
