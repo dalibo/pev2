@@ -445,7 +445,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
             </span>
           </span>
         </header>
-        <plan-node-context :node="node"></plan-node-context>
+        <plan-node-context :plan="plan" :node="node"></plan-node-context>
         <div
           v-if="!allWorkersLaunched"
           class="text-c-3 cursor-help"

@@ -406,7 +406,7 @@ const isNeverExecuted = computed((): boolean => {
               </span>
             </div>
           </header>
-          <plan-node-context :node="node"></plan-node-context>
+          <plan-node-context :plan="plan" :node="node"></plan-node-context>
 
           <div
             v-if="

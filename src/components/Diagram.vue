@@ -432,7 +432,6 @@ function setRowRef(nodeId: number, el: Element) {
           </tr>
           <template v-for="(row, index) in flat" :key="index">
             <tr v-if="row[1][NodeProp.SUBPLAN_NAME]">
-              <td v-if="!isCTE(row[1])"></td>
               <td
                 class="subplan pr-2"
                 :class="{ 'font-weight-bold': isCTE(row[1]) }"
@@ -449,7 +448,7 @@ function setRowRef(nodeId: number, el: Element) {
                 <a
                   class="font-italic text-reset"
                   href=""
-                  @click.prevent="emitter?.emit('clickcte', row[1][NodeProp.SUBPLAN_NAME] as string)"
+                  @click.prevent="selectNode(row[1].nodeId, true)"
                 >
                   {{ row[1][NodeProp.SUBPLAN_NAME] }}
                 </a>

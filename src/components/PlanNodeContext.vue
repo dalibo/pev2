@@ -1,15 +1,29 @@
 <script lang="ts" setup>
-import { reactive } from "vue"
+import { inject, reactive } from "vue"
 import { keysToString, sortKeys } from "@/filters"
 import { NodeProp } from "@/enums"
-import type { Node } from "@/interfaces"
+import type { IPlan, Node } from "@/interfaces"
+import { SelectNodeKey } from "@/symbols"
+import { findNodeBySubplanName } from "@/services/help-service"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
 interface Props {
+  plan: IPlan
   node: Node
 }
 const props = defineProps<Props>()
 const node = reactive<Node>(props.node)
+const plan = reactive<IPlan>(props.plan)
+
+const selectNode = inject(SelectNodeKey)
+if (!selectNode) {
+  throw new Error(`Could not resolve ${SelectNodeKey.description}`)
+}
+
+function centerCte() {
+  const cteNode = findNodeBySubplanName(plan, node[NodeProp.CTE_NAME] as string)
+  cteNode && selectNode?.(cteNode.nodeId, true)
+}
 </script>
 
 <template>
@@ -53,7 +67,7 @@ const node = reactive<Node>(props.node)
       ></span>
     </div>
     <div v-if="node[NodeProp.CTE_NAME]">
-      <a class="text-reset" href="">
+      <a class="text-reset" href="" @click.prevent.stop="centerCte">
         <font-awesome-icon icon="search" class="text-muted"></font-awesome-icon>
         <span class="text-muted">CTE</span>
         {{ node[NodeProp.CTE_NAME] }}
