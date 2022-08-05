@@ -60,23 +60,6 @@ $connector-line: 2px solid darken($line-color, 10%);
     background-color: #fff;
     font-size: $font-size-sm;
   }
-
-  button {
-    .fa-chevron-right {
-      display: inline-block;
-    }
-    .fa-chevron-down {
-      display: none;
-    }
-  }
-  button[aria-expanded='true'] {
-    .fa-chevron-right {
-      display: none !important;
-    }
-    .fa-chevron-down {
-      display: inline-block !important;
-    }
-  }
 }
 
 .plan-stats {
