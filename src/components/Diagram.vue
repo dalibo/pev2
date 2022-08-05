@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import * as _ from "lodash"
-import type { Emitter } from "mitt"
 import type { Ref } from "vue"
 import {
   computed,
@@ -16,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { blocks, duration, rows, factor } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
 import { scrollChildIntoParentView } from "@/services/help-service"
-import type { Events, IPlan, Node } from "@/interfaces"
+import type { IPlan, Node } from "@/interfaces"
 import { SelectNodeKey } from "@/symbols"
 
 import tippy, { createSingleton } from "tippy.js"
@@ -36,7 +35,6 @@ if (!selectNode) {
   throw new Error(`Could not resolve ${SelectNodeKey.description}`)
 }
 const highlightedNodeId = inject("highlightedNodeId")
-const emitter = inject<Emitter<Events>>("emitter")
 
 const rowRefs: Element[] = []
 
