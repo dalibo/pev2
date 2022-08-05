@@ -236,7 +236,6 @@ export type ViewOptions = {
   showHighlightBar: boolean
   showPlanStats: boolean
   highlightType: HighlightType
-  showDiagram: boolean
   diagramWidth: number
 }
 

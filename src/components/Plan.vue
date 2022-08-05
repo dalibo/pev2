@@ -77,7 +77,6 @@ const viewOptions = reactive({
   showHighlightBar: false,
   showPlanStats: true,
   highlightType: HighlightType.NONE,
-  showDiagram: true,
   diagramWidth: 20,
 })
 
@@ -694,7 +693,7 @@ function isNeverExecuted(node: Node): boolean {
                 <pane
                   :size="viewOptions.diagramWidth"
                   class="d-flex flex-column"
-                  v-if="viewOptions.showDiagram && plan"
+                  v-if="plan"
                 >
                   <diagram
                     ref="diagram"
@@ -817,19 +816,6 @@ function isNeverExecuted(node: Node): boolean {
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="form-check">
-                <input
-                  id="showDiagram"
-                  type="checkbox"
-                  v-model="viewOptions.showDiagram"
-                  class="form-check-input"
-                />
-                <label for="showDiagram" class="form-check-label"
-                  ><font-awesome-icon icon="align-left"></font-awesome-icon>
-                  Diagram</label
-                >
-              </div>
-              <hr />
               <label class="text-uppercase">Graph metric</label>
               <div class="form-group">
                 <div class="btn-group btn-group-sm">
