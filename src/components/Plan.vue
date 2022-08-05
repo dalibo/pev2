@@ -103,8 +103,12 @@ const zoomListener = d3
     scale.value = e.transform.k
   })
 // Approximate maximum height for a node rectangle (when there's a lot of context)
-const maxNodeHeight = 70
-const nodeSize: [number, number] = [200, maxNodeHeight + padding]
+const maxNodeHeight = computed(() => {
+  return viewOptions.highlightType == HighlightType.NONE ? 70 : 100
+})
+const nodeSize = computed<[number, number]>(() => {
+  return [200, maxNodeHeight.value + padding]
+})
 const layoutRootNode = ref<null | d3.HierarchyPointNode<Node>>(null)
 // computed position + rootNode
 const ctes = ref<d3.HierarchyPointNode<Node>[]>([])
@@ -148,22 +152,30 @@ onBeforeMount(() => {
     onHashChange()
   })
   window.addEventListener("hashchange", onHashChange)
+  doLayout()
+})
+
+function doLayout() {
+  if (!rootNode.value) {
+    return
+  }
 
   const layout = d3
     .tree<Node>()
-    .nodeSize(nodeSize)
+    .nodeSize(nodeSize.value)
     .separation((a, b) => (a.parent == b.parent ? 1 : 1.3))
 
   layoutRootNode.value = layout(
-    d3.hierarchy(planJson.Plan, (v: Node) => v.Plans)
+    d3.hierarchy(rootNode.value, (v: Node) => v.Plans)
   )
 
   const mainLayoutExtent = getLayoutExtent(layoutRootNode.value)
   const offset: [number, number] = [
     mainLayoutExtent[0],
-    mainLayoutExtent[3] + 150,
+    mainLayoutExtent[3] + maxNodeHeight.value + padding * 3,
   ]
-  _.each(plan.value.ctes, (cte) => {
+  ctes.value = []
+  _.each(plan.value?.ctes, (cte) => {
     if (!layoutRootNode.value) {
       return
     }
@@ -175,10 +187,11 @@ onBeforeMount(() => {
       node.x += offset[0] - currentCteExtent[0]
       node.y += offset[1]
     })
-    offset[0] += currentWidth + nodeSize[0] + padding * 2
+    offset[0] += currentWidth + nodeSize.value[0] + padding * 2
   })
 
   // compute links from node to CTE
+  toCteLinks.value = []
   _.each(layoutRootNode.value.descendants(), (source) => {
     if (_.has(source.data, NodeProp.CTE_NAME)) {
       const cte = _.find(ctes.value, (cteNode) => {
@@ -215,7 +228,7 @@ onBeforeMount(() => {
       }
     })
   })
-})
+}
 
 onMounted(() => {
   d3.select(planEl.value.$el).call(zoomListener)
@@ -233,7 +246,7 @@ onMounted(() => {
         .call(
           zoomListener.transform,
           d3.zoomIdentity
-            .translate(rect.width / 2 - nodeSize[0] / 2, 10)
+            .translate(rect.width / 2 - nodeSize.value[0] / 2, 10)
             .scale(
               Math.min(
                 1,
@@ -254,6 +267,7 @@ watch(viewOptions, onViewOptionsChanged)
 
 function onViewOptionsChanged() {
   localStorage.setItem("viewOptions", JSON.stringify(viewOptions))
+  doLayout()
 }
 
 watch(selectedNodeId, onSelectedNode)
@@ -269,16 +283,19 @@ const lineGen = computed(() => {
   return function (link: d3.HierarchyPointLink<Node>) {
     const source = link.source
     const target = link.target
-    const k = Math.abs(target.y - source.y) - maxNodeHeight
+    const k = Math.abs(target.y - source.y) - maxNodeHeight.value
     const path = d3.path()
-    path.moveTo(source.x + nodeSize[0] / 2, source.y)
-    path.lineTo(source.x + nodeSize[0] / 2, source.y + maxNodeHeight)
+    path.moveTo(source.x + nodeSize.value[0] / 2, source.y)
+    path.lineTo(
+      source.x + nodeSize.value[0] / 2,
+      source.y + maxNodeHeight.value
+    )
     path.bezierCurveTo(
-      source.x + nodeSize[0] / 2,
-      source.y + maxNodeHeight + k / 2,
-      target.x + nodeSize[0] / 2,
+      source.x + nodeSize.value[0] / 2,
+      source.y + maxNodeHeight.value + k / 2,
+      target.x + nodeSize.value[0] / 2,
       target.y - k / 2,
-      target.x + nodeSize[0] / 2,
+      target.x + nodeSize.value[0] / 2,
       target.y
     )
     return path.toString()
@@ -334,7 +351,7 @@ function centerNode(nodeId: number): void {
     .duration(500)
     .call(
       zoomListener.transform,
-      d3.zoomIdentity.translate(x - nodeSize[0] / 2, y).scale(k)
+      d3.zoomIdentity.translate(x - nodeSize.value[0] / 2, y).scale(k)
     )
 }
 
@@ -702,10 +719,7 @@ function isNeverExecuted(node: Node): boolean {
                   >
                   </diagram>
                 </pane>
-                <pane
-                  ref="planEl"
-                  class="plan grab-bing"
-                >
+                <pane ref="planEl" class="plan grab-bing">
                   <svg width="100%" height="100%">
                     <g :transform="transform">
                       <!-- Links -->
