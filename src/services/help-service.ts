@@ -1,5 +1,6 @@
 import * as _ from "lodash"
 import type { IPlan, Node } from "@/interfaces"
+import { NodeProp } from "@/enums"
 
 export class HelpService {
   public nodeId = 0
@@ -266,6 +267,22 @@ export function findNodeById(plan: IPlan, id: number): Node | undefined {
         }
       })
     }
+  }
+  return o
+}
+
+export function findNodeBySubplanName(
+  plan: IPlan,
+  subplanName: string
+): Node | undefined {
+  let o: Node | undefined = undefined
+  if (plan.ctes) {
+    _.each(plan.ctes, (cte) => {
+      if (cte[NodeProp.SUBPLAN_NAME] == "CTE " + subplanName) {
+        o = cte
+        return false
+      }
+    })
   }
   return o
 }
