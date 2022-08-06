@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, inject, onBeforeMount, reactive, ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
-import type { IPlan, Node, ViewOptions, Worker } from "@/interfaces"
+import type { IPlan, Node, Worker } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
 import { formatNodeProp } from "@/filters"
 import {
@@ -19,7 +19,6 @@ import PlanNodeContext from "@/components/PlanNodeContext.vue"
 interface Props {
   node: Node
   plan: IPlan
-  viewOptions: ViewOptions
 }
 const props = defineProps<Props>()
 

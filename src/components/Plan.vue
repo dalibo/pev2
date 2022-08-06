@@ -698,7 +698,6 @@ function isNeverExecuted(node: Node): boolean {
               <plan-node-detail
                 :node="selectedNode"
                 :plan="plan"
-                :viewOptions="viewOptions"
                 v-if="selectedNodeId && plan && selectedNode"
                 :key="selectedNodeId"
               ></plan-node-detail>
