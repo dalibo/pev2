@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import * as _ from "lodash"
+import _ from "lodash"
 import { computed, provide, ref } from "vue"
 import { SortDirection } from "@/enums"
 

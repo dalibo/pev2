@@ -7,7 +7,7 @@ import { SelectNodeKey } from "@/symbols"
 import { numberToColorHsl } from "@/services/color-service"
 import { cost, duration, rows } from "@/filters"
 import { EstimateDirection, HighlightType, NodeProp } from "@/enums"
-import * as _ from "lodash"
+import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
 const selectedNodeId = inject<number | null>("selectedNodeId", null)

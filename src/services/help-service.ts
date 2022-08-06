@@ -1,4 +1,4 @@
-import * as _ from "lodash"
+import _ from "lodash"
 import type { IPlan, Node } from "@/interfaces"
 import { NodeProp } from "@/enums"
 

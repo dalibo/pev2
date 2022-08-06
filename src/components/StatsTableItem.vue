@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import * as _ from "lodash"
+import _ from "lodash"
 import { ref } from "vue"
 import type { Node, StatsTableItemType } from "@/interfaces"
 import { NodeProp } from "@/enums"
