@@ -27,6 +27,7 @@ import {
   HighlightedNodeIdKey,
   SelectedNodeIdKey,
   SelectNodeKey,
+  ViewOptionsKey,
 } from "@/symbols"
 import Copy from "@/components/Copy.vue"
 import Diagram from "@/components/Diagram.vue"
@@ -333,6 +334,7 @@ function selectNode(nodeId: number, center: boolean): void {
   }
 }
 provide(SelectNodeKey, selectNode)
+provide(ViewOptionsKey, viewOptions)
 
 function centerNode(nodeId: number): void {
   const rect = planEl.value.$el.getBoundingClientRect()
@@ -756,7 +758,6 @@ function isNeverExecuted(node: Node): boolean {
                         :y="item.y"
                         :node="item"
                         :plan="plan"
-                        :viewOptions="viewOptions"
                         :width="nodeSize[0]"
                         height="1"
                         ref="root"
@@ -803,7 +804,6 @@ function isNeverExecuted(node: Node): boolean {
                           :key="index"
                           :node="item"
                           :plan="plan"
-                          :viewOptions="viewOptions"
                           :width="nodeSize[0]"
                           height="1"
                           ref="root"

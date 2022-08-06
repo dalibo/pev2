@@ -7,6 +7,7 @@ import {
   HighlightedNodeIdKey,
   SelectedNodeIdKey,
   SelectNodeKey,
+  ViewOptionsKey,
 } from "@/symbols"
 import { numberToColorHsl } from "@/services/color-service"
 import { cost, duration, rows } from "@/filters"
@@ -20,17 +21,16 @@ const selectNode = inject(SelectNodeKey)
 if (!selectNode) {
   throw new Error(`Could not resolve ${SelectNodeKey.description}`)
 }
+const viewOptions = inject(ViewOptionsKey) as ViewOptions
 
 interface Props {
   node: Node
   plan: IPlan
-  viewOptions: ViewOptions
 }
 const props = defineProps<Props>()
 const el = ref<Element | null>(null) // The .plan-node Element
 const outerEl = ref<Element>() // The outer Element, useful for CTE and subplans
 
-const viewOptions = reactive<ViewOptions>(props.viewOptions)
 const node = reactive<Node>(props.node)
 const plan = reactive<IPlan>(props.plan)
 const nodeProps = ref<
