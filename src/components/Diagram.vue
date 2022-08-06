@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import _ from "lodash"
-import type { Ref } from "vue"
 import {
   computed,
   inject,
@@ -16,7 +15,11 @@ import { blocks, duration, rows, factor } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
 import { scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlan, Node } from "@/interfaces"
-import { SelectNodeKey } from "@/symbols"
+import {
+  HighlightedNodeIdKey,
+  SelectedNodeIdKey,
+  SelectNodeKey,
+} from "@/symbols"
 
 import tippy, { createSingleton } from "tippy.js"
 import type { CreateSingletonInstance, Instance } from "tippy.js"
@@ -29,12 +32,12 @@ interface Props {
 const props = defineProps<Props>()
 const container = ref(null) // The container element
 
-const selectedNodeId = inject<Ref<number>>("selectedNodeId")
+const selectedNodeId = inject(SelectedNodeIdKey)
 const selectNode = inject(SelectNodeKey)
 if (!selectNode) {
   throw new Error(`Could not resolve ${SelectNodeKey.description}`)
 }
-const highlightedNodeId = inject("highlightedNodeId")
+const highlightedNodeId = inject(HighlightedNodeIdKey)
 
 const rowRefs: Element[] = []
 
@@ -465,7 +468,7 @@ function setRowRef(nodeId: number, el: Element) {
                 }
               "
               @mouseenter="highlightedNodeId = row[1].nodeId"
-              @mouseleave="highlightedNodeId = null"
+              @mouseleave="highlightedNodeId = undefined"
               @click.prevent="selectNode(row[1].nodeId, true)"
             >
               <td class="node-index">

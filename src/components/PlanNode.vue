@@ -3,15 +3,19 @@ import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions, Worker } from "@/interfaces"
-import { SelectNodeKey } from "@/symbols"
+import {
+  HighlightedNodeIdKey,
+  SelectedNodeIdKey,
+  SelectNodeKey,
+} from "@/symbols"
 import { numberToColorHsl } from "@/services/color-service"
 import { cost, duration, rows } from "@/filters"
 import { EstimateDirection, HighlightType, NodeProp } from "@/enums"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
-const selectedNodeId = inject<number | null>("selectedNodeId", null)
-const highlightedNodeId = inject<number | null>("highlightedNodeId", null)
+const selectedNodeId = inject(SelectedNodeIdKey)
+const highlightedNodeId = inject(HighlightedNodeIdKey)
 const selectNode = inject(SelectNodeKey)
 if (!selectNode) {
   throw new Error(`Could not resolve ${SelectNodeKey.description}`)
@@ -318,7 +322,7 @@ const isNeverExecuted = computed((): boolean => {
       <div
         class="plan-node-body card"
         @mouseenter="highlightedNodeId = node.nodeId"
-        @mouseleave="highlightedNodeId = null"
+        @mouseleave="highlightedNodeId = undefined"
       >
         <div class="card-body header no-focus-outline">
           <header class="mb-0">

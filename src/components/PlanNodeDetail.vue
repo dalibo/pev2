@@ -11,6 +11,7 @@ import {
   PropType,
   WorkerProp,
 } from "@/enums"
+import { SelectedNodeIdKey } from "@/symbols"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
@@ -30,7 +31,7 @@ const nodeProps = ref<
     value: unknown
   }[]
 >()
-const selectedNodeId = inject("selectedNodeId")
+const selectedNodeId = inject(SelectedNodeIdKey)
 
 const executionTimePercent = ref<number>(NaN)
 // UI flags
@@ -365,7 +366,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
               type="button"
               class="close ml-2"
               aria-label="Close"
-              @click.stop="selectedNodeId = null"
+              @click.stop="selectedNodeId = undefined"
             >
               <span aria-hidden="true">&times;</span>
             </button>

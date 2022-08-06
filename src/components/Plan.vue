@@ -23,7 +23,11 @@ import type {
   Node,
   Settings,
 } from "@/interfaces"
-import { SelectNodeKey } from "@/symbols"
+import {
+  HighlightedNodeIdKey,
+  SelectedNodeIdKey,
+  SelectNodeKey,
+} from "@/symbols"
 import Copy from "@/components/Copy.vue"
 import Diagram from "@/components/Diagram.vue"
 import PlanNodeContainer from "@/components/PlanNodeContainer.vue"
@@ -318,8 +322,8 @@ function onHashChange(): void {
   }
 }
 
-provide("selectedNodeId", selectedNodeId)
-provide("highlightedNodeId", highlightedNodeId)
+provide(SelectedNodeIdKey, selectedNodeId)
+provide(HighlightedNodeIdKey, highlightedNodeId)
 
 function selectNode(nodeId: number, center: boolean): void {
   center = !!center
