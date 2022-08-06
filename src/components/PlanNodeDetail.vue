@@ -11,7 +11,7 @@ import {
   PropType,
   WorkerProp,
 } from "@/enums"
-import * as _ from "lodash"
+import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
 

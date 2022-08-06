@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import * as _ from "lodash"
+import _ from "lodash"
 import { computed, onBeforeMount, reactive, ref } from "vue"
 import type { IPlan, Node, StatsTableItemType } from "@/interfaces"
 import { NodeProp, SortDirection } from "@/enums"

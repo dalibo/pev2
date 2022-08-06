@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import * as _ from "lodash"
+import _ from "lodash"
 import type { Ref } from "vue"
 import {
   computed,

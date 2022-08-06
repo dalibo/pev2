@@ -1,5 +1,5 @@
 import { PlanService } from "@/services/plan-service"
-import * as _ from "lodash"
+import _ from "lodash"
 import * as fs from "fs"
 import * as path from "path"
 
