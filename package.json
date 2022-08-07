@@ -30,7 +30,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
-    "@fortawesome/vue-fontawesome": "^3.0.0-5",
+    "@fortawesome/vue-fontawesome": "^3.0.1",
     "@types/lodash": "^4.14.180",
     "bootstrap": "^4.6.1",
     "clarinet": "^0.12.5",
