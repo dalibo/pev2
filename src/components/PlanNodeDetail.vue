@@ -2,7 +2,7 @@
 import { computed, inject, onBeforeMount, reactive, ref } from "vue"
 import type { Ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
-import type { IPlan, Node, Worker } from "@/interfaces"
+import type { IPlan, Node, ViewOptions } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
 import { formatNodeProp } from "@/filters"
 import {
@@ -12,10 +12,13 @@ import {
   PropType,
   WorkerProp,
 } from "@/enums"
-import { PlanKey, SelectedNodeIdKey } from "@/symbols"
+import useNode from "@/node"
+import { PlanKey, SelectedNodeIdKey, ViewOptionsKey } from "@/symbols"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
+
+const viewOptions = inject(ViewOptionsKey) as ViewOptions
 
 interface Props {
   node: Node
@@ -32,22 +35,30 @@ const nodeProps = ref<
 >()
 const selectedNodeId = inject(SelectedNodeIdKey)
 
-const executionTimePercent = ref<number>(NaN)
 // UI flags
-const showDetails = ref<boolean>(false)
 const activeTab = ref<string>("general")
-// calculated properties
-const costPercent = ref<number>(NaN)
-const plans = ref<Node[]>([])
-const plannerRowEstimateValue = ref<number>()
-const plannerRowEstimateDirection = ref<EstimateDirection>()
-const rowsRemoved = ref<number>(NaN)
-const rowsRemovedPercent = ref<number>(NaN)
-const rowsRemovedPercentString = ref<string>()
 
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
 const getNodeTypeDescription = helpService.getNodeTypeDescription
+
+const {
+  costClass,
+  durationClass,
+  estimationClass,
+  executionTimePercent,
+  filterTooltip,
+  heapFetchesClass,
+  isNeverExecuted,
+  nodeName,
+  plannerRowEstimateDirection,
+  plannerRowEstimateValue,
+  rowsRemoved,
+  rowsRemovedClass,
+  rowsRemovedPercentString,
+  rowsRemovedProp,
+  workersLaunchedCount,
+} = useNode(plan, node, viewOptions)
 
 // Returns the list of properties that have already been displayed either in
 // the main panel or in other detailed tabs.
@@ -111,59 +122,22 @@ const notMiscProperties: string[] = [
 
 onBeforeMount(() => {
   calculateProps()
-  calculateDuration()
-  calculateCost()
-  calculateRowsRemoved()
-  plans.value = node[NodeProp.PLANS]
-  plannerRowEstimateDirection.value = node[NodeProp.PLANNER_ESTIMATE_DIRECTION]
-  plannerRowEstimateValue.value = node[NodeProp.PLANNER_ESTIMATE_FACTOR]
 })
 
-function calculateDuration() {
-  // use the first node total time if plan execution time is not available
-  const executionTime =
-    (plan.value.planStats.executionTime as number) ||
-    (plan.value.content?.Plan?.[NodeProp.ACTUAL_TOTAL_TIME] as number)
-  const duration = node[NodeProp.EXCLUSIVE_DURATION] as number
-  executionTimePercent.value = _.round((duration / executionTime) * 100)
-}
-
-function calculateCost() {
-  const maxTotalCost = plan.value.content.maxTotalCost as number
-  const cost = node[NodeProp.EXCLUSIVE_COST] as number
-  costPercent.value = _.round((cost / maxTotalCost) * 100)
-}
-
-type NodePropStrings = keyof typeof NodeProp
-const rowsRemovedProp = computed((): NodePropStrings => {
-  const nodeKey = Object.keys(node).find(
-    (key) =>
-      key === NodeProp.ROWS_REMOVED_BY_FILTER_REVISED ||
-      key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED
+const shouldShowPlannerEstimate = computed(() => {
+  return (
+    estimationClass.value &&
+    plannerRowEstimateDirection.value !== EstimateDirection.none &&
+    plannerRowEstimateValue.value
   )
-  return Object.keys(NodeProp).find(
-    (prop) => NodeProp[prop as NodePropStrings] === nodeKey
-  ) as NodePropStrings
 })
 
-function calculateRowsRemoved() {
-  if (rowsRemovedProp.value) {
-    type NodePropStrings = keyof typeof NodeProp
-    const removed = node[
-      NodeProp[rowsRemovedProp.value as NodePropStrings]
-    ] as number
-    rowsRemoved.value = removed
-    const actual = node[NodeProp.ACTUAL_ROWS_REVISED]
-    rowsRemovedPercent.value = _.floor((removed / (removed + actual)) * 100)
-    if (rowsRemovedPercent.value === 100) {
-      rowsRemovedPercentString.value = ">99"
-    } else if (rowsRemovedPercent.value === 0) {
-      rowsRemovedPercentString.value = "<1"
-    } else {
-      rowsRemovedPercentString.value = rowsRemovedPercent.value.toString()
-    }
-  }
-}
+const allWorkersLaunched = computed((): boolean => {
+  return (
+    !node[NodeProp.WORKERS_LAUNCHED] ||
+    node[NodeProp.WORKERS_PLANNED] === node[NodeProp.WORKERS_LAUNCHED]
+  )
+})
 
 // create an array of node propeties so that they can be displayed in the view
 function calculateProps() {
@@ -175,126 +149,6 @@ function calculateProps() {
     })
     .value()
 }
-
-function getNodeName(): string {
-  let nodeName = isParallelAware.value ? "Parallel " : ""
-  nodeName += node[NodeProp.NODE_TYPE]
-  return nodeName
-}
-
-const shouldShowPlannerEstimate = computed(() => {
-  return (
-    (estimationClass.value || showDetails.value) &&
-    plannerRowEstimateDirection.value !== EstimateDirection.none &&
-    plannerRowEstimateValue.value
-  )
-})
-
-const durationClass = computed(() => {
-  let c
-  const i = executionTimePercent.value
-  if (i > 90) {
-    c = 4
-  } else if (i > 40) {
-    c = 3
-  } else if (i > 10) {
-    c = 2
-  }
-  if (c) {
-    return "c-" + c
-  }
-  return false
-})
-
-const estimationClass = computed(() => {
-  let c
-  const i = node[NodeProp.PLANNER_ESTIMATE_FACTOR] as number
-  if (i > 1000) {
-    c = 4
-  } else if (i > 100) {
-    c = 3
-  } else if (i > 10) {
-    c = 2
-  }
-  if (c) {
-    return "c-" + c
-  }
-  return false
-})
-
-const costClass = computed(() => {
-  let c
-  const i = costPercent.value
-  if (i > 90) {
-    c = 4
-  } else if (i > 40) {
-    c = 3
-  } else if (i > 10) {
-    c = 2
-  }
-  if (c) {
-    return "c-" + c
-  }
-  return false
-})
-
-const rowsRemovedClass = computed(() => {
-  let c
-  // high percent of rows removed is relevant only when duration is high
-  // as well
-  const i = rowsRemovedPercent.value * executionTimePercent.value
-  if (i > 2000) {
-    c = 4
-  } else if (i > 500) {
-    c = 3
-  }
-  if (c) {
-    return "c-" + c
-  }
-  return false
-})
-
-const heapFetchesClass = computed(() => {
-  let c
-  const i =
-    ((node[NodeProp.HEAP_FETCHES] as number) /
-      ((node[NodeProp.ACTUAL_ROWS] as number) +
-        ((node[NodeProp.ROWS_REMOVED_BY_FILTER] as number) || 0) +
-        ((node[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] as number) || 0))) *
-    100
-  if (i > 90) {
-    c = 4
-  } else if (i > 40) {
-    c = 3
-  } else if (i > 10) {
-    c = 2
-  }
-  if (c) {
-    return "c-" + c
-  }
-  return false
-})
-
-const filterTooltip = computed((): string => {
-  return rowsRemovedPercentString.value + "% of rows removed by filter"
-})
-
-const workersLaunchedCount = computed((): number => {
-  console.warn("Make sure it works for workers that are not array")
-  const workers = node[NodeProp.WORKERS] as Worker[]
-  return workers ? workers.length : NaN
-})
-
-const isParallelAware = computed((): boolean => {
-  return node[NodeProp.PARALLEL_AWARE]
-})
-
-const allWorkersLaunched = computed((): boolean => {
-  return (
-    !node[NodeProp.WORKERS_LAUNCHED] ||
-    node[NodeProp.WORKERS_PLANNED] === node[NodeProp.WORKERS_LAUNCHED]
-  )
-})
 
 function shouldShowProp(key: string, value: unknown): boolean {
   return (
@@ -328,10 +182,6 @@ const shouldShowIoBuffers = computed((): boolean => {
   return sum > 0
 })
 
-const isNeverExecuted = computed((): boolean => {
-  return !!plan.value.planStats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
-})
-
 const hasSeveralLoops = computed((): boolean => {
   return (node[NodeProp.ACTUAL_LOOPS] as number) > 1
 })
@@ -358,7 +208,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
         <header class="mb-0">
           <h4 class="text-body">
             <span class="font-weight-normal small">#{{ node.nodeId }} </span>
-            {{ getNodeName() }}
+            {{ nodeName }}
           </h4>
           <div class="float-right">
             <button
