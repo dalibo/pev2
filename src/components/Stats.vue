@@ -1,28 +1,26 @@
 <script lang="ts" setup>
 import _ from "lodash"
-import { computed, onBeforeMount, reactive, ref } from "vue"
+import { computed, inject, onBeforeMount, ref } from "vue"
+import type { Ref } from "vue"
 import type { IPlan, Node, StatsTableItemType } from "@/interfaces"
+import { PlanKey } from "@/symbols"
 import { NodeProp, SortDirection } from "@/enums"
 import SortedTable from "@/components/SortedTable.vue"
 import SortLink from "@/components/SortLink.vue"
 import StatsTableItem from "@/components/StatsTableItem.vue"
 
-interface Props {
-  plan: IPlan
-}
-const props = defineProps<Props>()
-const plan = reactive<IPlan>(props.plan)
-
 const nodes: Node[] = []
 const executionTime = ref<number>(0)
 
+const plan = inject(PlanKey) as Ref<IPlan>
+
 onBeforeMount(() => {
   executionTime.value =
-    plan.planStats.executionTime ||
-    (plan.content.Plan?.[NodeProp.ACTUAL_TOTAL_TIME] as number)
-  if (plan.content.Plan) {
-    flatten(nodes, plan.content.Plan)
-    _.each(plan.ctes, (cte) => {
+    plan.value.planStats.executionTime ||
+    (plan.value.content.Plan?.[NodeProp.ACTUAL_TOTAL_TIME] as number)
+  if (plan.value.content.Plan) {
+    flatten(nodes, plan.value.content.Plan)
+    _.each(plan.value.ctes, (cte) => {
       flatten(nodes, cte)
     })
   }

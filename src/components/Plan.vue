@@ -25,6 +25,7 @@ import type {
 } from "@/interfaces"
 import {
   HighlightedNodeIdKey,
+  PlanKey,
   SelectedNodeIdKey,
   SelectNodeKey,
   ViewOptionsKey,
@@ -335,6 +336,7 @@ function selectNode(nodeId: number, center: boolean): void {
 }
 provide(SelectNodeKey, selectNode)
 provide(ViewOptionsKey, viewOptions)
+provide(PlanKey, plan)
 
 function centerNode(nodeId: number): void {
   const rect = planEl.value.$el.getBoundingClientRect()
@@ -699,7 +701,6 @@ function isNeverExecuted(node: Node): boolean {
             <div class="flex-grow-1 overflow-hidden">
               <plan-node-detail
                 :node="selectedNode"
-                :plan="plan"
                 v-if="selectedNodeId && plan && selectedNode"
                 :key="selectedNodeId"
               ></plan-node-detail>
@@ -714,7 +715,6 @@ function isNeverExecuted(node: Node): boolean {
                 >
                   <diagram
                     ref="diagram"
-                    :plan="plan"
                     class="d-flex flex-column flex-grow-1 overflow-hidden plan-diagram"
                   >
                   </diagram>
@@ -757,7 +757,6 @@ function isNeverExecuted(node: Node): boolean {
                         :x="item.x"
                         :y="item.y"
                         :node="item"
-                        :plan="plan"
                         :width="nodeSize[0]"
                         height="1"
                         ref="root"
@@ -803,7 +802,6 @@ function isNeverExecuted(node: Node): boolean {
                           :y="item.y"
                           :key="index"
                           :node="item"
-                          :plan="plan"
                           :width="nodeSize[0]"
                           height="1"
                           ref="root"
@@ -912,7 +910,7 @@ function isNeverExecuted(node: Node): boolean {
         class="tab-pane flex-grow-1 overflow-auto"
         :class="{ 'show active': activeTab === 'stats' }"
       >
-        <stats :plan="plan" v-if="plan"></stats>
+        <stats v-if="plan"></stats>
       </div>
     </div>
   </div>

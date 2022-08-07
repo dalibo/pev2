@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
+import type { Ref } from "vue"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions, Worker } from "@/interfaces"
 import {
   HighlightedNodeIdKey,
+  PlanKey,
   SelectedNodeIdKey,
   SelectNodeKey,
   ViewOptionsKey,
@@ -25,14 +27,13 @@ const viewOptions = inject(ViewOptionsKey) as ViewOptions
 
 interface Props {
   node: Node
-  plan: IPlan
 }
 const props = defineProps<Props>()
 const el = ref<Element | null>(null) // The .plan-node Element
 const outerEl = ref<Element>() // The outer Element, useful for CTE and subplans
 
 const node = reactive<Node>(props.node)
-const plan = reactive<IPlan>(props.plan)
+const plan = inject(PlanKey) as Ref<IPlan>
 const nodeProps = ref<
   {
     key: keyof typeof NodeProp
@@ -67,14 +68,14 @@ onBeforeMount(() => {
 function calculateDuration() {
   // use the first node total time if plan execution time is not available
   const executionTime =
-    (plan.planStats.executionTime as number) ||
-    (plan?.content?.Plan?.[NodeProp.ACTUAL_TOTAL_TIME] as number)
+    (plan.value.planStats.executionTime as number) ||
+    (plan.value.content?.Plan?.[NodeProp.ACTUAL_TOTAL_TIME] as number)
   const duration = node[NodeProp.EXCLUSIVE_DURATION] as number
   executionTimePercent.value = _.round((duration / executionTime) * 100)
 }
 
 function calculateCost() {
-  const maxTotalCost = plan.content.maxTotalCost as number
+  const maxTotalCost = plan.value.content.maxTotalCost as number
   const cost = node[NodeProp.EXCLUSIVE_COST] as number
   costPercent.value = _.round((cost / maxTotalCost) * 100)
 }
@@ -139,7 +140,7 @@ function calculateBar(): void {
         break
       }
       barWidth.value = Math.round(
-        (value / (plan.planStats.maxDuration as number)) * 100
+        (value / (plan.value.planStats.maxDuration as number)) * 100
       )
       highlightValue.value = duration(value)
       break
@@ -150,7 +151,8 @@ function calculateBar(): void {
         break
       }
       barWidth.value =
-        Math.round((value / (plan.planStats.maxRows as number)) * 100) || 0
+        Math.round((value / (plan.value.planStats.maxRows as number)) * 100) ||
+        0
       highlightValue.value = rows(value)
       break
     case HighlightType.COST:
@@ -160,7 +162,7 @@ function calculateBar(): void {
         break
       }
       barWidth.value = Math.round(
-        (value / (plan.planStats.maxCost as number)) * 100
+        (value / (plan.value.planStats.maxCost as number)) * 100
       )
       highlightValue.value = cost(value)
       break
@@ -280,7 +282,7 @@ const isParallelAware = computed((): boolean => {
 })
 
 const isNeverExecuted = computed((): boolean => {
-  return !!plan.planStats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
+  return !!plan.value.planStats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
 })
 </script>
 
@@ -410,7 +412,7 @@ const isNeverExecuted = computed((): boolean => {
               </span>
             </div>
           </header>
-          <plan-node-context :plan="plan" :node="node"></plan-node-context>
+          <plan-node-context :node="node"></plan-node-context>
 
           <div
             v-if="

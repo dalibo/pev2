@@ -1,19 +1,19 @@
 <script lang="ts" setup>
 import { inject, reactive } from "vue"
+import type { Ref } from "vue"
 import { keysToString, sortKeys } from "@/filters"
 import { NodeProp } from "@/enums"
 import type { IPlan, Node } from "@/interfaces"
-import { SelectNodeKey } from "@/symbols"
+import { PlanKey, SelectNodeKey } from "@/symbols"
 import { findNodeBySubplanName } from "@/services/help-service"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
 interface Props {
-  plan: IPlan
   node: Node
 }
 const props = defineProps<Props>()
 const node = reactive<Node>(props.node)
-const plan = reactive<IPlan>(props.plan)
+const plan = inject(PlanKey) as Ref<IPlan>
 
 const selectNode = inject(SelectNodeKey)
 if (!selectNode) {
@@ -21,7 +21,10 @@ if (!selectNode) {
 }
 
 function centerCte() {
-  const cteNode = findNodeBySubplanName(plan, node[NodeProp.CTE_NAME] as string)
+  const cteNode = findNodeBySubplanName(
+    plan.value,
+    node[NodeProp.CTE_NAME] as string
+  )
   cteNode && selectNode?.(cteNode.nodeId, true)
 }
 </script>
