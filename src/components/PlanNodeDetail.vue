@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, inject, onBeforeMount, reactive, ref } from "vue"
+import type { Ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, Worker } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
@@ -11,19 +12,18 @@ import {
   PropType,
   WorkerProp,
 } from "@/enums"
-import { SelectedNodeIdKey } from "@/symbols"
+import { PlanKey, SelectedNodeIdKey } from "@/symbols"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
 
 interface Props {
   node: Node
-  plan: IPlan
 }
 const props = defineProps<Props>()
 
 const node = reactive<Node>(props.node)
-const plan = reactive<IPlan>(props.plan)
+const plan = inject(PlanKey) as Ref<IPlan>
 const nodeProps = ref<
   {
     key: keyof typeof NodeProp
@@ -122,14 +122,14 @@ onBeforeMount(() => {
 function calculateDuration() {
   // use the first node total time if plan execution time is not available
   const executionTime =
-    (plan.planStats.executionTime as number) ||
-    (plan?.content?.Plan?.[NodeProp.ACTUAL_TOTAL_TIME] as number)
+    (plan.value.planStats.executionTime as number) ||
+    (plan.value.content?.Plan?.[NodeProp.ACTUAL_TOTAL_TIME] as number)
   const duration = node[NodeProp.EXCLUSIVE_DURATION] as number
   executionTimePercent.value = _.round((duration / executionTime) * 100)
 }
 
 function calculateCost() {
-  const maxTotalCost = plan.content.maxTotalCost as number
+  const maxTotalCost = plan.value.content.maxTotalCost as number
   const cost = node[NodeProp.EXCLUSIVE_COST] as number
   costPercent.value = _.round((cost / maxTotalCost) * 100)
 }
@@ -329,7 +329,7 @@ const shouldShowIoBuffers = computed((): boolean => {
 })
 
 const isNeverExecuted = computed((): boolean => {
-  return !!plan.planStats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
+  return !!plan.value.planStats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
 })
 
 const hasSeveralLoops = computed((): boolean => {
@@ -445,7 +445,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
             </span>
           </span>
         </header>
-        <plan-node-context :plan="plan" :node="node"></plan-node-context>
+        <plan-node-context :node="node"></plan-node-context>
         <div
           v-if="!allWorkersLaunched"
           class="text-c-3 cursor-help"

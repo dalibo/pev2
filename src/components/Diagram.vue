@@ -10,6 +10,7 @@ import {
   ref,
   watch,
 } from "vue"
+import type { Ref } from "vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { blocks, duration, rows, factor } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
@@ -17,6 +18,7 @@ import { scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlan, Node } from "@/interfaces"
 import {
   HighlightedNodeIdKey,
+  PlanKey,
   SelectedNodeIdKey,
   SelectNodeKey,
 } from "@/symbols"
@@ -26,10 +28,8 @@ import type { CreateSingletonInstance, Instance } from "tippy.js"
 
 type Row = [number, Node, boolean, number[]]
 
-interface Props {
-  plan: IPlan
-}
-const props = defineProps<Props>()
+const plan = inject(PlanKey) as Ref<IPlan>
+
 const container = ref(null) // The container element
 
 const selectedNodeId = inject(SelectedNodeIdKey)
@@ -56,9 +56,9 @@ onBeforeMount((): void => {
   if (savedOptions) {
     _.assignIn(viewOptions, JSON.parse(savedOptions))
   }
-  flatten(plans[0], 0, props.plan.content.Plan, true, [])
+  flatten(plans[0], 0, plan.value.content.Plan, true, [])
 
-  _.each(props.plan.ctes, (cte) => {
+  _.each(plan.value.ctes, (cte) => {
     const flat: Row[] = []
     flatten(flat, 0, cte, true, [])
     plans.push(flat)
@@ -66,7 +66,7 @@ onBeforeMount((): void => {
 
   // switch to the first buffers tab if data not available for the currently
   // chosen one
-  const planBufferLocation = _.keys(props.plan.planStats.maxBlocks)
+  const planBufferLocation = _.keys(plan.value.planStats.maxBlocks)
   if (_.indexOf(planBufferLocation, viewOptions.buffersMetric) === -1) {
     viewOptions.buffersMetric = _.min(planBufferLocation) as BufferLocation
   }

@@ -1,5 +1,5 @@
 import type { InjectionKey, Ref } from "vue"
-import type { ViewOptions } from "@/interfaces"
+import type { IPlan, ViewOptions } from "@/interfaces"
 
 export const SelectedNodeIdKey: InjectionKey<Ref<number>> =
   Symbol("selectedNodeId")
@@ -11,3 +11,5 @@ export const SelectNodeKey: InjectionKey<
 > = Symbol("selectNode")
 
 export const ViewOptionsKey: InjectionKey<ViewOptions> = Symbol("viewOptions")
+
+export const PlanKey: InjectionKey<Ref<IPlan>> = Symbol("plan")
