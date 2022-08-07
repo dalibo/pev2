@@ -1,17 +1,18 @@
 {
   "name": "pev2",
   "version": "1.3.0",
+  "type": "module",
   "homepage": "https://github.com/dalibo/pev2",
   "license": "PostgreSQL license",
   "files": [
     "dist"
   ],
-  "main": "./dist/pev.umd.js",
-  "module": "./dist/pev.umd.js",
+  "main": "./dist/pev2.umd.cjs",
+  "module": "./dist/pev2.js",
   "exports": {
     ".": {
-      "import": "./dist/pev2.es.js",
-      "require": "./dist/pev2.umd.js"
+      "import": "./dist/pev2.js",
+      "require": "./dist/pev2.umd.cjs"
     },
     "./dist/style.css": "./dist/style.css"
   },
@@ -51,7 +52,7 @@
     "@types/jest": "^27.4.1",
     "@types/node": "^16.11.26",
     "@types/splitpanes": "^2.2.1",
-    "@vitejs/plugin-vue": "^2.2.2",
+    "@vitejs/plugin-vue": "^3.0.1",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^10.0.0",
     "@vue/tsconfig": "^0.1.3",
@@ -65,7 +66,7 @@
     "ts-jest": "^27.1.3",
     "ts-node": "^10.7.0",
     "typescript": "~4.5.5",
-    "vite": "^2.9.14",
+    "vite": "^3.0.4",
     "vite-plugin-singlefile": "^0.11.0",
     "vue-tsc": "^0.31.4"
   },
