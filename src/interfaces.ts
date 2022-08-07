@@ -243,8 +243,3 @@ export interface JIT {
   ["Timing"]: Timing
   [key: string]: number | Timing
 }
-
-export type Events = {
-  clickcte: string
-  selectNode: number
-}
