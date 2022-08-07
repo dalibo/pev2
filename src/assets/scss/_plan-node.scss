@@ -202,6 +202,12 @@ $bg-color: #fff;
       display: inline-block !important;
     }
   }
+
+  &.plan-node-detail .text-truncate {
+    overflow: initial;
+    white-space: initial;
+    text-overflow: initial;
+  }
 }
 
 .node-bar-container {
