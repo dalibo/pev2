@@ -32,7 +32,7 @@ import {
 } from "@/symbols"
 import Copy from "@/components/Copy.vue"
 import Diagram from "@/components/Diagram.vue"
-import PlanNodeContainer from "@/components/PlanNodeContainer.vue"
+import PlanNode from "@/components/PlanNode.vue"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
 import Stats from "@/components/Stats.vue"
 import { PlanService } from "@/services/plan-service"
@@ -751,16 +751,20 @@ function isNeverExecuted(node: Node): boolean {
                         stroke-linecap="square"
                         fill="none"
                       />
-                      <plan-node-container
+                      <foreignObject
                         v-for="(item, index) in layoutRootNode?.descendants()"
                         :key="index"
                         :x="item.x"
                         :y="item.y"
-                        :node="item"
                         :width="nodeSize[0]"
                         height="1"
                         ref="root"
-                      ></plan-node-container>
+                      >
+                        <plan-node
+                          :node="item.data"
+                          class="d-flex justify-content-center"
+                        />
+                      </foreignObject>
                       <g v-for="cte in ctes" :key="cte.data.nodeId">
                         <rect
                           :x="getLayoutExtent(cte)[0] - padding / 4"
@@ -796,16 +800,20 @@ function isNeverExecuted(node: Node): boolean {
                           stroke-linecap="square"
                           fill="none"
                         />
-                        <plan-node-container
+                        <foreignObject
                           v-for="(item, index) in cte.descendants()"
+                          :key="index"
                           :x="item.x"
                           :y="item.y"
-                          :key="index"
-                          :node="item"
                           :width="nodeSize[0]"
                           height="1"
                           ref="root"
-                        ></plan-node-container>
+                        >
+                          <plan-node
+                            :node="item.data"
+                            class="d-flex justify-content-center"
+                          />
+                        </foreignObject>
                       </g>
                     </g>
                   </svg>
