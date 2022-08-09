@@ -26,7 +26,7 @@ open it in your favorite internet browser.
 
 ```html
 <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>
-<script src="https://unpkg.com/pev2/dist/pev2.umd.cjs"></script>
+<script src="https://unpkg.com/pev2/dist/pev2.umd.js"></script>
 <link
   href="https://unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css"
   rel="stylesheet"

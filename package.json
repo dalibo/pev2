@@ -1,18 +1,17 @@
 {
   "name": "pev2",
   "version": "1.3.2",
-  "type": "module",
   "homepage": "https://github.com/dalibo/pev2",
   "license": "PostgreSQL license",
   "files": [
     "dist"
   ],
-  "main": "./dist/pev2.umd.cjs",
-  "module": "./dist/pev2.js",
+  "main": "./dist/pev2.umd.js",
+  "module": "./dist/pev2.mjs",
   "exports": {
     ".": {
-      "import": "./dist/pev2.js",
-      "require": "./dist/pev2.umd.cjs"
+      "import": "./dist/pev2.mjs",
+      "require": "./dist/pev2.umd.js"
     },
     "./dist/style.css": "./dist/style.css"
   },
