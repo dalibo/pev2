@@ -36,7 +36,7 @@
     "@types/lodash": "^4.14.180",
     "bootstrap": "^4.6.1",
     "clarinet": "^0.12.5",
-    "d3": "^7.4.4",
+    "d3": "^7.6.1",
     "highlight.js": "^11.5.0",
     "humanize-duration": "^3.27.1",
     "lodash": "^4.17.21",
