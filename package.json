@@ -34,7 +34,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "@types/d3": "^7.4.0",
     "@types/lodash": "^4.14.180",
-    "bootstrap": "^4.6.1",
+    "bootstrap": "^4.6.2",
     "clarinet": "^0.12.5",
     "d3": "^7.4.4",
     "highlight.js": "^11.5.0",
