@@ -38,7 +38,7 @@
     "clarinet": "^0.12.5",
     "d3": "^7.4.4",
     "highlight.js": "^11.5.0",
-    "humanize-duration": "^3.27.1",
+    "humanize-duration": "^3.27.2",
     "lodash": "^4.17.21",
     "sass": "^1.49.9",
     "splitpanes": "^3.1.0",
