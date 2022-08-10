@@ -895,7 +895,7 @@ function isNeverExecuted(node: Node): boolean {
           <div class="overflow-auto flex-grow-1">
             <pre
               class="small p-2 mb-0"
-            ><code class="hljs" v-html="json_(planSource)"></code></pre>
+            ><code v-html="json_(planSource)"></code></pre>
           </div>
           <copy :content="planSource" />
         </div>
@@ -909,7 +909,7 @@ function isNeverExecuted(node: Node): boolean {
           <div class="overflow-auto flex-grow-1">
             <pre
               class="small p-2 mb-0"
-            ><code class="hljs" v-html="pgsql_(queryText)"></code></pre>
+            ><code v-html="pgsql_(queryText)"></code></pre>
           </div>
         </div>
         <copy :content="queryText" />
