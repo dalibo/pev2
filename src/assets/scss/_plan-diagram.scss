@@ -5,8 +5,17 @@
   }
   // make sure diagram right column takes as much width as possible
   table tr td:nth-child(3) {
-    width: 90%;
+    width: 50%;
   }
+
+  table tr td:nth-child(2) {
+    max-width: 0;
+    width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   font-family: $font-family-sans-serif;
 
   .legend ul li {
