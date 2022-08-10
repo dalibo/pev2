@@ -699,11 +699,6 @@ function isNeverExecuted(node: Node): boolean {
           </div>
           <div class="flex-grow-1 d-flex overflow-hidden">
             <div class="flex-grow-1 overflow-hidden">
-              <plan-node-detail
-                :node="selectedNode"
-                v-if="selectedNodeId && plan && selectedNode"
-                :key="selectedNodeId"
-              ></plan-node-detail>
               <splitpanes
                 class="default-theme"
                 @resize="viewOptions.diagramWidth = $event[0].size"
@@ -719,7 +714,12 @@ function isNeverExecuted(node: Node): boolean {
                   >
                   </diagram>
                 </pane>
-                <pane ref="planEl" class="plan grab-bing">
+                <pane ref="planEl" class="plan grab-bing position-relative">
+                  <plan-node-detail
+                    :node="selectedNode"
+                    v-if="selectedNodeId && plan && selectedNode"
+                    :key="selectedNodeId"
+                  ></plan-node-detail>
                   <svg width="100%" height="100%">
                     <g :transform="transform">
                       <!-- Links -->
