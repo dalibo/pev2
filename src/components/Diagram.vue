@@ -433,6 +433,7 @@ function setRowRef(nodeId: number, el: Element) {
           </tr>
           <template v-for="(row, index) in flat" :key="index">
             <tr v-if="row[1][NodeProp.SUBPLAN_NAME]">
+              <td></td>
               <td
                 class="subplan pr-2"
                 :class="{ 'font-weight-bold': isCTE(row[1]) }"
