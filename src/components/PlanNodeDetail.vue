@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, inject, onBeforeMount, reactive, ref } from "vue"
+import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
 import type { Ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
@@ -23,6 +23,8 @@ interface Props {
   node: Node
 }
 const props = defineProps<Props>()
+
+const updateSize = inject<(node: Node) => null>("updateSize")
 
 const node = reactive<Node>(props.node)
 const plan = inject(PlanKey) as Ref<IPlan>
@@ -184,6 +186,10 @@ function formattedProp(propName: keyof typeof NodeProp) {
   const value = node[property]
   return formatNodeProp(property, value)
 }
+
+watch(activeTab, () => {
+  window.setTimeout(() => updateSize && updateSize(node), 1)
+})
 </script>
 
 <template>

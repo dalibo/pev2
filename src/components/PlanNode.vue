@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, onMounted, reactive, ref, watch } from "vue"
+import { inject, onMounted, provide, reactive, ref, watch } from "vue"
 import type { Ref } from "vue"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
@@ -57,18 +57,19 @@ const {
 } = useNode(plan, node, viewOptions)
 
 onMounted(async () => {
-  updateSize()
+  updateSize(node)
 })
 
-function updateSize() {
+function updateSize(node: Node) {
   const rect = outerEl.value?.getBoundingClientRect()
   if (rect) {
     updateNodeSize?.(node, [rect.width, rect.height])
   }
 }
+provide("updateSize", updateSize)
 
 watch(showDetails, () => {
-  window.setTimeout(updateSize, 1)
+  window.setTimeout(() => updateSize(node), 1)
 })
 </script>
 
