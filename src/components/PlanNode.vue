@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { inject, onMounted, provide, reactive, ref, watch } from "vue"
 import type { Ref } from "vue"
-import PlanNodeContext from "@/components/PlanNodeContext.vue"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
@@ -12,7 +11,9 @@ import {
   SelectNodeKey,
   ViewOptionsKey,
 } from "@/symbols"
+import { keysToString, sortKeys } from "@/filters"
 import { HighlightType, NodeProp } from "@/enums"
+import { findNodeBySubplanName } from "@/services/help-service"
 import useNode from "@/node"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
@@ -71,6 +72,14 @@ provide("updateSize", updateSize)
 watch(showDetails, () => {
   window.setTimeout(() => updateSize(node), 1)
 })
+
+function centerCte() {
+  const cteNode = findNodeBySubplanName(
+    plan.value,
+    node[NodeProp.CTE_NAME] as string
+  )
+  cteNode && selectNode?.(cteNode.nodeId, true)
+}
 </script>
 
 <template>
@@ -199,7 +208,76 @@ watch(showDetails, () => {
               </span>
             </div>
           </header>
-          <plan-node-context :node="node"></plan-node-context>
+          <div class="text-left text-monospace">
+            <div
+              v-if="node[NodeProp.RELATION_NAME]"
+              :class="{ 'line-clamp-2': !showDetails }"
+            >
+              <span class="text-muted">on</span>
+              <span v-if="node[NodeProp.SCHEMA]"
+                >{{ node[NodeProp.SCHEMA] }}.</span
+              >{{ node[NodeProp.RELATION_NAME] }}
+              <span v-if="node[NodeProp.ALIAS]">
+                <span class="text-muted">as</span>
+                {{ node[NodeProp.ALIAS] }}
+              </span>
+            </div>
+            <div
+              v-if="node[NodeProp.GROUP_KEY]"
+              :class="{ 'line-clamp-2': !showDetails }"
+            >
+              <span class="text-muted">by</span>
+              <span
+                v-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
+              ></span>
+            </div>
+            <div
+              v-if="node[NodeProp.SORT_KEY]"
+              :class="{ 'line-clamp-2': !showDetails }"
+            >
+              <span class="text-muted">by</span>
+              <span
+                v-html="
+                  sortKeys(
+                    node[NodeProp.SORT_KEY] as string[],
+                    node[NodeProp.PRESORTED_KEY] as string[]
+                  )
+                "
+              ></span>
+            </div>
+            <div v-if="node[NodeProp.JOIN_TYPE]">
+              {{ node[NodeProp.JOIN_TYPE] }}
+              <span class="text-muted">join</span>
+            </div>
+            <div
+              v-if="node[NodeProp.INDEX_NAME]"
+              :class="{ 'line-clamp-2': !showDetails }"
+            >
+              <span class="text-muted">using</span>
+              <span
+                v-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
+              ></span>
+            </div>
+            <div
+              v-if="node[NodeProp.HASH_CONDITION]"
+              :class="{ 'line-clamp-2': !showDetails }"
+            >
+              <span class="text-muted">on</span>
+              <span
+                v-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
+              ></span>
+            </div>
+            <div v-if="node[NodeProp.CTE_NAME]">
+              <a class="text-reset" href="" @click.prevent.stop="centerCte">
+                <font-awesome-icon
+                  icon="search"
+                  class="text-muted"
+                ></font-awesome-icon>
+                <span class="text-muted">CTE</span>
+                {{ node[NodeProp.CTE_NAME] }}
+              </a>
+            </div>
+          </div>
 
           <div
             v-if="
