@@ -200,7 +200,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
         <a
           class="nav-link"
           :class="{ active: activeTab === 'general' }"
-          @click.prevent="activeTab = 'general'"
+          @click.prevent.stop="activeTab = 'general'"
           href=""
           >General</a
         >
@@ -212,7 +212,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
             active: activeTab === 'iobuffer',
             disabled: !shouldShowIoBuffers,
           }"
-          @click.prevent="activeTab = 'iobuffer'"
+          @click.prevent.stop="activeTab = 'iobuffer'"
           href=""
           >IO & Buffers</a
         >
@@ -224,7 +224,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
             active: activeTab === 'output',
             disabled: !node[NodeProp.OUTPUT],
           }"
-          @click.prevent="activeTab = 'output'"
+          @click.prevent.stop="activeTab = 'output'"
           href=""
           >Output</a
         >
@@ -239,7 +239,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
               node[NodeProp.WORKERS_PLANNED_BY_GATHER]
             ),
           }"
-          @click.prevent="activeTab = 'workers'"
+          @click.prevent.stop="activeTab = 'workers'"
           href=""
           >Workers</a
         >
@@ -248,7 +248,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
         <a
           class="nav-link"
           :class="{ active: activeTab === 'misc' }"
-          @click.prevent="activeTab = 'misc'"
+          @click.prevent.stop="activeTab = 'misc'"
           href=""
           >Misc</a
         >
