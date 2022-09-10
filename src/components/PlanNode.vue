@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, reactive } from "vue"
+import { inject, onMounted, reactive, ref } from "vue"
 import type { Ref } from "vue"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
 import { directive as vTippy } from "vue-tippy"
@@ -14,6 +14,8 @@ import {
 import { HighlightType, NodeProp } from "@/enums"
 import useNode from "@/node"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+
+const outerEl = ref<Element | null>(null) // The outer Element, useful for CTE and subplans
 
 const selectedNodeId = inject(SelectedNodeIdKey)
 const highlightedNodeId = inject(HighlightedNodeIdKey)
@@ -30,6 +32,8 @@ const props = defineProps<Props>()
 
 const node = reactive<Node>(props.node)
 const plan = inject(PlanKey) as Ref<IPlan>
+const updateNodeSize =
+  inject<(node: Node, size: [number, number]) => null>("updateNodeSize")
 
 const {
   nodeName,
@@ -48,10 +52,21 @@ const {
   workersPlannedCount,
   workersPlannedCountReversed,
 } = useNode(plan, node, viewOptions)
+
+onMounted(async () => {
+  updateSize()
+})
+
+function updateSize() {
+  const rect = outerEl.value?.getBoundingClientRect()
+  if (rect) {
+    updateNodeSize?.(node, [rect.width, rect.height])
+  }
+}
 </script>
 
 <template>
-  <div @click.prevent="selectNode(node.nodeId, false)">
+  <div ref="outerEl" @click.prevent="selectNode(node.nodeId, false)">
     <div
       :class="[
         'text-left plan-node',
