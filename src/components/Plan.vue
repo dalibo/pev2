@@ -48,6 +48,11 @@ import { far } from "@fortawesome/free-regular-svg-icons"
 import { fab } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import * as d3 from "d3"
+import {
+  flextree,
+  type FlexHierarchyPointLink,
+  type FlexHierarchyPointNode,
+} from "d3-flextree"
 
 // Add all icons to the library
 library.add(fas, far, fab)
@@ -104,17 +109,25 @@ const zoomListener = d3
     transform.value = e.transform
     scale.value = e.transform.k
   })
-// Approximate maximum height for a node rectangle (when there's a lot of context)
-const maxNodeHeight = computed(() => {
-  return viewOptions.highlightType == HighlightType.NONE ? 70 : 100
+const nodeWidth = 240
+const layoutRootNode = ref<null | FlexHierarchyPointNode<Node>>(null)
+const ctes = ref<FlexHierarchyPointNode<Node>[]>([])
+const toCteLinks = ref<FlexHierarchyPointLink<Node>[]>([])
+
+const layout = flextree({
+  nodeSize: (node: FlexHierarchyPointNode<Node>) => {
+    if (node.data.size) {
+      return [node.data.size[0], node.data.size[1] + padding]
+    }
+    return [0, 0]
+  },
+  spacing: (
+    nodeA: FlexHierarchyPointNode<Node>,
+    nodeB: FlexHierarchyPointNode<Node>
+  ) => Math.pow(nodeA.path(nodeB).length, 1.5),
 })
-const nodeSize = computed<[number, number]>(() => {
-  return [240, maxNodeHeight.value + padding]
-})
-const layoutRootNode = ref<null | d3.HierarchyPointNode<Node>>(null)
-// computed position + rootNode
-const ctes = ref<d3.HierarchyPointNode<Node>[]>([])
-const toCteLinks = ref<d3.HierarchyPointLink<Node>[]>([])
+
+const tree = ref(layout.hierarchy({}))
 
 onBeforeMount(() => {
   const savedOptions = localStorage.getItem("viewOptions")
@@ -154,42 +167,32 @@ onBeforeMount(() => {
     onHashChange()
   })
   window.addEventListener("hashchange", onHashChange)
+  tree.value = layout.hierarchy(rootNode.value, (v: Node) => v.Plans)
+  ctes.value = []
+  _.each(plan.value?.ctes, (cte) => {
+    const tree = layout.hierarchy(cte, (v: Node) => v.Plans)
+    ctes.value.push(tree)
+  })
   doLayout()
 })
 
 function doLayout() {
-  if (!rootNode.value) {
-    return
-  }
-
-  const layout = d3
-    .tree<Node>()
-    .nodeSize(nodeSize.value)
-    .separation((a, b) => (a.parent == b.parent ? 1 : 1.3))
-
-  layoutRootNode.value = layout(
-    d3.hierarchy(rootNode.value, (v: Node) => v.Plans)
-  )
+  layoutRootNode.value = layout(tree.value)
 
   const mainLayoutExtent = getLayoutExtent(layoutRootNode.value)
   const offset: [number, number] = [
     mainLayoutExtent[0],
-    mainLayoutExtent[3] + maxNodeHeight.value + padding * 3,
+    mainLayoutExtent[3] + padding,
   ]
-  ctes.value = []
-  _.each(plan.value?.ctes, (cte) => {
-    if (!layoutRootNode.value) {
-      return
-    }
-    const cteRootNode = layout(d3.hierarchy(cte, (v: Node) => v.Plans))
+  _.each(ctes.value, (tree) => {
+    const cteRootNode = layout(tree)
     const currentCteExtent = getLayoutExtent(cteRootNode)
     const currentWidth = currentCteExtent[1] - currentCteExtent[0]
-    ctes.value.push(cteRootNode)
     cteRootNode.each((node) => {
       node.x += offset[0] - currentCteExtent[0]
       node.y += offset[1]
     })
-    offset[0] += currentWidth + nodeSize.value[0] + padding * 2
+    offset[0] += currentWidth + nodeWidth + padding * 2
   })
 
   // compute links from node to CTE
@@ -248,7 +251,7 @@ onMounted(() => {
         .call(
           zoomListener.transform,
           d3.zoomIdentity
-            .translate(rect.width / 2 - nodeSize.value[0] / 2, 10)
+            .translate(rect.width / 2 - nodeWidth / 2, 10)
             .scale(
               Math.min(
                 1,
@@ -269,7 +272,6 @@ watch(viewOptions, onViewOptionsChanged)
 
 function onViewOptionsChanged() {
   localStorage.setItem("viewOptions", JSON.stringify(viewOptions))
-  doLayout()
 }
 
 watch(selectedNodeId, onSelectedNode)
@@ -282,22 +284,19 @@ function onSelectedNode(v: number) {
 }
 
 const lineGen = computed(() => {
-  return function (link: d3.HierarchyPointLink<Node>) {
+  return function (link: FlexHierarchyPointLink<object>) {
     const source = link.source
     const target = link.target
-    const k = Math.abs(target.y - source.y) - maxNodeHeight.value
+    const k = Math.abs(target.y - (source.y + source.ySize) - padding)
     const path = d3.path()
-    path.moveTo(source.x + nodeSize.value[0] / 2, source.y)
-    path.lineTo(
-      source.x + nodeSize.value[0] / 2,
-      source.y + maxNodeHeight.value
-    )
+    path.moveTo(source.x, source.y)
+    path.lineTo(source.x, source.y + source.ySize - padding)
     path.bezierCurveTo(
-      source.x + nodeSize.value[0] / 2,
-      source.y + maxNodeHeight.value + k / 2,
-      target.x + nodeSize.value[0] / 2,
+      source.x,
+      source.y + source.ySize - padding + k / 2,
+      target.x,
       target.y - k / 2,
-      target.x + nodeSize.value[0] / 2,
+      target.x,
       target.y
     )
     return path.toString()
@@ -326,6 +325,7 @@ function onHashChange(): void {
 
 provide(SelectedNodeIdKey, selectedNodeId)
 provide(HighlightedNodeIdKey, highlightedNodeId)
+provide("updateNodeSize", updateNodeSize)
 
 function selectNode(nodeId: number, center: boolean): void {
   center = !!center
@@ -354,13 +354,13 @@ function centerNode(nodeId: number): void {
     .duration(500)
     .call(
       zoomListener.transform,
-      d3.zoomIdentity.translate(x - nodeSize.value[0] / 2, y).scale(k)
+      d3.zoomIdentity.translate(x - nodeWidth / 2, y).scale(k)
     )
 }
 
 function findTreeNode(nodeId: number) {
   const trees = [layoutRootNode.value].concat(ctes.value)
-  let found: undefined | d3.HierarchyPointNode<Node> = undefined
+  let found: undefined | FlexHierarchyPointNode<Node> = undefined
   _.each(trees, (tree) => {
     found = _.find(tree?.descendants(), (o) => o.data.nodeId == nodeId)
     return !found
@@ -404,7 +404,7 @@ const triggersTotalDuration = computed(() => {
 })
 
 function getLayoutExtent(
-  layoutRootNode: d3.HierarchyPointNode<Node>
+  layoutRootNode: FlexHierarchyPointNode<Node>
 ): [number, number, number, number] {
   const minX =
     _.min(
@@ -416,7 +416,7 @@ function getLayoutExtent(
   const maxX =
     _.max(
       _.map(layoutRootNode.descendants(), (childNode) => {
-        return childNode.x
+        return childNode.x + childNode.xSize
       })
     ) || 0
 
@@ -430,7 +430,7 @@ function getLayoutExtent(
   const maxY =
     _.max(
       _.map(layoutRootNode.descendants(), (childNode) => {
-        return childNode.y
+        return childNode.y + childNode.ySize
       })
     ) || 0
   return [minX, maxX, minY, maxY]
@@ -438,6 +438,20 @@ function getLayoutExtent(
 
 function isNeverExecuted(node: Node): boolean {
   return !!planStats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
+}
+
+watch(
+  () =>
+    tree.value
+      .descendants()
+      .map((item: FlexHierarchyPointNode<Node>) => item.data.size),
+  () => {
+    doLayout()
+  }
+)
+
+function updateNodeSize(node: Node, size: [number, number]) {
+  node.size = [size[0] / scale.value, size[1] / scale.value]
 }
 </script>
 
@@ -756,13 +770,13 @@ function isNeverExecuted(node: Node): boolean {
                         :key="index"
                         :x="item.x"
                         :y="item.y"
-                        :width="nodeSize[0]"
+                        :width="item.xSize"
                         height="1"
                         ref="root"
                       >
                         <plan-node
                           :node="item.data"
-                          class="d-flex justify-content-center"
+                          class="d-flex justify-content-center position-fixed"
                         />
                       </foreignObject>
                       <g v-for="cte in ctes" :key="cte.data.nodeId">
@@ -770,15 +784,12 @@ function isNeverExecuted(node: Node): boolean {
                           :x="getLayoutExtent(cte)[0] - padding / 4"
                           :y="getLayoutExtent(cte)[2] - padding / 2"
                           :width="
-                            getLayoutExtent(cte)[1] +
-                            nodeSize[0] -
+                            getLayoutExtent(cte)[1] -
                             getLayoutExtent(cte)[0] +
                             padding / 2
                           "
                           :height="
-                            getLayoutExtent(cte)[3] -
-                            getLayoutExtent(cte)[2] +
-                            nodeSize[1]
+                            getLayoutExtent(cte)[3] - getLayoutExtent(cte)[2]
                           "
                           stroke="#cfcfcf"
                           stroke-width="2"
@@ -805,13 +816,13 @@ function isNeverExecuted(node: Node): boolean {
                           :key="index"
                           :x="item.x"
                           :y="item.y"
-                          :width="nodeSize[0]"
+                          :width="item.xSize"
                           height="1"
                           ref="root"
                         >
                           <plan-node
                             :node="item.data"
-                            class="d-flex justify-content-center"
+                            class="d-flex justify-content-center position-fixed"
                           />
                         </foreignObject>
                       </g>
