@@ -33,7 +33,6 @@ import {
 import Copy from "@/components/Copy.vue"
 import Diagram from "@/components/Diagram.vue"
 import PlanNode from "@/components/PlanNode.vue"
-import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
 import Stats from "@/components/Stats.vue"
 import { PlanService } from "@/services/plan-service"
 import { HelpService, findNodeById } from "@/services/help-service"
@@ -109,7 +108,6 @@ const zoomListener = d3
     transform.value = e.transform
     scale.value = e.transform.k
   })
-const nodeWidth = 240
 const layoutRootNode = ref<null | FlexHierarchyPointNode<Node>>(null)
 const ctes = ref<FlexHierarchyPointNode<Node>[]>([])
 const toCteLinks = ref<FlexHierarchyPointLink<Node>[]>([])
@@ -192,7 +190,7 @@ function doLayout() {
       node.x += offset[0] - currentCteExtent[0]
       node.y += offset[1]
     })
-    offset[0] += currentWidth + nodeWidth + padding * 2
+    offset[0] += currentWidth + padding * 2
   })
 
   // compute links from node to CTE
@@ -251,14 +249,14 @@ onMounted(() => {
         .call(
           zoomListener.transform,
           d3.zoomIdentity
-            .translate(rect.width / 2 - nodeWidth / 2, 10)
+            .translate(rect.width / 2, 10)
             .scale(
               Math.min(
                 1,
                 0.8 / Math.max((x1 - x0) / rect.width, (y1 - y0) / rect.height)
               )
             )
-            .translate(-(x0 + x1) / 2, 10)
+            .translate(-(x0 + x1) / 2 + layoutRootNode.value.xSize / 2, 10)
         )
     }
   })
@@ -352,10 +350,7 @@ function centerNode(nodeId: number): void {
   d3.select(planEl.value.$el)
     .transition()
     .duration(500)
-    .call(
-      zoomListener.transform,
-      d3.zoomIdentity.translate(x - nodeWidth / 2, y).scale(k)
-    )
+    .call(zoomListener.transform, d3.zoomIdentity.translate(x, y).scale(k))
 }
 
 function findTreeNode(nodeId: number) {
@@ -729,11 +724,6 @@ function updateNodeSize(node: Node, size: [number, number]) {
                   </diagram>
                 </pane>
                 <pane ref="planEl" class="plan grab-bing position-relative">
-                  <plan-node-detail
-                    :node="selectedNode"
-                    v-if="selectedNodeId && plan && selectedNode"
-                    :key="selectedNodeId"
-                  ></plan-node-detail>
                   <svg width="100%" height="100%">
                     <g :transform="transform">
                       <!-- Links -->
@@ -768,7 +758,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       <foreignObject
                         v-for="(item, index) in layoutRootNode?.descendants()"
                         :key="index"
-                        :x="item.x"
+                        :x="item.x - item.xSize / 2"
                         :y="item.y"
                         :width="item.xSize"
                         height="1"

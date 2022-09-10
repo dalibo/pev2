@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { inject, onMounted, reactive, ref } from "vue"
+import { inject, onMounted, reactive, ref, watch } from "vue"
 import type { Ref } from "vue"
 import PlanNodeContext from "@/components/PlanNodeContext.vue"
+import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
 import {
@@ -29,6 +30,8 @@ interface Props {
   node: Node
 }
 const props = defineProps<Props>()
+
+const showDetails = ref<boolean>(false)
 
 const node = reactive<Node>(props.node)
 const plan = inject(PlanKey) as Ref<IPlan>
@@ -63,14 +66,19 @@ function updateSize() {
     updateNodeSize?.(node, [rect.width, rect.height])
   }
 }
+
+watch(showDetails, () => {
+  window.setTimeout(updateSize, 1)
+})
 </script>
 
 <template>
-  <div ref="outerEl" @click.prevent="selectNode(node.nodeId, false)">
+  <div ref="outerEl" @click.prevent="showDetails = !showDetails">
     <div
       :class="[
         'text-left plan-node',
         {
+          detailed: showDetails,
           'never-executed': isNeverExecuted,
           parallel: workersPlannedCount,
           selected: selectedNodeId == node.nodeId,
@@ -217,6 +225,7 @@ function updateSize() {
             </span>
           </div>
         </div>
+        <plan-node-detail :node="node" v-if="showDetails"></plan-node-detail>
       </div>
     </div>
   </div>
