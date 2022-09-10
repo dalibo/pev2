@@ -256,7 +256,7 @@ onMounted(() => {
                 0.8 / Math.max((x1 - x0) / rect.width, (y1 - y0) / rect.height)
               )
             )
-            .translate(-(x0 + x1) / 2 + layoutRootNode.value.xSize / 2, 10)
+            .translate(-(x0 + x1) / 2, 10)
         )
     }
   })
@@ -404,14 +404,14 @@ function getLayoutExtent(
   const minX =
     _.min(
       _.map(layoutRootNode.descendants(), (childNode) => {
-        return childNode.x
+        return childNode.x - childNode.xSize / 2
       })
     ) || 0
 
   const maxX =
     _.max(
       _.map(layoutRootNode.descendants(), (childNode) => {
-        return childNode.x + childNode.xSize
+        return childNode.x + childNode.xSize / 2
       })
     ) || 0
 
@@ -436,10 +436,22 @@ function isNeverExecuted(node: Node): boolean {
 }
 
 watch(
-  () =>
-    tree.value
-      .descendants()
-      .map((item: FlexHierarchyPointNode<Node>) => item.data.size),
+  () => {
+    const data: [number, number][] = []
+    data.concat(
+      tree.value
+        .descendants()
+        .map((item: FlexHierarchyPointNode<Node>) => item.data.size)
+    )
+    _.each(ctes.value, (tree) => {
+      data.concat(
+        tree
+          .descendants()
+          .map((item: FlexHierarchyPointNode<Node>) => item.data.size)
+      )
+    })
+    return data
+  },
   () => {
     doLayout()
   }
@@ -804,7 +816,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         <foreignObject
                           v-for="(item, index) in cte.descendants()"
                           :key="index"
-                          :x="item.x"
+                          :x="item.x - item.xSize / 2"
                           :y="item.y"
                           :width="item.xSize"
                           height="1"
