@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, onMounted, provide, reactive, ref, watch } from "vue"
+import { inject, nextTick, onMounted, provide, reactive, ref, watch } from "vue"
 import type { Ref } from "vue"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
 import { directive as vTippy } from "vue-tippy"
@@ -71,6 +71,14 @@ provide("updateSize", updateSize)
 
 watch(showDetails, () => {
   window.setTimeout(() => updateSize(node), 1)
+})
+
+watch(viewOptions, () => {
+  // Using nextTick has the same effect as a debounce making all nodes
+  // size to be updated all at once
+  nextTick(() => {
+    updateSize(node)
+  })
 })
 
 function centerCte() {
