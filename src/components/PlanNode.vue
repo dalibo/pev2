@@ -83,7 +83,11 @@ function centerCte() {
 </script>
 
 <template>
-  <div ref="outerEl" @click.prevent="showDetails = !showDetails">
+  <div
+    ref="outerEl"
+    @click.prevent.stop="showDetails = !showDetails"
+    @mousedown.stop
+  >
     <div
       :class="[
         'text-left plan-node',
