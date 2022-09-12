@@ -125,9 +125,13 @@ function centerCte() {
         <div class="card-body header no-focus-outline">
           <header class="mb-0">
             <h4 class="text-body">
-              <span class="font-weight-normal small" @click.stop>
+              <a
+                class="font-weight-normal small"
+                href=""
+                @click.prevent.stop="selectNode(node.nodeId, true)"
+              >
                 #{{ node.nodeId }}
-              </span>
+              </a>
               {{ nodeName }}
             </h4>
             <div class="float-right">
