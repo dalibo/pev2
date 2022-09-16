@@ -20,6 +20,9 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 const outerEl = ref<Element | null>(null) // The outer Element, useful for CTE and subplans
 
 const selectedNodeId = inject(SelectedNodeIdKey)
+if (!selectedNodeId) {
+  throw new Error(`Could not resolve ${SelectedNodeIdKey.description}`)
+}
 const highlightedNodeId = inject(HighlightedNodeIdKey)
 const selectNode = inject(SelectNodeKey)
 if (!selectNode) {
@@ -79,6 +82,12 @@ watch(viewOptions, () => {
   nextTick(() => {
     updateSize(node)
   })
+})
+
+watch(selectedNodeId, () => {
+  if (selectedNodeId.value == node.nodeId) {
+    showDetails.value = true
+  }
 })
 
 function centerCte() {
