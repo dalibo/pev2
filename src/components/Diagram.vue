@@ -670,6 +670,10 @@ function setRowRef(nodeId: number, el: Element) {
                 >
                   <div
                     class="bg-hit"
+                    :class="{
+                      'border-left border-hit':
+                        row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] > 0,
+                    }"
                     role="progressbar"
                     :style="
                       'width: ' +
@@ -688,6 +692,10 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="bg-read"
                     role="progressbar"
+                    :class="{
+                      'border-left border-read':
+                        row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] > 0,
+                    }"
                     :style="
                       'width: ' +
                       (Math.round(
@@ -704,6 +712,10 @@ function setRowRef(nodeId: number, el: Element) {
                   ></div>
                   <div
                     class="bg-dirtied"
+                    :class="{
+                      'border-left border-dirtied':
+                        row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] > 0,
+                    }"
                     role="progressbar"
                     :style="
                       'width: ' +
@@ -721,6 +733,10 @@ function setRowRef(nodeId: number, el: Element) {
                   ></div>
                   <div
                     class="bg-written"
+                    :class="{
+                      'border-left border-written':
+                        row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] > 0,
+                    }"
                     role="progressbar"
                     :style="
                       'width: ' +

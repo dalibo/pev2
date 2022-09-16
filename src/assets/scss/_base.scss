@@ -54,6 +54,9 @@ $buffers-colors: (
   .bg-#{$color} {
     background-color: $value;
   }
+  .border-#{$color} {
+    border-color: $value !important;
+  }
 }
 
 
