@@ -641,6 +641,10 @@ function setRowRef(nodeId: number, el: Element) {
                 >
                   <div
                     class="bg-secondary"
+                    :class="{
+                      'border-secondary border-left':
+                        row[1][NodeProp.EXCLUSIVE_COST] > 0,
+                    }"
                     role="progressbar"
                     :style="
                       'width: ' +
