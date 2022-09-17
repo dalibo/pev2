@@ -40,7 +40,7 @@
     "highlight.js": "^11.5.0",
     "humanize-duration": "^3.27.2",
     "lodash": "^4.17.21",
-    "sass": "^1.49.9",
+    "sass": "^1.54.9",
     "splitpanes": "^3.1.1",
     "vue": "^3.2.31",
     "vue-clipboard3": "^2.0.0",
