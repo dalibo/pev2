@@ -7,7 +7,7 @@ const planData = inject("planData")
 </script>
 
 <template>
-  <main-layout>
+  <main-layout :title="planData[2]">
     <plan
       v-if="planData[0]"
       :plan-source="planData[0]"
