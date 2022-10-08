@@ -1,6 +1,14 @@
 <script lang="ts" setup>
 import { inject, ref, onMounted } from "vue"
+
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { library } from "@fortawesome/fontawesome-svg-core"
+import { fas } from "@fortawesome/free-solid-svg-icons"
+library.add(fas)
+
+import { time_ago } from "../utils"
 import MainLayout from "../layouts/MainLayout.vue"
+import Plan from "@/components/Plan.vue"
 import {
   plan1_source,
   plan1_source_json,
@@ -27,12 +35,16 @@ import {
   plan_trigger_2_query,
 } from "../samples.ts"
 
+import idb from "../idb"
+
 const setPlanData = inject("setPlanData")
 
 const planInput = ref<string>("")
 const queryInput = ref<string>("")
+const queryName = ref<string>("")
 const draggingPlan = ref<boolean>(false)
 const draggingQuery = ref<boolean>(false)
+const savedPlans = ref<Plan[]>()
 
 interface Sample extends Array<string> {
   0: string
@@ -58,7 +70,24 @@ const samples = ref<Sample[]>([
 ])
 
 function submitPlan() {
-  setPlanData(planInput.value, queryInput.value)
+  let newPlan: Plan = ["", "", ""]
+  newPlan[0] =
+    queryName.value ||
+    "New Plan - " +
+      new Date().toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "medium",
+      })
+  newPlan[1] = planInput.value
+  newPlan[2] = queryInput.value
+  newPlan[3] = new Date().toISOString()
+  savePlanData(newPlan)
+
+  setPlanData(...newPlan)
+}
+
+async function savePlanData(sample: Plan) {
+  await idb.savePlan(sample)
 }
 
 onMounted(() => {
@@ -68,11 +97,35 @@ onMounted(() => {
   })
   const noHashURL = window.location.href.replace(/#.*$/, "")
   window.history.replaceState("", document.title, noHashURL)
+  loadPlans()
 })
 
-function loadSample(sample: Sample) {
-  planInput.value = sample[1]
-  queryInput.value = sample[2]
+async function loadPlans() {
+  const plans = await idb.getPlans()
+  savedPlans.value = plans.slice().reverse()
+}
+
+function loadPlan(plan?: Plan) {
+  if (!plan) {
+    return
+  }
+
+  queryName.value = plan[0]
+  planInput.value = plan[1]
+  queryInput.value = plan[2]
+}
+
+function openPlan(plan: Plan) {
+  setPlanData(plan[0], plan[1], plan[2])
+}
+
+function editPlan(plan: Plan) {
+  loadPlan(plan)
+}
+
+async function deletePlan(plan: Plan) {
+  await idb.deletePlan(plan)
+  loadPlans()
 }
 
 function handleDrop(event: DragEvent) {
@@ -137,7 +190,7 @@ function handleDrop(event: DragEvent) {
                 v-for="(sample, index) in samples"
                 :key="index"
                 class="dropdown-item"
-                v-on:click.prevent="loadSample(sample)"
+                v-on:click.prevent="loadPlan(sample)"
                 href
               >
                 {{ sample[0] }}
@@ -146,41 +199,107 @@ function handleDrop(event: DragEvent) {
           </div>
         </div>
       </div>
-      <form v-on:submit.prevent="submitPlan">
-        <div class="form-group">
-          <label for="planInput">
-            Plan <span class="small text-muted">(text or JSON)</span>
-          </label>
-          <textarea
-            :class="['form-control', draggingPlan ? 'dropzone-over' : '']"
-            id="planInput"
-            rows="8"
-            v-model="planInput"
-            @dragenter="draggingPlan = true"
-            @dragleave="draggingPlan = false"
-            @drop.prevent="handleDrop"
-            placeholder="Paste execution plan\nOr drop a file"
-          >
-          </textarea>
+      <div class="row">
+        <div class="col-sm-7">
+          <form v-on:submit.prevent="submitPlan">
+            <div class="form-group">
+              <label for="planInput">
+                Plan <span class="small text-muted">(text or JSON)</span>
+              </label>
+              <textarea
+                :class="['form-control', draggingPlan ? 'dropzone-over' : '']"
+                id="planInput"
+                rows="8"
+                v-model="planInput"
+                @dragenter="draggingPlan = true"
+                @dragleave="draggingPlan = false"
+                @drop.prevent="handleDrop"
+                placeholder="Paste execution plan\nOr drop a file"
+              >
+              </textarea>
+            </div>
+            <div class="form-group">
+              <label for="queryInput">
+                Query <span class="small text-muted">(optional)</span>
+              </label>
+              <textarea
+                :class="['form-control', draggingQuery ? 'dropzone-over' : '']"
+                id="queryInput"
+                rows="8"
+                v-model="queryInput"
+                @dragenter="draggingQuery = true"
+                @dragleave="draggingQuery = false"
+                @drop.prevent="handleDrop"
+                placeholder="Paste corresponding SQL query\nOr drop a file"
+              >
+              </textarea>
+            </div>
+            <div class="form-group">
+              <label for="queryName">
+                Plan Name <span class="small text-muted">(optional)</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="queryName"
+                v-model="queryName"
+                placeholder="Name for the plan"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
         </div>
-        <div class="form-group">
-          <label for="queryInput">
-            Query <span class="small text-muted">(optional)</span>
-          </label>
-          <textarea
-            :class="['form-control', draggingQuery ? 'dropzone-over' : '']"
-            id="queryInput"
-            rows="8"
-            v-model="queryInput"
-            @dragenter="draggingQuery = true"
-            @dragleave="draggingQuery = false"
-            @drop.prevent="handleDrop"
-            placeholder="Paste corresponding SQL query\nOr drop a file"
-          >
-          </textarea>
+        <div class="col-sm-5 mb-4 mt-4 mt-md-0">
+          <label> Saved Plans </label>
+          <ul class="list-group" v-cloak>
+            <li
+              class="list-group-item px-2 py-1"
+              v-for="plan in savedPlans"
+              :key="plan.id"
+            >
+              <div class="row">
+                <div class="col">
+                  <button
+                    class="btn btn-sm btn-outline-secondary py-0 ml-1 float-right"
+                    title="Remove plan from list"
+                    v-on:click.prevent="deletePlan(plan)"
+                  >
+                    <font-awesome-icon icon="trash"></font-awesome-icon>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-secondary py-0 float-right"
+                    title="Edit plan details"
+                    v-on:click.prevent="editPlan(plan)"
+                  >
+                    <font-awesome-icon icon="edit"></font-awesome-icon>
+                  </button>
+                  <a
+                    v-on:click.prevent="openPlan(plan)"
+                    href=""
+                    title="Open the plan details"
+                  >
+                    {{ plan[0] }}
+                  </a>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <small class="text-muted">
+                    created
+                    <span :title="plan[3]?.toString()">
+                      {{ time_ago(plan[3]) }}
+                    </span>
+                  </small>
+                </div>
+                <div class="col-6 text-right"></div>
+              </div>
+            </li>
+          </ul>
+          <p class="text-muted text-center" v-if="!savedPlans?.length" v-cloak>
+            <em> You haven't saved any plan yet.</em>
+          </p>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
+      </div>
     </div>
   </main-layout>
 </template>
