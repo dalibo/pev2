@@ -2818,7 +2818,7 @@ export const plan7_source = String.raw`
 `
 
 export const plan7_query = String.raw`
--- créer un plan avec tous les writtent/buffers/shared/local/temp à la fois
+-- create a plan with all written/buffers/shared/local/temp at once
 
 \timing off
 
@@ -2850,7 +2850,7 @@ INSERT INTO t2 SELECT i,x,md5(i::text) FROM t1 WHERE i < :MINIMUM ;
 
 SET work_mem TO '4MB' ;
 
-\echo "Mise à jour de t1 à partir d'une version de T2 elle même modifée"
+\echo "Update T1 from a modified version of T2"
 
 EXPLAIN (ANALYZE,BUFFERS,VERBOSE,SETTINGS,WAL)
 WITH t2bb AS ( UPDATE t2 SET x=null RETURNING * ),
