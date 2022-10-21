@@ -280,6 +280,8 @@ export class PlanService {
   public cleanupSource(source: string) {
     // Remove frames around, handles |, ║,
     source = source.replace(/^(\||║|│)(.*)\1\r?\n/gm, "$2\n")
+    // Remove frames at the end of line, handles |, ║,
+    source = source.replace(/(.*)(\||║|│)$\r?\n/gm, "$1\n")
 
     // Remove separator lines from various types of borders
     source = source.replace(/^\+-+\+\r?\n/gm, "")

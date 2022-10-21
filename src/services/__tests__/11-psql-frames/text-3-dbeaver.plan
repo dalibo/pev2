@@ -1,0 +1,12 @@
+QUERY PLAN                                                                                                                          |
+------------------------------------------------------------------------------------------------------------------------------------+
+Delete on public.toto123456789  (cost=0.00..78540.20 rows=0 width=0) (actual time=4024.307..4024.308 rows=0 loops=1)                |
+  Buffers: shared hit=5000000 read=22124 dirtied=22124 written=7338                                                                 |
+  WAL: records=5000000 fpi=7015 bytes=327276611                                                                                     |
+  ->  Seq Scan on public.toto123456789  (cost=0.00..78540.20 rows=5641620 width=6) (actual time=0.019..673.892 rows=5000000 loops=1)|
+        Output: ctid                                                                                                                |
+        Buffers: shared read=22124 written=7338                                                                                     |
+Planning:                                                                                                                           |
+  Buffers: shared hit=4                                                                                                             |
+Planning Time: 0.037 ms                                                                                                             |
+Execution Time: 4024.335 ms                                                                                                         |
