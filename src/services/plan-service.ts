@@ -361,6 +361,8 @@ export class PlanService {
     const useSource: string = sourceLines
       .slice(firstLineIndex, lastLineIndex + 1)
       .join("\n")
+      // Replace two double quotes (added by pgAdmin)
+      .replace(/""/gm, '"')
 
     return this.parseJson(useSource)
   }
