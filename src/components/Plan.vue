@@ -101,9 +101,10 @@ const edgeWeight = computed(() => {
     .domain([0, planStats.maxRows])
     .range([1, padding / 1.5])
 })
+const minScale = 0.2
 const zoomListener = d3
   .zoom()
-  .scaleExtent([0.1, 3])
+  .scaleExtent([minScale, 3])
   .on("zoom", function (e) {
     transform.value = e.transform
     scale.value = e.transform.k
@@ -253,7 +254,11 @@ onMounted(() => {
             .scale(
               Math.min(
                 1,
-                0.8 / Math.max((x1 - x0) / rect.width, (y1 - y0) / rect.height)
+                Math.max(
+                  minScale,
+                  0.8 /
+                    Math.max((x1 - x0) / rect.width, (y1 - y0) / rect.height)
+                )
               )
             )
             .translate(-(x0 + x1) / 2, 10)
