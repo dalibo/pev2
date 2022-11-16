@@ -439,6 +439,11 @@ export class PlanService {
     const out: string[] = []
     const lines = text.split(/\r?\n/)
     const countChar = (str: string, ch: RegExp) => (str.match(ch) || []).length
+    const closingFirst = (str: string) => {
+      const closingParIndex = str.indexOf(")")
+      const openingParIndex = str.indexOf("(")
+      return closingParIndex != -1 && closingParIndex < openingParIndex
+    }
 
     _.each(lines, (line: string) => {
       if (countChar(line, /\)/g) > countChar(line, /\(/g)) {
@@ -453,7 +458,8 @@ export class PlanService {
         out.push(line)
       } else if (
         line.match(/^\S/) || // doesn't start with a blank space (allowed only for the first node)
-        line.match(/^\s*\(/) // first non-blank character is an opening parenthesis
+        line.match(/^\s*\(/) || // first non-blank character is an opening parenthesis
+        closingFirst(line) // closing parenthesis before opening one
       ) {
         if (0 < out.length) {
           out[out.length - 1] += line
