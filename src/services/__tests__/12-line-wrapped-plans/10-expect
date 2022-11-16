@@ -1,0 +1,56 @@
+{
+  "Plan": {
+    "Actual Loops": 1,
+    "Actual Rows": 34956,
+    "Actual Startup Time": 0.025,
+    "Actual Total Time": 10.198,
+    "Node Type": "Nested Loop",
+    "Plans": [
+      {
+        "Actual Loops": 1,
+        "Actual Rows": 402,
+        "Actual Startup Time": 0.013,
+        "Actual Total Time": 0.058,
+        "Node Type": "Seq Scan",
+        "Plan Rows": 402,
+        "Total Cost": 6.02,
+        "Relation Name": "t1",
+        "Startup Cost": 0,
+        "Plan Width": 4
+      },
+      {
+        "Actual Loops": 402,
+        "Actual Rows": 100,
+        "Actual Startup Time": 0,
+        "Actual Total Time": 0.008,
+        "Node Type": "Materialize",
+        "Plans": [
+          {
+            "Actual Loops": 1,
+            "Actual Rows": 100,
+            "Actual Startup Time": 0.005,
+            "Actual Total Time": 0.015,
+            "Node Type": "Seq Scan",
+            "Plan Rows": 100,
+            "Total Cost": 2,
+            "Relation Name": "t2",
+            "Startup Cost": 0,
+            "Plan Width": 4
+          }
+        ],
+        "Plan Rows": 100,
+        "Total Cost": 2.5,
+        "Startup Cost": 0,
+        "Plan Width": 4
+      }
+    ],
+    "Plan Rows": 13400,
+    "Total Cost": 611.27,
+    "Startup Cost": 0,
+    "Plan Width": 8,
+    "Join Filter": "(t1.c1 > t2.c2)",
+    "Rows Removed by Join Filter": 5244
+  },
+  "Planning Time": 0.083,
+  "Execution Time": 12.035
+}
