@@ -38,7 +38,7 @@
     "d3": "^7.6.1",
     "d3-flextree": "^2.1.2",
     "emitter": "^0.0.2",
-    "highlight.js": "^11.5.0",
+    "highlight.js": "^11.7.0",
     "humanize-duration": "^3.27.3",
     "lodash": "^4.17.21",
     "sass": "^1.55.0",
