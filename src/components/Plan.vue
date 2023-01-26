@@ -37,7 +37,13 @@ import Stats from "@/components/Stats.vue"
 import { PlanService } from "@/services/plan-service"
 import { HelpService, findNodeById } from "@/services/help-service"
 import { HighlightType, NodeProp } from "@/enums"
-import { duration, durationClass, json_, pgsql_ } from "@/filters"
+import {
+  duration,
+  durationClass,
+  formatNodeProp,
+  json_,
+  pgsql_,
+} from "@/filters"
 
 import "tippy.js/dist/tippy.css"
 
@@ -465,6 +471,19 @@ watch(
 function updateNodeSize(node: Node, size: [number, number]) {
   node.size = [size[0] / scale.value, size[1] / scale.value]
 }
+
+function averageIO(node: Node) {
+  const read = node[NodeProp.AVERAGE_IO_READ_TIME]
+  const write = node[NodeProp.AVERAGE_IO_WRITE_TIME]
+  const r = []
+  if (read) {
+    r.push(`read=~${formatNodeProp(NodeProp.AVERAGE_IO_READ_TIME, read)}`)
+  }
+  if (write) {
+    r.push(`write=~${formatNodeProp(NodeProp.AVERAGE_IO_WRITE_TIME, write)}`)
+  }
+  return r.join(", ")
+}
 </script>
 
 <template>
@@ -711,6 +730,16 @@ function updateNodeSize(node: Node, size: [number, number]) {
                   </tbody>
                 </table>
               </div>
+            </div>
+            <div
+              class="d-inline-block border-left px-2 position-relative"
+              v-if="
+                rootNode &&
+                (rootNode[NodeProp.AVERAGE_IO_READ_TIME] ||
+                  rootNode[NodeProp.AVERAGE_IO_WRITE_TIME])
+              "
+            >
+              IO: {{ averageIO(rootNode) }}
             </div>
             <button
               v-on:click="viewOptions.menuHidden = !viewOptions.menuHidden"
