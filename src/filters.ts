@@ -111,14 +111,14 @@ export function bytes(value: number): string {
   return formatBytes(value)
 }
 
-export function formatBytes(value: number, decimals = 2) {
+export function formatBytes(value: number, precision = 2) {
   const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
+  const dm = precision < 0 ? 0 : precision
   const units = ["Bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
   const i = Math.floor(Math.log(value) / Math.log(k))
   const compiled = _.template("${value} ${unit}")
   const valueString = parseFloat(
-    (value / Math.pow(k, i)).toFixed(dm)
+    (value / Math.pow(k, i)).toPrecision(dm)
   ).toLocaleString()
   return compiled({ value: valueString, unit: units[i] })
 }
@@ -159,6 +159,13 @@ function sortGroups(value: string): string {
   return app.$el.outerHTML
 }
 
+function transferRate(value: number): string {
+  if (!value) {
+    return ""
+  }
+  return formatBytes(value * 8 * 1024) + "/s"
+}
+
 export function formatNodeProp(key: string, value: unknown): string {
   if (_.has(nodePropTypes, key)) {
     if (nodePropTypes[key] === PropType.duration) {
@@ -194,6 +201,8 @@ export function formatNodeProp(key: string, value: unknown): string {
       return list(value as string[])
     } else if (nodePropTypes[key] === PropType.sortGroups) {
       return sortGroups(value as string)
+    } else if (nodePropTypes[key] === PropType.transferRate) {
+      return transferRate(value as number)
     }
   }
   return _.escape(value as unknown as string)

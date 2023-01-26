@@ -102,6 +102,8 @@ const notMiscProperties: string[] = [
   NodeProp.HASH_CONDITION,
   NodeProp.EXCLUSIVE_IO_READ_TIME,
   NodeProp.EXCLUSIVE_IO_WRITE_TIME,
+  NodeProp.AVERAGE_IO_READ_TIME,
+  NodeProp.AVERAGE_IO_WRITE_TIME,
   NodeProp.IO_READ_TIME, // Exclusive value already shown in IO tab
   NodeProp.IO_WRITE_TIME, // Exclusive value already shown in IO tab
   NodeProp.HEAP_FETCHES,
@@ -384,23 +386,30 @@ watch(activeTab, () => {
     </div>
     <div class="tab-pane" :class="{ 'show active': activeTab === 'iobuffer' }">
       <!-- iobuffer tab -->
-      <div
+      <dl
         v-if="
           node[NodeProp.EXCLUSIVE_IO_READ_TIME] ||
           node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]
         "
-        class="mb-2"
+        class="mb-2 list-inline"
       >
-        <b> I/O Timings: </b>
-        <span v-if="node[NodeProp.EXCLUSIVE_IO_READ_TIME]" class="ml-2">
-          <b>Read:&nbsp;</b>
-          {{ formattedProp("EXCLUSIVE_IO_READ_TIME") }}
-        </span>
-        <span v-if="node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]" class="ml-2">
-          <b>Write:&nbsp;</b>
-          {{ formattedProp("EXCLUSIVE_IO_WRITE_TIME") }}
-        </span>
-      </div>
+        <dt class="list-inline-item align-top">
+          <b> I/O Timings: </b>
+        </dt>
+        <dd class="list-inline-item">
+          <span v-if="node[NodeProp.EXCLUSIVE_IO_READ_TIME]" class="ml-2">
+            <b>Read:&nbsp;</b>
+            {{ formattedProp("EXCLUSIVE_IO_READ_TIME") }}
+            <small>~{{ formattedProp("AVERAGE_IO_READ_TIME") }}</small>
+          </span>
+          <br />
+          <span v-if="node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]" class="ml-2">
+            <b>Write:&nbsp;</b>
+            {{ formattedProp("EXCLUSIVE_IO_WRITE_TIME") }}
+            <small>~{{ formattedProp("AVERAGE_IO_WRITE_TIME") }}</small>
+          </span>
+        </dd>
+      </dl>
       <b> Blocks: </b>
       <table class="table table-sm">
         <tr>
