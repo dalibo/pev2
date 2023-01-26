@@ -102,6 +102,7 @@ export class PlanService {
     // takes loops into account
     this.calculateActuals(node)
     this.calculateExclusives(node)
+    this.calculateIoTimingsAverage(node)
   }
 
   public calculateMaximums(plan: IPlan) {
@@ -1165,6 +1166,28 @@ export class PlanService {
       ] as unknown as keyof typeof Node
       node[nodeProp] = (node[NodeProp[property]] as number) - sum
     })
+  }
+
+  private calculateIoTimingsAverage(node: Node) {
+    const ioReadTime = (node[NodeProp["IO_READ_TIME"]] as number) || 0
+    if (ioReadTime) {
+      const sharedReadBlocks =
+        (node[NodeProp["SHARED_READ_BLOCKS"]] as number) || 0
+      const localReadBlocks =
+        (node[NodeProp["LOCAL_READ_BLOCKS"]] as number) || 0
+      node[NodeProp["AVERAGE_IO_READ_TIME"]] =
+        (sharedReadBlocks + localReadBlocks) / (ioReadTime / 1000)
+    }
+
+    const ioWriteTime = (node[NodeProp["IO_WRITE_TIME"]] as number) || 0
+    if (ioWriteTime) {
+      const sharedWriteBlocks =
+        (node[NodeProp["SHARED_WRITTEN_BLOCKS"]] as number) || 0
+      const localWriteBlocks =
+        (node[NodeProp["LOCAL_WRITTEN_BLOCKS"]] as number) || 0
+      node[NodeProp["AVERAGE_IO_WRITE_TIME"]] =
+        (sharedWriteBlocks + localWriteBlocks) / (ioWriteTime / 1000)
+    }
   }
 
   private findOutputProperty(node: Node): boolean {
