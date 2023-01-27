@@ -14,7 +14,7 @@ import type { Ref } from "vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { blocks, duration, rows, factor, transferRate } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
-import { scrollChildIntoParentView } from "@/services/help-service"
+import { HelpService, scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlan, Node } from "@/interfaces"
 import {
   HighlightedNodeIdKey,
@@ -23,8 +23,12 @@ import {
   SelectNodeKey,
 } from "@/symbols"
 
+import { directive as vTippy } from "vue-tippy"
 import tippy, { createSingleton } from "tippy.js"
 import type { CreateSingletonInstance, Instance } from "tippy.js"
+
+const helpService = new HelpService()
+const getHelpMessage = helpService.getHelpMessage
 
 type Row = [number, Node, boolean, number[]]
 
@@ -455,19 +459,26 @@ function setRowRef(nodeId: number, el: Element) {
             Written
           </li>
         </ul>
-        <ul
-          class="list-unstyled list-inline mb-0"
-          v-if="viewOptions.metric == Metric.io"
-        >
-          <li class="list-inline-item">
-            <span class="bg-read"></span>
-            Read
-          </li>
-          <li class="list-inline-item">
-            <span class="bg-written"></span>
-            Write
-          </li>
-        </ul>
+        <template v-if="viewOptions.metric == Metric.io">
+          <ul class="list-unstyled list-inline mb-0 d-inline-block">
+            <li class="list-inline-item">
+              <span class="bg-read"></span>
+              Read
+            </li>
+            <li class="list-inline-item">
+              <span class="bg-written"></span>
+              Write
+            </li>
+          </ul>
+          <font-awesome-icon
+            icon="info-circle"
+            class="cursor-help d-inline-block text-muted"
+            v-tippy="{
+              content: getHelpMessage('hint track_io_timing'),
+              allowHTML: true,
+            }"
+          ></font-awesome-icon>
+        </template>
       </div>
     </div>
     <div class="overflow-auto flex-grow-1" ref="container">
