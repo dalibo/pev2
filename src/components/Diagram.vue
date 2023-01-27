@@ -12,7 +12,7 @@ import {
 } from "vue"
 import type { Ref } from "vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { blocks, duration, rows, factor } from "@/filters"
+import { blocks, duration, rows, factor, transferRate } from "@/filters"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
 import { scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlan, Node } from "@/interfaces"
@@ -114,6 +114,9 @@ function getTooltipContent(node: Node): string {
       break
     case Metric.buffers:
       content += buffersTooltip(node)
+      break
+    case Metric.io:
+      content += ioTooltip(node)
       break
   }
   if (node[NodeProp.CTE_NAME]) {
@@ -224,6 +227,32 @@ function buffersTooltip(node: Node): string {
       break
   }
   return text
+}
+
+function ioTooltip(node: Node): string {
+  let text = ""
+  const read = node[NodeProp.EXCLUSIVE_IO_READ_TIME]
+  const averageRead = node[NodeProp.AVERAGE_IO_READ_TIME]
+  const write = node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]
+  const averageWrite = node[NodeProp.AVERAGE_IO_WRITE_TIME]
+  text += '<table class="table text-white table-sm table-borderless mb-0">'
+  text += read
+    ? '<tr><td>Read:</td><td class="text-right">' +
+      duration(read) +
+      "<br><small>~" +
+      transferRate(averageRead) +
+      "</small>" +
+      "</td></tr>"
+    : ""
+  text += write
+    ? '<tr><td>Write:</td><td class="text-right">' +
+      duration(write) +
+      "<br><small>~" +
+      transferRate(averageWrite) +
+      "</small>" +
+      "</td></tr>"
+    : ""
+  return "IO " + text
 }
 
 function nodeType(row: Row): string {
@@ -352,6 +381,13 @@ function setRowRef(nodeId: number, el: Element) {
           >
             buffers
           </button>
+          <button
+            class="btn btn-outline-secondary"
+            :class="{ active: viewOptions.metric === Metric.io }"
+            v-on:click="viewOptions.metric = Metric.io"
+          >
+            IO
+          </button>
         </div>
       </div>
       <div
@@ -417,6 +453,19 @@ function setRowRef(nodeId: number, el: Element) {
           <li class="list-inline-item">
             <span class="bg-written"></span>
             Written
+          </li>
+        </ul>
+        <ul
+          class="list-unstyled list-inline mb-0"
+          v-if="viewOptions.metric == Metric.io"
+        >
+          <li class="list-inline-item">
+            <span class="bg-read"></span>
+            Read
+          </li>
+          <li class="list-inline-item">
+            <span class="bg-written"></span>
+            Write
           </li>
         </ul>
       </div>
@@ -873,6 +922,52 @@ function setRowRef(nodeId: number, el: Element) {
                       (Math.round(
                         (row[1][NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
                           plan.planStats?.maxBlocks?.[BufferLocation.local]) *
+                          100
+                      ) || 0) +
+                      '%'
+                    "
+                    aria-valuenow="15"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    style="height: 5px"
+                  ></div>
+                </div>
+                <!-- io -->
+                <div
+                  class="progress rounded-0 align-items-center bg-transparent"
+                  style="height: 5px"
+                  v-else-if="
+                    viewOptions.metric == Metric.io &&
+                    (plan.content.Plan[NodeProp['IO_READ_TIME']] ||
+                      plan.content.Plan[NodeProp['IO_WRITE_TIME']])
+                  "
+                  :key="'node' + index + 'io_read'"
+                >
+                  <div
+                    class="bg-read"
+                    role="progressbar"
+                    :style="
+                      'width: ' +
+                      (Math.round(
+                        (row[1][NodeProp.EXCLUSIVE_IO_READ_TIME] /
+                          plan.planStats?.maxIo) *
+                          100
+                      ) || 0) +
+                      '%'
+                    "
+                    aria-valuenow="15"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    style="height: 5px"
+                  ></div>
+                  <div
+                    class="bg-written"
+                    role="progressbar"
+                    :style="
+                      'width: ' +
+                      (Math.round(
+                        (row[1][NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
+                          plan.planStats?.maxIo) *
                           100
                       ) || 0) +
                       '%'

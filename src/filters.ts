@@ -159,7 +159,7 @@ function sortGroups(value: string): string {
   return app.$el.outerHTML
 }
 
-function transferRate(value: number): string {
+export function transferRate(value: number): string {
   if (!value) {
     return ""
   }
