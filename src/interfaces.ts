@@ -25,6 +25,7 @@ export interface IPlanContent {
   maxTotalCost?: number
   maxDuration?: number
   maxBlocks?: IBlocksStats
+  maxIo?: number
   Triggers?: ITrigger[]
   JIT?: JIT
   "Query Text"?: string
@@ -52,6 +53,7 @@ export interface IPlanStats {
   maxCost: number
   maxDuration: number
   maxBlocks: IBlocksStats
+  maxIo: number
   triggers?: ITrigger[]
   jitTime?: number
   settings?: Settings
@@ -104,6 +106,10 @@ export class Node {
   [NodeProp.WORKERS_PLANNED]?: number;
   [NodeProp.WORKERS_PLANNED_BY_GATHER]?: number;
   [NodeProp.WORKERS_PLANNED_BY_GATHER]?: number;
+  [NodeProp.EXCLUSIVE_IO_READ_TIME]: number;
+  [NodeProp.EXCLUSIVE_IO_WRITE_TIME]: number;
+  [NodeProp.AVERAGE_IO_READ_TIME]: number;
+  [NodeProp.AVERAGE_IO_WRITE_TIME]: number;
   [k: string]:
     | Node[]
     | Options

@@ -182,6 +182,22 @@ export class PlanService {
     if (highestLocal && sumLocal(highestLocal)) {
       plan.content.maxBlocks[BufferLocation.local] = sumLocal(highestLocal)
     }
+
+    if (!plan.content.maxIo) {
+      plan.content.maxIo = 0
+    }
+    function sumIo(o: Node) {
+      return (
+        (o[NodeProp.EXCLUSIVE_IO_READ_TIME] as number) +
+        (o[NodeProp.EXCLUSIVE_IO_WRITE_TIME] as number)
+      )
+    }
+    const highestIo = _.maxBy(flat, (o) => {
+      return sumIo(o)
+    })
+    if (highestIo && sumIo(highestIo)) {
+      plan.content.maxIo = sumIo(highestIo)
+    }
   }
 
   // actual duration and actual cost are calculated by subtracting child values from the total

@@ -4,6 +4,7 @@ export enum Metric {
   cost,
   buffers,
   estimate_factor,
+  io,
 }
 
 export enum BufferLocation {
