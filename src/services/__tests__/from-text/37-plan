@@ -1,0 +1,33 @@
+[14003](2038152)postgres@pgbench_100=# set work_mem to '1MB';
+SET
+Temps : 0,305 ms
+[14003](2038152)postgres@pgbench_100=# CREATE TEMP table pp AS SELECT * FROM pgbench_accounts LIMIT 1000000;
+SELECT 1000000
+Temps : 542,276 ms
+[14003](2038152)postgres@pgbench_100=# EXPLAIN (ANALYZE,VERBOSE,BUFFERS) SELECT * FROM pp UNION ALL SELECT * FROM pgbench_accounts order by filler ;
+                                                                    QUERY PLAN                                                                     
+═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+ Sort  (cost=3300922.10..3326782.40 rows=10344118 width=105) (actual time=19388.365..21360.337 rows=11000000 loops=1)
+   Output: pp.aid, pp.bid, pp.abalance, pp.filler
+   Sort Key: pp.filler
+   Sort Method: external merge  Disk: 1151688kB
+   Buffers: shared hit=35 read=163903, local read=16394 dirtied=16394 written=16394, temp read=778130 written=780004
+   I/O Timings: read=1116.067
+   ->  Append  (cost=0.00..335490.77 rows=10344118 width=105) (actual time=0.035..3226.246 rows=11000000 loops=1)
+         Buffers: shared hit=32 read=163903, local read=16394 dirtied=16394 written=16394
+         I/O Timings: read=1116.067
+         ->  Seq Scan on pg_temp_5.pp  (cost=0.00..19836.74 rows=344274 width=352) (actual time=0.033..210.609 rows=1000000 loops=1)
+               Output: pp.aid, pp.bid, pp.abalance, pp.filler
+               Buffers: local read=16394 dirtied=16394 written=16394
+               I/O Timings: read=39.730
+         ->  Seq Scan on public.pgbench_accounts  (cost=0.00..263933.44 rows=9999844 width=97) (actual time=0.007..2169.508 rows=10000000 loops=1)
+               Output: pgbench_accounts.aid, pgbench_accounts.bid, pgbench_accounts.abalance, pgbench_accounts.filler
+               Buffers: shared hit=32 read=163903
+               I/O Timings: read=1076.337
+ Query Identifier: -5424821330993577306
+ Planning:
+   Buffers: shared hit=32 read=8
+   I/O Timings: read=0.073
+ Planning Time: 0.292 ms
+ Execution Time: 22103.138 ms
+(23 lignes)
