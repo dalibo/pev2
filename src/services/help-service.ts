@@ -60,6 +60,7 @@ export const HELP_MESSAGES: IHelpMessage = {
 Consider modifying max_parallel_workers or max_parallel_workers_per_gather.`,
   "WORKERS DETAILED INFO MISSING": `Consider using EXPLAIN (ANALYZE, VERBOSE)`,
   "FUZZY NEEDS VERBOSE": `Information may not be accurate. Use EXPLAIN VERBOSE mode.`,
+  "HINT TRACK_IO_TIMING": `HINT: activate <em><b>track_io_timing</b></em> to have details on time spent outside the PG cache.`,
 }
 
 interface EaseInOutQuadOptions {
