@@ -49,6 +49,7 @@ const {
   rowsRemovedClass,
   rowsRemovedPercentString,
   rowsRemovedProp,
+  tilde,
 } = useNode(plan, node, viewOptions)
 
 onBeforeMount(() => {
@@ -95,14 +96,6 @@ const shouldShowIoBuffers = computed((): boolean => {
   })
   const sum = _.sum(values)
   return sum > 0
-})
-
-const hasSeveralLoops = computed((): boolean => {
-  return (node[NodeProp.ACTUAL_LOOPS] as number) > 1
-})
-
-const tilde = computed((): string => {
-  return hasSeveralLoops.value ? "~" : ""
 })
 
 // returns the formatted prop

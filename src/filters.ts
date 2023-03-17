@@ -45,7 +45,7 @@ export function duration(value: number | undefined): string {
 }
 
 export function cost(value: number): string {
-  if (!value) {
+  if (value === undefined) {
     return "N/A"
   }
   value = parseFloat(value.toPrecision(3))
@@ -68,9 +68,7 @@ export function loops(value: number): string {
 
 export function factor(value: number): string {
   const f: string = parseFloat(value.toPrecision(2)).toLocaleString()
-  const compiled = _.template(
-    '${f}&nbsp;<span class="text-muted">&times;</span>'
-  )
+  const compiled = _.template("${f}&nbsp;&times;")
   return compiled({ f })
 }
 
@@ -153,7 +151,9 @@ export function list(value: string[] | string): string {
   const compiled = _.template(
     "<% _.forEach(lines, function(line) { %><li><%= line %></li><% }); %>"
   )
-  return '<ul class="list-unstyled">' + compiled({ lines: value }) + "</ul>"
+  return (
+    '<ul class="list-unstyled mb-0">' + compiled({ lines: value }) + "</ul>"
+  )
 }
 
 function sortGroups(value: string): string {

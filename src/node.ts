@@ -383,13 +383,29 @@ export default function useNode(
     text +=
       estimateFactor !== 1 ? " by <b>" + factor(estimateFactor) + "</b>" : ""
     text += "<br>"
-    text += "Planned: " + node[NodeProp.PLAN_ROWS_REVISED]
-    text += " → Actual: " + node[NodeProp.ACTUAL_ROWS_REVISED]
+    text += `Rows: ${rows(node[NodeProp.ACTUAL_ROWS_REVISED])} `
+    text += `(${rows(node[NodeProp.PLAN_ROWS_REVISED] as number)} planned)`
     return text
   })
 
   const costTooltip = computed((): string => {
     return ["Cost: ", rows(node[NodeProp.EXCLUSIVE_COST] as number)].join("")
+  })
+
+  const rowsRemovedTooltip = computed((): string => {
+    return [
+      "Rows removed by filter: ",
+      tilde.value,
+      rows(rowsRemoved.value),
+    ].join("")
+  })
+
+  const hasSeveralLoops = computed((): boolean => {
+    return (node[NodeProp.ACTUAL_LOOPS] as number) > 1
+  })
+
+  const tilde = computed((): string => {
+    return hasSeveralLoops.value ? "~" : ""
   })
 
   const buffersByLocationTooltip = computed(
@@ -465,7 +481,7 @@ export default function useNode(
     let text = '<table class="table table-dark table-sm table-borderless mb-0">'
     text += `<tr><td>${metric}:</td><td class="text-end">`
     if (node[metric]) {
-      text += `${blocks(node[metric] as number)}</td></tr>`
+      text += `${blocks(node[metric] as number, true)}</td></tr>`
     }
     return text
   })
@@ -496,6 +512,10 @@ export default function useNode(
     return "IO " + text
   })
 
+  const heapFetchesTooltip = computed((): string => {
+    return `Heap Fetches: ${node[NodeProp.HEAP_FETCHES]?.toLocaleString()}`
+  })
+
   return {
     barColor,
     barWidth,
@@ -509,9 +529,10 @@ export default function useNode(
     estimationClass,
     executionTimePercent,
     filterTooltip,
-    ioTooltip,
     heapFetchesClass,
+    heapFetchesTooltip,
     highlightValue,
+    ioTooltip,
     isNeverExecuted,
     isParallelAware,
     localDirtiedPercent,
@@ -526,6 +547,7 @@ export default function useNode(
     rowsRemovedPercent,
     rowsRemovedPercentString,
     rowsRemovedProp,
+    rowsRemovedTooltip,
     rowsTooltip,
     sharedDirtiedPercent,
     sharedHitPercent,
@@ -533,6 +555,7 @@ export default function useNode(
     sharedWrittenPercent,
     tempReadPercent,
     tempWrittenPercent,
+    tilde,
     timeTooltip,
     workersLaunchedCount,
     workersPlannedCount,
