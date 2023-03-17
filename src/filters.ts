@@ -144,10 +144,10 @@ export function percent(value: number): string {
 
 export function list(value: string[] | string): string {
   if (typeof value === "string") {
-    value = _.escape(value).split(/\s*,\s*/)
+    value = value.split(/\s*,\s*/)
   }
   const compiled = _.template(
-    "<% _.forEach(lines, function(line) { %><li><%- line %></li><% }); %>"
+    "<% _.forEach(lines, function(line) { %><li><%= line %></li><% }); %>"
   )
   return '<ul class="list-unstyled">' + compiled({ lines: value }) + "</ul>"
 }
