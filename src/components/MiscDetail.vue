@@ -35,7 +35,7 @@ function calculateProps() {
 }
 </script>
 <template>
-  <table class="table table-sm prop-list">
+  <table class="table table-sm prop-list mb-0">
     <template v-for="(prop, key) in nodeProps" :key="key">
       <tr v-if="shouldShowProp(prop.key, prop.value)">
         <td width="40%">{{ prop.key }}</td>

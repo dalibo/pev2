@@ -250,3 +250,6 @@ export interface JIT {
   ["Timing"]: Timing
   [key: string]: number | Timing
 }
+
+// A plan node with id, node, isLastSibling, branches
+export type Row = [number, Node, boolean, number[]]

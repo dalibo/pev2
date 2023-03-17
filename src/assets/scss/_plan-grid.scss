@@ -1,0 +1,59 @@
+$grid-progress-padding-x: 0.5rem;
+$grid-progress-padding-y: 0.25rem;
+$grid-progress-margin: 1px;
+.plan-grid {
+  // To compensate the transparent background-color for grid-progress-cell
+  background-color: white;
+  line-height: 0.85em;
+  > table {
+    // Truly attach borders to th even when collapsed when using sticky
+    border-collapse: separate;
+    border-spacing: 0;
+    > tbody, > thead, & {
+      > tr {
+        > th, > td {
+          font-size: $font-size-base;
+          min-width: 20px;
+          padding-left: $grid-progress-padding-x;
+          padding-right: $grid-progress-padding-x;
+        }
+      }
+    }
+  }
+
+  .detailed {
+    line-height: initial;
+    margin: 5px;
+    width: calc(100% - 10px) !important;
+    max-width: 700px;
+  }
+
+  .tree-lines {
+    font-family: 'monospace';
+  }
+
+  tr.node {
+    cursor: pointer;
+  }
+  .grid-progress-cell {
+    position: relative;
+    // Without this bottom border disappareas on Firefox
+    background-color: transparent;
+
+    .grid-progress {
+      margin-top: 1px;
+    }
+  }
+  .grid-progress {
+    position: absolute;
+    width: 100%;
+    height: initial;
+    $progress-gutter: 2px;
+    left: calc($grid-progress-padding-x - $progress-gutter);
+    top: calc($grid-progress-margin * -1 + $grid-progress-padding-y - $progress-gutter);
+    height: calc(1em + $progress-gutter *2);
+    width: calc(100% - $grid-progress-padding-x * 2 + $progress-gutter * 2);
+    z-index: 0;
+    font-size: inherit;
+  }
+}

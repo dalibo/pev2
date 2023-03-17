@@ -30,8 +30,9 @@ import {
 } from "@/symbols"
 import Copy from "@/components/Copy.vue"
 import Diagram from "@/components/Diagram.vue"
-import PlanStats from "@/components/PlanStats.vue"
+import Grid from "@/components/Grid.vue"
 import PlanNode from "@/components/PlanNode.vue"
+import PlanStats from "@/components/PlanStats.vue"
 import Stats from "@/components/Stats.vue"
 import { PlanService } from "@/services/plan-service"
 import { findNodeById } from "@/services/help-service"
@@ -441,6 +442,14 @@ function updateNodeSize(node: Node, size: [number, number]) {
         <li class="nav-item p-1">
           <a
             class="nav-link px-2 py-0"
+            :class="{ active: activeTab === 'grid' }"
+            href="#grid"
+            >Grid</a
+          >
+        </li>
+        <li class="nav-item p-1">
+          <a
+            class="nav-link px-2 py-0"
             :class="{ active: activeTab === 'raw' }"
             href="#raw"
             >Raw</a
@@ -669,6 +678,15 @@ function updateNodeSize(node: Node, size: [number, number]) {
             </div>
           </div>
           <!-- end Plan tab -->
+        </div>
+      </div>
+      <div
+        class="tab-pane flex-grow-1 overflow-hidden position-relative"
+        :class="{ 'show active': activeTab === 'grid' }"
+      >
+        <div class="overflow-hidden d-flex w-100 h-100 flex-column">
+          <plan-stats></plan-stats>
+          <grid class="flex-grow-1 overflow-auto plan-grid"> </grid>
         </div>
       </div>
       <div
