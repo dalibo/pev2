@@ -231,6 +231,9 @@ export default function useNode(
 
   const workersLaunchedCount = computed((): number => {
     console.warn("Make sure it works for workers that are not array")
+    if (node[NodeProp.WORKERS_LAUNCHED]) {
+      return node[NodeProp.WORKERS_LAUNCHED] as number
+    }
     const workers = node[NodeProp.WORKERS] as Worker[]
     return workers ? workers.length : NaN
   })
