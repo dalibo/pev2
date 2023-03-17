@@ -542,34 +542,22 @@ watch(activeTab, () => {
         </em>
       </div>
 
-      <div class="accordion" v-if="_.isArray(node[NodeProp.WORKERS])">
+      <div
+        v-if="_.isArray(node[NodeProp.WORKERS])"
+        class="overflow-auto"
+        style="max-height: 300px"
+        @wheel.stop
+      >
         <template
           v-for="(worker, index) in node[NodeProp.WORKERS]"
           :key="index"
         >
-          <div class="card">
-            <div class="card-header p-0">
-              <button
-                class="btn btn-link btn-sm text-secondary"
-                type="button"
-                data-toggle="collapse"
-                :data-target="'#collapse-' + node.nodeId + '-' + index"
-                style="font-size: inherit"
-              >
-                <font-awesome-icon
-                  fixed-width
-                  icon="chevron-right"
-                ></font-awesome-icon>
-                <font-awesome-icon
-                  fixed-width
-                  icon="chevron-down"
-                ></font-awesome-icon>
-                Worker {{ worker[WorkerProp.WORKER_NUMBER] }}
-              </button>
+          <div class="card mt-2">
+            <div class="card-header">
+              <b>Worker {{ worker[WorkerProp.WORKER_NUMBER] }}</b>
             </div>
-
-            <div :id="'collapse-' + node.nodeId + '-' + index" class="collapse">
-              <div class="card-body p-0">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item p-0">
                 <table class="table table-sm prop-list mb-0">
                   <template v-for="(value, key) in worker" :key="key">
                     <tr v-if="shouldShowProp(key as string, value)">
@@ -578,8 +566,8 @@ watch(activeTab, () => {
                     </tr>
                   </template>
                 </table>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
         </template>
       </div>
