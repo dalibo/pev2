@@ -526,7 +526,7 @@ watch(activeTab, () => {
       </div>
       <div>
         <b>Workers launched: </b>
-        <span class="px-1">{{ node[NodeProp.WORKERS_LAUNCHED] }}</span>
+        <span class="px-1">{{ workersLaunchedCount }}</span>
       </div>
       <div
         v-if="!workersLaunchedCount && node[NodeProp.WORKERS_PLANNED_BY_GATHER]"
