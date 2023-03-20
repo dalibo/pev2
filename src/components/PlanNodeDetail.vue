@@ -118,6 +118,8 @@ const notMiscProperties: string[] = [
   NodeProp.ROWS_REMOVED_BY_FILTER_REVISED,
   NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED,
   "size", // Manually added to use FlexTree
+  NodeProp.RELATION_NAME,
+  NodeProp.ALIAS,
 ]
 
 onBeforeMount(() => {

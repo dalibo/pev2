@@ -248,6 +248,15 @@ function centerCte() {
               </span>
             </div>
             <div
+              v-else-if="node[NodeProp.ALIAS]"
+              :class="{ 'line-clamp-2': !showDetails }"
+            >
+              <span class="text-muted">on</span>
+              <span
+                v-html="keysToString(node[NodeProp.ALIAS] as string)"
+              ></span>
+            </div>
+            <div
               v-if="node[NodeProp.GROUP_KEY]"
               :class="{ 'line-clamp-2': !showDetails }"
             >

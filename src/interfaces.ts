@@ -173,7 +173,7 @@ export class Node {
       }
     } else if (subqueryMatches) {
       this[NodeProp.NODE_TYPE] = subqueryMatches[1]
-      // this[NodeProp.SUBQUERY_NAME] = subqueryMatches[2].replace
+      this[NodeProp.ALIAS] = subqueryMatches[2]
     }
     const parallelMatches = /^(Parallel\s+)(.*)/.exec(
       <string>this[NodeProp.NODE_TYPE]
