@@ -493,6 +493,7 @@ watch(activeTab, () => {
       :class="{ 'show active': activeTab === 'output' }"
       v-html="formattedProp('OUTPUT')"
       style="max-height: 200px"
+      @mousewheel.stop
     ></div>
     <div
       class="tab-pane"
