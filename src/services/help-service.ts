@@ -46,6 +46,8 @@ export const NODE_DESCRIPTIONS: INodeDescription = {
   "CTE SCAN": `performs a sequential scan of <strong>Common Table Expression (CTE) query</strong> results. Note that
     results of a CTE are materialized (calculated and temporarily stored).`,
   MEMOIZE: `is used to cache the results of the inner side of a nested loop. It avoids executing underlying nodes when the results for the current parameters are already in the cache.`,
+  GATHER: `reads the results of the parallel workers, in an undefined order.`,
+  "GATHER MERGE": `reads the results of the parallel workers, preserving any ordering.`,
 }
 
 interface IHelpMessage {
