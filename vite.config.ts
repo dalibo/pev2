@@ -31,7 +31,9 @@ const build = process.env.LIB
       cssCodeSplit: false,
       brotliSize: false,
       rollupOptions: {
-        inlineDynamicImports: true,
+        output: {
+          inlineDynamicImports: true,
+        },
       },
     }
 
