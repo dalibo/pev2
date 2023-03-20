@@ -144,8 +144,8 @@ function centerCte() {
         @mouseleave="highlightedNodeId = undefined"
       >
         <div class="card-body header no-focus-outline">
-          <header class="mb-0">
-            <h4 class="text-body">
+          <header class="mb-0 d-flex justify-content-between">
+            <h4 class="text-body overflow-hidden flex-grow-1">
               <a
                 class="font-weight-normal small"
                 href=""
@@ -155,7 +155,7 @@ function centerCte() {
               </a>
               {{ nodeName }}
             </h4>
-            <div class="float-right">
+            <div class="text-nowrap">
               <span
                 v-if="durationClass"
                 :class="
