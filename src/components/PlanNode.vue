@@ -100,11 +100,7 @@ function centerCte() {
 </script>
 
 <template>
-  <div
-    ref="outerEl"
-    @click.prevent.stop="showDetails = !showDetails"
-    @mousedown.stop
-  >
+  <div ref="outerEl" @mousedown.stop>
     <div
       :class="[
         'text-left plan-node',
@@ -145,14 +141,22 @@ function centerCte() {
       >
         <div class="card-body header no-focus-outline">
           <header class="mb-0 d-flex justify-content-between">
-            <h4 class="text-body overflow-hidden flex-grow-1">
-              <a
-                class="font-weight-normal small"
-                href=""
-                @click.prevent.stop="selectNode(node.nodeId, true)"
-              >
-                #{{ node.nodeId }}
-              </a>
+            <h4
+              class="text-body overflow-hidden btn btn-light text-left py-0 px-1"
+              @click.prevent.stop="showDetails = !showDetails"
+            >
+              <span class="text-muted">
+                <font-awesome-icon
+                  fixed-width
+                  icon="chevron-up"
+                  v-if="showDetails"
+                ></font-awesome-icon>
+                <font-awesome-icon
+                  fixed-width
+                  icon="chevron-down"
+                  v-else
+                ></font-awesome-icon>
+              </span>
               {{ nodeName }}
             </h4>
             <div class="text-nowrap">
@@ -231,6 +235,13 @@ function centerCte() {
                   class="text-muted"
                 ></font-awesome-icon>
               </span>
+              <a
+                class="font-weight-normal small ml-1"
+                href=""
+                @click.prevent.stop="selectNode(node.nodeId, true)"
+              >
+                #{{ node.nodeId }}
+              </a>
             </div>
           </header>
           <div class="text-left text-monospace">
@@ -343,9 +354,3 @@ function centerCte() {
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.plan-node {
-  cursor: pointer;
-}
-</style>
