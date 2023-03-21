@@ -26,3 +26,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: dist-app/index.html
+        # To only send out release mails when the release 
+        # notes have been manually added
+        draft: true
