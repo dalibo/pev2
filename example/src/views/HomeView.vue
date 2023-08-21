@@ -9,65 +9,52 @@ library.add(fas)
 import { time_ago } from "../utils"
 import MainLayout from "../layouts/MainLayout.vue"
 import Plan from "@/components/Plan.vue"
-import {
-  plan1_source,
-  plan1_source_json,
-  plan1_query,
-  plan2_source,
-  plan2_query,
-  plan3_source,
-  plan3_query,
-  plan4_source,
-  plan5_source,
-  plan5_query,
-  plan6_source,
-  plan7_source,
-  plan7_query,
-  plan8_source,
-  plan9_source,
-  plan9_query,
-  plan_parallel_source,
-  plan_parallel_2_source,
-  plan_parallel_2_query,
-  plan_trigger_source,
-  plan_trigger_query,
-  plan_trigger_2_source,
-  plan_trigger_2_query,
-} from "../samples.ts"
-
 import idb from "../idb"
 
 const setPlanData = inject("setPlanData")
-
+const url = new URL(window.location.href)
 const planInput = ref<string>("")
 const queryInput = ref<string>("")
 const queryName = ref<string>("")
+const pg3SlowQueryExplainUrl = ref<string>(
+  `https://${window.location.host}/api/v0/system/stats/${
+    url.searchParams.get("projectId") ?? "<projectId>"
+  }/slow_queries/${
+    url.searchParams.get("statementHash") ?? "<pg3StatementHash>"
+  }/_explain`
+)
 const draggingPlan = ref<boolean>(false)
 const draggingQuery = ref<boolean>(false)
 const savedPlans = ref<Plan[]>()
 
-interface Sample extends Array<string> {
-  0: string
-  1: string
-  2: string
-}
+function fetchPlanFromPG3() {
+  if (
+    pg3SlowQueryExplainUrl.value.indexOf("<projectId>") === -1 &&
+    pg3SlowQueryExplainUrl.value.indexOf("<pg3StatementHash>") === -1
+  ) {
+    planInput.value = "test2"
+    var requestHeaders = new Headers()
+    requestHeaders.append("Accept", "application/json")
 
-const samples = ref<Sample[]>([
-  ["Example 1 TEXT", plan1_source, plan1_query],
-  ["Example 1 JSON", plan1_source_json, plan1_query],
-  ["Example 2", plan2_source, plan2_query],
-  ["Example 3", plan3_source, plan3_query],
-  ["Example 5", plan5_source, plan5_query],
-  ["With subplan", plan6_source, ""],
-  ["With Buffers", plan7_source, plan7_query],
-  ["With CTE", plan9_source, plan9_query],
-  ["With CTEs", plan4_source, ""],
-  ["Very large plan", plan8_source, ""],
-  ["With trigger", plan_trigger_2_source, plan_trigger_2_query],
-  ["With trigger (plain text)", plan_trigger_source, plan_trigger_query],
-  ["Parallel (verbose)", plan_parallel_source, ""],
-  ["Parallel (4 workers)", plan_parallel_2_source, plan_parallel_2_query],
-])
+    var requestOptions = {
+      method: "GET",
+      headers: requestHeaders,
+      redirect: "follow",
+      credentials: "same-origin",
+    }
+
+    planInput.value = "Fetching plan from PG3..."
+    fetch(pg3SlowQueryExplainUrl.value, requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        planInput.value = result
+      })
+      .catch((error) => {
+        planInput.value = `Error when fetching explain from PG3 ${pg3SlowQueryExplainUrl.value} ${error}`
+        console.log(error)
+      })
+  }
+}
 
 function submitPlan() {
   let newPlan: Plan = ["", "", ""]
@@ -98,6 +85,7 @@ onMounted(() => {
   const noHashURL = window.location.href.replace(/#.*$/, "")
   window.history.replaceState("", document.title, noHashURL)
   loadPlans()
+  fetchPlanFromPG3()
 })
 
 async function loadPlans() {
@@ -155,52 +143,29 @@ function handleDrop(event: DragEvent) {
   <main-layout>
     <div class="container">
       <div class="alert alert-warning">
-        This is the demo application for
-        <a href="https://github.com/dalibo/pev2">PEV2</a>. It is serverless and
-        doesn't store your plans.
-        <br />
-        Please consider using
-        <a href="https://explain.dalibo.com">explain.dalibo.com</a> instead if
-        you want to save or share your plans.
-      </div>
-      <div class="row">
-        <div class="col d-flex">
-          <div class="text-muted">
-            For best results, use
-            <code>
-              EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)
-            </code>
-            <br />
-            <em>psql</em> users can export the plan to a file using
-            <code>psql -XqAt -f explain.sql > analyze.json</code>
-          </div>
-          <div class="dropdown ml-auto">
-            <button
-              class="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Sample Plans
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a
-                v-for="(sample, index) in samples"
-                :key="index"
-                class="dropdown-item"
-                v-on:click.prevent="loadPlan(sample)"
-                href
-              >
-                {{ sample[0] }}
-              </a>
-            </div>
-          </div>
-        </div>
+        <h3>PostgreSQL execution plan visualizer</h3>
       </div>
       <div class="row">
         <div class="col-sm-7">
+          <div class="form-group">
+            <label for="pg3SlowQueryExplainUrl"> Fetch plan from PG3 </label>
+            <input
+              type="text"
+              class="form-control"
+              id="pg3SlowQueryExplainUrl"
+              v-model="pg3SlowQueryExplainUrl"
+              placeholder="pg3 slow query url"
+            />
+            <p />
+            <button
+              type="button"
+              @click="fetchPlanFromPG3()"
+              class="btn btn-primary"
+            >
+              Fetch plan from PG3
+            </button>
+            <p />
+          </div>
           <form v-on:submit.prevent="submitPlan">
             <div class="form-group">
               <label for="planInput">
@@ -246,7 +211,9 @@ function handleDrop(event: DragEvent) {
                 placeholder="Name for the plan"
               />
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" target="_blank" class="btn btn-primary">
+              Visualize Plan
+            </button>
           </form>
         </div>
         <div class="col-sm-5 mb-4 mt-4 mt-md-0">
