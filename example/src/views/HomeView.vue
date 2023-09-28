@@ -191,7 +191,7 @@ function handleDrop(event: DragEvent) {
                 :key="index"
                 class="dropdown-item"
                 v-on:click.prevent="loadPlan(sample)"
-                href
+                href=""
               >
                 {{ sample[0] }}
               </a>
