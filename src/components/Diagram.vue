@@ -638,7 +638,7 @@ function setRowRef(nodeId: number, el: Element) {
                         EstimateDirection.under
                       "
                     ></font-awesome-icon>
-                    <i class="fa fa-fw" v-else />
+                    <i class="fa fa-fw d-inline-block" v-else />
                   </span>
                   <div
                     class="progress-bar"
@@ -689,7 +689,7 @@ function setRowRef(nodeId: number, el: Element) {
                         EstimateDirection.over
                       "
                     ></font-awesome-icon>
-                    <i class="fa fa-fw" v-else />
+                    <i class="fa fa-fw d-inline-block" v-else />
                   </span>
                 </div>
                 <!-- cost -->
