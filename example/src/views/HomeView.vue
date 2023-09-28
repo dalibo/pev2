@@ -163,7 +163,7 @@ function handleDrop(event: DragEvent) {
         <a href="https://explain.dalibo.com">explain.dalibo.com</a> instead if
         you want to save or share your plans.
       </div>
-      <div class="row">
+      <div class="row mb-3">
         <div class="col d-flex">
           <div class="text-muted">
             For best results, use
@@ -174,12 +174,12 @@ function handleDrop(event: DragEvent) {
             <em>psql</em> users can export the plan to a file using
             <code>psql -XqAt -f explain.sql > analyze.json</code>
           </div>
-          <div class="dropdown ml-auto">
+          <div class="dropdown ms-auto">
             <button
               class="btn btn-secondary dropdown-toggle"
               type="button"
               id="dropdownMenuButton"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
             >
@@ -202,8 +202,8 @@ function handleDrop(event: DragEvent) {
       <div class="row">
         <div class="col-sm-7">
           <form v-on:submit.prevent="submitPlan">
-            <div class="form-group">
-              <label for="planInput">
+            <div class="mb-3">
+              <label for="planInput" class="form-label">
                 Plan <span class="small text-muted">(text or JSON)</span>
               </label>
               <textarea
@@ -218,8 +218,8 @@ function handleDrop(event: DragEvent) {
               >
               </textarea>
             </div>
-            <div class="form-group">
-              <label for="queryInput">
+            <div class="mb-3">
+              <label for="queryInput" class="form-label">
                 Query <span class="small text-muted">(optional)</span>
               </label>
               <textarea
@@ -234,8 +234,8 @@ function handleDrop(event: DragEvent) {
               >
               </textarea>
             </div>
-            <div class="form-group">
-              <label for="queryName">
+            <div class="mb-3">
+              <label for="queryName" class="form-label">
                 Plan Name <span class="small text-muted">(optional)</span>
               </label>
               <input
@@ -250,7 +250,7 @@ function handleDrop(event: DragEvent) {
           </form>
         </div>
         <div class="col-sm-5 mb-4 mt-4 mt-md-0">
-          <label> Saved Plans </label>
+          <div class="mb-2">Saved Plans</div>
           <ul class="list-group" v-cloak>
             <li
               class="list-group-item px-2 py-1"
@@ -260,14 +260,14 @@ function handleDrop(event: DragEvent) {
               <div class="row">
                 <div class="col">
                   <button
-                    class="btn btn-sm btn-outline-secondary py-0 ml-1 float-right"
+                    class="btn btn-sm btn-outline-secondary py-0 ms-1 float-end"
                     title="Remove plan from list"
                     v-on:click.prevent="deletePlan(plan)"
                   >
                     <font-awesome-icon icon="trash"></font-awesome-icon>
                   </button>
                   <button
-                    class="btn btn-sm btn-outline-secondary py-0 float-right"
+                    class="btn btn-sm btn-outline-secondary py-0 float-end"
                     title="Edit plan details"
                     v-on:click.prevent="editPlan(plan)"
                   >
@@ -291,7 +291,7 @@ function handleDrop(event: DragEvent) {
                     </span>
                   </small>
                 </div>
-                <div class="col-6 text-right"></div>
+                <div class="col-6 text-end"></div>
               </div>
             </li>
           </ul>

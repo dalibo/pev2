@@ -368,7 +368,7 @@ watch(activeTab, () => {
           class="text-muted"
         ></font-awesome-icon>
         <b>Cost:</b>
-        <span :class="'p-0 px-1 mr-1 alert ' + costClass">{{
+        <span :class="'p-0 px-1 me-1 alert ' + costClass">{{
           formattedProp("EXCLUSIVE_COST")
         }}</span>
         <span class="text-muted"
@@ -399,13 +399,13 @@ watch(activeTab, () => {
           <b> I/O Timings: </b>
         </dt>
         <dd class="list-inline-item">
-          <span v-if="node[NodeProp.EXCLUSIVE_IO_READ_TIME]" class="ml-2">
+          <span v-if="node[NodeProp.EXCLUSIVE_IO_READ_TIME]" class="ms-2">
             <b>Read:&nbsp;</b>
             {{ formattedProp("EXCLUSIVE_IO_READ_TIME") }}
             <small>~{{ formattedProp("AVERAGE_IO_READ_TIME") }}</small>
           </span>
           <br />
-          <span v-if="node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]" class="ml-2">
+          <span v-if="node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]" class="ms-2">
             <b>Write:&nbsp;</b>
             {{ formattedProp("EXCLUSIVE_IO_WRITE_TIME") }}
             <small>~{{ formattedProp("AVERAGE_IO_WRITE_TIME") }}</small>
@@ -416,59 +416,59 @@ watch(activeTab, () => {
       <table class="table table-sm">
         <tr>
           <td></td>
-          <th class="text-right" width="25%">Hit</th>
-          <th class="text-right" width="25%">Read</th>
-          <th class="text-right" width="25%">Dirtied</th>
-          <th class="text-right" width="25%">Written</th>
+          <th class="text-end" width="25%">Hit</th>
+          <th class="text-end" width="25%">Read</th>
+          <th class="text-end" width="25%">Dirtied</th>
+          <th class="text-end" width="25%">Written</th>
         </tr>
         <tr>
           <th>Shared</th>
           <td
-            class="text-right"
+            class="text-end"
             v-html="formattedProp('EXCLUSIVE_SHARED_HIT_BLOCKS') || '-'"
           ></td>
           <td
-            class="text-right"
+            class="text-end"
             v-html="formattedProp('EXCLUSIVE_SHARED_READ_BLOCKS') || '-'"
           ></td>
           <td
-            class="text-right"
+            class="text-end"
             v-html="formattedProp('EXCLUSIVE_SHARED_DIRTIED_BLOCKS') || '-'"
           ></td>
           <td
-            class="text-right"
+            class="text-end"
             v-html="formattedProp('EXCLUSIVE_SHARED_WRITTEN_BLOCKS') || '-'"
           ></td>
         </tr>
         <tr>
           <th>Temp</th>
-          <td class="text-right bg-hatched"></td>
+          <td class="text-end bg-hatched"></td>
           <td
-            class="text-right"
+            class="text-end"
             v-html="formattedProp('EXCLUSIVE_TEMP_READ_BLOCKS') || '-'"
           ></td>
-          <td class="text-right bg-hatched"></td>
+          <td class="text-end bg-hatched"></td>
           <td
-            class="text-right"
+            class="text-end"
             v-html="formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'"
           ></td>
         </tr>
         <tr>
           <th>Local</th>
           <td
-            class="text-right"
+            class="text-end"
             v-html="formattedProp('EXCLUSIVE_LOCAL_HIT_BLOCKS') || '-'"
           ></td>
           <td
-            class="text-right"
+            class="text-end"
             v-html="formattedProp('EXCLUSIVE_LOCAL_READ_BLOCKS') || '-'"
           ></td>
           <td
-            class="text-right"
+            class="text-end"
             v-html="formattedProp('EXCLUSIVE_LOCAL_DIRTIED_BLOCKS') || '-'"
           ></td>
           <td
-            class="text-right"
+            class="text-end"
             v-html="formattedProp('EXCLUSIVE_LOCAL_WRITTEN_BLOCKS') || '-'"
           ></td>
         </tr>
@@ -491,7 +491,7 @@ watch(activeTab, () => {
       <!-- iobuffer tab -->
     </div>
     <div
-      class="tab-pane overflow-auto text-monospace"
+      class="tab-pane overflow-auto font-monospace"
       :class="{ 'show active': activeTab === 'output' }"
       v-html="formattedProp('OUTPUT')"
       style="max-height: 200px"
@@ -587,7 +587,7 @@ watch(activeTab, () => {
         </template>
       </table>
 
-      <div class="text-muted text-right">
+      <div class="text-muted text-end">
         <em>* Calculated value</em>
       </div>
       <!-- misc tab -->

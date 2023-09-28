@@ -102,15 +102,15 @@ const perIndex = computed(() => {
       sort="time"
       :dir="SortDirection.desc"
     >
-      <thead class="thead-dark">
+      <thead class="table-dark">
         <tr>
           <th scope="col">
             <sort-link name="name" class="text-white">Table</sort-link>
           </th>
-          <th scope="col" class="text-right">
+          <th scope="col" class="text-end">
             <sort-link name="count" class="text-white">Count</sort-link>
           </th>
-          <th scope="col" colspan="2" class="text-right">
+          <th scope="col" colspan="2" class="text-end">
             <sort-link name="time" class="text-white">Time</sort-link>
           </th>
         </tr>
@@ -125,7 +125,7 @@ const perIndex = computed(() => {
       </template>
       <tbody v-if="!perTable.length">
         <tr>
-          <td colspan="3" class="text-center font-italic">No tables used</td>
+          <td colspan="3" class="text-center fst-italic">No tables used</td>
         </tr>
       </tbody>
     </sorted-table>
@@ -136,15 +136,15 @@ const perIndex = computed(() => {
       sort="time"
       :dir="SortDirection.desc"
     >
-      <thead class="thead-dark">
+      <thead class="table-dark">
         <tr>
           <th scope="col">
             <sort-link name="name" class="text-white">Node Type</sort-link>
           </th>
-          <th scope="col" class="text-right">
+          <th scope="col" class="text-end">
             <sort-link name="count" class="text-white">Count</sort-link>
           </th>
-          <th scope="col" colspan="2" class="text-right">
+          <th scope="col" colspan="2" class="text-end">
             <sort-link name="time" class="text-white">Time</sort-link>
           </th>
         </tr>
@@ -165,15 +165,15 @@ const perIndex = computed(() => {
       sort="time"
       :dir="SortDirection.desc"
     >
-      <thead class="thead-dark">
+      <thead class="table-dark">
         <tr>
           <th scope="col">
             <sort-link name="name" class="text-white">Index</sort-link>
           </th>
-          <th scope="col" class="text-right">
+          <th scope="col" class="text-end">
             <sort-link name="count" class="text-white">Count</sort-link>
           </th>
-          <th scope="col" colspan="2" class="text-right">
+          <th scope="col" colspan="2" class="text-end">
             <sort-link name="time" class="text-white">Time</sort-link>
           </th>
         </tr>
@@ -188,7 +188,7 @@ const perIndex = computed(() => {
       </template>
       <tbody v-if="!perIndex.length">
         <tr>
-          <td colspan="3" class="text-center font-italic">No index used</td>
+          <td colspan="3" class="text-center fst-italic">No index used</td>
         </tr>
       </tbody>
     </sorted-table>

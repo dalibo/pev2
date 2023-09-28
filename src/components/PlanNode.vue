@@ -103,7 +103,7 @@ function centerCte() {
   <div ref="outerEl" @mousedown.stop>
     <div
       :class="[
-        'text-left plan-node',
+        'text-start plan-node',
         {
           detailed: showDetails,
           'never-executed': isNeverExecuted,
@@ -114,7 +114,7 @@ function centerCte() {
       ]"
     >
       <div v-if="node[NodeProp.SUBPLAN_NAME]" class="fixed-bottom text-center">
-        <b class="subplan-name font-italic px-1">
+        <b class="subplan-name fst-italic px-1">
           {{ node[NodeProp.SUBPLAN_NAME] }}
         </b>
       </div>
@@ -142,7 +142,7 @@ function centerCte() {
         <div class="card-body header no-focus-outline">
           <header class="mb-0 d-flex justify-content-between">
             <h4
-              class="text-body overflow-hidden btn btn-light text-left py-0 px-1"
+              class="text-body overflow-hidden btn btn-light text-start py-0 px-1"
               @click.prevent.stop="showDetails = !showDetails"
             >
               <span class="text-muted">
@@ -163,7 +163,7 @@ function centerCte() {
               <span
                 v-if="durationClass"
                 :class="
-                  'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' +
+                  'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' +
                   durationClass
                 "
                 v-tippy="'Slow'"
@@ -175,7 +175,7 @@ function centerCte() {
               <span
                 v-if="costClass"
                 :class="
-                  'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' + costClass
+                  'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' + costClass
                 "
                 v-tippy="'Cost is high'"
                 ><font-awesome-icon
@@ -186,7 +186,7 @@ function centerCte() {
               <span
                 v-if="estimationClass"
                 :class="
-                  'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' +
+                  'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' +
                   estimationClass
                 "
                 v-tippy="'Bad estimation for number of rows'"
@@ -198,7 +198,7 @@ function centerCte() {
               <span
                 v-if="rowsRemovedClass"
                 :class="
-                  'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' +
+                  'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' +
                   rowsRemovedClass
                 "
                 v-tippy="filterTooltip"
@@ -211,7 +211,7 @@ function centerCte() {
               <span
                 v-if="heapFetchesClass"
                 :class="
-                  'p-0  d-inline-block mb-0 ml-1 text-nowrap alert ' +
+                  'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' +
                   heapFetchesClass
                 "
                 v-tippy="{
@@ -226,7 +226,7 @@ function centerCte() {
               </span>
               <span
                 v-if="rowsRemoved && !rowsRemovedClass"
-                class="p-0 d-inline-block mb-0 ml-1 text-nowrap"
+                class="p-0 d-inline-block mb-0 ms-1 text-nowrap"
                 v-tippy="filterTooltip"
               >
                 <font-awesome-icon
@@ -236,7 +236,7 @@ function centerCte() {
                 ></font-awesome-icon>
               </span>
               <a
-                class="font-weight-normal small ml-1"
+                class="fw-normal small ms-1"
                 href=""
                 @click.prevent.stop="selectNode(node.nodeId, true)"
               >
@@ -244,7 +244,7 @@ function centerCte() {
               </a>
             </div>
           </header>
-          <div class="text-left text-monospace">
+          <div class="text-start font-monospace">
             <div
               v-if="node[NodeProp.RELATION_NAME]"
               :class="{ 'line-clamp-2': !showDetails }"

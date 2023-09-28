@@ -11,10 +11,10 @@ const props = defineProps<Props>()
 <template>
   <div class="d-flex flex-column vh-100">
     <div class="navbar container">
-      <div v-if="props?.title" class="text-center ml-auto">
+      <div v-if="props?.title" class="text-center ms-auto">
         {{ props?.title }}
       </div>
-      <v-link class="btn btn-secondary ml-auto" to="/">New Plan</v-link>
+      <v-link class="btn btn-secondary ms-auto" to="/">New Plan</v-link>
       <v-link class="btn btn-link" to="/about">About</v-link>
     </div>
     <slot></slot>

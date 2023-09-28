@@ -196,20 +196,20 @@ function buffersTooltip(node: Node): string {
       written = node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]
       break
   }
-  text += '<table class="table text-white table-sm table-borderless mb-0">'
+  text += '<table class="table table-dark table-sm table-borderless mb-0">'
   text += hit
-    ? '<tr><td>Hit:</td><td class="text-right">' + blocks(hit) + "</td></tr>"
+    ? '<tr><td>Hit:</td><td class="text-end">' + blocks(hit) + "</td></tr>"
     : ""
   text += read
-    ? '<tr><td>Read:</td><td class="text-right">' + blocks(read) + "</td></tr>"
+    ? '<tr><td>Read:</td><td class="text-end">' + blocks(read) + "</td></tr>"
     : ""
   text += dirtied
-    ? '<tr><td>Dirtied:</td><td class="text-right">' +
+    ? '<tr><td>Dirtied:</td><td class="text-end">' +
       blocks(dirtied) +
       "</td></tr>"
     : ""
   text += written
-    ? '<tr><td>Written:</td><td class="text-right">' +
+    ? '<tr><td>Written:</td><td class="text-end">' +
       blocks(written) +
       "</td></tr>"
     : ""
@@ -241,7 +241,7 @@ function ioTooltip(node: Node): string {
   const averageWrite = node[NodeProp.AVERAGE_IO_WRITE_TIME]
   text += '<table class="table text-white table-sm table-borderless mb-0">'
   text += read
-    ? '<tr><td>Read:</td><td class="text-right">' +
+    ? '<tr><td>Read:</td><td class="text-end">' +
       duration(read) +
       "<br><small>~" +
       transferRate(averageRead) +
@@ -249,7 +249,7 @@ function ioTooltip(node: Node): string {
       "</td></tr>"
     : ""
   text += write
-    ? '<tr><td>Write:</td><td class="text-right">' +
+    ? '<tr><td>Write:</td><td class="text-end">' +
       duration(write) +
       "<br><small>~" +
       transferRate(averageWrite) +
@@ -348,7 +348,7 @@ function setRowRef(nodeId: number, el: Element) {
 <template>
   <div class="diagram">
     <div class="flex-shrink-0">
-      <div class="form-group text-center my-1">
+      <div class="text-center my-1">
         <div class="btn-group btn-group-xs">
           <button
             class="btn btn-outline-secondary"
@@ -394,10 +394,7 @@ function setRowRef(nodeId: number, el: Element) {
           </button>
         </div>
       </div>
-      <div
-        class="form-group text-center my-1"
-        v-if="viewOptions.metric == Metric.buffers"
-      >
+      <div class="text-center my-1" v-if="viewOptions.metric == Metric.buffers">
         <div class="btn-group btn-group-xs">
           <button
             class="btn btn-outline-secondary"
@@ -495,8 +492,8 @@ function setRowRef(nodeId: number, el: Element) {
             <tr v-if="row[1][NodeProp.SUBPLAN_NAME]">
               <td></td>
               <td
-                class="subplan pr-2"
-                :class="{ 'font-weight-bold': isCTE(row[1]) }"
+                class="subplan pe-2"
+                :class="{ 'fw-bold': isCTE(row[1]) }"
                 :colspan="isCTE(row[1]) ? 3 : 2"
               >
                 <span class="tree-lines">
@@ -508,7 +505,7 @@ function setRowRef(nodeId: number, el: Element) {
                   }}</template>
                 </span>
                 <a
-                  class="font-italic text-reset"
+                  class="fst-italic text-reset"
                   href=""
                   @click.prevent="selectNode(row[1].nodeId, true)"
                 >
@@ -533,11 +530,9 @@ function setRowRef(nodeId: number, el: Element) {
               @click.prevent="selectNode(row[1].nodeId, true)"
             >
               <td class="node-index">
-                <span class="font-weight-normal small"
-                  >#{{ row[1].nodeId }}
-                </span>
+                <span class="fw-normal small">#{{ row[1].nodeId }} </span>
               </td>
-              <td class="node-type pr-2">
+              <td class="node-type pe-2">
                 <span class="tree-lines">
                   <template v-for="i in _.range(row[0])">
                     <template v-if="_.indexOf(row[3], i) != -1">│</template
@@ -565,7 +560,7 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="progress-bar border-secondary bg-secondary"
                     :class="{
-                      'border-left': row[1][NodeProp.EXCLUSIVE_DURATION] > 0,
+                      'border-start': row[1][NodeProp.EXCLUSIVE_DURATION] > 0,
                     }"
                     role="progressbar"
                     :style="
@@ -657,7 +652,7 @@ function setRowRef(nodeId: number, el: Element) {
                     aria-valuemax="100"
                   ></div>
                   <div
-                    class="progress-bar border-left"
+                    class="progress-bar border-start bg-secondary"
                     role="progressbar"
                     style="width: 1px; height: 5px"
                     aria-valuenow="15"
@@ -702,7 +697,7 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="bg-secondary"
                     :class="{
-                      'border-secondary border-left':
+                      'border-secondary border-start':
                         row[1][NodeProp.EXCLUSIVE_COST] > 0,
                     }"
                     role="progressbar"
@@ -735,7 +730,7 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="bg-hit"
                     :class="{
-                      'border-left border-hit':
+                      'border-start border-hit':
                         row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] > 0,
                     }"
                     role="progressbar"
@@ -757,7 +752,7 @@ function setRowRef(nodeId: number, el: Element) {
                     class="bg-read"
                     role="progressbar"
                     :class="{
-                      'border-left border-read':
+                      'border-start border-read':
                         row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] > 0,
                     }"
                     :style="
@@ -777,7 +772,7 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="bg-dirtied"
                     :class="{
-                      'border-left border-dirtied':
+                      'border-start border-dirtied':
                         row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] > 0,
                     }"
                     role="progressbar"
@@ -798,7 +793,7 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="bg-written"
                     :class="{
-                      'border-left border-written':
+                      'border-start border-written':
                         row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] > 0,
                     }"
                     role="progressbar"
