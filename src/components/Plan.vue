@@ -740,10 +740,7 @@ function averageIO(node: Node) {
             </div>
             <button
               v-on:click="viewOptions.menuHidden = !viewOptions.menuHidden"
-              :class="[
-                'border-start btn btn-sm p-0 px-2 ms-auto',
-                { 'text-primary': !viewOptions.menuHidden },
-              ]"
+              class="border-start btn btn-sm p-0 px-2 ms-auto"
             >
               <font-awesome-icon icon="cog" class="p-0"></font-awesome-icon>
               Settings
