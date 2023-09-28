@@ -19,7 +19,7 @@ defineProps<Props>()
             >s</template
           >:
         </td>
-        <td class="p-0 pl-1">
+        <td class="p-0 ps-1">
           {{ keysToString(sortGroup["Sort Methods Used"]) }}
         </td>
       </tr>
@@ -27,7 +27,7 @@ defineProps<Props>()
     <table class="table-borderless">
       <tr>
         <td class="p-0">Memory:</td>
-        <td class="p-0 pl-1">
+        <td class="p-0 ps-1">
           Average:
           {{
             kilobytes(sortGroup["Sort Space Memory"]["Average Sort Space Used"])

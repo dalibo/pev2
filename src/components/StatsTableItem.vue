@@ -43,8 +43,8 @@ function durationPercent(node: Node) {
         ></font-awesome-icon>
         {{ props.value.name }}
       </th>
-      <th class="text-right">{{ props.value.count }}</th>
-      <th class="text-right">
+      <th class="text-end">{{ props.value.count }}</th>
+      <th class="text-end">
         <span
           class="alert p-0 px-1"
           :class="durationClass(props.value.timePercent * 100)"
@@ -52,7 +52,7 @@ function durationPercent(node: Node) {
           {{ duration(props.value.time) }}
         </span>
       </th>
-      <th class="text-right">{{ percent(props.value.timePercent) }}</th>
+      <th class="text-end">{{ percent(props.value.timePercent) }}</th>
     </tr>
   </thead>
   <tbody :class="expanded ? '' : 'd-none'">
@@ -63,19 +63,19 @@ function durationPercent(node: Node) {
       :key="node.nodeId"
       style="font-size: smaller"
     >
-      <td class="pl-3">
-        <a :href="'#plan/node/' + node.nodeId" class="mr-1"
+      <td class="ps-3">
+        <a :href="'#plan/node/' + node.nodeId" class="me-1"
           >#{{ node.nodeId }}</a
         >
         {{ node[NodeProp.NODE_TYPE] }}
       </td>
-      <td class="text-right"></td>
-      <td class="text-right">
+      <td class="text-end"></td>
+      <td class="text-end">
         <span class="px-1">
           {{ duration(node[NodeProp.EXCLUSIVE_DURATION]) }}
         </span>
       </td>
-      <td class="text-right">
+      <td class="text-end">
         {{ percent(durationPercent(node)) }}
       </td>
     </tr>
