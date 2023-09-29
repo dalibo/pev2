@@ -563,14 +563,15 @@ function setRowRef(nodeId: number, el: Element) {
                       'border-start': row[1][NodeProp.EXCLUSIVE_DURATION] > 0,
                     }"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (row[1][NodeProp.EXCLUSIVE_DURATION] /
-                        (plan.planStats.executionTime ||
-                          plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
-                        100 +
-                      '%; height:5px;'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (row[1][NodeProp.EXCLUSIVE_DURATION] /
+                          (plan.planStats.executionTime ||
+                            plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
+                          100 +
+                        '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
@@ -578,15 +579,16 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="progress-bar bg-secondary-light"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      ((row[1][NodeProp.ACTUAL_TOTAL_TIME] -
-                        row[1][NodeProp.EXCLUSIVE_DURATION]) /
-                        (plan.planStats.executionTime ||
-                          plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
-                        100 +
-                      '%; height:5px;'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        ((row[1][NodeProp.ACTUAL_TOTAL_TIME] -
+                          row[1][NodeProp.EXCLUSIVE_DURATION]) /
+                          (plan.planStats.executionTime ||
+                            plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
+                          100 +
+                        '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
@@ -602,19 +604,18 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="bg-secondary"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      Math.round(
-                        (row[1][NodeProp.ACTUAL_ROWS_REVISED] /
-                          plan.planStats.maxRows) *
-                          100
-                      ) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        Math.round(
+                          (row[1][NodeProp.ACTUAL_ROWS_REVISED] /
+                            plan.planStats.maxRows) *
+                            100
+                        ) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                 </div>
                 <!-- estimation -->
@@ -644,9 +645,8 @@ function setRowRef(nodeId: number, el: Element) {
                         : 'bg-transparent',
                     ]"
                     role="progressbar"
-                    :style="
-                      'width: ' + estimateFactorPercent(row) + '%; height:5px;'
-                    "
+                    style="height: 5px"
+                    :style="{ width: estimateFactorPercent(row) + '%' }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
@@ -668,9 +668,8 @@ function setRowRef(nodeId: number, el: Element) {
                         : 'bg-transparent',
                     ]"
                     role="progressbar"
-                    :style="
-                      'width: ' + estimateFactorPercent(row) + '%; height:5px;'
-                    "
+                    style="height: 5px"
+                    :style="{ width: estimateFactorPercent(row) + '%' }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
@@ -701,19 +700,18 @@ function setRowRef(nodeId: number, el: Element) {
                         row[1][NodeProp.EXCLUSIVE_COST] > 0,
                     }"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_COST] /
-                          plan.planStats.maxCost) *
-                          100
-                      ) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_COST] /
+                            plan.planStats.maxCost) *
+                            100
+                        ) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                 </div>
                 <!-- buffers shared -->
@@ -734,19 +732,18 @@ function setRowRef(nodeId: number, el: Element) {
                         row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] > 0,
                     }"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                   <div
                     class="bg-read"
@@ -755,19 +752,18 @@ function setRowRef(nodeId: number, el: Element) {
                       'border-start border-read':
                         row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] > 0,
                     }"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                   <div
                     class="bg-dirtied"
@@ -776,19 +772,18 @@ function setRowRef(nodeId: number, el: Element) {
                         row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] > 0,
                     }"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                   <div
                     class="bg-written"
@@ -797,19 +792,18 @@ function setRowRef(nodeId: number, el: Element) {
                         row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] > 0,
                     }"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                 </div>
                 <!-- buffers temp -->
@@ -826,32 +820,30 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="bg-read"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.temp]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.temp]) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                   <div
                     class="bg-written"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.temp]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.temp]) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
@@ -872,32 +864,30 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="bg-hit"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.local]) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                   <div
                     class="bg-read"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.local]) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
@@ -906,36 +896,34 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="bg-dirtied"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
-                          plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
+                            plan.planStats.maxBlocks?.[BufferLocation.local]) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                   <div
                     class="bg-written"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
-                          plan.planStats?.maxBlocks?.[BufferLocation.local]) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
+                            plan.planStats?.maxBlocks?.[BufferLocation.local]) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                 </div>
                 <!-- io -->
@@ -952,36 +940,34 @@ function setRowRef(nodeId: number, el: Element) {
                   <div
                     class="bg-read"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_IO_READ_TIME] /
-                          plan.planStats?.maxIo) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_IO_READ_TIME] /
+                            plan.planStats?.maxIo) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                   <div
                     class="bg-written"
                     role="progressbar"
-                    :style="
-                      'width: ' +
-                      (Math.round(
-                        (row[1][NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
-                          plan.planStats?.maxIo) *
-                          100
-                      ) || 0) +
-                      '%'
-                    "
+                    style="height: 5px"
+                    :style="{
+                      width:
+                        (Math.round(
+                          (row[1][NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
+                            plan.planStats?.maxIo) *
+                            100
+                        ) || 0) + '%',
+                    }"
                     aria-valuenow="15"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style="height: 5px"
                   ></div>
                 </div>
               </td>

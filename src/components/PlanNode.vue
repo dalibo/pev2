@@ -122,13 +122,10 @@ function centerCte() {
         <div
           v-for="index in workersPlannedCountReversed"
           :key="index"
-          :style="
-            'top: ' +
-            (1 + index * 2) +
-            'px; left: ' +
-            (1 + (index + 1) * 3) +
-            'px;'
-          "
+          :style="{
+            top: 1 + index * 2 + 'px',
+            left: 1 + (index + 1) * 3 + 'px',
+          }"
           :class="{ 'border-dashed': index >= workersLaunchedCount }"
         >
           {{ index }}
@@ -334,7 +331,7 @@ function centerCte() {
               <div
                 class="progress-bar"
                 role="progressbar"
-                v-bind:style="{
+                :style="{
                   width: barWidth + '%',
                   'background-color': barColor,
                 }"
