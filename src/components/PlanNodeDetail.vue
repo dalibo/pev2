@@ -277,7 +277,8 @@ watch(activeTab, () => {
         ></font-awesome-icon>
         <b>Timing:</b>
         <span
-          :class="'p-0 px-1 rounded alert ' + durationClass"
+          class="p-0 px-1 rounded alert"
+          :class="durationClass"
           v-html="formattedProp('EXCLUSIVE_DURATION')"
         ></span>
         <template v-if="executionTimePercent !== Infinity">
@@ -317,7 +318,8 @@ watch(activeTab, () => {
           <span v-if="plannerRowEstimateValue != Infinity">
             by
             <span
-              :class="'p-0 px-1 alert ' + estimationClass"
+              class="p-0 px-1 alert"
+              :class="estimationClass"
               v-html="formattedProp('PLANNER_ESTIMATE_FACTOR')"
             ></span>
           </span>
@@ -333,7 +335,7 @@ watch(activeTab, () => {
         <span>
           <span class="px-1">{{ tilde + formattedProp(rowsRemovedProp) }}</span
           >|
-          <span :class="'p-0 px-1 alert ' + rowsRemovedClass"
+          <span class="p-0 px-1 alert" :class="rowsRemovedClass"
             >{{ rowsRemovedPercentString }}%</span
           >
         </span>
@@ -346,7 +348,8 @@ watch(activeTab, () => {
         ></font-awesome-icon>
         <b>Heap Fetches:</b>
         <span
-          :class="'p-0 px-1 rounded alert ' + heapFetchesClass"
+          class="p-0 px-1 rounded alert"
+          :class="heapFetchesClass"
           v-html="formattedProp('HEAP_FETCHES')"
         ></span>
         <font-awesome-icon
@@ -368,7 +371,7 @@ watch(activeTab, () => {
           class="text-muted"
         ></font-awesome-icon>
         <b>Cost:</b>
-        <span :class="'p-0 px-1 me-1 alert ' + costClass">{{
+        <span class="p-0 px-1 me-1 alert" :class="costClass">{{
           formattedProp("EXCLUSIVE_COST")
         }}</span>
         <span class="text-muted"
