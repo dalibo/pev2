@@ -85,7 +85,6 @@ const selectedNode = ref<Node | undefined>(undefined)
 const highlightedNodeId = ref<number>(NaN)
 
 const viewOptions = reactive({
-  menuHidden: true,
   showHighlightBar: false,
   showPlanStats: true,
   highlightType: HighlightType.NONE,
@@ -739,13 +738,6 @@ function averageIO(node: Node) {
             >
               IO: {{ averageIO(rootNode) }}
             </div>
-            <button
-              v-on:click="viewOptions.menuHidden = !viewOptions.menuHidden"
-              class="border-start btn btn-sm p-0 px-2 ms-auto"
-            >
-              <font-awesome-icon icon="cog" class="p-0"></font-awesome-icon>
-              Settings
-            </button>
           </div>
           <div class="flex-grow-1 d-flex overflow-hidden">
             <div class="flex-grow-1 overflow-hidden">
@@ -765,6 +757,67 @@ function averageIO(node: Node) {
                   </diagram>
                 </pane>
                 <pane ref="planEl" class="plan grab-bing position-relative">
+                  <div
+                    class="position-absolute m-1 p-1 bottom-0 end-0 rounded bg-white d-flex"
+                    v-if="plan"
+                  >
+                    <div class="btn-group btn-group-xs">
+                      <button
+                        class="btn btn-outline-secondary"
+                        :class="{
+                          active:
+                            viewOptions.highlightType === HighlightType.NONE,
+                        }"
+                        v-on:click="
+                          viewOptions.highlightType = HighlightType.NONE
+                        "
+                      >
+                        none
+                      </button>
+                      <button
+                        class="btn btn-outline-secondary"
+                        :class="{
+                          active:
+                            viewOptions.highlightType ===
+                            HighlightType.DURATION,
+                        }"
+                        v-on:click="
+                          viewOptions.highlightType = HighlightType.DURATION
+                        "
+                        :disabled="!plan.isAnalyze"
+                      >
+                        duration
+                      </button>
+                      <button
+                        class="btn btn-outline-secondary"
+                        :class="{
+                          active:
+                            viewOptions.highlightType === HighlightType.ROWS,
+                        }"
+                        v-on:click="
+                          viewOptions.highlightType = HighlightType.ROWS
+                        "
+                        :disabled="
+                          !rootNode ||
+                          rootNode[NodeProp.ACTUAL_ROWS] === undefined
+                        "
+                      >
+                        rows
+                      </button>
+                      <button
+                        class="btn btn-outline-secondary"
+                        :class="{
+                          active:
+                            viewOptions.highlightType === HighlightType.COST,
+                        }"
+                        v-on:click="
+                          viewOptions.highlightType = HighlightType.COST
+                        "
+                      >
+                        cost
+                      </button>
+                    </div>
+                  </div>
                   <svg width="100%" height="100%">
                     <g :transform="transform">
                       <!-- Links -->
@@ -861,65 +914,6 @@ function averageIO(node: Node) {
                   </svg>
                 </pane>
               </splitpanes>
-            </div>
-            <div
-              class="small p-2 border-start"
-              v-if="plan && !viewOptions.menuHidden"
-            >
-              <div class="text-end clearfix">
-                <button
-                  class="btn btn-xs btn-close float-end"
-                  @click="viewOptions.menuHidden = true"
-                ></button>
-              </div>
-              <label class="text-uppercase form-label">Graph metric</label>
-              <div>
-                <div class="btn-group btn-group-sm">
-                  <button
-                    class="btn btn-outline-secondary"
-                    :class="{
-                      active: viewOptions.highlightType === HighlightType.NONE,
-                    }"
-                    v-on:click="viewOptions.highlightType = HighlightType.NONE"
-                  >
-                    none
-                  </button>
-                  <button
-                    class="btn btn-outline-secondary"
-                    :class="{
-                      active:
-                        viewOptions.highlightType === HighlightType.DURATION,
-                    }"
-                    v-on:click="
-                      viewOptions.highlightType = HighlightType.DURATION
-                    "
-                    :disabled="!plan.isAnalyze"
-                  >
-                    duration
-                  </button>
-                  <button
-                    class="btn btn-outline-secondary"
-                    :class="{
-                      active: viewOptions.highlightType === HighlightType.ROWS,
-                    }"
-                    v-on:click="viewOptions.highlightType = HighlightType.ROWS"
-                    :disabled="
-                      !rootNode || rootNode[NodeProp.ACTUAL_ROWS] === undefined
-                    "
-                  >
-                    rows
-                  </button>
-                  <button
-                    class="btn btn-outline-secondary"
-                    :class="{
-                      active: viewOptions.highlightType === HighlightType.COST,
-                    }"
-                    v-on:click="viewOptions.highlightType = HighlightType.COST"
-                  >
-                    cost
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
           <!-- end Plan tab -->
