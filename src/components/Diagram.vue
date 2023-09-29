@@ -555,7 +555,7 @@ function setRowRef(nodeId: number, el: Element) {
                   class="progress rounded-0 align-items-center bg-transparent"
                   style="height: 5px"
                   v-if="viewOptions.metric == Metric.time"
-                  :key="'node' + index + 'time'"
+                  :key="`node${index}time`"
                 >
                   <div
                     class="progress-bar border-secondary bg-secondary"
@@ -597,7 +597,7 @@ function setRowRef(nodeId: number, el: Element) {
                   class="progress rounded-0 align-items-center bg-transparent"
                   style="height: 5px"
                   v-else-if="viewOptions.metric == Metric.rows"
-                  :key="'node' + index + 'rows'"
+                  :key="`node${index}rows`"
                 >
                   <div
                     class="bg-secondary"
@@ -622,7 +622,7 @@ function setRowRef(nodeId: number, el: Element) {
                   class="progress rounded-0 align-items-center bg-transparent justify-content-center"
                   style="height: 10px"
                   v-else-if="viewOptions.metric == Metric.estimate_factor"
-                  :key="'node' + index + 'estimation'"
+                  :key="`node${index}estimation`"
                 >
                   <span class="text-muted small">
                     <font-awesome-icon
@@ -692,7 +692,7 @@ function setRowRef(nodeId: number, el: Element) {
                   class="progress rounded-0 align-items-center bg-transparent"
                   style="height: 5px"
                   v-else-if="viewOptions.metric == Metric.cost"
-                  :key="'node' + index + 'cost'"
+                  :key="`node${index}cost`"
                 >
                   <div
                     class="bg-secondary"
@@ -725,7 +725,7 @@ function setRowRef(nodeId: number, el: Element) {
                     viewOptions.buffersMetric == BufferLocation.shared &&
                     plan.planStats.maxBlocks?.[BufferLocation.shared]
                   "
-                  :key="'node' + index + 'buffers_shared'"
+                  :key="`node${index}buffers_shared`"
                 >
                   <div
                     class="bg-hit"
@@ -821,7 +821,7 @@ function setRowRef(nodeId: number, el: Element) {
                     viewOptions.buffersMetric == BufferLocation.temp &&
                     plan.planStats.maxBlocks?.[BufferLocation.temp]
                   "
-                  :key="'node' + index + 'buffers_temp'"
+                  :key="`node${index}buffers_temp`"
                 >
                   <div
                     class="bg-read"
@@ -867,7 +867,7 @@ function setRowRef(nodeId: number, el: Element) {
                     viewOptions.buffersMetric == BufferLocation.local &&
                     plan.planStats.maxBlocks?.[BufferLocation.local]
                   "
-                  :key="'node' + index + 'buffers_local'"
+                  :key="`node${index}buffers_local`"
                 >
                   <div
                     class="bg-hit"
@@ -947,7 +947,7 @@ function setRowRef(nodeId: number, el: Element) {
                     (plan.content.Plan[NodeProp['IO_READ_TIME']] ||
                       plan.content.Plan[NodeProp['IO_WRITE_TIME']])
                   "
-                  :key="'node' + index + 'io_read'"
+                  :key="`node${index}io_read`"
                 >
                   <div
                     class="bg-read"

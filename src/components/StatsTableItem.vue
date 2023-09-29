@@ -64,7 +64,7 @@ function durationPercent(node: Node) {
       style="font-size: smaller"
     >
       <td class="ps-3">
-        <a :href="'#plan/node/' + node.nodeId" class="me-1"
+        <a :href="`#plan/node/${node.nodeId}`" class="me-1"
           >#{{ node.nodeId }}</a
         >
         {{ node[NodeProp.NODE_TYPE] }}
