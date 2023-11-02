@@ -123,16 +123,20 @@ export function formatBytes(value: number, precision = 2) {
   return compiled({ value: valueString, unit: units[i] })
 }
 
-export function blocks(value: number): string {
+export function blocksAsBytes(value: number): string {
+  return value ? formatBytes(value * 8 * 1024) : ""
+}
+
+export function blocks(value: number, asHtml = false): string {
+  asHtml = !!asHtml
   if (!value) {
     return ""
   }
-  return (
-    value.toLocaleString() +
-    "<br><small>" +
-    formatBytes(value * 8 * 1024) +
-    "</small>"
-  )
+  let r = value.toLocaleString()
+  if (asHtml) {
+    r += `<br><small>${formatBytes(value * 8 * 1024)}</small>`
+  }
+  return r
 }
 
 export function percent(value: number): string {
@@ -196,7 +200,7 @@ export function formatNodeProp(key: string, value: unknown): string {
     } else if (nodePropTypes[key] === PropType.kilobytes) {
       return kilobytes(value as number)
     } else if (nodePropTypes[key] === PropType.blocks) {
-      return blocks(value as number)
+      return blocks(value as number, true)
     } else if (nodePropTypes[key] === PropType.list) {
       return list(value as string[])
     } else if (nodePropTypes[key] === PropType.sortGroups) {
