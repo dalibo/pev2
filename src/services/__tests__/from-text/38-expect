@@ -1,0 +1,11 @@
+{
+  "Plan": {
+    "Node Type": "Nested Loop Join",
+    "Plans": [{
+      "Node Type": "Bitmap Heap Scan",
+      "Plans": [{
+        "Node Type": "Bitmap Index Scan"
+      }]
+    }]
+  }
+}
