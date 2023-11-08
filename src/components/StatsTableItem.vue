@@ -25,11 +25,7 @@ function durationPercent(node: Node) {
 
 <template>
   <thead class="thead-light">
-    <tr
-      v-on:click.prevent="expanded = !expanded"
-      role="button"
-      class="user-select-none"
-    >
+    <tr v-on:click.prevent="expanded = !expanded" role="button">
       <th>
         <font-awesome-icon
           fixed-width
