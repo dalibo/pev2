@@ -96,6 +96,14 @@ export enum NodeProp {
   PRE_SORTED_GROUPS = "Pre-sorted Groups",
   PRESORTED_KEY = "Presorted Key",
 
+  // DocDB
+
+  STORAGE_TABLE_READ_REQUESTS = "Storage Table Read Requests",
+  STORAGE_TABLE_READ_EXECUTION_TIME = "Storage Table Read Execution Time",
+  STORAGE_TABLE_WRITE_REQUESTS = "Storage Table Write Requests",
+  STORAGE_FLUSH_REQUESTS = "Storage Flush Requests",
+  STORAGE_FLUSH_EXECUTION_TIME = "Storage Flush Execution Time",
+
   // computed by pev
   NODE_ID = "nodeId",
   EXCLUSIVE_DURATION = "*Duration (exclusive)",
@@ -133,6 +141,7 @@ export enum NodeProp {
   ARRAY_INDEX_KEY = "arrayIndex",
 
   PEV_PLAN_TAG = "plan_",
+  DOCDB = "docdb",
 }
 
 export enum PropType {

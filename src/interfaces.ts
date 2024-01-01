@@ -110,6 +110,12 @@ export class Node {
   [NodeProp.EXCLUSIVE_IO_WRITE_TIME]: number;
   [NodeProp.AVERAGE_IO_READ_TIME]: number;
   [NodeProp.AVERAGE_IO_WRITE_TIME]: number;
+  [NodeProp.STORAGE_TABLE_READ_REQUESTS]: number;
+  [NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME]: number;
+  [NodeProp.STORAGE_TABLE_WRITE_REQUESTS]: number;
+  [NodeProp.STORAGE_FLUSH_REQUESTS]: number;
+  [NodeProp.STORAGE_FLUSH_EXECUTION_TIME]: number;
+
   [k: string]:
     | Node[]
     | Options

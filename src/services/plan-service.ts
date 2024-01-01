@@ -883,6 +883,10 @@ export class PlanService {
           return
         }
 
+        if (this.parseDocDB(extraMatches[2], element as Node)) {
+          return
+        }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, "")
         // try to convert to number
@@ -1150,6 +1154,23 @@ export class PlanService {
       } else {
         throw new Error("Unsupported sort groups method")
       }
+      return true
+    }
+    return false
+  }
+
+  private parseDocDB(text: string, el: Node): boolean {
+    // Parses a storage or catalog block
+    // Storage Table Read Requests: 3
+    // Storage Table Read Execution Time: 4.103 ms
+    const docDBRegex = /^(\s*)(Storage):\s+(.*)$/g
+    const docDBMatches = docDBRegex.exec(text)
+
+    if (docDBMatches) {
+      const docDBProperty = docDBMatches[2].replace(/ /g, "_").toUpperCase()
+      const docDBValue = docDBMatches[3]
+      el[NodeProp[docDBProperty as keyof typeof NodeProp] as keyof Node] =
+        docDBValue
       return true
     }
     return false

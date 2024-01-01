@@ -120,6 +120,12 @@ const notMiscProperties: string[] = [
   "size", // Manually added to use FlexTree
   NodeProp.RELATION_NAME,
   NodeProp.ALIAS,
+  // DocDB
+  NodeProp.STORAGE_FLUSH_EXECUTION_TIME,
+  NodeProp.STORAGE_FLUSH_REQUESTS,
+  NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME,
+  NodeProp.STORAGE_TABLE_READ_REQUESTS,
+  NodeProp.STORAGE_TABLE_WRITE_REQUESTS,
 ]
 
 onBeforeMount(() => {
@@ -258,6 +264,24 @@ watch(activeTab, () => {
       <li class="nav-item">
         <a
           class="nav-link"
+          :class="{
+            active: activeTab === 'DocDB',
+            disabled: !(
+              node[NodeProp.STORAGE_TABLE_READ_REQUESTS] ||
+              node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME] ||
+              node[NodeProp.STORAGE_TABLE_WRITE_REQUESTS] ||
+              node[NodeProp.STORAGE_FLUSH_REQUESTS] ||
+              node[NodeProp.STORAGE_FLUSH_EXECUTION_TIME]
+            ),
+          }"
+          @click.prevent.stop="activeTab = 'DocDB'"
+          href=""
+          >DocDB</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
           :class="{ active: activeTab === 'misc' }"
           @click.prevent.stop="activeTab = 'misc'"
           href=""
@@ -389,6 +413,51 @@ watch(activeTab, () => {
       </div>
       <!-- general tab -->
     </div>
+
+    <div class="tab-pane" :class="{ 'show active': activeTab === 'DocDB' }">
+      <!-- docDB tab -->
+      <dl
+        v-if="
+          node[NodeProp.STORAGE_TABLE_READ_REQUESTS] ||
+          node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME] ||
+          node[NodeProp.STORAGE_TABLE_WRITE_REQUESTS] ||
+          node[NodeProp.STORAGE_FLUSH_REQUESTS] ||
+          node[NodeProp.STORAGE_FLUSH_EXECUTION_TIME]
+        "
+        class="mb-2 list-inline"
+      >
+        <dd class="list-inline-item">
+          <span v-if="node[NodeProp.STORAGE_TABLE_READ_REQUESTS]" class="ms-2">
+            <b>Table Read Requests:&nbsp;</b>
+            {{ formattedProp("STORAGE_TABLE_READ_REQUESTS") }}
+          </span>
+          <br />
+          <span
+            v-if="node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME]"
+            class="ms-2"
+          >
+            <b>Table Read Execution Time:&nbsp;</b>
+            {{ formattedProp("STORAGE_TABLE_READ_EXECUTION_TIME") }}
+          </span>
+          <br />
+          <span v-if="node[NodeProp.STORAGE_TABLE_WRITE_REQUESTS]" class="ms-2">
+            <b>Storage Table Write Requests:&nbsp;</b>
+            {{ formattedProp("STORAGE_TABLE_WRITE_REQUESTS") }}
+          </span>
+          <br />
+          <span v-if="node[NodeProp.STORAGE_FLUSH_REQUESTS]" class="ms-2">
+            <b>Storage Flush Requests:&nbsp;</b>
+            {{ formattedProp("STORAGE_FLUSH_REQUESTS") }}
+          </span>
+          <br />
+          <span v-if="node[NodeProp.STORAGE_FLUSH_EXECUTION_TIME]" class="ms-2">
+            <b>Storage Flush Execution Time:&nbsp;</b>
+            {{ formattedProp("STORAGE_FLUSH_EXECUTION_TIME") }}
+          </span>
+        </dd>
+      </dl>
+    </div>
+
     <div class="tab-pane" :class="{ 'show active': activeTab === 'iobuffer' }">
       <!-- iobuffer tab -->
       <dl
