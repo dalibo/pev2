@@ -149,6 +149,7 @@ onBeforeMount(() => {
     plan.value = undefined
     return
   }
+
   rootNode.value = planJson.Plan
   queryText.value = planJson["Query Text"] || props.planQuery
   plan.value = planService.createPlan("", planJson, queryText.value)
@@ -157,6 +158,23 @@ onBeforeMount(() => {
     (content["Execution Time"] as number) ||
     (content["Total Runtime"] as number) ||
     NaN
+  planStats.catalogReadExecutionTime =
+    (content["Catalog Read Execution Time"] as number) || NaN
+  planStats.catalogReadRequests =
+    (content["Catalog Read Requests"] as number) || NaN
+  planStats.catalogWriteRequests =
+    (content["Catalog Write Requests"] as number) || NaN
+  planStats.storageReadExecutionTime =
+    (content["Storage Read Execution Time"] as number) || NaN
+  planStats.storageReadRequests =
+    (content["Storage Read Requests"] as number) || NaN
+  planStats.storageWriteRequests =
+    (content["Storage Write Requests"] as number) || NaN
+  planStats.storageFlushRequests =
+    (content["Storage Flush Requests"] as number) || NaN
+  planStats.storageExecutionTime =
+    (content["Storage Execution Time"] as number) || NaN
+
   planStats.planningTime = (content["Planning Time"] as number) || NaN
   planStats.maxRows = content.maxRows || NaN
   planStats.maxCost = content.maxCost || NaN
@@ -555,6 +573,7 @@ function averageIO(node: Node) {
         <!-- Plan tab -->
         <div class="d-flex flex-column flex-grow-1 overflow-hidden">
           <div
+            style="color: rgb(4, 4, 4)"
             class="plan-stats flex-shrink-0 d-flex border-bottom border-top align-items-center"
             v-if="plan"
           >
@@ -603,6 +622,119 @@ function averageIO(node: Node) {
                   ></span>
                 </span>
               </template>
+            </div>
+            <!-- Add for docdb -->
+            <!-- Storage Read Requests -->
+
+            <div
+              class="d-inline-block border-start px-2"
+              v-if="
+                planStats.storageReadRequests &&
+                Math.abs(planStats.storageReadRequests - 0.0) > 0.0001
+              "
+            >
+              <span class="stat-label">Storage Read Requests: </span>
+              <span class="stat-value">{{
+                planStats.storageReadRequests
+              }}</span>
+            </div>
+
+            <!-- Storage Read Execution Time -->
+            <div
+              class="d-inline-block border-start px-2"
+              v-if="
+                planStats.storageReadExecutionTime &&
+                Math.abs(planStats.storageReadExecutionTime - 0.0) > 0.0001
+              "
+            >
+              <span class="stat-label">Storage Read Execution Time: </span>
+              <span class="stat-value"
+                >{{ planStats.storageReadExecutionTime }} ms</span
+              >
+            </div>
+
+            <!-- Storage Write Requests -->
+            <div
+              class="d-inline-block border-start px-2"
+              v-if="
+                planStats.storageWriteRequests &&
+                Math.abs(planStats.storageWriteRequests - 0.0) > 0.0001
+              "
+            >
+              <span class="stat-label">Storage Write Requests: </span>
+              <span class="stat-value">{{
+                planStats.storageWriteRequests
+              }}</span>
+            </div>
+
+            <!-- Catalog Read Requests -->
+            <div
+              class="d-inline-block border-start px-2"
+              v-if="
+                planStats.catalogReadRequests &&
+                Math.abs(planStats.catalogReadRequests - 0.0) > 0.0001
+              "
+            >
+              <span class="stat-label">Catalog Read Requests: </span>
+              <span class="stat-value">{{
+                planStats.catalogReadRequests
+              }}</span>
+            </div>
+
+            <!-- Catalog Read Execution Time -->
+            <div
+              class="d-inline-block border-start px-2"
+              v-if="
+                planStats.catalogReadExecutionTime &&
+                Math.abs(planStats.catalogReadExecutionTime - 0.0) > 0.0001
+              "
+            >
+              <span class="stat-label">Catalog Read Execution Time: </span>
+              <span class="stat-value"
+                >{{ planStats.catalogReadExecutionTime }} ms</span
+              >
+            </div>
+
+            <!-- Catalog Write Requests -->
+            <div
+              class="d-inline-block border-start px-2"
+              v-if="
+                planStats.catalogWriteRequests &&
+                Math.abs(planStats.catalogWriteRequests - 0.0) > 0.0001
+              "
+            >
+              <span class="stat-label">Catalog Write Requests: </span>
+              <span class="stat-value">{{
+                planStats.catalogWriteRequests
+              }}</span>
+            </div>
+
+            <!-- Storage Flush Requests -->
+            <div
+              class="d-inline-block border-start px-2"
+              v-if="
+                planStats.storageFlushRequests &&
+                Math.abs(planStats.storageFlushRequests - 0.0) > 0.0001
+              "
+            >
+              <span class="stat-label">Storage Flush Requests: </span>
+              <span class="stat-value">{{
+                planStats.storageFlushRequests
+              }}</span>
+            </div>
+
+            <!-- Storage Execution Time -->
+            <div
+              class="d-inline-block border-start px-2"
+              v-if="
+                planStats.storageExecutionTime &&
+                Math.abs(planStats.storageExecutionTime - 0.0) > 0.0001
+              "
+            >
+              <span class="stat-label">Storage Execution Time: </span>
+              <span class="stat-value"
+                >{{ planStats.storageExecutionTime }} ms</span
+              >
             </div>
             <div
               class="d-inline-block border-start px-2"

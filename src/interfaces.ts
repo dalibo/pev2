@@ -49,6 +49,14 @@ export interface ITrigger {
 export interface IPlanStats {
   executionTime?: number
   planningTime?: number
+  storageReadRequests?: number
+  storageReadExecutionTime?: number
+  storageWriteRequests?: number
+  catalogReadRequests?: number
+  catalogReadExecutionTime?: number
+  catalogWriteRequests?: number
+  storageFlushRequests?: number
+  storageExecutionTime?: number
   maxRows: number
   maxCost: number
   maxDuration: number
