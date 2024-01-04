@@ -13,8 +13,10 @@ export default function useNode(
   viewOptions: ViewOptions
 ) {
   const executionTimePercent = ref<number>(NaN)
-  const docDBExecutionTime = ref<number>(NaN)
-  const docDBExecutionTimePercent = ref<number>(NaN)
+  const docDBReadExecutionTime = ref<number>(NaN)
+  const docDBReadExecutionTimePercent = ref<number>(NaN)
+  const docDBFlushExecutionTime = ref<number>(NaN)
+  const docDBFlushExecutionTimePercent = ref<number>(NaN)
   // UI flags
   // calculated properties
   const costPercent = ref<number>(NaN)
@@ -29,7 +31,8 @@ export default function useNode(
   onBeforeMount(() => {
     calculateBar()
     calculateDuration()
-    calculateDocDBDuration()
+    calculateDocDBReadTime()
+    calculateDocDBFlushTime()
     calculateCost()
     calculateRowsRemoved()
     plannerRowEstimateDirection.value =
@@ -98,15 +101,28 @@ export default function useNode(
     executionTimePercent.value = _.round((duration / executionTime) * 100)
   }
 
-  function calculateDocDBDuration() {
+  function calculateDocDBReadTime() {
     // Get the Storage Table Read Execution Time
     if (node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME]) {
       const excutionTime = node[NodeProp.EXCLUSIVE_DURATION] as number
-      docDBExecutionTime.value = node[
+      docDBReadExecutionTime.value = node[
         NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME
       ] as number
-      docDBExecutionTimePercent.value = _.round(
-        (docDBExecutionTime.value / excutionTime) * 100
+      docDBReadExecutionTimePercent.value = _.round(
+        (docDBReadExecutionTime.value / excutionTime) * 100
+      )
+    }
+  }
+
+  function calculateDocDBFlushTime() {
+    // Get the Storage Table Flush Execution Time
+    if (node[NodeProp.STORAGE_FLUSH_EXECUTION_TIME]) {
+      const excutionTime = node[NodeProp.EXCLUSIVE_DURATION] as number
+      docDBFlushExecutionTime.value = node[
+        NodeProp.STORAGE_FLUSH_EXECUTION_TIME
+      ] as number
+      docDBFlushExecutionTimePercent.value = _.round(
+        (docDBFlushExecutionTime.value / excutionTime) * 100
       )
     }
   }
@@ -166,7 +182,7 @@ export default function useNode(
 
   const docDBDurationClass = computed(() => {
     let c
-    const i = docDBExecutionTimePercent.value
+    const i = docDBReadExecutionTimePercent.value
     if (i > 90) {
       c = 4
     } else if (i > 40) {
@@ -286,8 +302,10 @@ export default function useNode(
     durationClass,
     estimationClass,
     executionTimePercent,
-    docDBExecutionTime,
-    docDBExecutionTimePercent,
+    docDBReadExecutionTime,
+    docDBFlushExecutionTime,
+    docDBReadExecutionTimePercent,
+    docDBFlushExecutionTimePercent,
     filterTooltip,
     heapFetchesClass,
     highlightValue,

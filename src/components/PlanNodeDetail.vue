@@ -47,8 +47,10 @@ const {
   durationClass,
   estimationClass,
   executionTimePercent,
-  docDBExecutionTime,
-  docDBExecutionTimePercent,
+  docDBReadExecutionTime,
+  docDBReadExecutionTimePercent,
+  docDBFlushExecutionTime,
+  docDBFlushExecutionTimePercent,
   heapFetchesClass,
   plannerRowEstimateDirection,
   plannerRowEstimateValue,
@@ -414,7 +416,9 @@ watch(activeTab, () => {
         <span class="px-1">{{ formattedProp("ACTUAL_LOOPS") }} </span>
       </div>
       <template
-        v-if="docDBExecutionTimePercent !== Infinity && docDBExecutionTime"
+        v-if="
+          docDBReadExecutionTimePercent !== Infinity && docDBReadExecutionTime
+        "
       >
         <div class="mb-2">
           <font-awesome-icon
@@ -422,9 +426,10 @@ watch(activeTab, () => {
             icon="fa-boxes-stacked"
             class="text-muted"
           ></font-awesome-icon>
-          <b>DocDB Execution Time:</b>
+          <b>DocDB Read Execution Time:</b>
           <span class="px-1">
-            {{ docDBExecutionTime }} | {{ docDBExecutionTimePercent }}%</span
+            {{ docDBReadExecutionTime }} |
+            {{ docDBReadExecutionTimePercent }}%</span
           >
           <font-awesome-icon
             icon="info-circle"
@@ -433,7 +438,35 @@ watch(activeTab, () => {
             v-tippy="{
               arrow: true,
               content:
-                'DocDB Execution Time is the percentage of time spent in DocDB operations for this perticular operation. It is calculated as (Storage Table Read Execution Time / Exclusive Duration) * 100.',
+                'DocDB Read Execution Time is the percentage of time spent in DocDB operations for this perticular operation. It is calculated as (Storage Table Read Execution Time / Exclusive Duration) * 100.',
+            }"
+          ></font-awesome-icon>
+        </div>
+      </template>
+      <template
+        v-if="
+          docDBFlushExecutionTimePercent !== Infinity && docDBFlushExecutionTime
+        "
+      >
+        <div class="mb-2">
+          <font-awesome-icon
+            fixed-width
+            icon="fa-boxes-stacked"
+            class="text-muted"
+          ></font-awesome-icon>
+          <b>DocDB Flush Execution Time:</b>
+          <span class="px-1">
+            {{ docDBFlushExecutionTime }} |
+            {{ docDBFlushExecutionTimePercent }}%</span
+          >
+          <font-awesome-icon
+            icon="info-circle"
+            fixed-width
+            class="text-muted"
+            v-tippy="{
+              arrow: true,
+              content:
+                'DocDB Flush Execution Time is the percentage of time spent in DocDB flush for this perticular operation. It is calculated as (Storage Flush Execution Time / Exclusive Duration) * 100.',
             }"
           ></font-awesome-icon>
         </div>
