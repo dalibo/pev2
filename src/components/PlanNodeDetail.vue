@@ -47,6 +47,8 @@ const {
   durationClass,
   estimationClass,
   executionTimePercent,
+  docDBExecutionTime,
+  docDBExecutionTimePercent,
   heapFetchesClass,
   plannerRowEstimateDirection,
   plannerRowEstimateValue,
@@ -224,6 +226,24 @@ watch(activeTab, () => {
       </li>
       <li class="nav-item">
         <a
+          class="nav-link"
+          :class="{
+            active: activeTab === 'DocDB',
+            disabled: !(
+              node[NodeProp.STORAGE_TABLE_READ_REQUESTS] ||
+              node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME] ||
+              node[NodeProp.STORAGE_TABLE_WRITE_REQUESTS] ||
+              node[NodeProp.STORAGE_FLUSH_REQUESTS] ||
+              node[NodeProp.STORAGE_FLUSH_EXECUTION_TIME]
+            ),
+          }"
+          @click.prevent.stop="activeTab = 'DocDB'"
+          href=""
+          >DocDB</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
           class="nav-link text-nowrap"
           :class="{
             active: activeTab === 'iobuffer',
@@ -259,24 +279,6 @@ watch(activeTab, () => {
           @click.prevent.stop="activeTab = 'workers'"
           href=""
           >Workers</a
-        >
-      </li>
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          :class="{
-            active: activeTab === 'DocDB',
-            disabled: !(
-              node[NodeProp.STORAGE_TABLE_READ_REQUESTS] ||
-              node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME] ||
-              node[NodeProp.STORAGE_TABLE_WRITE_REQUESTS] ||
-              node[NodeProp.STORAGE_FLUSH_REQUESTS] ||
-              node[NodeProp.STORAGE_FLUSH_EXECUTION_TIME]
-            ),
-          }"
-          @click.prevent.stop="activeTab = 'DocDB'"
-          href=""
-          >DocDB</a
         >
       </li>
       <li class="nav-item">
@@ -411,9 +413,33 @@ watch(activeTab, () => {
         <b>Loops:</b>
         <span class="px-1">{{ formattedProp("ACTUAL_LOOPS") }} </span>
       </div>
+      <template
+        v-if="docDBExecutionTimePercent !== Infinity && docDBExecutionTime"
+      >
+        <div class="mb-2">
+          <font-awesome-icon
+            fixed-width
+            icon="fa-boxes-stacked"
+            class="text-muted"
+          ></font-awesome-icon>
+          <b>DocDB Execution Time:</b>
+          <span class="px-1">
+            {{ docDBExecutionTime }} | {{ docDBExecutionTimePercent }}%</span
+          >
+          <font-awesome-icon
+            icon="info-circle"
+            fixed-width
+            class="text-muted"
+            v-tippy="{
+              arrow: true,
+              content:
+                'DocDB Execution Time is the percentage of time spent in DocDB operations for this perticular operation. It is calculated as (Storage Table Read Execution Time / Exclusive Duration) * 100.',
+            }"
+          ></font-awesome-icon>
+        </div>
+      </template>
       <!-- general tab -->
     </div>
-
     <div class="tab-pane" :class="{ 'show active': activeTab === 'DocDB' }">
       <!-- docDB tab -->
       <dl
@@ -428,7 +454,9 @@ watch(activeTab, () => {
       >
         <dd class="list-inline-item">
           <span v-if="node[NodeProp.STORAGE_TABLE_READ_REQUESTS]" class="ms-2">
-            <b>Table Read Requests:&nbsp;</b>
+            <font-awesome-icon fixed-width icon="fa-glasses" class="text-muted">
+            </font-awesome-icon>
+            <b>Storage Table Read Requests:&nbsp;</b>
             {{ formattedProp("STORAGE_TABLE_READ_REQUESTS") }}
           </span>
           <br />
@@ -436,26 +464,51 @@ watch(activeTab, () => {
             v-if="node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME]"
             class="ms-2"
           >
-            <b>Table Read Execution Time:&nbsp;</b>
+            <font-awesome-icon
+              fixed-width
+              icon="fa-boxes-stacked"
+              class="text-muted"
+            >
+            </font-awesome-icon>
+            <b>Storage Table Read Execution Time:&nbsp;</b>
             {{ formattedProp("STORAGE_TABLE_READ_EXECUTION_TIME") }}
           </span>
           <br />
           <span v-if="node[NodeProp.STORAGE_TABLE_WRITE_REQUESTS]" class="ms-2">
+            <font-awesome-icon
+              fixed-width
+              icon="fa-boxes-stacked"
+              class="text-muted"
+            >
+            </font-awesome-icon>
             <b>Storage Table Write Requests:&nbsp;</b>
             {{ formattedProp("STORAGE_TABLE_WRITE_REQUESTS") }}
           </span>
           <br />
           <span v-if="node[NodeProp.STORAGE_FLUSH_REQUESTS]" class="ms-2">
+            <font-awesome-icon
+              fixed-width
+              icon="fa-boxes-stacked"
+              class="text-muted"
+            >
+            </font-awesome-icon>
             <b>Storage Flush Requests:&nbsp;</b>
             {{ formattedProp("STORAGE_FLUSH_REQUESTS") }}
           </span>
           <br />
           <span v-if="node[NodeProp.STORAGE_FLUSH_EXECUTION_TIME]" class="ms-2">
+            <font-awesome-icon
+              fixed-width
+              icon="fa-boxes-stacked"
+              class="text-muted"
+            >
+            </font-awesome-icon>
             <b>Storage Flush Execution Time:&nbsp;</b>
             {{ formattedProp("STORAGE_FLUSH_EXECUTION_TIME") }}
           </span>
         </dd>
       </dl>
+      <!-- docDB tab -->
     </div>
 
     <div class="tab-pane" :class="{ 'show active': activeTab === 'iobuffer' }">

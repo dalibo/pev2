@@ -13,6 +13,8 @@ export default function useNode(
   viewOptions: ViewOptions
 ) {
   const executionTimePercent = ref<number>(NaN)
+  const docDBExecutionTime = ref<number>(NaN)
+  const docDBExecutionTimePercent = ref<number>(NaN)
   // UI flags
   // calculated properties
   const costPercent = ref<number>(NaN)
@@ -27,6 +29,7 @@ export default function useNode(
   onBeforeMount(() => {
     calculateBar()
     calculateDuration()
+    calculateDocDBDuration()
     calculateCost()
     calculateRowsRemoved()
     plannerRowEstimateDirection.value =
@@ -95,6 +98,19 @@ export default function useNode(
     executionTimePercent.value = _.round((duration / executionTime) * 100)
   }
 
+  function calculateDocDBDuration() {
+    // Get the Storage Table Read Execution Time
+    if (node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME]) {
+      const excutionTime = node[NodeProp.EXCLUSIVE_DURATION] as number
+      docDBExecutionTime.value = node[
+        NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME
+      ] as number
+      docDBExecutionTimePercent.value = _.round(
+        (docDBExecutionTime.value / excutionTime) * 100
+      )
+    }
+  }
+
   function calculateCost() {
     const maxTotalCost = plan.value.content.maxTotalCost as number
     const cost = node[NodeProp.EXCLUSIVE_COST] as number
@@ -135,6 +151,22 @@ export default function useNode(
   const durationClass = computed(() => {
     let c
     const i = executionTimePercent.value
+    if (i > 90) {
+      c = 4
+    } else if (i > 40) {
+      c = 3
+    } else if (i > 10) {
+      c = 2
+    }
+    if (c) {
+      return "c-" + c
+    }
+    return false
+  })
+
+  const docDBDurationClass = computed(() => {
+    let c
+    const i = docDBExecutionTimePercent.value
     if (i > 90) {
       c = 4
     } else if (i > 40) {
@@ -254,6 +286,8 @@ export default function useNode(
     durationClass,
     estimationClass,
     executionTimePercent,
+    docDBExecutionTime,
+    docDBExecutionTimePercent,
     filterTooltip,
     heapFetchesClass,
     highlightValue,
