@@ -491,8 +491,8 @@ watch(activeTab, () => {
             </font-awesome-icon>
             <b>Storage Table Read Requests:&nbsp;</b>
             {{ formattedProp("STORAGE_TABLE_READ_REQUESTS") }}
+            <br />
           </span>
-          <br />
           <span
             v-if="node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME]"
             class="ms-2"
@@ -505,8 +505,8 @@ watch(activeTab, () => {
             </font-awesome-icon>
             <b>Storage Table Read Execution Time:&nbsp;</b>
             {{ formattedProp("STORAGE_TABLE_READ_EXECUTION_TIME") }}
+            <br />
           </span>
-          <br />
           <span v-if="node[NodeProp.STORAGE_TABLE_WRITE_REQUESTS]" class="ms-2">
             <font-awesome-icon
               fixed-width
@@ -516,8 +516,8 @@ watch(activeTab, () => {
             </font-awesome-icon>
             <b>Storage Table Write Requests:&nbsp;</b>
             {{ formattedProp("STORAGE_TABLE_WRITE_REQUESTS") }}
+            <br />
           </span>
-          <br />
           <span v-if="node[NodeProp.STORAGE_FLUSH_REQUESTS]" class="ms-2">
             <font-awesome-icon
               fixed-width
@@ -527,8 +527,8 @@ watch(activeTab, () => {
             </font-awesome-icon>
             <b>Storage Flush Requests:&nbsp;</b>
             {{ formattedProp("STORAGE_FLUSH_REQUESTS") }}
+            <br />
           </span>
-          <br />
           <span v-if="node[NodeProp.STORAGE_FLUSH_EXECUTION_TIME]" class="ms-2">
             <font-awesome-icon
               fixed-width
@@ -538,6 +538,7 @@ watch(activeTab, () => {
             </font-awesome-icon>
             <b>Storage Flush Execution Time:&nbsp;</b>
             {{ formattedProp("STORAGE_FLUSH_EXECUTION_TIME") }}
+            <br />
           </span>
         </dd>
       </dl>
