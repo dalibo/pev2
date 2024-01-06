@@ -101,6 +101,9 @@ export enum NodeProp {
   STORAGE_TABLE_READ_REQUESTS = "Storage Table Read Requests",
   STORAGE_TABLE_READ_EXECUTION_TIME = "Storage Table Read Execution Time",
   STORAGE_TABLE_WRITE_REQUESTS = "Storage Table Write Requests",
+  STORAGE_INDEX_READ_REQUESTS = "Storage Index Read Requests",
+  STORAGE_INDEX_READ_EXECUTION_TIME = "Storage Index Read Execution Time",
+  STORAGE_INDEX_WRITE_REQUESTS = "Storage Index Write Requests",
   STORAGE_FLUSH_REQUESTS = "Storage Flush Requests",
   STORAGE_FLUSH_EXECUTION_TIME = "Storage Flush Execution Time",
 

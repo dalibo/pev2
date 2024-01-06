@@ -172,6 +172,8 @@ onBeforeMount(() => {
     (content["Storage Write Requests"] as number) || NaN
   planStats.storageFlushRequests =
     (content["Storage Flush Requests"] as number) || NaN
+  planStats.storageFlushExecutionTime =
+    (content["Storage Flush Execution Time"] as number) || NaN
   planStats.storageExecutionTime =
     (content["Storage Execution Time"] as number) || NaN
 
@@ -711,6 +713,20 @@ function averageIO(node: Node) {
               <span class="stat-value">{{
                 planStats.storageFlushRequests
               }}</span>
+            </div>
+
+            <!-- Storage Flush Execution Time -->
+            <div
+              class="d-inline-block border-start px-2"
+              v-if="
+                planStats.storageFlushExecutionTime &&
+                Math.abs(planStats.storageFlushExecutionTime - 0.0) > 0.0001
+              "
+            >
+              <span class="stat-label">Storage Flush Execution Time: </span>
+              <span class="stat-value"
+                >{{ planStats.storageFlushExecutionTime }} ms</span
+              >
             </div>
 
             <!-- Storage Execution Time -->

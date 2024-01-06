@@ -1161,8 +1161,6 @@ export class PlanService {
 
   private parseDocDB(text: string, el: Node): boolean {
     // Parses a storage or catalog block
-    // Storage Table Read Requests: 3
-    // Storage Table Read Execution Time: 4.103 ms
     const docDBRegex = /^(\s*)(Storage):\s+(.*)$/g
     const docDBMatches = docDBRegex.exec(text)
 

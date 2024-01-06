@@ -47,8 +47,10 @@ const {
   durationClass,
   estimationClass,
   executionTimePercent,
-  docDBReadExecutionTime,
-  docDBReadExecutionTimePercent,
+  docDBTableReadExecutionTime,
+  docDBTableReadExecutionTimePercent,
+  docDBIndexReadExecutionTime,
+  docDBIndexReadExecutionTimePercent,
   docDBFlushExecutionTime,
   docDBFlushExecutionTimePercent,
   heapFetchesClass,
@@ -129,6 +131,9 @@ const notMiscProperties: string[] = [
   NodeProp.STORAGE_FLUSH_REQUESTS,
   NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME,
   NodeProp.STORAGE_TABLE_READ_REQUESTS,
+  NodeProp.STORAGE_INDEX_READ_REQUESTS,
+  NodeProp.STORAGE_INDEX_READ_EXECUTION_TIME,
+  NodeProp.STORAGE_INDEX_WRITE_REQUESTS,
   NodeProp.STORAGE_TABLE_WRITE_REQUESTS,
 ]
 
@@ -235,6 +240,9 @@ watch(activeTab, () => {
               node[NodeProp.STORAGE_TABLE_READ_REQUESTS] ||
               node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME] ||
               node[NodeProp.STORAGE_TABLE_WRITE_REQUESTS] ||
+              node[NodeProp.STORAGE_INDEX_READ_REQUESTS] ||
+              node[NodeProp.STORAGE_INDEX_READ_EXECUTION_TIME] ||
+              node[NodeProp.STORAGE_INDEX_WRITE_REQUESTS] ||
               node[NodeProp.STORAGE_FLUSH_REQUESTS] ||
               node[NodeProp.STORAGE_FLUSH_EXECUTION_TIME]
             ),
@@ -417,7 +425,8 @@ watch(activeTab, () => {
       </div>
       <template
         v-if="
-          docDBReadExecutionTimePercent !== Infinity && docDBReadExecutionTime
+          docDBIndexReadExecutionTimePercent !== Infinity &&
+          docDBIndexReadExecutionTime
         "
       >
         <div class="mb-2">
@@ -426,11 +435,11 @@ watch(activeTab, () => {
             icon="fa-boxes-stacked"
             class="text-muted"
           ></font-awesome-icon>
-          <b>DocDB Read Execution Time:</b>
+          <b>DocDB Index Read Execution Time:</b>
           <span class="px-1">
-            {{ docDBReadExecutionTime }} |
-            {{ docDBReadExecutionTimePercent }}%</span
-          >
+            {{ docDBIndexReadExecutionTime }} |
+            {{ docDBIndexReadExecutionTimePercent }}%
+          </span>
           <font-awesome-icon
             icon="info-circle"
             fixed-width
@@ -438,7 +447,36 @@ watch(activeTab, () => {
             v-tippy="{
               arrow: true,
               content:
-                'DocDB Read Execution Time is the percentage of time spent in DocDB operations for this perticular operation. It is calculated as (Storage Table Read Execution Time / Exclusive Duration) * 100.',
+                'DocDB Index Read Execution Time is the percentage of time spent in DocDB operations for this perticular operation. It is calculated as (Storage Index Read Execution Time / Exclusive Duration) * 100.',
+            }"
+          ></font-awesome-icon>
+        </div>
+      </template>
+      <template
+        v-if="
+          docDBTableReadExecutionTimePercent !== Infinity &&
+          docDBTableReadExecutionTime
+        "
+      >
+        <div class="mb-2">
+          <font-awesome-icon
+            fixed-width
+            icon="fa-boxes-stacked"
+            class="text-muted"
+          ></font-awesome-icon>
+          <b>DocDB Table Read Execution Time:</b>
+          <span class="px-1">
+            {{ docDBTableReadExecutionTime }} |
+            {{ docDBTableReadExecutionTimePercent }}%
+          </span>
+          <font-awesome-icon
+            icon="info-circle"
+            fixed-width
+            class="text-muted"
+            v-tippy="{
+              arrow: true,
+              content:
+                'DocDB Table Read Execution Time is the percentage of time spent in DocDB operations for this perticular operation. It is calculated as (Storage Table Read Execution Time / Exclusive Duration) * 100.',
             }"
           ></font-awesome-icon>
         </div>
@@ -480,6 +518,9 @@ watch(activeTab, () => {
           node[NodeProp.STORAGE_TABLE_READ_REQUESTS] ||
           node[NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME] ||
           node[NodeProp.STORAGE_TABLE_WRITE_REQUESTS] ||
+          node[NodeProp.STORAGE_INDEX_READ_REQUESTS] ||
+          node[NodeProp.STORAGE_INDEX_READ_EXECUTION_TIME] ||
+          node[NodeProp.STORAGE_INDEX_WRITE_REQUESTS] ||
           node[NodeProp.STORAGE_FLUSH_REQUESTS] ||
           node[NodeProp.STORAGE_FLUSH_EXECUTION_TIME]
         "
@@ -516,6 +557,38 @@ watch(activeTab, () => {
             </font-awesome-icon>
             <b>Storage Table Write Requests:&nbsp;</b>
             {{ formattedProp("STORAGE_TABLE_WRITE_REQUESTS") }}
+            <br />
+          </span>
+          <span v-if="node[NodeProp.STORAGE_INDEX_READ_REQUESTS]" class="ms-2">
+            <font-awesome-icon fixed-width icon="fa-glasses" class="text-muted">
+            </font-awesome-icon>
+            <b>Storage Index Read Requests:&nbsp;</b>
+            {{ formattedProp("STORAGE_INDEX_READ_REQUESTS") }}
+            <br />
+          </span>
+          <span
+            v-if="node[NodeProp.STORAGE_INDEX_READ_EXECUTION_TIME]"
+            class="ms-2"
+          >
+            <font-awesome-icon
+              fixed-width
+              icon="fa-boxes-stacked"
+              class="text-muted"
+            >
+            </font-awesome-icon>
+            <b>Storage Index Read Execution Time:&nbsp;</b>
+            {{ formattedProp("STORAGE_INDEX_READ_EXECUTION_TIME") }}
+            <br />
+          </span>
+          <span v-if="node[NodeProp.STORAGE_INDEX_WRITE_REQUESTS]" class="ms-2">
+            <font-awesome-icon
+              fixed-width
+              icon="fa-boxes-stacked"
+              class="text-muted"
+            >
+            </font-awesome-icon>
+            <b>Storage Index Write Requests:&nbsp;</b>
+            {{ formattedProp("STORAGE_INDEX_WRITE_REQUESTS") }}
             <br />
           </span>
           <span v-if="node[NodeProp.STORAGE_FLUSH_REQUESTS]" class="ms-2">

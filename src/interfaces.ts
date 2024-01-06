@@ -56,6 +56,7 @@ export interface IPlanStats {
   catalogReadExecutionTime?: number
   catalogWriteRequests?: number
   storageFlushRequests?: number
+  storageFlushExecutionTime?: number
   storageExecutionTime?: number
   maxRows: number
   maxCost: number
@@ -121,6 +122,9 @@ export class Node {
   [NodeProp.STORAGE_TABLE_READ_REQUESTS]: number;
   [NodeProp.STORAGE_TABLE_READ_EXECUTION_TIME]: number;
   [NodeProp.STORAGE_TABLE_WRITE_REQUESTS]: number;
+  [NodeProp.STORAGE_INDEX_READ_REQUESTS]: number;
+  [NodeProp.STORAGE_INDEX_READ_EXECUTION_TIME]: number;
+  [NodeProp.STORAGE_INDEX_WRITE_REQUESTS]: number;
   [NodeProp.STORAGE_FLUSH_REQUESTS]: number;
   [NodeProp.STORAGE_FLUSH_EXECUTION_TIME]: number;
 
