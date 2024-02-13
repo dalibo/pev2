@@ -3,16 +3,11 @@ import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
 import type { Ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
-import { HelpService } from "@/services/help-service"
+import { HelpService, shouldShowProp } from "@/services/help-service"
 import { formatNodeProp } from "@/filters"
-import {
-  EstimateDirection,
-  NodeProp,
-  nodePropTypes,
-  PropType,
-  WorkerProp,
-} from "@/enums"
+import { EstimateDirection, NodeProp } from "@/enums"
 import useNode from "@/node"
+import WorkersDetail from "@/components/WorkersDetail.vue"
 import { PlanKey, ViewOptionsKey } from "@/symbols"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
@@ -39,7 +34,6 @@ const nodeProps = ref<
 const activeTab = ref<string>("general")
 
 const helpService = new HelpService()
-const getHelpMessage = helpService.getHelpMessage
 const getNodeTypeDescription = helpService.getNodeTypeDescription
 
 const {
@@ -54,73 +48,7 @@ const {
   rowsRemovedClass,
   rowsRemovedPercentString,
   rowsRemovedProp,
-  workersLaunchedCount,
 } = useNode(plan, node, viewOptions)
-
-// Returns the list of properties that have already been displayed either in
-// the main panel or in other detailed tabs.
-const notMiscProperties: string[] = [
-  NodeProp.NODE_TYPE,
-  NodeProp.CTE_NAME,
-  NodeProp.EXCLUSIVE_DURATION,
-  NodeProp.EXCLUSIVE_COST,
-  NodeProp.TOTAL_COST,
-  NodeProp.PLAN_ROWS,
-  NodeProp.ACTUAL_ROWS,
-  NodeProp.ACTUAL_LOOPS,
-  NodeProp.OUTPUT,
-  NodeProp.WORKERS,
-  NodeProp.WORKERS_PLANNED,
-  NodeProp.WORKERS_LAUNCHED,
-  NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS,
-  NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS,
-  NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS,
-  NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS,
-  NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS,
-  NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS,
-  NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS,
-  NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS,
-  NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS,
-  NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS,
-  NodeProp.SHARED_HIT_BLOCKS,
-  NodeProp.SHARED_READ_BLOCKS,
-  NodeProp.SHARED_DIRTIED_BLOCKS,
-  NodeProp.SHARED_WRITTEN_BLOCKS,
-  NodeProp.TEMP_READ_BLOCKS,
-  NodeProp.TEMP_WRITTEN_BLOCKS,
-  NodeProp.LOCAL_HIT_BLOCKS,
-  NodeProp.LOCAL_READ_BLOCKS,
-  NodeProp.LOCAL_DIRTIED_BLOCKS,
-  NodeProp.LOCAL_WRITTEN_BLOCKS,
-  NodeProp.PLANNER_ESTIMATE_FACTOR,
-  NodeProp.PLANNER_ESTIMATE_DIRECTION,
-  NodeProp.SUBPLAN_NAME,
-  NodeProp.GROUP_KEY,
-  NodeProp.HASH_CONDITION,
-  NodeProp.JOIN_TYPE,
-  NodeProp.INDEX_NAME,
-  NodeProp.HASH_CONDITION,
-  NodeProp.EXCLUSIVE_IO_READ_TIME,
-  NodeProp.EXCLUSIVE_IO_WRITE_TIME,
-  NodeProp.AVERAGE_IO_READ_TIME,
-  NodeProp.AVERAGE_IO_WRITE_TIME,
-  NodeProp.IO_READ_TIME, // Exclusive value already shown in IO tab
-  NodeProp.IO_WRITE_TIME, // Exclusive value already shown in IO tab
-  NodeProp.HEAP_FETCHES,
-  NodeProp.WAL_RECORDS,
-  NodeProp.WAL_BYTES,
-  NodeProp.WAL_FPI,
-  NodeProp.NODE_ID,
-  NodeProp.ROWS_REMOVED_BY_FILTER,
-  NodeProp.ROWS_REMOVED_BY_JOIN_FILTER,
-  NodeProp.ACTUAL_ROWS_REVISED,
-  NodeProp.PLAN_ROWS_REVISED,
-  NodeProp.ROWS_REMOVED_BY_FILTER_REVISED,
-  NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED,
-  "size", // Manually added to use FlexTree
-  NodeProp.RELATION_NAME,
-  NodeProp.ALIAS,
-]
 
 onBeforeMount(() => {
   calculateProps()
@@ -143,15 +71,6 @@ function calculateProps() {
       return { key: key as keyof typeof NodeProp, value }
     })
     .value()
-}
-
-function shouldShowProp(key: string, value: unknown): boolean {
-  return (
-    (!!value ||
-      nodePropTypes[key] === PropType.increment ||
-      key === NodeProp.ACTUAL_ROWS) &&
-    notMiscProperties.indexOf(key) === -1
-  )
 }
 
 const shouldShowIoBuffers = computed((): boolean => {
@@ -509,79 +428,7 @@ watch(activeTab, () => {
       "
     >
       <!-- workers tab -->
-      <div>
-        <b>Workers planned: </b>
-        <span class="px-1">{{
-          node[NodeProp.WORKERS_PLANNED] ||
-          node[NodeProp.WORKERS_PLANNED_BY_GATHER]
-        }}</span>
-        <em
-          v-if="
-            !node[NodeProp.WORKERS_PLANNED] &&
-            !node[NodeProp.WORKERS] &&
-            (!plan.isVerbose || !plan.isAnalyze)
-          "
-          class="text-warning"
-        >
-          <font-awesome-icon
-            icon="exclamation-triangle"
-            class="cursor-help"
-            v-tippy="getHelpMessage('fuzzy needs verbose')"
-          ></font-awesome-icon>
-        </em>
-      </div>
-      <div>
-        <b>Workers launched: </b>
-        <span class="px-1">{{ workersLaunchedCount }}</span>
-      </div>
-      <div
-        v-if="!workersLaunchedCount && node[NodeProp.WORKERS_PLANNED_BY_GATHER]"
-        class="text-muted"
-      >
-        <em>
-          Detailed information is not available.
-          <font-awesome-icon
-            icon="exclamation-triangle"
-            class="cursor-help"
-            v-tippy="getHelpMessage('workers detailed info missing')"
-          ></font-awesome-icon>
-        </em>
-      </div>
-
-      <div
-        v-if="_.isArray(node[NodeProp.WORKERS])"
-        class="overflow-auto"
-        style="max-height: 300px"
-        @wheel.stop
-      >
-        <template
-          v-for="(worker, index) in node[NodeProp.WORKERS]"
-          :key="index"
-        >
-          <div class="card mt-2">
-            <div class="card-header">
-              <b>Worker {{ worker[WorkerProp.WORKER_NUMBER] }}</b>
-            </div>
-            <ul class="list-group list-group-flush">
-              <template v-for="(value, key) in worker" :key="key">
-                <li
-                  class="list-group-item d-flex flex-row"
-                  v-if="shouldShowProp(key as string, value)"
-                >
-                  <div class="col-6">
-                    {{ key }}
-                  </div>
-                  <div
-                    class="col-6"
-                    v-html="formatNodeProp(key as string, value)"
-                  ></div>
-                </li>
-              </template>
-            </ul>
-          </div>
-        </template>
-      </div>
-      <!-- workers tab -->
+      <workers-detail :node="node" />
     </div>
     <div class="tab-pane" :class="{ 'show active': activeTab === 'misc' }">
       <!-- misc tab -->

@@ -1,6 +1,7 @@
 import _ from "lodash"
 import type { IPlan, Node } from "@/interfaces"
 import { NodeProp } from "@/enums"
+import { nodePropTypes, PropType } from "@/enums"
 
 export class HelpService {
   public nodeId = 0
@@ -291,4 +292,78 @@ export function findNodeBySubplanName(
     })
   }
   return o
+}
+
+// Returns the list of properties that have already been displayed either in
+// the main panel or in other detailed tabs.
+const notMiscProperties: string[] = [
+  NodeProp.NODE_TYPE,
+  NodeProp.CTE_NAME,
+  NodeProp.EXCLUSIVE_DURATION,
+  NodeProp.EXCLUSIVE_COST,
+  NodeProp.TOTAL_COST,
+  NodeProp.PLAN_ROWS,
+  NodeProp.ACTUAL_ROWS,
+  NodeProp.ACTUAL_LOOPS,
+  NodeProp.OUTPUT,
+  NodeProp.WORKERS,
+  NodeProp.WORKERS_PLANNED,
+  NodeProp.WORKERS_LAUNCHED,
+  NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS,
+  NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS,
+  NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS,
+  NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS,
+  NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS,
+  NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS,
+  NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS,
+  NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS,
+  NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS,
+  NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS,
+  NodeProp.SHARED_HIT_BLOCKS,
+  NodeProp.SHARED_READ_BLOCKS,
+  NodeProp.SHARED_DIRTIED_BLOCKS,
+  NodeProp.SHARED_WRITTEN_BLOCKS,
+  NodeProp.TEMP_READ_BLOCKS,
+  NodeProp.TEMP_WRITTEN_BLOCKS,
+  NodeProp.LOCAL_HIT_BLOCKS,
+  NodeProp.LOCAL_READ_BLOCKS,
+  NodeProp.LOCAL_DIRTIED_BLOCKS,
+  NodeProp.LOCAL_WRITTEN_BLOCKS,
+  NodeProp.PLANNER_ESTIMATE_FACTOR,
+  NodeProp.PLANNER_ESTIMATE_DIRECTION,
+  NodeProp.SUBPLAN_NAME,
+  NodeProp.GROUP_KEY,
+  NodeProp.HASH_CONDITION,
+  NodeProp.JOIN_TYPE,
+  NodeProp.INDEX_NAME,
+  NodeProp.HASH_CONDITION,
+  NodeProp.EXCLUSIVE_IO_READ_TIME,
+  NodeProp.EXCLUSIVE_IO_WRITE_TIME,
+  NodeProp.AVERAGE_IO_READ_TIME,
+  NodeProp.AVERAGE_IO_WRITE_TIME,
+  NodeProp.IO_READ_TIME, // Exclusive value already shown in IO tab
+  NodeProp.IO_WRITE_TIME, // Exclusive value already shown in IO tab
+  NodeProp.HEAP_FETCHES,
+  NodeProp.WAL_RECORDS,
+  NodeProp.WAL_BYTES,
+  NodeProp.WAL_FPI,
+  NodeProp.NODE_ID,
+  NodeProp.ROWS_REMOVED_BY_FILTER,
+  NodeProp.ROWS_REMOVED_BY_JOIN_FILTER,
+  NodeProp.ACTUAL_ROWS_REVISED,
+  NodeProp.PLAN_ROWS_REVISED,
+  NodeProp.ROWS_REMOVED_BY_FILTER_REVISED,
+  NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED,
+  "size", // Manually added to use FlexTree
+  NodeProp.RELATION_NAME,
+  NodeProp.ALIAS,
+]
+
+export function shouldShowProp(key: string, value: unknown): boolean {
+  return (
+    (!!value ||
+      nodePropTypes[key] === PropType.increment ||
+      key === NodeProp.ACTUAL_ROWS) &&
+    notMiscProperties.indexOf(key) === -1
+  )
 }
