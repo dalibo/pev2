@@ -563,16 +563,20 @@ watch(activeTab, () => {
               <b>Worker {{ worker[WorkerProp.WORKER_NUMBER] }}</b>
             </div>
             <ul class="list-group list-group-flush">
-              <li class="list-group-item p-0">
-                <table class="table table-sm prop-list mb-0">
-                  <template v-for="(value, key) in worker" :key="key">
-                    <tr v-if="shouldShowProp(key as string, value)">
-                      <td width="40%">{{ key }}</td>
-                      <td v-html="formatNodeProp(key as string, value)"></td>
-                    </tr>
-                  </template>
-                </table>
-              </li>
+              <template v-for="(value, key) in worker" :key="key">
+                <li
+                  class="list-group-item d-flex flex-row"
+                  v-if="shouldShowProp(key as string, value)"
+                >
+                  <div class="col-6">
+                    {{ key }}
+                  </div>
+                  <div
+                    class="col-6"
+                    v-html="formatNodeProp(key as string, value)"
+                  ></div>
+                </li>
+              </template>
             </ul>
           </div>
         </template>
