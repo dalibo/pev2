@@ -8,6 +8,7 @@ import { formatNodeProp } from "@/filters"
 import { EstimateDirection, NodeProp } from "@/enums"
 import useNode from "@/node"
 import WorkersDetail from "@/components/WorkersDetail.vue"
+import MiscDetail from "@/components/MiscDetail.vue"
 import { PlanKey, ViewOptionsKey } from "@/symbols"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
@@ -432,19 +433,7 @@ watch(activeTab, () => {
     </div>
     <div class="tab-pane" :class="{ 'show active': activeTab === 'misc' }">
       <!-- misc tab -->
-      <table class="table table-sm prop-list">
-        <template v-for="(prop, key) in nodeProps" :key="key">
-          <tr v-if="shouldShowProp(prop.key, prop.value)">
-            <td width="40%">{{ prop.key }}</td>
-            <td v-html="formatNodeProp(prop.key, prop.value)"></td>
-          </tr>
-        </template>
-      </table>
-
-      <div class="text-muted text-end">
-        <em>* Calculated value</em>
-      </div>
-      <!-- misc tab -->
+      <misc-detail :node="node" />
     </div>
   </div>
 </template>
