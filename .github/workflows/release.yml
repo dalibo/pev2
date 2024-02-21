@@ -18,7 +18,7 @@ jobs:
     - name: Build 
       uses: actions/setup-node@v3
       with:
-        node-version: 16.x 
+        node-version: 20.x
         cache: 'npm'
     - run: npm ci
     - run: npm run build
