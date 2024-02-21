@@ -834,7 +834,10 @@ export class PlanService {
         //const prefix = extraMatches[1]
 
         // Remove elements from elementsAtDepth for deeper levels
-        _.remove(elementsAtDepth, (e) => e[0] >= depth)
+        // Depth == 1 is a special case here. Global info (for example
+        // execution|planning time) have a depth of 1 but shouldn't be removed
+        // in case first node was at depth 0.
+        _.remove(elementsAtDepth, (e) => e[0] >= depth || depth == 1)
 
         let element
         if (elementsAtDepth.length === 0) {
