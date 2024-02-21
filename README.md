@@ -25,10 +25,10 @@ open it in your favorite internet browser.
 ### Without building tools
 
 ```html
-<script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js"></script>
 <script src="https://unpkg.com/pev2/dist/pev2.umd.js"></script>
 <link
-  href="https://unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+  href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css"
   rel="stylesheet"
 />
 <link rel="stylesheet" href="https://unpkg.com/pev2/dist/style.css" />
@@ -54,7 +54,7 @@ open it in your favorite internet browser.
 </script>
 ```
 
-For a complete example, see [this codesandbox][codesandbox-vanilla]
+[See it live](https://stackblitz.com/edit/pev2-vanilla).
 
 ### With build tools
 
@@ -99,12 +99,12 @@ add the following in you header (or load them with your favorite bundler).
 
 ```html
 <link
-  href="https://unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+  href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css"
   rel="stylesheet"
 />
 ```
 
-For a complete example, see [this codesandbox][codesandbox].
+[See it live](https://stackblitz.com/edit/pev2-vite).
 
 # Disclaimer
 
@@ -118,7 +118,5 @@ pending.
 
 [pev]: https://github.com/AlexTatiyants/pev
 [atatiyan]: https://github.com/AlexTatiyants
-[codesandbox]: https://codesandbox.io/s/pev2-ry2dd
-[codesandbox-vanilla]: https://codesandbox.io/s/pev2-vanilla-q6coky
 [demo]: https://dalibo.github.io/pev2
 [explain.dali.bo]: https://explain.dalibo.com
