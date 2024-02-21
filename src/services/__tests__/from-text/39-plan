@@ -1,0 +1,5 @@
+Nested Loop Left Join  (cost=11.95..28.52 rows=5 width=157)
+   ->  Bitmap Heap Scan on public.rel_users_exams  (cost=11.80..20.27 rows=5 width=52)
+         Output: rel_users_exams.user_username, rel_users_exams.exam_id
+         ->  Bitmap Index Scan on rel_users_exams_pkey  (cost=0.00..11.80 rows=5 width=0)
+ Execution Time: 9762.684 ms
