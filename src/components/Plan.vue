@@ -163,6 +163,7 @@ onBeforeMount(() => {
   planStats.maxDuration = content.maxDuration || NaN
   planStats.maxBlocks = content.maxBlocks || ({} as IBlocksStats)
   planStats.maxIo = content.maxIo || NaN
+  planStats.maxEstimateFactor = content.maxEstimateFactor || NaN
   planStats.triggers = content.Triggers || []
   planStats.jitTime =
     (content.JIT && content.JIT.Timing && content.JIT.Timing.Total) || NaN

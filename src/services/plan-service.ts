@@ -198,6 +198,16 @@ export class PlanService {
     if (highestIo && sumIo(highestIo)) {
       plan.content.maxIo = sumIo(highestIo)
     }
+
+    const highestEstimateFactor = _.max(
+      _.map(flat, (node) => {
+        const f = node[NodeProp.PLANNER_ESTIMATE_FACTOR]
+        if (f !== Infinity) {
+          return f
+        }
+      })
+    ) as number
+    plan.content.maxEstimateFactor = highestEstimateFactor * 2 || 1
   }
 
   // actual duration and actual cost are calculated by subtracting child values from the total

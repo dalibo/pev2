@@ -6,22 +6,18 @@ import {
   nextTick,
   onBeforeMount,
   onMounted,
+  provide,
   reactive,
   ref,
   watch,
 } from "vue"
 import type { Ref } from "vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { blocks, duration, rows, factor, transferRate } from "@/filters"
-import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
+import { BufferLocation, NodeProp, Metric } from "../enums"
 import { HelpService, scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlan, Node } from "@/interfaces"
-import {
-  HighlightedNodeIdKey,
-  PlanKey,
-  SelectedNodeIdKey,
-  SelectNodeKey,
-} from "@/symbols"
+import { HighlightedNodeIdKey, PlanKey, SelectNodeKey } from "@/symbols"
+import DiagramRow from "@/components/DiagramRow.vue"
 
 import { directive as vTippy } from "vue-tippy"
 import tippy, { createSingleton } from "tippy.js"
@@ -36,14 +32,11 @@ const plan = inject(PlanKey) as Ref<IPlan>
 
 const container = ref(null) // The container element
 
-const selectedNodeId = inject(SelectedNodeIdKey)
 const selectNode = inject(SelectNodeKey)
 if (!selectNode) {
   throw new Error(`Could not resolve ${SelectNodeKey.description}`)
 }
 const highlightedNodeId = inject(HighlightedNodeIdKey)
-
-const rowRefs: Element[] = []
 
 // The main plan + init plans (all flatten)
 let plans: Row[][] = [[]]
@@ -101,168 +94,6 @@ function loadTooltips(): void {
   })
 }
 
-function getTooltipContent(node: Node): string {
-  let content = ""
-  switch (viewOptions.metric) {
-    case Metric.time:
-      content += timeTooltip(node)
-      break
-    case Metric.rows:
-      content += rowsTooltip(node)
-      break
-    case Metric.estimate_factor:
-      content += estimateFactorTooltip(node)
-      break
-    case Metric.cost:
-      content += costTooltip(node)
-      break
-    case Metric.buffers:
-      content += buffersTooltip(node)
-      break
-    case Metric.io:
-      content += ioTooltip(node)
-      break
-  }
-  if (node[NodeProp.CTE_NAME]) {
-    content += "<br><em>CTE " + node[NodeProp.CTE_NAME] + "</em>"
-  }
-  return content
-}
-
-function timeTooltip(node: Node): string {
-  return [
-    "Duration: <br>Exclusive: ",
-    duration(node[NodeProp.EXCLUSIVE_DURATION]),
-    ", Total: ",
-    duration(node[NodeProp.ACTUAL_TOTAL_TIME]),
-  ].join("")
-}
-
-function rowsTooltip(node: Node): string {
-  return ["Rows: ", rows(node[NodeProp.ACTUAL_ROWS_REVISED] as number)].join("")
-}
-
-function estimateFactorTooltip(node: Node): string {
-  const estimateFactor = node[NodeProp.PLANNER_ESTIMATE_FACTOR]
-  const estimateDirection = node[NodeProp.PLANNER_ESTIMATE_DIRECTION]
-  let text = ""
-  if (estimateFactor === undefined || estimateDirection === undefined) {
-    return "N/A"
-  }
-  switch (estimateDirection) {
-    case EstimateDirection.over:
-      text += '<i class="fa fa-arrow-up"></i> over'
-      break
-    case EstimateDirection.under:
-      text += '<i class="fa fa-arrow-down"></i> under'
-      break
-    default:
-      text += "Correctly"
-  }
-  text += " estimated"
-  text +=
-    estimateFactor !== 1 ? " by <b>" + factor(estimateFactor) + "</b>" : ""
-  text += "<br>"
-  text += "Planned: " + node[NodeProp.PLAN_ROWS_REVISED]
-  text += " → Actual: " + node[NodeProp.ACTUAL_ROWS_REVISED]
-  return text
-}
-
-function costTooltip(node: Node): string {
-  return ["Cost: ", rows(node[NodeProp.EXCLUSIVE_COST] as number)].join("")
-}
-
-function buffersTooltip(node: Node): string {
-  let text = ""
-  let hit
-  let read
-  let written
-  let dirtied
-  switch (viewOptions.buffersMetric) {
-    case BufferLocation.shared:
-      hit = node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]
-      read = node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]
-      dirtied = node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]
-      written = node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]
-      break
-    case BufferLocation.temp:
-      read = node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]
-      written = node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]
-      break
-    case BufferLocation.local:
-      hit = node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]
-      read = node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]
-      dirtied = node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]
-      written = node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]
-      break
-  }
-  text += '<table class="table table-dark table-sm table-borderless mb-0">'
-  text += hit
-    ? '<tr><td>Hit:</td><td class="text-end">' + blocks(hit) + "</td></tr>"
-    : ""
-  text += read
-    ? '<tr><td>Read:</td><td class="text-end">' + blocks(read) + "</td></tr>"
-    : ""
-  text += dirtied
-    ? '<tr><td>Dirtied:</td><td class="text-end">' +
-      blocks(dirtied) +
-      "</td></tr>"
-    : ""
-  text += written
-    ? '<tr><td>Written:</td><td class="text-end">' +
-      blocks(written) +
-      "</td></tr>"
-    : ""
-  text += "</table>"
-
-  if (!hit && !read && !dirtied && !written) {
-    text = " N/A"
-  }
-
-  switch (viewOptions.buffersMetric) {
-    case BufferLocation.shared:
-      text = "Shared Blocks:" + text
-      break
-    case BufferLocation.temp:
-      text = "Temp Blocks:" + text
-      break
-    case BufferLocation.local:
-      text = "Local Blocks:" + text
-      break
-  }
-  return text
-}
-
-function ioTooltip(node: Node): string {
-  let text = ""
-  const read = node[NodeProp.EXCLUSIVE_IO_READ_TIME]
-  const averageRead = node[NodeProp.AVERAGE_IO_READ_TIME]
-  const write = node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]
-  const averageWrite = node[NodeProp.AVERAGE_IO_WRITE_TIME]
-  text += '<table class="table text-white table-sm table-borderless mb-0">'
-  text += read
-    ? '<tr><td>Read:</td><td class="text-end">' +
-      duration(read) +
-      "<br><small>~" +
-      transferRate(averageRead) +
-      "</small>" +
-      "</td></tr>"
-    : ""
-  text += write
-    ? '<tr><td>Write:</td><td class="text-end">' +
-      duration(write) +
-      "<br><small>~" +
-      transferRate(averageWrite) +
-      "</small>" +
-      "</td></tr>"
-    : ""
-  return "IO " + text
-}
-
-function nodeType(row: Row): string {
-  return row[1][NodeProp.NODE_TYPE]
-}
-
 function flatten(
   output: Row[],
   level: number,
@@ -290,33 +121,6 @@ function flatten(
   }
 }
 
-function estimateFactorPercent(row: Row): number {
-  const node = row[1]
-  if (node[NodeProp.PLANNER_ESTIMATE_FACTOR] === Infinity) {
-    return 100
-  }
-  return (
-    ((node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0) / maxEstimateFactor.value) *
-    100
-  )
-}
-
-const maxEstimateFactor = computed((): number => {
-  const max = _.max(
-    _.map(plans, (plan) => {
-      return _.max(
-        _.map(plan, (row) => {
-          const f = row[1][NodeProp.PLANNER_ESTIMATE_FACTOR]
-          if (f !== Infinity) {
-            return f
-          }
-        })
-      )
-    })
-  ) as number
-  return max * 2 || 1
-})
-
 const dataAvailable = computed((): boolean => {
   if (viewOptions.metric === Metric.buffers) {
     // if current Metric is buffers, view options for buffers should be
@@ -330,19 +134,14 @@ function isCTE(node: Node): boolean {
   return _.startsWith(node[NodeProp.SUBPLAN_NAME], "CTE")
 }
 
-watch(
-  () => selectedNodeId?.value,
-  (newVal) => {
-    if (!container.value || !newVal) {
-      return
-    }
-    scrollChildIntoParentView(container.value, rowRefs[newVal as number], false)
+function scrollTo(el: Element) {
+  if (!container.value) {
+    return
   }
-)
-
-function setRowRef(nodeId: number, el: Element) {
-  rowRefs[nodeId] = el
+  scrollChildIntoParentView(container.value, el, false)
 }
+
+provide("scrollTo", scrollTo)
 </script>
 
 <template>
@@ -513,465 +312,15 @@ function setRowRef(nodeId: number, el: Element) {
                 </a>
               </td>
             </tr>
-            <tr
-              class="no-focus-outline node"
-              :class="{
-                selected: row[1].nodeId === selectedNodeId,
-                highlight: row[1].nodeId === highlightedNodeId,
-              }"
-              :data-tippy-content="getTooltipContent(row[1])"
-              :ref="
-                (el) => {
-                  setRowRef(row[1].nodeId, el as Element)
-                }
-              "
-              @mouseenter="highlightedNodeId = row[1].nodeId"
-              @mouseleave="highlightedNodeId = undefined"
-              @click.prevent="selectNode(row[1].nodeId, true)"
-            >
-              <td class="node-index">
-                <span class="fw-normal small">#{{ row[1].nodeId }} </span>
-              </td>
-              <td class="node-type pe-2">
-                <span class="tree-lines">
-                  <template v-for="i in _.range(row[0])">
-                    <template v-if="_.indexOf(row[3], i) != -1">│</template
-                    ><template v-else-if="i !== 0">&emsp;</template> </template
-                  ><template v-if="index !== 0">
-                    <template v-if="!row[1][NodeProp.SUBPLAN_NAME]">{{
-                      row[2] ? "└" : "├"
-                    }}</template
-                    ><template v-else>
-                      <template v-if="!row[2]">│</template
-                      ><template v-else>&emsp;</template>
-                    </template>
-                  </template>
-                </span>
-                {{ nodeType(row) }}
-              </td>
-              <td>
-                <!-- time -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-if="viewOptions.metric == Metric.time"
-                  :key="`node${index}time`"
-                >
-                  <div
-                    class="progress-bar border-secondary bg-secondary"
-                    :class="{
-                      'border-start': row[1][NodeProp.EXCLUSIVE_DURATION] > 0,
-                    }"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (row[1][NodeProp.EXCLUSIVE_DURATION] /
-                          (plan.planStats.executionTime ||
-                            plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
-                          100 +
-                        '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="progress-bar bg-secondary-light"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        ((row[1][NodeProp.ACTUAL_TOTAL_TIME] -
-                          row[1][NodeProp.EXCLUSIVE_DURATION]) /
-                          (plan.planStats.executionTime ||
-                            plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
-                          100 +
-                        '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-                <!-- rows -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="viewOptions.metric == Metric.rows"
-                  :key="`node${index}rows`"
-                >
-                  <div
-                    class="bg-secondary"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        Math.round(
-                          (row[1][NodeProp.ACTUAL_ROWS_REVISED] /
-                            plan.planStats.maxRows) *
-                            100
-                        ) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-                <!-- estimation -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent justify-content-center"
-                  style="height: 10px"
-                  v-else-if="viewOptions.metric == Metric.estimate_factor"
-                  :key="`node${index}estimation`"
-                >
-                  <span class="text-muted small">
-                    <font-awesome-icon
-                      fixed-width
-                      icon="arrow-down"
-                      v-if="
-                        row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
-                        EstimateDirection.under
-                      "
-                    ></font-awesome-icon>
-                    <i class="fa fa-fw d-inline-block" v-else />
-                  </span>
-                  <div
-                    class="progress-bar"
-                    :class="[
-                      row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
-                      EstimateDirection.under
-                        ? 'bg-secondary'
-                        : 'bg-transparent',
-                    ]"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{ width: estimateFactorPercent(row) + '%' }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="progress-bar border-start bg-secondary"
-                    role="progressbar"
-                    style="width: 1px; height: 5px"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="progress-bar"
-                    :class="[
-                      row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
-                      EstimateDirection.over
-                        ? 'bg-secondary'
-                        : 'bg-transparent',
-                    ]"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{ width: estimateFactorPercent(row) + '%' }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <span class="text-muted small">
-                    <font-awesome-icon
-                      fixed-width
-                      icon="arrow-up"
-                      v-if="
-                        row[1][NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
-                        EstimateDirection.over
-                      "
-                    ></font-awesome-icon>
-                    <i class="fa fa-fw d-inline-block" v-else />
-                  </span>
-                </div>
-                <!-- cost -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="viewOptions.metric == Metric.cost"
-                  :key="`node${index}cost`"
-                >
-                  <div
-                    class="bg-secondary"
-                    :class="{
-                      'border-secondary border-start':
-                        row[1][NodeProp.EXCLUSIVE_COST] > 0,
-                    }"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_COST] /
-                            plan.planStats.maxCost) *
-                            100
-                        ) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-                <!-- buffers shared -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="
-                    viewOptions.metric == Metric.buffers &&
-                    viewOptions.buffersMetric == BufferLocation.shared &&
-                    plan.planStats.maxBlocks?.[BufferLocation.shared]
-                  "
-                  :key="`node${index}buffers_shared`"
-                >
-                  <div
-                    class="bg-hit"
-                    :class="{
-                      'border-start border-hit':
-                        row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] > 0,
-                    }"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] /
-                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="bg-read"
-                    role="progressbar"
-                    :class="{
-                      'border-start border-read':
-                        row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] > 0,
-                    }"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] /
-                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="bg-dirtied"
-                    :class="{
-                      'border-start border-dirtied':
-                        row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] > 0,
-                    }"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
-                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="bg-written"
-                    :class="{
-                      'border-start border-written':
-                        row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] > 0,
-                    }"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
-                            plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-                <!-- buffers temp -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="
-                    viewOptions.metric == Metric.buffers &&
-                    viewOptions.buffersMetric == BufferLocation.temp &&
-                    plan.planStats.maxBlocks?.[BufferLocation.temp]
-                  "
-                  :key="`node${index}buffers_temp`"
-                >
-                  <div
-                    class="bg-read"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] /
-                            plan.planStats.maxBlocks?.[BufferLocation.temp]) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="bg-written"
-                    role="progressbar"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
-                            plan.planStats.maxBlocks?.[BufferLocation.temp]) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                </div>
-                <!-- buffers local -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="
-                    viewOptions.metric == Metric.buffers &&
-                    viewOptions.buffersMetric == BufferLocation.local &&
-                    plan.planStats.maxBlocks?.[BufferLocation.local]
-                  "
-                  :key="`node${index}buffers_local`"
-                >
-                  <div
-                    class="bg-hit"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
-                            plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="bg-read"
-                    role="progressbar"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] /
-                            plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 5px"
-                  ></div>
-                  <div
-                    class="bg-dirtied"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
-                            plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="bg-written"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
-                            plan.planStats?.maxBlocks?.[BufferLocation.local]) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-                <!-- io -->
-                <div
-                  class="progress rounded-0 align-items-center bg-transparent"
-                  style="height: 5px"
-                  v-else-if="
-                    viewOptions.metric == Metric.io &&
-                    (plan.content.Plan[NodeProp['IO_READ_TIME']] ||
-                      plan.content.Plan[NodeProp['IO_WRITE_TIME']])
-                  "
-                  :key="`node${index}io_read`"
-                >
-                  <div
-                    class="bg-read"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_IO_READ_TIME] /
-                            plan.planStats?.maxIo) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                  <div
-                    class="bg-written"
-                    role="progressbar"
-                    style="height: 5px"
-                    :style="{
-                      width:
-                        (Math.round(
-                          (row[1][NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
-                            plan.planStats?.maxIo) *
-                            100
-                        ) || 0) + '%',
-                    }"
-                    aria-valuenow="15"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-              </td>
-            </tr>
+            <diagram-row
+              :node="row[1]"
+              :isSubplan="!!row[1][NodeProp.SUBPLAN_NAME]"
+              :isLastChild="!!row[2]"
+              :level="row[0]"
+              :branches="row[3]"
+              :index="index"
+              :viewOptions="viewOptions"
+            ></diagram-row>
           </template>
         </tbody>
       </table>
