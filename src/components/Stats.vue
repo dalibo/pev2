@@ -97,21 +97,21 @@ const perIndex = computed(() => {
   <div class="p-2 small stats">
     <h6 class="mt-2">Per table stats</h6>
     <sorted-table
-      class="table table-nonfluid table-sm table-bordered align-top"
+      class="table table-nonfluid table-sm table-bordered"
       :values="perTable"
       sort="time"
       :dir="SortDirection.desc"
     >
-      <thead class="table-dark">
+      <thead class="table-secondary">
         <tr>
           <th scope="col">
-            <sort-link name="name" class="text-white">Table</sort-link>
+            <sort-link name="name">Table</sort-link>
           </th>
           <th scope="col" class="text-end">
-            <sort-link name="count" class="text-white">Count</sort-link>
+            <sort-link name="count">Count</sort-link>
           </th>
           <th scope="col" colspan="2" class="text-end">
-            <sort-link name="time" class="text-white">Time</sort-link>
+            <sort-link name="time">Time</sort-link>
           </th>
         </tr>
       </thead>
@@ -131,21 +131,21 @@ const perIndex = computed(() => {
     </sorted-table>
     <h6>Per node type stats</h6>
     <sorted-table
-      class="table table-nonfluid table-sm table-bordered align-top"
+      class="table table-nonfluid table-sm table-bordered"
       :values="perNodeType"
       sort="time"
       :dir="SortDirection.desc"
     >
-      <thead class="table-dark">
+      <thead class="table-secondary">
         <tr>
           <th scope="col">
-            <sort-link name="name" class="text-white">Node Type</sort-link>
+            <sort-link name="name">Node Type</sort-link>
           </th>
           <th scope="col" class="text-end">
-            <sort-link name="count" class="text-white">Count</sort-link>
+            <sort-link name="count">Count</sort-link>
           </th>
           <th scope="col" colspan="2" class="text-end">
-            <sort-link name="time" class="text-white">Time</sort-link>
+            <sort-link name="time">Time</sort-link>
           </th>
         </tr>
       </thead>
@@ -160,21 +160,21 @@ const perIndex = computed(() => {
     </sorted-table>
     <h6>Per index stats</h6>
     <sorted-table
-      class="table table-nonfluid table-sm table-bordered align-top"
+      class="table table-nonfluid table-sm table-bordered"
       :values="perIndex"
       sort="time"
       :dir="SortDirection.desc"
     >
-      <thead class="table-dark">
+      <thead class="table-secondary">
         <tr>
           <th scope="col">
-            <sort-link name="name" class="text-white">Index</sort-link>
+            <sort-link name="name">Index</sort-link>
           </th>
           <th scope="col" class="text-end">
-            <sort-link name="count" class="text-white">Count</sort-link>
+            <sort-link name="count">Count</sort-link>
           </th>
           <th scope="col" colspan="2" class="text-end">
-            <sort-link name="time" class="text-white">Time</sort-link>
+            <sort-link name="time">Time</sort-link>
           </th>
         </tr>
       </thead>
