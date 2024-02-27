@@ -18,7 +18,7 @@ defineProps<Props>()
       }"
     ></div>
     <div
-      class="bg-secondary border-secondary opacity-25"
+      class="bg-secondary border-secondary opacity-20"
       :style="{
         width: percentage2 + '%',
       }"
