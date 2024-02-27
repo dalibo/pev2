@@ -18,6 +18,7 @@ import LevelDivider from "@/components/LevelDivider.vue"
 import GridProgressBar from "@/components/GridProgressBar.vue"
 import WorkersDetail from "@/components/WorkersDetail.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
+import SeverityBullet from "@/components/SeverityBullet.vue"
 import useNode from "@/node"
 import { directive as vTippy } from "vue-tippy"
 import { HelpService } from "@/services/help-service"
@@ -44,7 +45,10 @@ const activeTab = ref<string>("misc")
 
 const {
   buffersByMetricTooltip,
+  costClass,
   costTooltip,
+  durationClass,
+  estimationClass,
   estimateFactorPercent,
   estimateFactorTooltip,
   executionTimePercent,
@@ -56,6 +60,7 @@ const {
   localWrittenPercent,
   nodeName,
   rowsRemoved,
+  rowsRemovedClass,
   rowsRemovedPercent,
   rowsRemovedPercentString,
   rowsRemovedProp,
@@ -108,10 +113,16 @@ function formattedProp(propName: keyof typeof NodeProp) {
       ></GridProgressBar>
       <!-- time -->
       <div
-        class="position-relative"
+        class="position-relative d-flex"
         v-tippy="{ content: timeTooltip, allowHTML: true }"
       >
-        {{ Math.round(node[NodeProp.EXCLUSIVE_DURATION]).toLocaleString() }}
+        <severity-bullet
+          :severity="durationClass"
+          v-if="durationClass"
+        ></severity-bullet>
+        <span class="flex-grow-1">
+          {{ Math.round(node[NodeProp.EXCLUSIVE_DURATION]).toLocaleString() }}
+        </span>
       </div>
       <div v-if="showDetails" class="small text-body-secondary">
         {{ duration(node[NodeProp.EXCLUSIVE_DURATION]) }}
@@ -149,27 +160,33 @@ function formattedProp(propName: keyof typeof NodeProp) {
         v-tippy="{ content: estimateFactorTooltip, allowHTML: true }"
       >
         <div
-          class="position-relative"
+          class="position-relative d-flex"
           v-if="node[NodeProp.PLANNER_ESTIMATE_FACTOR] != 1"
         >
-          <span
-            v-html="factor(node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0)"
-          ></span>
-          <span
-            v-if="
-              node[NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
-              EstimateDirection.under
-            "
-          >
-            ▾
-          </span>
-          <span
-            v-if="
-              node[NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
-              EstimateDirection.over
-            "
-          >
-            ▴
+          <severity-bullet
+            :severity="estimationClass"
+            v-if="estimationClass"
+          ></severity-bullet>
+          <span class="flex-grow-1">
+            <span
+              v-html="factor(node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0)"
+            ></span>
+            <span
+              v-if="
+                node[NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+                EstimateDirection.under
+              "
+            >
+              ▾
+            </span>
+            <span
+              v-if="
+                node[NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+                EstimateDirection.over
+              "
+            >
+              ▴
+            </span>
           </span>
         </div>
         <div
@@ -194,10 +211,16 @@ function formattedProp(propName: keyof typeof NodeProp) {
       ></GridProgressBar>
       <!-- cost -->
       <div
-        class="position-relative"
+        class="position-relative d-flex"
         v-tippy="{ content: costTooltip, allowHTML: true }"
       >
-        {{ cost(node[NodeProp.EXCLUSIVE_COST]) }}
+        <severity-bullet
+          :severity="costClass"
+          v-if="costClass"
+        ></severity-bullet>
+        <span class="flex-grow-1">
+          {{ cost(node[NodeProp.EXCLUSIVE_COST]) }}
+        </span>
       </div>
     </td>
     <td class="text-end text-nowrap" v-if="columns.includes('loops')">
@@ -214,10 +237,14 @@ function formattedProp(propName: keyof typeof NodeProp) {
       <template v-if="rowsRemoved">
         <GridProgressBar :percentage="rowsRemovedPercent"></GridProgressBar>
         <div
-          class="position-relative"
+          class="position-relative d-flex"
           v-tippy="{ content: rowsRemovedTooltip, allowHTML: true }"
         >
-          {{ rowsRemovedPercentString }}%
+          <severity-bullet
+            :severity="rowsRemovedClass"
+            v-if="rowsRemovedClass"
+          ></severity-bullet>
+          <span class="flex-grow-1"> {{ rowsRemovedPercentString }}% </span>
         </div>
         <div v-if="showDetails" class="small text-body-secondary">
           {{ tilde + formattedProp(rowsRemovedProp) }}
@@ -229,10 +256,16 @@ function formattedProp(propName: keyof typeof NodeProp) {
       v-if="columns.includes('heapfetches')"
     >
       <div
-        class="position-relative"
+        class="position-relative d-flex"
         v-tippy="{ content: heapFetchesTooltip, allowHTML: true }"
       >
-        {{ node[NodeProp.HEAP_FETCHES]?.toLocaleString() }}
+        <severity-bullet
+          :severity="heapFetchesClass"
+          v-if="heapFetchesClass"
+        ></severity-bullet>
+        <span class="flex-grow-1">
+          {{ node[NodeProp.HEAP_FETCHES]?.toLocaleString() }}
+        </span>
       </div>
     </td>
     <td

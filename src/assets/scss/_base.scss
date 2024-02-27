@@ -37,6 +37,10 @@
   .text-c-#{$color} {
     color: $value;
   }
+
+  svg circle.c-#{$color} {
+    fill: $value;
+  }
 }
 
 $buffers-colors: (
@@ -96,4 +100,8 @@ $buffers-colors: (
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.opacity-20 {
+  opacity: 0.2 !important;
 }
