@@ -2,7 +2,7 @@
 import { inject, nextTick, onMounted, provide, reactive, ref, watch } from "vue"
 import type { Ref } from "vue"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
-import { directive as vTippy } from "vue-tippy"
+import NodeBadges from "@/components/NodeBadges.vue"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
 import {
   HighlightedNodeIdKey,
@@ -47,13 +47,6 @@ const {
   barWidth,
   barColor,
   highlightValue,
-  rowsRemoved,
-  costClass,
-  durationClass,
-  estimationClass,
-  rowsRemovedClass,
-  heapFetchesClass,
-  filterTooltip,
   isNeverExecuted,
   workersLaunchedCount,
   workersPlannedCount,
@@ -157,81 +150,7 @@ function centerCte() {
               {{ nodeName }}
             </h4>
             <div class="text-nowrap">
-              <span
-                v-if="durationClass"
-                :class="
-                  'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' +
-                  durationClass
-                "
-                v-tippy="'Slow'"
-                ><font-awesome-icon
-                  fixed-width
-                  icon="clock"
-                ></font-awesome-icon>
-              </span>
-              <span
-                v-if="costClass"
-                :class="
-                  'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' + costClass
-                "
-                v-tippy="'Cost is high'"
-                ><font-awesome-icon
-                  fixed-width
-                  icon="dollar-sign"
-                ></font-awesome-icon
-              ></span>
-              <span
-                v-if="estimationClass"
-                :class="
-                  'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' +
-                  estimationClass
-                "
-                v-tippy="'Bad estimation for number of rows'"
-                ><font-awesome-icon
-                  fixed-width
-                  icon="thumbs-down"
-                ></font-awesome-icon
-              ></span>
-              <span
-                v-if="rowsRemovedClass"
-                :class="
-                  'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' +
-                  rowsRemovedClass
-                "
-                v-tippy="filterTooltip"
-              >
-                <font-awesome-icon
-                  fixed-width
-                  icon="filter"
-                ></font-awesome-icon>
-              </span>
-              <span
-                v-if="heapFetchesClass"
-                :class="
-                  'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' +
-                  heapFetchesClass
-                "
-                v-tippy="{
-                  arrow: true,
-                  content: 'Heap Fetches number is high',
-                }"
-              >
-                <font-awesome-icon
-                  fixed-width
-                  icon="exchange-alt"
-                ></font-awesome-icon>
-              </span>
-              <span
-                v-if="rowsRemoved && !rowsRemovedClass"
-                class="p-0 d-inline-block mb-0 ms-1 text-nowrap"
-                v-tippy="filterTooltip"
-              >
-                <font-awesome-icon
-                  fixed-width
-                  icon="filter"
-                  class="text-muted"
-                ></font-awesome-icon>
-              </span>
+              <node-badges :node="node" />
               <a
                 class="fw-normal small ms-1"
                 href=""
