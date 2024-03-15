@@ -66,6 +66,7 @@ const rootNode = computed(() => plan.value && plan.value.content.Plan)
 const selectedNodeId = ref<number>(NaN)
 const selectedNode = ref<Node | undefined>(undefined)
 const highlightedNodeId = ref<number>(NaN)
+const gridIsNotNew = localStorage.getItem("gridIsNotNew")
 
 const viewOptions = reactive({
   showHighlightBar: false,
@@ -441,11 +442,18 @@ function updateNodeSize(node: Node, size: [number, number]) {
         </li>
         <li class="nav-item p-1">
           <a
-            class="nav-link px-2 py-0"
+            class="nav-link px-2 py-0 position-relative"
             :class="{ active: activeTab === 'grid' }"
             href="#grid"
-            >Grid</a
-          >
+            >Grid
+            <span
+              class="position-absolute top-100 start-100 translate-middle badge bg-info"
+              style="font-size: 0.6em"
+              v-if="!gridIsNotNew"
+            >
+              new
+            </span>
+          </a>
         </li>
         <li class="nav-item p-1">
           <a

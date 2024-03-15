@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import _ from "lodash"
-import { computed, inject, onBeforeMount } from "vue"
+import { computed, inject, onBeforeMount, onMounted } from "vue"
 import type { Ref } from "vue"
 import type { IPlan, Node, Row } from "@/interfaces"
 import GridRow from "@/components/GridRow.vue"
@@ -19,6 +19,10 @@ onBeforeMount((): void => {
     flatten(flat, 0, cte, true, [])
     plans.push(flat)
   })
+})
+
+onMounted((): void => {
+  localStorage.setItem("gridIsNotNew", "true")
 })
 
 function flatten(
