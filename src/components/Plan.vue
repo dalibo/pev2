@@ -499,7 +499,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
       >
         <!-- Plan tab -->
         <div class="d-flex flex-column flex-grow-1 overflow-hidden">
-          <plan-stats></plan-stats>
+          <PlanStats></PlanStats>
           <div class="flex-grow-1 d-flex overflow-hidden">
             <div class="flex-grow-1 overflow-hidden">
               <splitpanes
