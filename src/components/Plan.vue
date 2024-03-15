@@ -683,6 +683,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
       <div
         class="tab-pane flex-grow-1 overflow-hidden position-relative"
         :class="{ 'show active': activeTab === 'grid' }"
+        v-if="activeTab === 'grid'"
       >
         <div class="overflow-hidden d-flex w-100 h-100 flex-column">
           <plan-stats></plan-stats>
