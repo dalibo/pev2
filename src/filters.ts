@@ -132,7 +132,7 @@ export function blocks(value: number, asHtml = false): string {
   }
   let r = value.toLocaleString()
   if (asHtml) {
-    r += `<br><small>${formatBytes(value * 8 * 1024)}</small>`
+    r += `<br><small>${blocksAsBytes(value)}</small>`
   }
   return r
 }
