@@ -447,7 +447,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
             href="#grid"
             >Grid
             <span
-              class="position-absolute top-100 start-100 translate-middle badge bg-info"
+              class="badge bg-info"
               style="font-size: 0.6em"
               v-if="!gridIsNotNew"
             >
