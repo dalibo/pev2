@@ -46,6 +46,7 @@ const {
   estimateFactorPercent,
   estimateFactorTooltip,
   ioTooltip,
+  nodeName,
   rowsTooltip,
   timeTooltip,
 } = useNode(plan, node, viewOptions)
@@ -117,7 +118,7 @@ watch(
         :index="index"
         dense
       ></level-divider>
-      {{ node[NodeProp.NODE_TYPE] }}
+      {{ nodeName }}
     </td>
     <td>
       <!-- time -->
