@@ -43,7 +43,7 @@
     "splitpanes": "^3.1.5",
     "vue": "^3.2.45",
     "vue-clipboard3": "^2.0.0",
-    "vue-tippy": "^6.0.0"
+    "vue-tippy": "^6.4.1"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
