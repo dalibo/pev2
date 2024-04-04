@@ -13,6 +13,7 @@ import {
 } from "vue"
 import type { Ref } from "vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 import { BufferLocation, NodeProp, Metric } from "../enums"
 import { HelpService, scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlan, Node } from "@/interfaces"
@@ -266,14 +267,14 @@ provide("scrollTo", scrollTo)
               Write
             </li>
           </ul>
-          <font-awesome-icon
-            icon="info-circle"
+          <FontAwesomeIcon
+            :icon="faInfoCircle"
             class="cursor-help d-inline-block text-muted"
             v-tippy="{
               content: getHelpMessage('hint track_io_timing'),
               allowHTML: true,
             }"
-          ></font-awesome-icon>
+          ></FontAwesomeIcon>
         </template>
       </div>
     </div>

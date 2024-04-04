@@ -10,6 +10,7 @@ import useNode from "@/node"
 import { formatNodeProp } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons"
 
 interface Props {
   node: Node
@@ -39,11 +40,11 @@ const { workersLaunchedCount } = useNode(plan, node, viewOptions)
       "
       class="text-warning"
     >
-      <font-awesome-icon
-        icon="exclamation-triangle"
+      <FontAwesomeIcon
+        :icon="faExclamationTriangle"
         class="cursor-help"
         v-tippy="getHelpMessage('fuzzy needs verbose')"
-      ></font-awesome-icon>
+      ></FontAwesomeIcon>
     </em>
   </div>
   <div>
@@ -56,11 +57,11 @@ const { workersLaunchedCount } = useNode(plan, node, viewOptions)
   >
     <em>
       Detailed information is not available.
-      <font-awesome-icon
-        icon="exclamation-triangle"
+      <FontAwesomeIcon
+        :icon="faExclamationTriangle"
         class="cursor-help"
         v-tippy="getHelpMessage('workers detailed info missing')"
-      ></font-awesome-icon>
+      ></FontAwesomeIcon>
     </em>
   </div>
 

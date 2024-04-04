@@ -5,6 +5,10 @@ import type { Node, StatsTableItemType } from "@/interfaces"
 import { NodeProp } from "@/enums"
 import { duration, durationClass, percent } from "@/filters"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import {
+  faChevronDown,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons"
 
 interface Props {
   value: StatsTableItemType
@@ -27,16 +31,16 @@ function durationPercent(node: Node) {
   <thead class="thead-light">
     <tr v-on:click.prevent="expanded = !expanded" role="button">
       <th>
-        <font-awesome-icon
+        <FontAwesomeIcon
           fixed-width
-          icon="chevron-down"
+          :icon="faChevronDown"
           v-if="expanded"
-        ></font-awesome-icon>
-        <font-awesome-icon
+        ></FontAwesomeIcon>
+        <FontAwesomeIcon
           fixed-width
-          icon="chevron-right"
+          :icon="faChevronRight"
           v-else
-        ></font-awesome-icon>
+        ></FontAwesomeIcon>
         {{ props.value.name }}
       </th>
       <th class="text-end">{{ props.value.count }}</th>

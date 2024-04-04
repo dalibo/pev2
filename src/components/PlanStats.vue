@@ -10,14 +10,8 @@ import { directive as vTippy } from "vue-tippy"
 import { NodeProp } from "../enums"
 import { formatNodeProp } from "@/filters"
 
-import { library } from "@fortawesome/fontawesome-svg-core"
-import { fas } from "@fortawesome/free-solid-svg-icons"
-import { far } from "@fortawesome/free-regular-svg-icons"
-import { fab } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-
-// Add all icons to the library
-library.add(fas, far, fab)
+import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
@@ -81,11 +75,11 @@ function averageIO(node: Node) {
       <template v-if="!plan.planStats.executionTime">
         <span class="text-muted">
           N/A
-          <font-awesome-icon
-            icon="info-circle"
+          <FontAwesomeIcon
+            :icon="faInfoCircle"
             class="cursor-help"
             v-tippy="getHelpMessage('missing execution time')"
-          ></font-awesome-icon>
+          ></FontAwesomeIcon>
         </span>
       </template>
       <template v-else>
@@ -100,11 +94,11 @@ function averageIO(node: Node) {
       <template v-if="!plan.planStats.planningTime">
         <span class="text-muted">
           N/A
-          <font-awesome-icon
-            icon="info-circle"
+          <FontAwesomeIcon
+            :icon="faInfoCircle"
             class="cursor-help"
             v-tippy="getHelpMessage('missing planning time')"
-          ></font-awesome-icon>
+          ></FontAwesomeIcon>
         </span>
       </template>
       <template v-else>
@@ -157,10 +151,10 @@ function averageIO(node: Node) {
           @click.prevent="showTriggers = !showTriggers"
           class="bg-transparent border-0 p-0 m-0 ps-1"
         >
-          <font-awesome-icon
+          <FontAwesomeIcon
             icon="caret-down"
             class="text-muted"
-          ></font-awesome-icon>
+          ></FontAwesomeIcon>
         </button>
         <div class="stat-dropdown-container text-start" v-if="showTriggers">
           <button
@@ -214,10 +208,10 @@ function averageIO(node: Node) {
         @click.prevent="showSettings = !showSettings"
         class="bg-transparent border-0 p-0 m-0 ps-1"
       >
-        <font-awesome-icon
-          icon="caret-down"
+        <FontAwesomeIcon
+          :icon="faCaretDown"
           class="text-muted"
-        ></font-awesome-icon>
+        ></FontAwesomeIcon>
       </button>
       <div class="stat-dropdown-container text-start" v-if="showSettings">
         <button

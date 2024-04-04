@@ -3,6 +3,7 @@ import { ref } from "vue"
 import useClipboard from "vue-clipboard3"
 import { directive as vTippy } from "vue-tippy"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { faCheck, faClipboard } from "@fortawesome/free-solid-svg-icons"
 
 interface Props {
   content: string
@@ -28,7 +29,7 @@ function copyRaw() {
       :class="copied ? 'd-none' : 'd-block'"
       @click="copyRaw"
     >
-      <font-awesome-icon fixed-width icon="clipboard" />
+      <FontAwesomeIcon fixed-width :icon="faClipboard" />
     </button>
     <button
       class="btn btn-outline-secondary bg-light btn-sm m-2"
@@ -36,7 +37,7 @@ function copyRaw() {
       @click="copyRaw"
       v-tippy="{ placement: 'left', arrow: true, content: 'copied' }"
     >
-      <font-awesome-icon fixed-width icon="check" class="text-success" />
+      <FontAwesomeIcon fixed-width :icon="faCheck" class="text-success" />
     </button>
   </div>
 </template>
