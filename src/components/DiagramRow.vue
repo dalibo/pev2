@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { inject, reactive, ref, watch } from "vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 import type { Ref } from "vue"
 import {
   HighlightedNodeIdKey,
@@ -193,14 +194,14 @@ watch(
         v-else-if="diagramViewOptions.metric == Metric.estimate_factor"
       >
         <span class="text-muted small">
-          <font-awesome-icon
+          <FontAwesomeIcon
             fixed-width
-            icon="arrow-down"
+            :icon="faArrowDown"
             v-if="
               node[NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
               EstimateDirection.under
             "
-          ></font-awesome-icon>
+          ></FontAwesomeIcon>
           <i class="fa fa-fw d-inline-block" v-else />
         </span>
         <div
@@ -241,14 +242,14 @@ watch(
           aria-valuemax="100"
         ></div>
         <span class="text-muted small">
-          <font-awesome-icon
+          <FontAwesomeIcon
             fixed-width
-            icon="arrow-up"
+            :icon="faArrowUp"
             v-if="
               node[NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
               EstimateDirection.over
             "
-          ></font-awesome-icon>
+          ></FontAwesomeIcon>
           <i class="fa fa-fw d-inline-block" v-else />
         </span>
       </div>

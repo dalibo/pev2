@@ -2,13 +2,11 @@
 import { inject, ref, onMounted } from "vue"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { library } from "@fortawesome/fontawesome-svg-core"
-import { fas } from "@fortawesome/free-solid-svg-icons"
-library.add(fas)
 
 import { time_ago } from "../utils"
 import MainLayout from "../layouts/MainLayout.vue"
 import Plan from "@/components/Plan.vue"
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons"
 import {
   plan1_source,
   plan1_source_json,
@@ -264,14 +262,14 @@ function handleDrop(event: DragEvent) {
                     title="Remove plan from list"
                     v-on:click.prevent="deletePlan(plan)"
                   >
-                    <font-awesome-icon icon="trash"></font-awesome-icon>
+                    <FontAwesomeIcon :icon="faTrash"></FontAwesomeIcon>
                   </button>
                   <button
                     class="btn btn-sm btn-outline-secondary py-0 float-end"
                     title="Edit plan details"
                     v-on:click.prevent="editPlan(plan)"
                   >
-                    <font-awesome-icon icon="edit"></font-awesome-icon>
+                    <FontAwesomeIcon :icon="faEdit"></FontAwesomeIcon>
                   </button>
                   <a
                     v-on:click.prevent="openPlan(plan)"

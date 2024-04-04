@@ -2,6 +2,10 @@
 import { inject } from "vue"
 import { SortDirection } from "@/enums"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import {
+  faArrowDownShortWide,
+  faArrowDownWideShort,
+} from "@fortawesome/free-solid-svg-icons"
 
 interface Props {
   name: string
@@ -16,16 +20,16 @@ const sortBy = inject<(a: string) => void>("sortBy")
 <template>
   <a href="#" @click.prevent="sortBy && sortBy(name)">
     <slot>{{ name }}</slot>
-    <font-awesome-icon
+    <FontAwesomeIcon
       fixed-width
-      icon="arrow-down-short-wide"
+      :icon="faArrowDownShortWide"
       v-if="sort == name && dir == SortDirection.asc"
-    ></font-awesome-icon>
-    <font-awesome-icon
+    ></FontAwesomeIcon>
+    <FontAwesomeIcon
       fixed-width
-      icon="arrow-down-wide-short"
+      :icon="faArrowDownWideShort"
       v-else-if="sort == name && dir == SortDirection.desc"
     >
-    </font-awesome-icon>
+    </FontAwesomeIcon>
   </a>
 </template>

@@ -12,6 +12,17 @@ import MiscDetail from "@/components/MiscDetail.vue"
 import { PlanKey, ViewOptionsKey } from "@/symbols"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import {
+  faAlignJustify,
+  faArrowDown,
+  faArrowUp,
+  faClock,
+  faDollarSign,
+  faExchangeAlt,
+  faFilter,
+  faInfoCircle,
+  faUndo,
+} from "@fortawesome/free-solid-svg-icons"
 
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
 
@@ -183,11 +194,11 @@ watch(activeTab, () => {
     <div class="tab-pane" :class="{ 'show active': activeTab === 'general' }">
       <!-- general -->
       <div v-if="plan.isAnalyze">
-        <font-awesome-icon
+        <FontAwesomeIcon
           fixed-width
-          icon="clock"
+          :icon="faClock"
           class="text-muted"
-        ></font-awesome-icon>
+        ></FontAwesomeIcon>
         <b>Timing:</b>
         <span
           class="p-0 px-1 rounded alert"
@@ -201,11 +212,11 @@ watch(activeTab, () => {
         </template>
       </div>
       <div>
-        <font-awesome-icon
+        <FontAwesomeIcon
           fixed-width
-          icon="align-justify"
+          :icon="faAlignJustify"
           class="text-muted"
-        ></font-awesome-icon>
+        ></FontAwesomeIcon>
         <b>Rows:</b>
         <span class="px-1">{{
           tilde + formattedProp("ACTUAL_ROWS_REVISED")
@@ -221,11 +232,10 @@ watch(activeTab, () => {
         >
           |
           <span v-if="plannerRowEstimateDirection === EstimateDirection.over"
-            ><font-awesome-icon icon="arrow-up"></font-awesome-icon> over</span
+            ><FontAwesomeIcon :icon="faArrowUp"></FontAwesomeIcon> over</span
           >
           <span v-if="plannerRowEstimateDirection === EstimateDirection.under"
-            ><font-awesome-icon icon="arrow-down"></font-awesome-icon>
-            under</span
+            ><FontAwesomeIcon :icon="faArrowDown"></FontAwesomeIcon> under</span
           >
           estimated
           <span v-if="plannerRowEstimateValue != Infinity">
@@ -239,11 +249,11 @@ watch(activeTab, () => {
         </span>
       </div>
       <div v-if="rowsRemoved">
-        <font-awesome-icon
+        <FontAwesomeIcon
           fixed-width
-          icon="filter"
+          :icon="faFilter"
           class="text-muted"
-        ></font-awesome-icon>
+        ></FontAwesomeIcon>
         <b> {{ NodeProp[rowsRemovedProp] }}: </b>
         <span>
           <span class="px-1">{{ tilde + formattedProp(rowsRemovedProp) }}</span
@@ -254,19 +264,19 @@ watch(activeTab, () => {
         </span>
       </div>
       <div v-if="node[NodeProp.HEAP_FETCHES]">
-        <font-awesome-icon
+        <FontAwesomeIcon
           fixed-width
-          icon="exchange-alt"
+          :icon="faExchangeAlt"
           class="text-muted"
-        ></font-awesome-icon>
+        ></FontAwesomeIcon>
         <b>Heap Fetches:</b>
         <span
           class="p-0 px-1 rounded alert"
           :class="heapFetchesClass"
           v-html="formattedProp('HEAP_FETCHES')"
         ></span>
-        <font-awesome-icon
-          icon="info-circle"
+        <FontAwesomeIcon
+          :icon="faInfoCircle"
           fixed-width
           class="text-muted"
           v-if="heapFetchesClass"
@@ -275,14 +285,14 @@ watch(activeTab, () => {
             content:
               'Visibility map may be out-of-date. Consider using VACUUM or change autovacuum settings.',
           }"
-        ></font-awesome-icon>
+        ></FontAwesomeIcon>
       </div>
       <div v-if="node[NodeProp.EXCLUSIVE_COST]">
-        <font-awesome-icon
+        <FontAwesomeIcon
           fixed-width
-          icon="dollar-sign"
+          :icon="faDollarSign"
           class="text-muted"
-        ></font-awesome-icon>
+        ></FontAwesomeIcon>
         <b>Cost:</b>
         <span class="p-0 px-1 me-1 alert" :class="costClass">{{
           formattedProp("EXCLUSIVE_COST")
@@ -292,11 +302,11 @@ watch(activeTab, () => {
         >
       </div>
       <div v-if="node[NodeProp.ACTUAL_LOOPS] > 1">
-        <font-awesome-icon
+        <FontAwesomeIcon
           fixed-width
-          icon="undo"
+          :icon="faUndo"
           class="text-muted"
-        ></font-awesome-icon>
+        ></FontAwesomeIcon>
         <b>Loops:</b>
         <span class="px-1">{{ formattedProp("ACTUAL_LOOPS") }} </span>
       </div>

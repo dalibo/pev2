@@ -16,6 +16,11 @@ import { HighlightType, NodeProp } from "@/enums"
 import { findNodeBySubplanName } from "@/services/help-service"
 import useNode from "@/node"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import {
+  faChevronDown,
+  faChevronUp,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons"
 
 const outerEl = ref<Element | null>(null) // The outer Element, useful for CTE and subplans
 
@@ -136,16 +141,16 @@ function centerCte() {
               @click.prevent.stop="showDetails = !showDetails"
             >
               <span class="text-muted">
-                <font-awesome-icon
+                <FontAwesomeIcon
                   fixed-width
-                  icon="chevron-up"
+                  :icon="faChevronUp"
                   v-if="showDetails"
-                ></font-awesome-icon>
-                <font-awesome-icon
+                ></FontAwesomeIcon>
+                <FontAwesomeIcon
                   fixed-width
-                  icon="chevron-down"
+                  :icon="faChevronDown"
                   v-else
-                ></font-awesome-icon>
+                ></FontAwesomeIcon>
               </span>
               {{ nodeName }}
             </h4>
@@ -230,10 +235,10 @@ function centerCte() {
             </div>
             <div v-if="node[NodeProp.CTE_NAME]">
               <a class="text-reset" href="" @click.prevent.stop="centerCte">
-                <font-awesome-icon
-                  icon="search"
+                <FontAwesomeIcon
+                  :icon="faSearch"
                   class="text-muted"
-                ></font-awesome-icon>
+                ></FontAwesomeIcon>
                 <span class="text-muted">CTE</span>
                 {{ node[NodeProp.CTE_NAME] }}
               </a>

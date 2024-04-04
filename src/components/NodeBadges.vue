@@ -3,6 +3,13 @@ import { inject, reactive } from "vue"
 import type { Ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import {
+  faClock,
+  faDollarSign,
+  faThumbsDown,
+  faFilter,
+  faExchangeAlt,
+} from "@fortawesome/free-solid-svg-icons"
 import useNode from "@/node"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
 import { PlanKey, ViewOptionsKey } from "@/symbols"
@@ -29,13 +36,13 @@ const {
     v-if="durationClass"
     :class="'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' + durationClass"
     v-tippy="'Slow'"
-    ><font-awesome-icon fixed-width icon="clock"></font-awesome-icon>
+    ><FontAwesomeIcon fixed-width :icon="faClock"></FontAwesomeIcon>
   </span>
   <span
     v-if="costClass"
     :class="'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' + costClass"
     v-tippy="'Cost is high'"
-    ><font-awesome-icon fixed-width icon="dollar-sign"></font-awesome-icon
+    ><FontAwesomeIcon fixed-width :icon="faDollarSign"></FontAwesomeIcon
   ></span>
   <span
     v-if="estimationClass"
@@ -43,7 +50,7 @@ const {
       'p-0  d-inline-block mb-0 ms-1 text-nowrap alert ' + estimationClass
     "
     v-tippy="'Bad estimation for number of rows'"
-    ><font-awesome-icon fixed-width icon="thumbs-down"></font-awesome-icon
+    ><FontAwesomeIcon fixed-width :icon="faThumbsDown"></FontAwesomeIcon
   ></span>
   <span
     v-if="rowsRemovedClass"
@@ -52,7 +59,7 @@ const {
     "
     v-tippy="filterTooltip"
   >
-    <font-awesome-icon fixed-width icon="filter"></font-awesome-icon>
+    <FontAwesomeIcon fixed-width :icon="faFilter"></FontAwesomeIcon>
   </span>
   <span
     v-if="heapFetchesClass"
@@ -64,17 +71,17 @@ const {
       content: 'Heap Fetches number is high',
     }"
   >
-    <font-awesome-icon fixed-width icon="exchange-alt"></font-awesome-icon>
+    <FontAwesomeIcon fixed-width :icon="faExchangeAlt"></FontAwesomeIcon>
   </span>
   <span
     v-if="rowsRemoved && !rowsRemovedClass"
     class="p-0 d-inline-block mb-0 ms-1 text-nowrap"
     v-tippy="filterTooltip"
   >
-    <font-awesome-icon
+    <FontAwesomeIcon
       fixed-width
-      icon="filter"
+      :icon="faFilter"
       class="text-muted"
-    ></font-awesome-icon>
+    ></FontAwesomeIcon>
   </span>
 </template>
