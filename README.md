@@ -1,6 +1,8 @@
 PEV2: A VueJS component to show a graphical vizualization of a PostgreSQL execution
 plan.
 
+![PEV2 screenshot](pev2_screenshot.png)
+
 # Usage
 
 To use the explain vizualizer you can choose one of the following options:
