@@ -193,7 +193,7 @@ watch(
         style="height: 10px"
         v-else-if="diagramViewOptions.metric == Metric.estimate_factor"
       >
-        <span class="text-muted small">
+        <span class="text-secondary small">
           <FontAwesomeIcon
             fixed-width
             :icon="faArrowDown"
@@ -241,7 +241,7 @@ watch(
           aria-valuemin="0"
           aria-valuemax="100"
         ></div>
-        <span class="text-muted small">
+        <span class="text-secondary small">
           <FontAwesomeIcon
             fixed-width
             :icon="faArrowUp"

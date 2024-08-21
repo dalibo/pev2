@@ -86,7 +86,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
 </script>
 <template>
   <tr @click="showDetails = !showDetails" class="node">
-    <td class="node-index text-muted">
+    <td class="node-index text-secondary">
       <!-- node id -->
       <a :href="`#plan/node/${node.nodeId}`" @click.stop>
         <span class="font-weight-normal small">#{{ node.nodeId }} </span>
@@ -291,27 +291,27 @@ function formattedProp(propName: keyof typeof NodeProp) {
 
         <span class="text-body-secondary">
           <template v-if="node[NodeProp.RELATION_NAME]">
-            <span class="text-muted">on</span>
+            <span class="text-secondary">on</span>
             <span v-if="node[NodeProp.SCHEMA]"
               >{{ node[NodeProp.SCHEMA] }}.</span
             >{{ node[NodeProp.RELATION_NAME] }}
             <span v-if="node[NodeProp.ALIAS]">
-              <span class="text-muted">as</span>
+              <span class="text-secondary">as</span>
               {{ node[NodeProp.ALIAS] }}
             </span>
           </template>
           <template v-else-if="node[NodeProp.ALIAS]">
-            <span class="text-muted">on</span>
+            <span class="text-secondary">on</span>
             <span v-html="keysToString(node[NodeProp.ALIAS] as string)"></span>
           </template>
           <template v-if="node[NodeProp.GROUP_KEY]">
-            <span class="text-muted">by</span>
+            <span class="text-secondary">by</span>
             <span
               v-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
             ></span>
           </template>
           <template v-if="node[NodeProp.SORT_KEY]">
-            <span class="text-muted">by</span>
+            <span class="text-secondary">by</span>
             <span
               v-html="
                       sortKeys(
@@ -323,23 +323,23 @@ function formattedProp(propName: keyof typeof NodeProp) {
           </template>
           <template v-if="node[NodeProp.JOIN_TYPE]">
             {{ node[NodeProp.JOIN_TYPE] }}
-            <span class="text-muted">join</span>
+            <span class="text-secondary">join</span>
           </template>
           <template v-if="node[NodeProp.INDEX_NAME]">
-            <span class="text-muted">using</span>
+            <span class="text-secondary">using</span>
             <span
               v-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
             ></span>
           </template>
           <template v-if="node[NodeProp.HASH_CONDITION]">
-            <span class="text-muted">on</span>
+            <span class="text-secondary">on</span>
             <span
               v-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
             ></span>
           </template>
           <template v-if="node[NodeProp.CTE_NAME]">
             <span class="text-reset">
-              <span class="text-muted">CTE</span>
+              <span class="text-secondary">CTE</span>
               {{ node[NodeProp.CTE_NAME] }}
             </span>
           </template>

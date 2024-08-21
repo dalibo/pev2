@@ -116,7 +116,7 @@ function centerCte() {
           {{ node[NodeProp.SUBPLAN_NAME] }}
         </b>
       </div>
-      <div class="workers text-muted py-0 px-1" v-if="workersPlannedCount">
+      <div class="workers text-secondary py-0 px-1" v-if="workersPlannedCount">
         <div
           v-for="index in workersPlannedCountReversed"
           :key="index"
@@ -140,7 +140,7 @@ function centerCte() {
               class="text-body overflow-hidden btn btn-light text-start py-0 px-1"
               @click.prevent.stop="showDetails = !showDetails"
             >
-              <span class="text-muted">
+              <span class="text-secondary">
                 <FontAwesomeIcon
                   fixed-width
                   :icon="faChevronUp"
@@ -170,12 +170,12 @@ function centerCte() {
               v-if="node[NodeProp.RELATION_NAME]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-muted">on</span>
+              <span class="text-secondary">on</span>
               <span v-if="node[NodeProp.SCHEMA]"
                 >{{ node[NodeProp.SCHEMA] }}.</span
               >{{ node[NodeProp.RELATION_NAME] }}
               <span v-if="node[NodeProp.ALIAS]">
-                <span class="text-muted">as</span>
+                <span class="text-secondary">as</span>
                 {{ node[NodeProp.ALIAS] }}
               </span>
             </div>
@@ -183,7 +183,7 @@ function centerCte() {
               v-else-if="node[NodeProp.ALIAS]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-muted">on</span>
+              <span class="text-secondary">on</span>
               <span
                 v-html="keysToString(node[NodeProp.ALIAS] as string)"
               ></span>
@@ -192,7 +192,7 @@ function centerCte() {
               v-if="node[NodeProp.GROUP_KEY]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-muted">by</span>
+              <span class="text-secondary">by</span>
               <span
                 v-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
               ></span>
@@ -201,7 +201,7 @@ function centerCte() {
               v-if="node[NodeProp.SORT_KEY]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-muted">by</span>
+              <span class="text-secondary">by</span>
               <span
                 v-html="
                   sortKeys(
@@ -213,13 +213,13 @@ function centerCte() {
             </div>
             <div v-if="node[NodeProp.JOIN_TYPE]">
               {{ node[NodeProp.JOIN_TYPE] }}
-              <span class="text-muted">join</span>
+              <span class="text-secondary">join</span>
             </div>
             <div
               v-if="node[NodeProp.INDEX_NAME]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-muted">using</span>
+              <span class="text-secondary">using</span>
               <span
                 v-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
               ></span>
@@ -228,7 +228,7 @@ function centerCte() {
               v-if="node[NodeProp.HASH_CONDITION]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-muted">on</span>
+              <span class="text-secondary">on</span>
               <span
                 v-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
               ></span>
@@ -237,9 +237,9 @@ function centerCte() {
               <a class="text-reset" href="" @click.prevent.stop="centerCte">
                 <FontAwesomeIcon
                   :icon="faSearch"
-                  class="text-muted"
+                  class="text-secondary"
                 ></FontAwesomeIcon>
-                <span class="text-muted">CTE</span>
+                <span class="text-secondary">CTE</span>
                 {{ node[NodeProp.CTE_NAME] }}
               </a>
             </div>
@@ -265,7 +265,9 @@ function centerCte() {
               ></div>
             </div>
             <span class="node-bar-label">
-              <span class="text-muted">{{ viewOptions.highlightType }}:</span>
+              <span class="text-secondary"
+                >{{ viewOptions.highlightType }}:</span
+              >
               <span v-html="highlightValue"></span>
             </span>
           </div>

@@ -269,7 +269,7 @@ provide("scrollTo", scrollTo)
           </ul>
           <FontAwesomeIcon
             :icon="faInfoCircle"
-            class="cursor-help d-inline-block text-muted"
+            class="cursor-help d-inline-block text-secondary"
             v-tippy="{
               content: getHelpMessage('hint track_io_timing'),
               allowHTML: true,
@@ -325,7 +325,7 @@ provide("scrollTo", scrollTo)
           </template>
         </tbody>
       </table>
-      <div class="p-2 text-center text-muted" v-else>
+      <div class="p-2 text-center text-secondary" v-else>
         <em> No data available </em>
       </div>
     </div>
