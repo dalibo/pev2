@@ -52,14 +52,32 @@ const triggersTotalDuration = computed(() => {
 })
 
 function averageIO(node: Node) {
-  const read = node[NodeProp.AVERAGE_IO_READ_TIME]
-  const write = node[NodeProp.AVERAGE_IO_WRITE_TIME]
+  const read = node[NodeProp.IO_READ_TIME]
+  const read_average = node[NodeProp.AVERAGE_IO_READ_TIME]
+  const write = node[NodeProp.IO_WRITE_TIME]
+  const write_average = node[NodeProp.AVERAGE_IO_WRITE_TIME]
   const r = []
   if (read) {
-    r.push(`read=~${formatNodeProp(NodeProp.AVERAGE_IO_READ_TIME, read)}`)
+    r.push(
+      `read=${formatNodeProp(
+        NodeProp.IO_READ_TIME,
+        read
+      )} <small class="text-body-secondary">~${formatNodeProp(
+        NodeProp.AVERAGE_IO_READ_TIME,
+        read_average
+      )}</small>`
+    )
   }
   if (write) {
-    r.push(`write=~${formatNodeProp(NodeProp.AVERAGE_IO_WRITE_TIME, write)}`)
+    r.push(
+      `write=${formatNodeProp(
+        NodeProp.IO_WRITE_TIME,
+        write
+      )} <small class="text-body-secondary">~${formatNodeProp(
+        NodeProp.AVERAGE_IO_WRITE_TIME,
+        write_average
+      )}</small>`
+    )
   }
   return r.join(", ")
 }
@@ -241,7 +259,7 @@ function averageIO(node: Node) {
           rootNode[NodeProp.AVERAGE_IO_WRITE_TIME])
       "
     >
-      IO: {{ averageIO(rootNode) }}
+      IO: <span v-html="averageIO(rootNode)"></span>
     </div>
   </div>
 </template>
