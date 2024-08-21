@@ -224,6 +224,9 @@ function doLayout() {
 }
 
 onMounted(() => {
+  if (!planEl.value) {
+    return
+  }
   d3.select(planEl.value.$el).call(zoomListener)
   nextTick(() => {
     if (layoutRootNode.value) {
