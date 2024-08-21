@@ -226,6 +226,12 @@ export default function useNode(
     return rowsRemovedPercentString.value + "% of rows removed by filter"
   })
 
+  const filterDetailTooltip = computed((): string => {
+    return `Filter used:<br><pre class="mb-0" style="white-space: pre-wrap;"><code>${
+      node[NodeProp.FILTER]
+    }</code></pre>`
+  })
+
   const isNeverExecuted = computed((): boolean => {
     return !!plan.value.planStats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
   })
@@ -529,6 +535,7 @@ export default function useNode(
     estimationClass,
     executionTimePercent,
     filterTooltip,
+    filterDetailTooltip,
     heapFetchesClass,
     heapFetchesTooltip,
     highlightValue,

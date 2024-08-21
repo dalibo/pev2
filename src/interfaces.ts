@@ -91,6 +91,7 @@ export class Node {
   [NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]: number;
   [NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]: number;
   [NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]: number;
+  [NodeProp.FILTER]: string;
   [NodeProp.PLANNER_ESTIMATE_DIRECTION]?: EstimateDirection;
   [NodeProp.PLANNER_ESTIMATE_FACTOR]?: number;
   [NodeProp.INDEX_NAME]?: string;

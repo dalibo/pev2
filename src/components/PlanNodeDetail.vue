@@ -53,6 +53,7 @@ const {
   durationClass,
   estimationClass,
   executionTimePercent,
+  filterDetailTooltip,
   heapFetchesClass,
   plannerRowEstimateDirection,
   plannerRowEstimateValue,
@@ -262,6 +263,12 @@ watch(activeTab, () => {
             >{{ rowsRemovedPercentString }}%</span
           >
         </span>
+        <FontAwesomeIcon
+          fixed-width
+          :icon="faInfoCircle"
+          class="text-muted"
+          v-tippy="{ allowHTML: true, content: filterDetailTooltip }"
+        ></FontAwesomeIcon>
       </div>
       <div v-if="node[NodeProp.HEAP_FETCHES]">
         <FontAwesomeIcon
