@@ -53,7 +53,7 @@ const { workersLaunchedCount } = useNode(plan, node, viewOptions)
   </div>
   <div
     v-if="!workersLaunchedCount && node[NodeProp.WORKERS_PLANNED_BY_GATHER]"
-    class="text-muted"
+    class="text-secondary"
   >
     <em>
       Detailed information is not available.

@@ -197,7 +197,7 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           fixed-width
           :icon="faClock"
-          class="text-muted"
+          class="text-secondary"
         ></FontAwesomeIcon>
         <b>Timing:</b>
         <span
@@ -208,20 +208,20 @@ watch(activeTab, () => {
         <template v-if="executionTimePercent !== Infinity">
           |
           <strong>{{ executionTimePercent }}</strong
-          ><span class="text-muted">%</span>
+          ><span class="text-secondary">%</span>
         </template>
       </div>
       <div>
         <FontAwesomeIcon
           fixed-width
           :icon="faAlignJustify"
-          class="text-muted"
+          class="text-secondary"
         ></FontAwesomeIcon>
         <b>Rows:</b>
         <span class="px-1">{{
           tilde + formattedProp("ACTUAL_ROWS_REVISED")
         }}</span>
-        <span class="text-muted" v-if="node[NodeProp.PLAN_ROWS]"
+        <span class="text-secondary" v-if="node[NodeProp.PLAN_ROWS]"
           >(Planned: {{ tilde + formattedProp("PLAN_ROWS_REVISED") }})</span
         >
         <span
@@ -252,7 +252,7 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           fixed-width
           :icon="faFilter"
-          class="text-muted"
+          class="text-secondary"
         ></FontAwesomeIcon>
         <b> {{ NodeProp[rowsRemovedProp] }}: </b>
         <span>
@@ -267,7 +267,7 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           fixed-width
           :icon="faExchangeAlt"
-          class="text-muted"
+          class="text-secondary"
         ></FontAwesomeIcon>
         <b>Heap Fetches:</b>
         <span
@@ -278,7 +278,7 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           :icon="faInfoCircle"
           fixed-width
-          class="text-muted"
+          class="text-secondary"
           v-if="heapFetchesClass"
           v-tippy="{
             arrow: true,
@@ -291,13 +291,13 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           fixed-width
           :icon="faDollarSign"
-          class="text-muted"
+          class="text-secondary"
         ></FontAwesomeIcon>
         <b>Cost:</b>
         <span class="p-0 px-1 me-1 alert" :class="costClass">{{
           formattedProp("EXCLUSIVE_COST")
         }}</span>
-        <span class="text-muted"
+        <span class="text-secondary"
           >(Total: {{ formattedProp("TOTAL_COST") }})</span
         >
       </div>
@@ -305,7 +305,7 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           fixed-width
           :icon="faUndo"
-          class="text-muted"
+          class="text-secondary"
         ></FontAwesomeIcon>
         <b>Loops:</b>
         <span class="px-1">{{ formattedProp("ACTUAL_LOOPS") }} </span>

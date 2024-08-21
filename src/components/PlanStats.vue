@@ -73,7 +73,7 @@ function averageIO(node: Node) {
     <div class="d-inline-block px-2">
       Execution time:
       <template v-if="!plan.planStats.executionTime">
-        <span class="text-muted">
+        <span class="text-secondary">
           N/A
           <FontAwesomeIcon
             :icon="faInfoCircle"
@@ -92,7 +92,7 @@ function averageIO(node: Node) {
     <div class="d-inline-block border-start px-2">
       Planning time:
       <template v-if="!plan.planStats.planningTime">
-        <span class="text-muted">
+        <span class="text-secondary">
           N/A
           <FontAwesomeIcon
             :icon="faInfoCircle"
@@ -153,7 +153,7 @@ function averageIO(node: Node) {
         >
           <FontAwesomeIcon
             icon="caret-down"
-            class="text-muted"
+            class="text-secondary"
           ></FontAwesomeIcon>
         </button>
         <div class="stat-dropdown-container text-start" v-if="showTriggers">
@@ -165,8 +165,8 @@ function averageIO(node: Node) {
           <div v-for="(trigger, index) in plan.planStats.triggers" :key="index">
             {{ trigger["Trigger Name"] }}
             <br />
-            <span class="text-muted">Called</span> {{ trigger["Calls"]
-            }}<span class="text-muted">&times;</span>
+            <span class="text-secondary">Called</span> {{ trigger["Calls"]
+            }}<span class="text-secondary">&times;</span>
             <span class="float-end">
               <span
                 :class="
@@ -176,10 +176,10 @@ function averageIO(node: Node) {
                 v-html="duration(trigger.Time)"
               ></span>
               | {{ triggerDurationPercent(trigger)
-              }}<span class="text-muted">%</span>
+              }}<span class="text-secondary">%</span>
             </span>
             <br />
-            <span class="text-muted" v-if="trigger.Relation">on</span>
+            <span class="text-secondary" v-if="trigger.Relation">on</span>
             {{ trigger.Relation }}
             <div class="clearfix"></div>
             <hr
@@ -192,7 +192,7 @@ function averageIO(node: Node) {
           </div>
         </div>
       </template>
-      <span v-else class="text-muted"> N/A </span>
+      <span v-else class="text-secondary"> N/A </span>
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
@@ -210,7 +210,7 @@ function averageIO(node: Node) {
       >
         <FontAwesomeIcon
           :icon="faCaretDown"
-          class="text-muted"
+          class="text-secondary"
         ></FontAwesomeIcon>
       </button>
       <div class="stat-dropdown-container text-start" v-if="showSettings">
@@ -219,7 +219,7 @@ function averageIO(node: Node) {
           v-on:click="showSettings = false"
         ></button>
         <h3>PG Settings</h3>
-        <em class="text-muted d-block pb-2">
+        <em class="text-secondary d-block pb-2">
           Configuration parameters affecting query planning with value different
           from the built-in default value.
         </em>

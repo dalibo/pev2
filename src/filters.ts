@@ -89,7 +89,7 @@ export function sortKeys(
     if (presort) {
       result +=
         presort.indexOf(v) !== -1
-          ? '&nbsp;<span class="text-muted">(presort)</span>'
+          ? '&nbsp;<span class="text-secondary">(presort)</span>'
           : ""
     }
     return result

@@ -163,7 +163,7 @@ function handleDrop(event: DragEvent) {
       </div>
       <div class="row mb-3">
         <div class="col d-flex">
-          <div class="text-muted">
+          <div class="text-secondary">
             For best results, use
             <code>
               EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)
@@ -202,7 +202,7 @@ function handleDrop(event: DragEvent) {
           <form v-on:submit.prevent="submitPlan">
             <div class="mb-3">
               <label for="planInput" class="form-label">
-                Plan <span class="small text-muted">(text or JSON)</span>
+                Plan <span class="small text-secondary">(text or JSON)</span>
               </label>
               <textarea
                 :class="['form-control', draggingPlan ? 'dropzone-over' : '']"
@@ -218,7 +218,7 @@ function handleDrop(event: DragEvent) {
             </div>
             <div class="mb-3">
               <label for="queryInput" class="form-label">
-                Query <span class="small text-muted">(optional)</span>
+                Query <span class="small text-secondary">(optional)</span>
               </label>
               <textarea
                 :class="['form-control', draggingQuery ? 'dropzone-over' : '']"
@@ -234,7 +234,7 @@ function handleDrop(event: DragEvent) {
             </div>
             <div class="mb-3">
               <label for="queryName" class="form-label">
-                Plan Name <span class="small text-muted">(optional)</span>
+                Plan Name <span class="small text-secondary">(optional)</span>
               </label>
               <input
                 type="text"
@@ -282,7 +282,7 @@ function handleDrop(event: DragEvent) {
               </div>
               <div class="row">
                 <div class="col">
-                  <small class="text-muted">
+                  <small class="text-secondary">
                     created
                     <span :title="plan[3]?.toString()">
                       {{ time_ago(plan[3]) }}
@@ -293,7 +293,11 @@ function handleDrop(event: DragEvent) {
               </div>
             </li>
           </ul>
-          <p class="text-muted text-center" v-if="!savedPlans?.length" v-cloak>
+          <p
+            class="text-secondary text-center"
+            v-if="!savedPlans?.length"
+            v-cloak
+          >
             <em> You haven't saved any plan yet.</em>
           </p>
         </div>

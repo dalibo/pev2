@@ -37,7 +37,7 @@ $connector-line: 2px solid darken($line-color, 10%);
     cursor : grabbing;
   }
 
-  .text-muted {
+  .text-secondary {
     color: $gray !important;
   }
 
@@ -81,7 +81,7 @@ $connector-line: 2px solid darken($line-color, 10%);
 .tippy-popper .tippy-tooltip {
   text-align: left;
 }
-.tippy-popper .text-muted {
+.tippy-popper .text-secondary {
   color: inherit !important;
 }
 
