@@ -31,6 +31,7 @@ import {
 import Copy from "@/components/Copy.vue"
 import Diagram from "@/components/Diagram.vue"
 import Grid from "@/components/Grid.vue"
+import LogoImage from "@/components/LogoImage.vue"
 import PlanNode from "@/components/PlanNode.vue"
 import PlanStats from "@/components/PlanStats.vue"
 import Stats from "@/components/Stats.vue"
@@ -58,7 +59,7 @@ const version = __APP_VERSION__ // eslint-disable-line no-undef
 const rootEl = ref(null) // The root Element of this instance
 const activeTab = ref<string>("")
 const queryText = ref<string>("")
-const validationMessage = ref<string>("")
+const parsed = ref<boolean>(false)
 const plan = ref<IPlan>()
 const planEl = ref()
 let planStats = reactive<IPlanStats>({} as IPlanStats)
@@ -122,10 +123,10 @@ onBeforeMount(() => {
   let planJson: IPlanContent
   try {
     planJson = planService.fromSource(props.planSource) as IPlanContent
-    validationMessage.value = ""
+    parsed.value = true
     setActiveTab("plan")
   } catch (e) {
-    validationMessage.value = "Couldn't parse plan"
+    parsed.value = false
     plan.value = undefined
     return
   }
@@ -429,8 +430,44 @@ function updateNodeSize(node: Node, size: [number, number]) {
 </script>
 
 <template>
+  <div v-if="!parsed" class="flex-grow-1 d-flex justify-content-center">
+    <div class="card align-self-center border-danger w-50">
+      <div class="card-body">
+        <h5 class="card-title text-danger">Couldn't parse plan</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">
+          An error occured while parsing the plan
+        </h6>
+        <div class="overflow-hidden d-flex w-100 h-100 position-relative mb-3">
+          <div class="overflow-auto flex-grow-1">
+            <pre
+              class="small p-2 mb-0"
+              style="max-height: 200px"
+            ><code v-html="planSource"></code></pre>
+          </div>
+          <copy :content="planSource" />
+        </div>
+        <p class="card-text text-body-dark">
+          The plan you submited couldn't be parsed. This may be a bug. You can
+          help us fix it by opening a new issue.
+        </p>
+        <div class="d-flex align-items-center">
+          <span class="text-secondary">
+            <logo-image />
+            PEV2 <i>version {{ version }}</i>
+          </span>
+          <a
+            href="https://github.com/dalibo/pev2/issues/new?template=template=parsing_error.md&label=parsing"
+            target="_blank"
+            class="btn btn-primary ms-auto"
+            >Open an issue on Github</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
   <div
     class="plan-container d-flex flex-column overflow-hidden flex-grow-1 bg-light"
+    v-else
     ref="rootEl"
   >
     <div class="d-flex align-items-center">
@@ -485,28 +522,15 @@ function updateNodeSize(node: Node, size: [number, number]) {
       </ul>
       <div class="ms-auto me-2 small">
         <a href="https://github.com/dalibo/pev2" target="_blank">
-          <img
-            src="data:image/png;base64,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"
-            alt="PEV2"
-            style="width: 20px; height: 20px"
-          />
+          <logo-image />
           {{ version }}
         </a>
       </div>
     </div>
     <div class="tab-content flex-grow-1 d-flex overflow-hidden">
       <div
-        v-if="validationMessage"
-        class="flex-grow-1 d-flex justify-content-center"
-      >
-        <div class="alert alert-danger align-self-center">
-          {{ validationMessage }}
-        </div>
-      </div>
-      <div
         class="tab-pane flex-grow-1 overflow-hidden"
         :class="{ 'show active d-flex': activeTab === 'plan' }"
-        v-if="!validationMessage"
       >
         <!-- Plan tab -->
         <div class="d-flex flex-column flex-grow-1 overflow-hidden">
