@@ -290,11 +290,14 @@ function formattedProp(propName: keyof typeof NodeProp) {
         </b>
 
         <span class="text-body-secondary">
-          <template v-if="node[NodeProp.RELATION_NAME]">
+          <template
+            v-if="node[NodeProp.RELATION_NAME] || node[NodeProp.FUNCTION_NAME]"
+          >
             <span class="text-secondary">on</span>
             <span v-if="node[NodeProp.SCHEMA]"
               >{{ node[NodeProp.SCHEMA] }}.</span
-            >{{ node[NodeProp.RELATION_NAME] }}
+            >{{ node[NodeProp.RELATION_NAME]
+            }}{{ node[NodeProp.FUNCTION_NAME] }}
             <span v-if="node[NodeProp.ALIAS]">
               <span class="text-secondary">as</span>
               {{ node[NodeProp.ALIAS] }}
