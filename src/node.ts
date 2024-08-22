@@ -213,7 +213,7 @@ export default function useNode(
       c = 4
     } else if (i > 40) {
       c = 3
-    } else if (i > 10) {
+    } else if (i > 0) {
       c = 2
     }
     if (c) {
