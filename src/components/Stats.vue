@@ -56,6 +56,24 @@ const perTable = computed(() => {
   return values
 })
 
+const perFunction = computed(() => {
+  const functions: { [key: string]: Node[] } = _.groupBy(
+    _.filter(nodes, (n) => n[NodeProp.FUNCTION_NAME] !== undefined),
+    NodeProp.FUNCTION_NAME
+  )
+  const values: StatsTableItemType[] = []
+  _.each(functions, (nodes, functionName) => {
+    values.push({
+      name: functionName,
+      count: nodes.length,
+      time: _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION),
+      timePercent: durationPercent(nodes),
+      nodes,
+    })
+  })
+  return values
+})
+
 const perNodeType = computed(() => {
   const nodeTypes: { [key: string]: Node[] } = _.groupBy(
     nodes,
@@ -126,6 +144,40 @@ const perIndex = computed(() => {
       <tbody v-if="!perTable.length">
         <tr>
           <td colspan="3" class="text-center fst-italic">No tables used</td>
+        </tr>
+      </tbody>
+    </sorted-table>
+    <h6 class="mt-2">Per function stats</h6>
+    <sorted-table
+      class="table table-nonfluid table-sm table-bordered"
+      :values="perFunction"
+      sort="time"
+      :dir="SortDirection.desc"
+    >
+      <thead class="table-secondary">
+        <tr>
+          <th scope="col">
+            <sort-link name="name">Function</sort-link>
+          </th>
+          <th scope="col" class="text-end">
+            <sort-link name="count">Count</sort-link>
+          </th>
+          <th scope="col" colspan="2" class="text-end">
+            <sort-link name="time">Time</sort-link>
+          </th>
+        </tr>
+      </thead>
+      <template v-slot:body="sort">
+        <template v-for="value in sort.values" :key="value">
+          <stats-table-item
+            :value="value as StatsTableItemType"
+            :executionTime="executionTime"
+          ></stats-table-item>
+        </template>
+      </template>
+      <tbody v-if="!perFunction.length">
+        <tr>
+          <td colspan="3" class="text-center fst-italic">No function used</td>
         </tr>
       </tbody>
     </sorted-table>
