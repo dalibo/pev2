@@ -358,6 +358,7 @@ const notMiscProperties: string[] = [
   NodeProp.RELATION_NAME,
   NodeProp.ALIAS,
   NodeProp.FUNCTION_NAME,
+  NodeProp.STRATEGY,
 ]
 
 export function shouldShowProp(key: string, value: unknown): boolean {

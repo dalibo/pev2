@@ -96,6 +96,7 @@ export enum NodeProp {
   PRE_SORTED_GROUPS = "Pre-sorted Groups",
   PRESORTED_KEY = "Presorted Key",
   FILTER = "Filter",
+  STRATEGY = "Strategy",
 
   // computed by pev
   NODE_ID = "nodeId",
