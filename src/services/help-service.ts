@@ -357,6 +357,7 @@ const notMiscProperties: string[] = [
   "size", // Manually added to use FlexTree
   NodeProp.RELATION_NAME,
   NodeProp.ALIAS,
+  NodeProp.FUNCTION_NAME,
 ]
 
 export function shouldShowProp(key: string, value: unknown): boolean {

@@ -167,13 +167,16 @@ function centerCte() {
           </header>
           <div class="text-start font-monospace">
             <div
-              v-if="node[NodeProp.RELATION_NAME]"
+              v-if="
+                node[NodeProp.RELATION_NAME] || node[NodeProp.FUNCTION_NAME]
+              "
               :class="{ 'line-clamp-2': !showDetails }"
             >
               <span class="text-secondary">on</span>
               <span v-if="node[NodeProp.SCHEMA]"
                 >{{ node[NodeProp.SCHEMA] }}.</span
               >{{ node[NodeProp.RELATION_NAME] }}
+              {{ node[NodeProp.FUNCTION_NAME] }}
               <span v-if="node[NodeProp.ALIAS]">
                 <span class="text-secondary">as</span>
                 {{ node[NodeProp.ALIAS] }}
