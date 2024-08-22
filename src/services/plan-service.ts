@@ -103,6 +103,7 @@ export class PlanService {
     this.calculateActuals(node)
     this.calculateExclusives(node)
     this.calculateIoTimingsAverage(node)
+    this.convertNodeType(node)
   }
 
   public calculateMaximums(plan: IPlan) {
@@ -1240,5 +1241,26 @@ export class PlanService {
     return _.some(children, (child) => {
       return _.has(child, NodeProp.OUTPUT) || this.findOutputProperty(child)
     })
+  }
+
+  private convertNodeType(node: Node): void {
+    // Convert some node type (possibly from JSON source) to match the TEXT format
+    if (node[NodeProp.NODE_TYPE] == "Aggregate") {
+      let prefix = ""
+      switch (node[NodeProp.STRATEGY]) {
+        case "Sorted":
+          prefix = "Group"
+          break
+        case "Hashed":
+          prefix = "Hash"
+          break
+        case "Plain":
+          prefix = ""
+          break
+        default:
+          console.error("Unsupported Aggregate Strategy")
+      }
+      node[NodeProp.NODE_TYPE] = prefix + "Aggregate"
+    }
   }
 }
