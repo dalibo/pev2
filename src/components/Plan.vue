@@ -456,7 +456,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
             PEV2 <i>version {{ version }}</i>
           </span>
           <a
-            href="https://github.com/dalibo/pev2/issues/new?template=template=parsing_error.md&label=parsing"
+            href="https://github.com/dalibo/pev2/issues/new?template=parsing_error.md&labels=parsing&title=Failed+to+parse+plan"
             target="_blank"
             class="btn btn-primary ms-auto"
             >Open an issue on Github</a
