@@ -1245,7 +1245,7 @@ export class PlanService {
 
   private convertNodeType(node: Node): void {
     // Convert some node type (possibly from JSON source) to match the TEXT format
-    if (node[NodeProp.NODE_TYPE] == "Aggregate") {
+    if (node[NodeProp.NODE_TYPE] == "Aggregate" && node[NodeProp.STRATEGY]) {
       let prefix = ""
       switch (node[NodeProp.STRATEGY]) {
         case "Sorted":
