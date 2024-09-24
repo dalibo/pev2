@@ -31,7 +31,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.6",
     "bootstrap": "^5.3.2",
     "clarinet": "^0.12.5",
-    "d3": "^7.8.2",
+    "d3": "^7.9.0",
     "d3-flextree": "^2.1.2",
     "emitter": "^0.0.2",
     "highlight.js": "^11.7.0",
