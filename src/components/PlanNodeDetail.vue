@@ -294,7 +294,7 @@ watch(activeTab, () => {
           }"
         ></FontAwesomeIcon>
       </div>
-      <div v-if="node[NodeProp.EXCLUSIVE_COST]">
+      <div v-if="!_.isUndefined(node[NodeProp.EXCLUSIVE_COST])">
         <FontAwesomeIcon
           fixed-width
           :icon="faDollarSign"
