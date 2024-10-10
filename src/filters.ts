@@ -1,7 +1,9 @@
 import _ from "lodash"
 import { createApp } from "vue"
 import { EstimateDirection, nodePropTypes, PropType } from "@/enums"
+import type { JIT } from "@/interfaces"
 import SortGroup from "@/components/SortGroup.vue"
+import JitDetails from "@/components/JitDetails.vue"
 import hljs from "highlight.js/lib/core"
 import pgsql from "highlight.js/lib/languages/pgsql"
 hljs.registerLanguage("pgsql", pgsql)
@@ -170,6 +172,13 @@ export function transferRate(value: number): string {
   return formatBytes(value * 8 * 1024) + "/s"
 }
 
+function jit(value: JIT): string {
+  const app = createApp(JitDetails, { jit: value }).mount(
+    document.createElement("div")
+  )
+  return app.$el.outerHTML
+}
+
 export function formatNodeProp(key: string, value: unknown): string {
   if (_.has(nodePropTypes, key)) {
     if (nodePropTypes[key] === PropType.duration) {
@@ -207,6 +216,8 @@ export function formatNodeProp(key: string, value: unknown): string {
       return sortGroups(value as string)
     } else if (nodePropTypes[key] === PropType.transferRate) {
       return transferRate(value as number)
+    } else if (nodePropTypes[key] === PropType.jit) {
+      return jit(value as JIT)
     }
   }
   return _.escape(value as unknown as string)
