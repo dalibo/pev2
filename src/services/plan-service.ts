@@ -233,7 +233,7 @@ export class PlanService {
       node[NodeProp.EXCLUSIVE_DURATION] = duration > 0 ? duration : 0
     }
 
-    if (node[NodeProp.TOTAL_COST]) {
+    if (!_.isUndefined(node[NodeProp.TOTAL_COST])) {
       node[NodeProp.EXCLUSIVE_COST] = node[NodeProp.TOTAL_COST]
     }
 
