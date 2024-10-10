@@ -250,7 +250,7 @@ export default function useNode(
   })
 
   const workersPlannedCount = computed((): number => {
-    return node[NodeProp.WORKERS_PLANNED_BY_GATHER] as number
+    return node[NodeProp.WORKERS_LAUNCHED] as number || node[NodeProp.WORKERS_PLANNED_BY_GATHER] as number
   })
 
   const workersPlannedCountReversed = computed((): number[] => {
