@@ -9,6 +9,7 @@ import { duration, durationClass } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
 import { NodeProp } from "../enums"
 import { formatNodeProp } from "@/filters"
+import JitDetails from "@/components/JitDetails.vue"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
@@ -18,6 +19,7 @@ const getHelpMessage = helpService.getHelpMessage
 const plan = inject(PlanKey) as Ref<IPlan>
 const showSettings = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
+const showJitDetails = ref<boolean>(false)
 const rootNode = computed(() => plan.value && plan.value.content.Plan)
 
 const planningTimeClass = (percent: number) => {
@@ -144,7 +146,7 @@ function hasParallelChildren(node: Node) {
       </template>
     </div>
     <div
-      class="d-inline-block border-start px-2"
+      class="d-inline-block border-start px-2 position-relative"
       v-if="plan.planStats.jitTime && plan.planStats.executionTime"
     >
       JIT:
@@ -158,6 +160,23 @@ function hasParallelChildren(node: Node) {
           "
           v-html="duration(plan.planStats.jitTime)"
         ></span>
+        <button
+          @click.prevent="showJitDetails = !showJitDetails"
+          class="bg-transparent border-0 p-0 m-0 ps-1"
+        >
+          <FontAwesomeIcon
+            :icon="faCaretDown"
+            class="text-secondary"
+          ></FontAwesomeIcon>
+        </button>
+        <div class="stat-dropdown-container text-start" v-if="showJitDetails">
+          <div>
+            <jit-details
+              :jit="plan.content.JIT"
+              v-if="plan.content.JIT"
+            ></jit-details>
+          </div>
+        </div>
       </span>
     </div>
     <div class="d-inline-block border-start px-2 position-relative">
