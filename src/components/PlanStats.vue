@@ -170,7 +170,7 @@ function averageIO(node: Node) {
           class="bg-transparent border-0 p-0 m-0 ps-1"
         >
           <FontAwesomeIcon
-            icon="caret-down"
+            :icon="faCaretDown"
             class="text-secondary"
           ></FontAwesomeIcon>
         </button>
