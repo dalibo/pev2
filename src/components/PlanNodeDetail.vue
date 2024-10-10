@@ -47,6 +47,7 @@ const activeTab = ref<string>("general")
 
 const helpService = new HelpService()
 const getNodeTypeDescription = helpService.getNodeTypeDescription
+const getHelpMessage = helpService.getHelpMessage
 
 const {
   costClass,
@@ -336,6 +337,17 @@ watch(activeTab, () => {
             <b>Read:&nbsp;</b>
             {{ formattedProp("EXCLUSIVE_IO_READ_TIME") }}
             <small>~{{ formattedProp("AVERAGE_IO_READ_TIME") }}</small>
+            <FontAwesomeIcon
+              :icon="faInfoCircle"
+              class="cursor-help d-inline-block text-secondary"
+              v-tippy="{
+                content: getHelpMessage('io timings parallel'),
+              }"
+              v-if="
+                node[NodeProp.WORKERS_PLANNED] ||
+                node[NodeProp.WORKERS_PLANNED_BY_GATHER]
+              "
+            ></FontAwesomeIcon>
           </span>
           <br />
           <span v-if="node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]" class="ms-2">
