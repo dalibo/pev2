@@ -52,6 +52,20 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(
   <div>
     <b>Workers launched: </b>
     <span class="px-1">{{ workersLaunchedCount }}</span>
+    <em
+      v-if="
+        !node[NodeProp.WORKERS_LAUNCHED] &&
+        !node[NodeProp.WORKERS] &&
+        (!plan.isVerbose || !plan.isAnalyze)
+      "
+      class="text-warning"
+    >
+      <FontAwesomeIcon
+        :icon="faExclamationTriangle"
+        class="cursor-help"
+        v-tippy="getHelpMessage('fuzzy needs verbose')"
+      ></FontAwesomeIcon>
+    </em>
   </div>
   <div
     v-if="!workersLaunchedCount && node[NodeProp.WORKERS_PLANNED_BY_GATHER]"
