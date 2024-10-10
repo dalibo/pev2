@@ -23,15 +23,17 @@ const viewOptions = inject(ViewOptionsKey) as ViewOptions
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
 
-const { workersLaunchedCount } = useNode(plan, node, viewOptions)
+const { workersLaunchedCount, workersPlannedCount } = useNode(
+  plan,
+  node,
+  viewOptions
+)
 </script>
 <template>
   <!-- workers tab -->
   <div>
     <b>Workers planned: </b>
-    <span class="px-1">{{
-      node[NodeProp.WORKERS_PLANNED] || node[NodeProp.WORKERS_PLANNED_BY_GATHER]
-    }}</span>
+    <span class="px-1">{{ workersPlannedCount }} </span>
     <em
       v-if="
         !node[NodeProp.WORKERS_PLANNED] &&
@@ -50,6 +52,20 @@ const { workersLaunchedCount } = useNode(plan, node, viewOptions)
   <div>
     <b>Workers launched: </b>
     <span class="px-1">{{ workersLaunchedCount }}</span>
+    <em
+      v-if="
+        !node[NodeProp.WORKERS_LAUNCHED] &&
+        !node[NodeProp.WORKERS] &&
+        (!plan.isVerbose || !plan.isAnalyze)
+      "
+      class="text-warning"
+    >
+      <FontAwesomeIcon
+        :icon="faExclamationTriangle"
+        class="cursor-help"
+        v-tippy="getHelpMessage('fuzzy needs verbose')"
+      ></FontAwesomeIcon>
+    </em>
   </div>
   <div
     v-if="!workersLaunchedCount && node[NodeProp.WORKERS_PLANNED_BY_GATHER]"

@@ -127,6 +127,7 @@ export enum NodeProp {
   AVERAGE_IO_WRITE_TIME = "*I/O Write Speed (exclusive)",
 
   WORKERS_PLANNED_BY_GATHER = "*Workers Planned By Gather",
+  WORKERS_LAUNCHED_BY_GATHER = "*Workers Launched By Gather",
 
   CTE_SCAN = "CTE Scan",
   CTE_NAME = "CTE Name",

@@ -89,6 +89,9 @@ export class PlanService {
         child[NodeProp.WORKERS_PLANNED_BY_GATHER] =
           node[NodeProp.WORKERS_PLANNED] ||
           node[NodeProp.WORKERS_PLANNED_BY_GATHER]
+        child[NodeProp.WORKERS_LAUNCHED_BY_GATHER] =
+          node[NodeProp.WORKERS_LAUNCHED] ||
+          node[NodeProp.WORKERS_LAUNCHED_BY_GATHER]
       }
       if (this.isCTE(child)) {
         plan.ctes.push(child)
