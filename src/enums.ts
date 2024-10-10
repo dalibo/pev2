@@ -135,6 +135,7 @@ export enum NodeProp {
   ARRAY_INDEX_KEY = "arrayIndex",
 
   PEV_PLAN_TAG = "plan_",
+  JIT = "JIT",
 }
 
 export enum PropType {
@@ -153,6 +154,7 @@ export enum PropType {
   rows,
   sortGroups,
   transferRate,
+  jit,
 }
 
 export const nodePropTypes: { [key: string]: PropType } = {}
@@ -209,6 +211,8 @@ nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] = PropType.blocks
 
 nodePropTypes[NodeProp.FULL_SORT_GROUPS] = PropType.sortGroups
 nodePropTypes[NodeProp.PRE_SORTED_GROUPS] = PropType.sortGroups
+
+nodePropTypes[NodeProp.JIT] = PropType.jit
 
 export class WorkerProp {
   // plan property keys
