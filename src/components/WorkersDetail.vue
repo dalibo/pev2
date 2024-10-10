@@ -67,19 +67,6 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(
       ></FontAwesomeIcon>
     </em>
   </div>
-  <div
-    v-if="!workersLaunchedCount && node[NodeProp.WORKERS_PLANNED_BY_GATHER]"
-    class="text-secondary"
-  >
-    <em>
-      Detailed information is not available.
-      <FontAwesomeIcon
-        :icon="faExclamationTriangle"
-        class="cursor-help"
-        v-tippy="getHelpMessage('workers detailed info missing')"
-      ></FontAwesomeIcon>
-    </em>
-  </div>
 
   <div
     v-if="_.isArray(node[NodeProp.WORKERS])"
