@@ -47,6 +47,12 @@ import {
   type FlexHierarchyPointLink,
   type FlexHierarchyPointNode,
 } from "d3-flextree"
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons"
+import SliceDetail from "@/components/SliceDetail.vue"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
 interface Props {
   planSource: string
@@ -64,6 +70,8 @@ const plan = ref<IPlan>()
 const planEl = ref()
 let planStats = reactive<IPlanStats>({} as IPlanStats)
 const rootNode = computed(() => plan.value && plan.value.content.Plan)
+const Slice = computed(() => plan.value && plan.value.content.Slice)
+const showSlice = ref<boolean>(true)
 
 // Determine if there is a Data Segments attribute
 const hasDataSegments = computed(() => {
@@ -637,6 +645,32 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       </button>
                     </div>
                   </div>
+                  <div
+                    class="position-absolute top-0 end-0 d-flex align-items-center"
+                    v-if="Slice"
+                  >
+                    <span
+                      class="text-secondary"
+                      @click.prevent.stop="showSlice = !showSlice"
+                    >
+                      <FontAwesomeIcon
+                        fixed-width
+                        :icon="faChevronRight"
+                        v-if="showSlice"
+                      ></FontAwesomeIcon>
+                      <FontAwesomeIcon
+                        fixed-width
+                        :icon="faChevronLeft"
+                        v-else
+                      ></FontAwesomeIcon>
+                    </span>
+                    <div v-if="showSlice" class="plan-node">
+                      <div v-for="(item, index) in Slice" :key="index">
+                        <SliceDetail :memory-details="item"></SliceDetail>
+                      </div>
+                    </div>
+                  </div>
+
                   <svg width="100%" height="100%">
                     <g :transform="transform">
                       <!-- Links -->
