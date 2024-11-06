@@ -484,7 +484,7 @@ export class PlanService {
         out[out.length - 1] += line
       } else if (
         line.match(
-          /^(?:Total\s+runtime|Planning\s+time|Execution\s+time|Time|Filter|Output|JIT)/i
+          /^(?:Total\s+runtime|Planning\s+time|Memory\s+used|Optimizer|Execution\s+time|Time|Filter|Output|JIT)/i
         )
       ) {
         out.push(line)
