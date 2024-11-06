@@ -556,34 +556,43 @@ export class PlanService {
 
       const emptyLineMatches = new RegExp(emptyLineRegex).exec(line)
       const headerMatches = new RegExp(headerRegex).exec(line)
+      // Gather Motion、Broadcast Motion and Redistribute Motion
+      const motion =
+        "(?:(\\d+)+:(\\d+)+\\s+\\((slice\\d+);\\s*segments:\\s*(\\d+)+\\))?"
 
       /*
        * Groups
        * 1: prefix
        * 2: type
-       * 3: estimated_startup_cost
-       * 4: estimated_total_cost
-       * 5: estimated_rows
-       * 6: estimated_row_width
-       * 7: actual_time_first
-       * 8: actual_time_last
-       * 9: actual_rows
-       * 10: actual_loops
-       * 11: actual_rows_
-       * 12: actual_loops_
-       * 13: never_executed
-       * 14: estimated_startup_cost
-       * 15: estimated_total_cost
-       * 16: estimated_rows
-       * 17: estimated_row_width
-       * 18: actual_time_first
-       * 19: actual_time_last
-       * 20: actual_rows
-       * 21: actual_loops
+       * 3: data_slice_count
+       * 4: node_count
+       * 5: slice_id
+       * 6: segments_count
+       * 7: estimated_startup_cost
+       * 8: estimated_total_cost
+       * 9: estimated_rows
+       * 10: estimated_row_width
+       * 11: actual_time_first
+       * 12: actual_time_last
+       * 13: actual_rows
+       * 14: actual_loops
+       * 15: actual_rows_
+       * 16: actual_loops_
+       * 17: never_executed
+       * 18: estimated_startup_cost
+       * 19: estimated_total_cost
+       * 20: estimated_rows
+       * 21: estimated_row_width
+       * 22: actual_time_first
+       * 23: actual_time_last
+       * 24: actual_rows
+       * 25: actual_loops
        */
       const nodeRegex = new RegExp(
         prefixRegex +
           typeRegex +
+          "\\s*" +
+          motion +
           "\\s*" +
           nonCapturingGroupOpen +
           (nonCapturingGroupOpen +
@@ -673,50 +682,61 @@ export class PlanService {
         return
       } else if (nodeMatches && !cteMatches && !subMatches) {
         //const prefix = nodeMatches[1]
-        const neverExecuted = nodeMatches[13]
+        const neverExecuted = nodeMatches[17]
         const newNode: Node = new Node(nodeMatches[2])
         if (
-          (nodeMatches[3] && nodeMatches[4]) ||
-          (nodeMatches[14] && nodeMatches[15])
+          nodeMatches[3] &&
+          nodeMatches[4] &&
+          nodeMatches[5] &&
+          nodeMatches[6]
         ) {
-          newNode[NodeProp.STARTUP_COST] = parseFloat(
-            nodeMatches[3] || nodeMatches[14]
-          )
-          newNode[NodeProp.TOTAL_COST] = parseFloat(
-            nodeMatches[4] || nodeMatches[15]
-          )
-          newNode[NodeProp.PLAN_ROWS] = parseInt(
-            nodeMatches[5] || nodeMatches[16],
-            0
-          )
-          newNode[NodeProp.PLAN_WIDTH] = parseInt(
-            nodeMatches[6] || nodeMatches[17],
-            0
-          )
+          newNode[NodeProp.DATA_SLICE_COUNT] = parseInt(nodeMatches[3])
+          newNode[NodeProp.NODE_COUNT] = parseInt(nodeMatches[4])
+          newNode[NodeProp.SLICE_ID] = nodeMatches[5]
+          newNode[NodeProp.SEGMENTS_COUNT] = parseInt(nodeMatches[6])
         }
         if (
           (nodeMatches[7] && nodeMatches[8]) ||
           (nodeMatches[18] && nodeMatches[19])
         ) {
-          newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
+          newNode[NodeProp.STARTUP_COST] = parseFloat(
             nodeMatches[7] || nodeMatches[18]
           )
-          newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
+          newNode[NodeProp.TOTAL_COST] = parseFloat(
             nodeMatches[8] || nodeMatches[19]
+          )
+          newNode[NodeProp.PLAN_ROWS] = parseInt(
+            nodeMatches[9] || nodeMatches[20],
+            0
+          )
+          newNode[NodeProp.PLAN_WIDTH] = parseInt(
+            nodeMatches[10] || nodeMatches[21],
+            0
+          )
+        }
+        if (
+          (nodeMatches[11] && nodeMatches[12]) ||
+          (nodeMatches[22] && nodeMatches[23])
+        ) {
+          newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
+            nodeMatches[11] || nodeMatches[22]
+          )
+          newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
+            nodeMatches[12] || nodeMatches[23]
           )
         }
 
         if (
-          (nodeMatches[9] && nodeMatches[10]) ||
-          (nodeMatches[11] && nodeMatches[12]) ||
-          (nodeMatches[20] && nodeMatches[21])
+          (nodeMatches[13] && nodeMatches[14]) ||
+          (nodeMatches[15] && nodeMatches[16]) ||
+          (nodeMatches[24] && nodeMatches[25])
         ) {
           newNode[NodeProp.ACTUAL_ROWS] = parseInt(
-            nodeMatches[9] || nodeMatches[11] || nodeMatches[20],
+            nodeMatches[13] || nodeMatches[15] || nodeMatches[24],
             0
           )
           newNode[NodeProp.ACTUAL_LOOPS] = parseInt(
-            nodeMatches[10] || nodeMatches[12] || nodeMatches[21],
+            nodeMatches[14] || nodeMatches[16] || nodeMatches[25],
             0
           )
         }
