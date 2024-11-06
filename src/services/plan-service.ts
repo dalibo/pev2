@@ -869,7 +869,7 @@ export class PlanService {
           WorkMemory: sliceMathches[5],
         }
         root.Slice.push(sliceDetail)
-      } else if (extraMatches) {
+      } else if (extraMatches && !sliceMathches) {
         //const prefix = extraMatches[1]
 
         // Remove elements from elementsAtDepth for deeper levels
