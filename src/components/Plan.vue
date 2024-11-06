@@ -64,6 +64,21 @@ const plan = ref<IPlan>()
 const planEl = ref()
 let planStats = reactive<IPlanStats>({} as IPlanStats)
 const rootNode = computed(() => plan.value && plan.value.content.Plan)
+
+// Determine if there is a Data Segments attribute
+const hasDataSegments = computed(() => {
+  if (!rootNode.value || !rootNode.value.Plans) {
+    return false
+  }
+  const plans = rootNode.value.Plans
+  for (let i = 0; i < plans.length; i++) {
+    if (plans[i]["Data Slice Count"] !== undefined) {
+      return true
+    }
+  }
+  return false
+})
+
 const selectedNodeId = ref<number>(NaN)
 const selectedNode = ref<Node | undefined>(undefined)
 const highlightedNodeId = ref<number>(NaN)
@@ -80,6 +95,12 @@ const planService = new PlanService()
 
 // Vertical padding between 2 nodes in the tree layout
 const padding = 40
+
+// Parallel node digital offset
+const numPositionX = 20
+const numPositionY1 = 10
+const numPositionY2 = 35
+
 const transform = ref("")
 const scale = ref(1)
 const edgeWeight = computed(() => {
@@ -645,6 +666,33 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         stroke-linecap="square"
                         fill="none"
                       />
+                      <g v-if="hasDataSegments">
+                        <text
+                          v-for="(item, index) in layoutRootNode?.descendants()"
+                          :key="`text${index}`"
+                          :x="item.x + numPositionX"
+                          :y="item.y - numPositionY1"
+                          font-size="12"
+                          fill="black"
+                          text-anchor="middle"
+                          dominant-baseline="central"
+                        >
+                          {{ item.data[NodeProp.NODE_COUNT] }}
+                        </text>
+                        <text
+                          v-for="(item, index) in layoutRootNode?.descendants()"
+                          :key="`text${index}`"
+                          :x="item.x + numPositionX"
+                          :y="item.y + item.ySize - numPositionY2"
+                          font-size="12"
+                          fill="black"
+                          text-anchor="middle"
+                          dominant-baseline="central"
+                        >
+                          {{ item.data[NodeProp.DATA_SLICE_COUNT] }}
+                        </text>
+                      </g>
+
                       <foreignObject
                         v-for="(item, index) in layoutRootNode?.descendants()"
                         :key="index"
