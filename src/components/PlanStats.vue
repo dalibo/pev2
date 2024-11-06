@@ -5,7 +5,7 @@ import { PlanKey } from "@/symbols"
 import { computed, inject, ref } from "vue"
 import type { IPlan, ITrigger, Node } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
-import { duration, durationClass } from "@/filters"
+import { duration, durationClass, formatMemoryUsage } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
 import { NodeProp } from "../enums"
 import { formatNodeProp } from "@/filters"
@@ -131,6 +131,34 @@ function averageIO(node: Node) {
                     "
             v-html="duration(plan.planStats.planningTime)"
           ></span>
+        </span>
+      </template>
+    </div>
+    <div class="d-inline-block border-start px-2">
+      Memory used:
+      <template v-if="!plan.planStats.memoryUsed">
+        <span class="text-secondary"> N/A </span>
+      </template>
+      <template v-else>
+        <span class="stat-value">
+          <span v-html="formatMemoryUsage(plan.planStats.memoryUsed)"></span>
+        </span>
+      </template>
+    </div>
+    <div class="d-inline-block border-start px-2">
+      Optimizer:
+      <template v-if="!plan.planStats.optimizer">
+        <span class="text-secondary">
+          <FontAwesomeIcon
+            :icon="faInfoCircle"
+            class="cursor-help"
+            v-tippy="getHelpMessage('missing planning time')"
+          ></FontAwesomeIcon>
+        </span>
+      </template>
+      <template v-else>
+        <span class="stat-value">
+          <span v-html="plan.planStats.optimizer"></span>
         </span>
       </template>
     </div>

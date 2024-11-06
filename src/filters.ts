@@ -44,6 +44,21 @@ export function duration(value: number | undefined): string {
   return result.slice(0, 2).join(" ")
 }
 
+export function formatMemoryUsage(memoryInKB: number): string {
+  const units: string[] = ["B", "KB", "MB", "GB", "TB"]
+  let unitIndex = 1 // Start with KB, which is the input unit
+  let value: number = memoryInKB
+
+  // Convert to the appropriate unit
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024
+    unitIndex++
+  }
+
+  // Format the output to two decimal places
+  return `${value.toFixed(2)} ${units[unitIndex]}`
+}
+
 export function cost(value: number): string {
   if (value === undefined) {
     return "N/A"

@@ -159,6 +159,8 @@ onBeforeMount(() => {
     (content["Total Runtime"] as number) ||
     NaN
   planStats.planningTime = (content["Planning Time"] as number) || NaN
+  planStats.memoryUsed = (content["Memory used"] as number) || NaN
+  planStats.optimizer = (content["Optimizer"] as string) || ""
   planStats.maxRows = content.maxRows || NaN
   planStats.maxCost = content.maxCost || NaN
   planStats.maxDuration = content.maxDuration || NaN
