@@ -484,7 +484,7 @@ export class PlanService {
         out[out.length - 1] += line
       } else if (
         line.match(
-          /^(?:Total\s+runtime|Planning\s+time|Memory\s+used|Optimizer|Execution\s+time|Time|Filter|Output|JIT)/i
+          /^(?:Total\s+runtime|Planning\s+time|Memory\s+used|\s+\(slice\d+\)|Optimizer|Execution\s+time|Time|Filter|Output|JIT)/i
         )
       ) {
         out.push(line)
@@ -653,6 +653,18 @@ export class PlanService {
 
       const extraRegex = /^(\s*)(\S.*\S)\s*$/g
       const extraMatches = extraRegex.exec(line)
+
+      /*
+       * Groups
+       * 1: slice num
+       * 2: average memory
+       * 3: number of worker threads
+       * 4: maximum memory
+       * 5: worke memory
+       */
+      const sliceRegex =
+        /\(slice(\d+)\)\s+(?:Executor\s+memory:\s*)?(?:(\d+?K\s+bytes))?(?:\s+avg\s+x\s+(\d+)?\s+workers)?(?:,\s*(\d+?K\s+bytes)\s+max\s+\(seg\d+\))?(?:\.\s+Work_mem:\s*(\d+?K\s+bytes)\s+max\.)?/
+      const sliceMathches = sliceRegex.exec(line)
 
       if (emptyLineMatches || headerMatches) {
         return
