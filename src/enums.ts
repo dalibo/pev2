@@ -61,7 +61,7 @@ export enum NodeProp {
   NODE_COUNT = "Node Count",
   SLICE_ID = "Slice Id",
   SEGMENTS_COUNT = "Segments Count",
-  DYNAMIC_SCAN_ID = "Dynamic scan id",
+  DYNAMIC_SCAN_ID = "Dynamic Scan Id",
   PLANS = "Plans",
   RELATION_NAME = "Relation Name",
   SCHEMA = "Schema",

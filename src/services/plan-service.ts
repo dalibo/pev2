@@ -559,38 +559,44 @@ export class PlanService {
       // Gather Motion、Broadcast Motion and Redistribute Motion
       const motion =
         "(?:(\\d+)+:(\\d+)+\\s+\\((slice\\d+);\\s*segments:\\s*(\\d+)+\\))?"
+      // dynamic scan node
+      const dynamic = "(\\(dynamic scan id:\\s*(\\d+)\\))?"
 
       /*
        * Groups
        * 1: prefix
        * 2: type
-       * 3: data_slice_count
-       * 4: node_count
-       * 5: slice_id
-       * 6: segments_count
-       * 7: estimated_startup_cost
-       * 8: estimated_total_cost
-       * 9: estimated_rows
-       * 10: estimated_row_width
-       * 11: actual_time_first
-       * 12: actual_time_last
-       * 13: actual_rows
-       * 14: actual_loops
-       * 15: actual_rows_
-       * 16: actual_loops_
-       * 17: never_executed
-       * 18: estimated_startup_cost
-       * 19: estimated_total_cost
-       * 20: estimated_rows
-       * 21: estimated_row_width
-       * 22: actual_time_first
-       * 23: actual_time_last
-       * 24: actual_rows
-       * 25: actual_loops
+       * 3: dynamic_scan
+       * 4: dynamic_scan_id
+       * 5: data_slice_count
+       * 6: node_count
+       * 7: slice_id
+       * 8: segments_count
+       * 9: estimated_startup_cost
+       * 10: estimated_total_cost
+       * 11: estimated_rows
+       * 12: estimated_row_width
+       * 13: actual_time_first
+       * 14: actual_time_last
+       * 15: actual_rows
+       * 16: actual_loops
+       * 17: actual_rows_
+       * 18: actual_loops_
+       * 19: never_executed
+       * 20: estimated_startup_cost
+       * 21: estimated_total_cost
+       * 22: estimated_rows
+       * 23: estimated_row_width
+       * 24: actual_time_first
+       * 25: actual_time_last
+       * 26: actual_rows
+       * 27: actual_loops
        */
       const nodeRegex = new RegExp(
         prefixRegex +
           typeRegex +
+          "\\s*" +
+          dynamic +
           "\\s*" +
           motion +
           "\\s*" +
@@ -682,61 +688,64 @@ export class PlanService {
         return
       } else if (nodeMatches && !cteMatches && !subMatches) {
         //const prefix = nodeMatches[1]
-        const neverExecuted = nodeMatches[17]
+        const neverExecuted = nodeMatches[19]
         const newNode: Node = new Node(nodeMatches[2])
-        if (
-          nodeMatches[3] &&
-          nodeMatches[4] &&
-          nodeMatches[5] &&
-          nodeMatches[6]
-        ) {
-          newNode[NodeProp.DATA_SLICE_COUNT] = parseInt(nodeMatches[3])
-          newNode[NodeProp.NODE_COUNT] = parseInt(nodeMatches[4])
-          newNode[NodeProp.SLICE_ID] = nodeMatches[5]
-          newNode[NodeProp.SEGMENTS_COUNT] = parseInt(nodeMatches[6])
+        if (nodeMatches[4]) {
+          newNode[NodeProp.DYNAMIC_SCAN_ID] = parseInt(nodeMatches[4])
         }
         if (
-          (nodeMatches[7] && nodeMatches[8]) ||
-          (nodeMatches[18] && nodeMatches[19])
+          nodeMatches[5] &&
+          nodeMatches[6] &&
+          nodeMatches[7] &&
+          nodeMatches[8]
+        ) {
+          newNode[NodeProp.DATA_SLICE_COUNT] = parseInt(nodeMatches[5])
+          newNode[NodeProp.NODE_COUNT] = parseInt(nodeMatches[6])
+          newNode[NodeProp.SLICE_ID] = nodeMatches[7]
+          newNode[NodeProp.SEGMENTS_COUNT] = parseInt(nodeMatches[8])
+        }
+        if (
+          (nodeMatches[9] && nodeMatches[10]) ||
+          (nodeMatches[20] && nodeMatches[21])
         ) {
           newNode[NodeProp.STARTUP_COST] = parseFloat(
-            nodeMatches[7] || nodeMatches[18]
+            nodeMatches[9] || nodeMatches[20]
           )
           newNode[NodeProp.TOTAL_COST] = parseFloat(
-            nodeMatches[8] || nodeMatches[19]
+            nodeMatches[10] || nodeMatches[21]
           )
           newNode[NodeProp.PLAN_ROWS] = parseInt(
-            nodeMatches[9] || nodeMatches[20],
+            nodeMatches[11] || nodeMatches[22],
             0
           )
           newNode[NodeProp.PLAN_WIDTH] = parseInt(
-            nodeMatches[10] || nodeMatches[21],
+            nodeMatches[12] || nodeMatches[23],
             0
           )
         }
         if (
-          (nodeMatches[11] && nodeMatches[12]) ||
-          (nodeMatches[22] && nodeMatches[23])
+          (nodeMatches[13] && nodeMatches[14]) ||
+          (nodeMatches[24] && nodeMatches[25])
         ) {
           newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
-            nodeMatches[11] || nodeMatches[22]
+            nodeMatches[13] || nodeMatches[24]
           )
           newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
-            nodeMatches[12] || nodeMatches[23]
+            nodeMatches[14] || nodeMatches[25]
           )
         }
 
         if (
-          (nodeMatches[13] && nodeMatches[14]) ||
           (nodeMatches[15] && nodeMatches[16]) ||
-          (nodeMatches[24] && nodeMatches[25])
+          (nodeMatches[17] && nodeMatches[18]) ||
+          (nodeMatches[26] && nodeMatches[27])
         ) {
           newNode[NodeProp.ACTUAL_ROWS] = parseInt(
-            nodeMatches[13] || nodeMatches[15] || nodeMatches[24],
+            nodeMatches[15] || nodeMatches[17] || nodeMatches[26],
             0
           )
           newNode[NodeProp.ACTUAL_LOOPS] = parseInt(
-            nodeMatches[14] || nodeMatches[16] || nodeMatches[25],
+            nodeMatches[16] || nodeMatches[18] || nodeMatches[27],
             0
           )
         }
