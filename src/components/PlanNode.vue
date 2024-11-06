@@ -19,6 +19,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
   faChevronDown,
   faChevronUp,
+  faHourglassHalf,
+  faPizzaSlice,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons"
 
@@ -165,6 +167,30 @@ function centerCte() {
               </a>
             </div>
           </header>
+          <div
+            v-if="
+              /(Motion)$/.test(node[NodeProp.NODE_TYPE]) &&
+              viewOptions.highlightType !== HighlightType.NONE &&
+              highlightValue !== null
+            "
+          >
+            <br />
+            <FontAwesomeIcon
+              fixed-width
+              :icon="faPizzaSlice"
+              class="text-secondary"
+            ></FontAwesomeIcon>
+            {{ node[NodeProp.SLICE_ID] }}
+            <br />
+            <FontAwesomeIcon
+              fixed-width
+              :icon="faHourglassHalf"
+              class="text-secondary"
+            ></FontAwesomeIcon>
+            {{ "The Slowest: " + node[NodeProp.ACTUAL_TOTAL_TIME] }}
+            <br />
+          </div>
+          <hr />
           <div class="text-start font-monospace">
             <div
               v-if="
