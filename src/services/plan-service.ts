@@ -6,6 +6,8 @@ import {
   NodeProp,
   SortSpaceMemoryProp,
   WorkerProp,
+  SliceProp,
+  ExecutorMemoryEnum,
 } from "@/enums"
 import { splitBalanced } from "@/services/help-service"
 import type {
@@ -14,6 +16,7 @@ import type {
   IPlanContent,
   IPlanStats,
   JIT,
+  Slice,
   SortGroups,
 } from "@/interfaces"
 import { Node, Worker } from "@/interfaces"
@@ -853,6 +856,19 @@ export class PlanService {
             elementsAtDepth.push([depth, element])
           }
         }
+      } else if (sliceMathches) {
+        _.remove(elementsAtDepth, (e) => e[0] >= depth || depth == 1)
+        root.Slice = root.Slice || []
+        const sliceDetail: Slice = {
+          [SliceProp.SLICE_NUM]: sliceMathches[1],
+          ExecutorMemory: {
+            [ExecutorMemoryEnum.AVERAGE_MEMORY]: sliceMathches[2],
+            [ExecutorMemoryEnum.NUMBER_OF_WORKER_THREADS]: sliceMathches[3],
+            [ExecutorMemoryEnum.MAXIMUM_MEMORY]: sliceMathches[4],
+          },
+          WorkMemory: sliceMathches[5],
+        }
+        root.Slice.push(sliceDetail)
       } else if (extraMatches) {
         //const prefix = extraMatches[1]
 
