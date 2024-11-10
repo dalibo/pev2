@@ -1,0 +1,251 @@
+{
+    "Plan": {
+        "Actual Loops": 1,
+        "Actual Rows": 1,
+        "Actual Startup Time": 32.635,
+        "Actual Total Time": 32.635,
+        "Node Type": "Aggregate",
+        "Plans": [
+            {
+                "Actual Loops": 1,
+                "Actual Rows": 20,
+                "Actual Startup Time": 31.899,
+                "Actual Total Time": 32.61,
+                "Node Type": "Gather Motion",
+                "Plans": [
+                    {
+                        "Actual Loops": 1,
+                        "Actual Rows": 1,
+                        "Actual Startup Time": 31.628,
+                        "Actual Total Time": 31.629,
+                        "Node Type": "Aggregate",
+                        "Plans": [
+                            {
+                                "Actual Loops": 0,
+                                "Actual Rows": 0,
+                                "Actual Total Time": 0,
+                                "Filter": "(a.rn = 1)",
+                                "Node Type": "Subquery Scan",
+                                "Plans": [
+                                    {
+                                        "Actual Loops": 0,
+                                        "Actual Rows": 0,
+                                        "Actual Total Time": 0,
+                                        "Node Type": "Sort",
+                                        "Plans": [
+                                            {
+                                                "Actual Loops": 0,
+                                                "Actual Rows": 0,
+                                                "Actual Total Time": 0,
+                                                "Node Type": "WindowAgg",
+                                                "Plans": [
+                                                    {
+                                                        "Actual Loops": 0,
+                                                        "Actual Rows": 0,
+                                                        "Actual Total Time": 0,
+                                                        "Node Type": "Sort",
+                                                        "Plans": [
+                                                            {
+                                                                "Actual Loops": 0,
+                                                                "Actual Rows": 0,
+                                                                "Actual Total Time": 0,
+                                                                "Node Type": "Redistribute Motion",
+                                                                "Plans": [
+                                                                    {
+                                                                        "Actual Loops": 0,
+                                                                        "Actual Rows": 0,
+                                                                        "Actual Total Time": 0,
+                                                                        "Node Type": "Nested Loop",
+                                                                        "Plans": [
+                                                                            {
+                                                                                "Actual Loops": 1,
+                                                                                "Actual Rows": 6,
+                                                                                "Actual Startup Time": 0.021,
+                                                                                "Actual Total Time": 0.023,
+                                                                                "Node Type": "Seq Scan",
+                                                                                "Plan Rows": 6,
+                                                                                "Total Cost": 1.06,
+                                                                                "Relation Name": "tmp_transactionid",
+                                                                                "Alias": "b",
+                                                                                "Startup Cost": 0,
+                                                                                "Plan Width": 36
+                                                                            },
+                                                                            {
+                                                                                "Actual Loops": 0,
+                                                                                "Actual Rows": 0,
+                                                                                "Actual Total Time": 0,
+                                                                                "Node Type": "Append",
+                                                                                "Plans": [
+                                                                                    {
+                                                                                        "Actual Loops": 0,
+                                                                                        "Actual Rows": 0,
+                                                                                        "Actual Total Time": 0,
+                                                                                        "Filter": "((test_time >= '2024-10-01 00:00:00'::timestamp without time zone) AND ((wc)::text = '50'::text))",
+                                                                                        "Node Type": "Bitmap Heap Scan",
+                                                                                        "Plans": [
+                                                                                            {
+                                                                                                "Actual Loops": 6,
+                                                                                                "Actual Rows": 10,
+                                                                                                "Actual Startup Time": 0.073,
+                                                                                                "Actual Total Time": 0.19,
+                                                                                                "Index Name": "newitcnd_log_info_1_prt_p50_transaction_id_idx",
+                                                                                                "Node Type": "Bitmap Index Scan",
+                                                                                                "Plan Rows": 6,
+                                                                                                "Total Cost": 11.04,
+                                                                                                "Startup Cost": 0,
+                                                                                                "Plan Width": 0,
+                                                                                                "Index Cond": "((transaction_id)::text = (b.transaction_id)::text)"
+                                                                                            }
+                                                                                        ],
+                                                                                        "Plan Rows": 1,
+                                                                                        "Total Cost": 1139.53,
+                                                                                        "Relation Name": "newitcnd_log_info_1_prt_p50",
+                                                                                        "Alias": "a_1",
+                                                                                        "Startup Cost": 11.05,
+                                                                                        "Plan Width": 186,
+                                                                                        "Recheck Cond": "((transaction_id)::text = (b.transaction_id)::text)"
+                                                                                    },
+                                                                                    {
+                                                                                        "Actual Loops": 0,
+                                                                                        "Actual Rows": 0,
+                                                                                        "Actual Total Time": 0,
+                                                                                        "Filter": "((test_time >= '2024-10-01 00:00:00'::timestamp without time zone) AND ((wc)::text = '50'::text))",
+                                                                                        "Node Type": "Bitmap Heap Scan",
+                                                                                        "Plans": [
+                                                                                            {
+                                                                                                "Actual Loops": 0,
+                                                                                                "Actual Rows": 0,
+                                                                                                "Actual Total Time": 0,
+                                                                                                "Index Name": "newitcnd_log_info_1_prt_other_transaction_id_idx",
+                                                                                                "Node Type": "Bitmap Index Scan",
+                                                                                                "Plan Rows": 14,
+                                                                                                "Total Cost": 12.22,
+                                                                                                "Startup Cost": 0,
+                                                                                                "Plan Width": 0,
+                                                                                                "Index Cond": "((transaction_id)::text = (b.transaction_id)::text)"
+                                                                                            }
+                                                                                        ],
+                                                                                        "Plan Rows": 1,
+                                                                                        "Total Cost": 2644.97,
+                                                                                        "Relation Name": "newitcnd_log_info_1_prt_other",
+                                                                                        "Alias": "a_2",
+                                                                                        "Startup Cost": 12.22,
+                                                                                        "Plan Width": 187,
+                                                                                        "Recheck Cond": "((transaction_id)::text = (b.transaction_id)::text)"
+                                                                                    }
+                                                                                ],
+                                                                                "Plan Rows": 1,
+                                                                                "Total Cost": 3784.49,
+                                                                                "Startup Cost": 11.05,
+                                                                                "Plan Width": 186
+                                                                            }
+                                                                        ],
+                                                                        "Plan Rows": 1,
+                                                                        "Total Cost": 22708.17,
+                                                                        "Startup Cost": 11.05,
+                                                                        "Plan Width": 151
+                                                                    }
+                                                                ],
+                                                                "Plan Rows": 1,
+                                                                "Total Cost": 22708.56,
+                                                                "Data Slice Count": 20,
+                                                                "Node Count": 20,
+                                                                "Slice Id": "slice1",
+                                                                "Segments Count": 20,
+                                                                "Startup Cost": 11.05,
+                                                                "Plan Width": 151,
+                                                                "Hash Key": "a_1.path"
+                                                            }
+                                                        ],
+                                                        "Plan Rows": 1,
+                                                        "Total Cost": 22709.02,
+                                                        "Startup Cost": 22708.97,
+                                                        "Plan Width": 151,
+                                                        "Sort Key": [
+                                                            "a_1.path",
+                                                            "a_1.cdt"
+                                                        ],
+                                                        "Sort Method": "quicksort",
+                                                        "Sort Space Used": "660",
+                                                        "Sort Space Type": "Memory"
+                                                    }
+                                                ],
+                                                "Plan Rows": 1,
+                                                "Total Cost": 22709.35,
+                                                "Startup Cost": 22708.97,
+                                                "Plan Width": 151,
+                                                "Partition By": "a_1.path",
+                                                "Order By": "a_1.cdt"
+                                            }
+                                        ],
+                                        "Plan Rows": 1,
+                                        "Total Cost": 22709.81,
+                                        "Startup Cost": 22709.77,
+                                        "Plan Width": 151,
+                                        "Sort Key": [
+                                            "a_1.uut_serial_number"
+                                        ],
+                                        "Sort Method": "quicksort",
+                                        "Sort Space Used": "660",
+                                        "Sort Space Type": "Memory"
+                                    }
+                                ],
+                                "Plan Rows": 1,
+                                "Total Cost": 22710.06,
+                                "Alias": "a",
+                                "Startup Cost": 22709.77,
+                                "Plan Width": 8
+                            }
+                        ],
+                        "Plan Rows": 1,
+                        "Total Cost": 22710.07,
+                        "Startup Cost": 22710.06,
+                        "Plan Width": 40
+                    }
+                ],
+                "Plan Rows": 1,
+                "Total Cost": 22710.28,
+                "Data Slice Count": 20,
+                "Node Count": 1,
+                "Slice Id": "slice2",
+                "Segments Count": 20,
+                "Startup Cost": 22710.06,
+                "Plan Width": 40
+            }
+        ],
+        "Plan Rows": 1,
+        "Total Cost": 22710.31,
+        "Startup Cost": 22710.3,
+        "Plan Width": 40
+    },
+    "Planning Time": 2.148,
+    "Slice": [
+        {
+            "Slice Num": "0",
+            "ExecutorMemory": {
+                "Average memory": "342K bytes"
+            }
+        },
+        {
+            "Slice Num": "1",
+            "ExecutorMemory": {
+                "Average memory": "1046K bytes",
+                "Number of worker threads": "20",
+                "Maximum memory": "1046K bytes"
+            },
+            "WorkMemory": "25K bytes"
+        },
+        {
+            "Slice Num": "2",
+            "ExecutorMemory": {
+                "Average memory": "128K bytes",
+                "Number of worker threads": "20",
+                "Maximum memory": "128K bytes"
+            },
+            "WorkMemory": "65K bytes"
+        }
+    ],
+    "Memory used": 262144,
+    "Optimizer": "Postgres query optimizer",
+    "Execution Time": 45.945
+}

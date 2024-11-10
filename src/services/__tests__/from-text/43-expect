@@ -1,0 +1,145 @@
+{
+    "Plan": {
+        "Actual Loops": 1,
+        "Actual Rows": 10,
+        "Actual Startup Time": 161.325,
+        "Actual Total Time": 161.645,
+        "Node Type": "Limit",
+        "Plans": [
+            {
+                "Actual Loops": 1,
+                "Actual Rows": 10,
+                "Actual Startup Time": 161.319,
+                "Actual Total Time": 161.549,
+                "Node Type": "Gather Motion",
+                "Plans": [
+                    {
+                        "Actual Loops": 1,
+                        "Actual Rows": 10,
+                        "Actual Startup Time": 160.33,
+                        "Actual Total Time": 161.015,
+                        "Node Type": "Limit",
+                        "Plans": [
+                            {
+                                "Actual Loops": 1,
+                                "Actual Rows": 10,
+                                "Actual Startup Time": 160.327,
+                                "Actual Total Time": 160.351,
+                                "Node Type": "Hash Join",
+                                "Plans": [
+                                    {
+                                        "Actual Loops": 1,
+                                        "Actual Rows": 39643,
+                                        "Actual Startup Time": 0.026,
+                                        "Actual Total Time": 7.468,
+                                        "Node Type": "Seq Scan",
+                                        "Plan Rows": 294152,
+                                        "Total Cost": 493.29,
+                                        "Relation Name": "fact_sn_info",
+                                        "Startup Cost": 0,
+                                        "Plan Width": 355
+                                    },
+                                    {
+                                        "Actual Loops": 1,
+                                        "Actual Rows": 15799,
+                                        "Actual Startup Time": 160.382,
+                                        "Actual Total Time": 160.382,
+                                        "Node Type": "Hash",
+                                        "Plans": [
+                                            {
+                                                "Actual Loops": 1,
+                                                "Actual Rows": 15799,
+                                                "Actual Startup Time": 32.855,
+                                                "Actual Total Time": 138.65,
+                                                "Node Type": "Redistribute Motion",
+                                                "Plans": [
+                                                    {
+                                                        "Actual Loops": 1,
+                                                        "Actual Rows": 15819,
+                                                        "Actual Startup Time": 34.59,
+                                                        "Actual Total Time": 57.348,
+                                                        "Filter": "(cdt > '2024-10-06 10:20:20.090864'::timestamp without time zone)",
+                                                        "Node Type": "Seq Scan",
+                                                        "Plan Rows": 15237,
+                                                        "Total Cost": 455.57,
+                                                        "Relation Name": "fact_pca_shipping",
+                                                        "Startup Cost": 0,
+                                                        "Plan Width": 179
+                                                    }
+                                                ],
+                                                "Plan Rows": 15237,
+                                                "Total Cost": 464.1,
+                                                "Data Slice Count": 6,
+                                                "Node Count": 6,
+                                                "Slice Id": "slice1",
+                                                "Segments Count": 6,
+                                                "Startup Cost": 0,
+                                                "Plan Width": 179,
+                                                "Hash Key": "fact_pca_shipping.mcbsno"
+                                            }
+                                        ],
+                                        "Plan Rows": 15237,
+                                        "Total Cost": 464.1,
+                                        "Startup Cost": 464.1,
+                                        "Plan Width": 179
+                                    }
+                                ],
+                                "Plan Rows": 15237,
+                                "Total Cost": 1358.25,
+                                "Startup Cost": 0,
+                                "Plan Width": 534,
+                                "Hash Cond": "((fact_sn_info.mcbsno)::text = (fact_pca_shipping.mcbsno)::text)",
+                                "Extra Text": "(seg3)   Hash chain length 1.2 avg, 5 max, using 13370 of 65536 buckets."
+                            }
+                        ],
+                        "Plan Rows": 2,
+                        "Total Cost": 1358.25,
+                        "Startup Cost": 0,
+                        "Plan Width": 534
+                    }
+                ],
+                "Plan Rows": 10,
+                "Total Cost": 1358.27,
+                "Data Slice Count": 6,
+                "Node Count": 1,
+                "Slice Id": "slice2",
+                "Segments Count": 6,
+                "Startup Cost": 0,
+                "Plan Width": 534
+            }
+        ],
+        "Plan Rows": 2,
+        "Total Cost": 1358.27,
+        "Startup Cost": 0,
+        "Plan Width": 534
+    },
+    "Planning Time": 103.949,
+    "Slice": [
+        {
+            "Slice Num": "0",
+            "ExecutorMemory": {
+                "Average memory": "331K bytes"
+            }
+        },
+        {
+            "Slice Num": "1",
+            "ExecutorMemory": {
+                "Average memory": "65K bytes",
+                "Number of worker threads": "6",
+                "Maximum memory": "65K bytes"
+            }
+        },
+        {
+            "Slice Num": "2",
+            "ExecutorMemory": {
+                "Average memory": "4882K bytes",
+                "Number of worker threads": "6",
+                "Maximum memory": "4882K bytes"
+            },
+            "WorkMemory": "2714K bytes"
+        }
+    ],
+    "Memory used": 128000,
+    "Optimizer": "Pivotal Optimizer (GPORCA)",
+    "Execution Time": 195.179
+}

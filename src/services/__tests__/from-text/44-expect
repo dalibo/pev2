@@ -1,0 +1,174 @@
+{
+    "Plan": {
+        "Actual Loops": 1,
+        "Actual Rows": 1,
+        "Actual Startup Time": 79.748,
+        "Actual Total Time": 79.749,
+        "Node Type": "Aggregate",
+        "Plans": [
+            {
+                "Actual Loops": 1,
+                "Actual Rows": 6,
+                "Actual Startup Time": 44.948,
+                "Actual Total Time": 79.702,
+                "Node Type": "Gather Motion",
+                "Plans": [
+                    {
+                        "Actual Loops": 1,
+                        "Actual Rows": 1,
+                        "Actual Startup Time": 78.823,
+                        "Actual Total Time": 78.824,
+                        "Node Type": "Aggregate",
+                        "Plans": [
+                            {
+                                "Actual Loops": 0,
+                                "Actual Rows": 0,
+                                "Actual Total Time": 0,
+                                "Node Type": "Hash Join",
+                                "Plans": [
+                                    {
+                                        "Actual Loops": 1,
+                                        "Actual Rows": 61,
+                                        "Actual Startup Time": 0.822,
+                                        "Actual Total Time": 50.64,
+                                        "Node Type": "Nested Loop",
+                                        "Plans": [
+                                            {
+                                                "Actual Loops": 1,
+                                                "Actual Rows": 1,
+                                                "Actual Startup Time": 0.012,
+                                                "Actual Total Time": 0.019,
+                                                "Node Type": "Broadcast Motion",
+                                                "Plans": [
+                                                    {
+                                                        "Actual Loops": 1,
+                                                        "Actual Rows": 1,
+                                                        "Actual Startup Time": 0.243,
+                                                        "Actual Total Time": 0.245,
+                                                        "Index Name": "idx_dw_dim_cpu_parts_cust_commodity",
+                                                        "Node Type": "Index Scan",
+                                                        "Plan Rows": 42,
+                                                        "Total Cost": 6.04,
+                                                        "Relation Name": "dim_cpu_parts_cust",
+                                                        "Startup Cost": 0,
+                                                        "Plan Width": 15,
+                                                        "Index Cond": "((commodity)::text = 'LCM'::text)"
+                                                    }
+                                                ],
+                                                "Plan Rows": 249,
+                                                "Total Cost": 6.07,
+                                                "Data Slice Count": 6,
+                                                "Node Count": 6,
+                                                "Slice Id": "slice1",
+                                                "Segments Count": 6,
+                                                "Startup Cost": 0,
+                                                "Plan Width": 15
+                                            },
+                                            {
+                                                "Actual Loops": 1,
+                                                "Actual Rows": 61,
+                                                "Actual Startup Time": 0.81,
+                                                "Actual Total Time": 50.594,
+                                                "Filter": "(((status)::text = '1'::text) AND ((wc)::text = ANY ('{M40,M61,M46,40,60,61,46,83,57}'::text[])))",
+                                                "Index Name": "idx_dw_fact_cpu_sno_parts_iecpn",
+                                                "Node Type": "Index Scan",
+                                                "Plan Rows": 1459,
+                                                "Total Cost": 3445.21,
+                                                "Relation Name": "fact_cpu_sno_parts",
+                                                "Startup Cost": 0,
+                                                "Plan Width": 11,
+                                                "Index Cond": "((iecpn)::text = (dim_cpu_parts_cust.pn)::text)"
+                                            }
+                                        ],
+                                        "Plan Rows": 361867,
+                                        "Total Cost": 3469.02,
+                                        "Startup Cost": 0,
+                                        "Plan Width": 14,
+                                        "Join Filter": "true"
+                                    },
+                                    {
+                                        "Actual Loops": 1,
+                                        "Actual Rows": 1443,
+                                        "Actual Startup Time": 2.486,
+                                        "Actual Total Time": 2.486,
+                                        "Node Type": "Hash",
+                                        "Plans": [
+                                            {
+                                                "Actual Loops": 1,
+                                                "Actual Rows": 1443,
+                                                "Actual Startup Time": 0.131,
+                                                "Actual Total Time": 1.95,
+                                                "Index Name": "idx_dw_fact_cpu_sn_fis_udt",
+                                                "Node Type": "Index Scan",
+                                                "Plan Rows": 890,
+                                                "Total Cost": 7.06,
+                                                "Relation Name": "fact_cpu_sn",
+                                                "Startup Cost": 0,
+                                                "Plan Width": 14,
+                                                "Index Cond": "((fis_udt >= '2024-10-11 00:00:00'::timestamp without time zone) AND (fis_udt <= '2024-10-15 23:59:59'::timestamp without time zone))"
+                                            }
+                                        ],
+                                        "Plan Rows": 890,
+                                        "Total Cost": 7.06,
+                                        "Startup Cost": 7.06,
+                                        "Plan Width": 14
+                                    }
+                                ],
+                                "Plan Rows": 1016,
+                                "Total Cost": 3605.47,
+                                "Startup Cost": 0,
+                                "Plan Width": 11,
+                                "Hash Cond": "(((fact_cpu_sno_parts.sno)::text = (fact_cpu_sn.sno)::text) AND ((dim_cpu_parts_cust.customer)::text = (fact_cpu_sn.customer)::text))"
+                            }
+                        ],
+                        "Plan Rows": 1,
+                        "Total Cost": 3605.47,
+                        "Startup Cost": 0,
+                        "Plan Width": 8
+                    }
+                ],
+                "Plan Rows": 1,
+                "Total Cost": 3605.47,
+                "Data Slice Count": 6,
+                "Node Count": 1,
+                "Slice Id": "slice2",
+                "Segments Count": 6,
+                "Startup Cost": 0,
+                "Plan Width": 8
+            }
+        ],
+        "Plan Rows": 1,
+        "Total Cost": 3605.47,
+        "Startup Cost": 0,
+        "Plan Width": 8
+    },
+    "Planning Time": 276.698,
+    "Slice": [
+        {
+            "Slice Num": "0",
+            "ExecutorMemory": {
+                "Average memory": "348K bytes"
+            }
+        },
+        {
+            "Slice Num": "1",
+            "ExecutorMemory": {
+                "Average memory": "60K bytes",
+                "Number of worker threads": "6",
+                "Maximum memory": "64K bytes"
+            }
+        },
+        {
+            "Slice Num": "2",
+            "ExecutorMemory": {
+                "Average memory": "4420K bytes",
+                "Number of worker threads": "6",
+                "Maximum memory": "4420K bytes"
+            },
+            "WorkMemory": "57K bytes"
+        }
+    ],
+    "Memory used": 128000,
+    "Optimizer": "Pivotal Optimizer (GPORCA)",
+    "Execution Time": 99.896
+}

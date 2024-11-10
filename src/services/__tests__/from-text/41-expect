@@ -1,0 +1,217 @@
+{
+    "Plan": {
+        "Actual Loops": 1,
+        "Actual Rows": 1,
+        "Actual Startup Time": 36.918,
+        "Actual Total Time": 36.918,
+        "Node Type": "Aggregate",
+        "Plans": [
+            {
+                "Actual Loops": 1,
+                "Actual Rows": 20,
+                "Actual Startup Time": 21.891,
+                "Actual Total Time": 36.879,
+                "Node Type": "Gather Motion",
+                "Plans": [
+                    {
+                        "Actual Loops": 1,
+                        "Actual Rows": 1,
+                        "Actual Startup Time": 22.008,
+                        "Actual Total Time": 22.008,
+                        "Node Type": "Aggregate",
+                        "Plans": [
+                            {
+                                "Actual Loops": 0,
+                                "Actual Rows": 0,
+                                "Actual Total Time": 0,
+                                "Filter": "((row_number() OVER (?)) = 1)",
+                                "Node Type": "Result",
+                                "Plans": [
+                                    {
+                                        "Actual Loops": 0,
+                                        "Actual Rows": 0,
+                                        "Actual Total Time": 0,
+                                        "Node Type": "WindowAgg",
+                                        "Plans": [
+                                            {
+                                                "Actual Loops": 0,
+                                                "Actual Rows": 0,
+                                                "Actual Total Time": 0,
+                                                "Node Type": "Sort",
+                                                "Plans": [
+                                                    {
+                                                        "Actual Loops": 0,
+                                                        "Actual Rows": 0,
+                                                        "Actual Total Time": 0,
+                                                        "Node Type": "Nested Loop",
+                                                        "Plans": [
+                                                            {
+                                                                "Actual Loops": 1,
+                                                                "Actual Rows": 6,
+                                                                "Actual Startup Time": 0.012,
+                                                                "Actual Total Time": 0.014,
+                                                                "Node Type": "Seq Scan",
+                                                                "Plan Rows": 6,
+                                                                "Total Cost": 431,
+                                                                "Relation Name": "tmp_transactionid",
+                                                                "Startup Cost": 0,
+                                                                "Plan Width": 36
+                                                            },
+                                                            {
+                                                                "Actual Loops": 0,
+                                                                "Actual Rows": 0,
+                                                                "Actual Total Time": 0,
+                                                                "Node Type": "Sequence",
+                                                                "Plans": [
+                                                                    {
+                                                                        "Actual Loops": 0,
+                                                                        "Actual Rows": 0,
+                                                                        "Actual Total Time": 0,
+                                                                        "Node Type": "Partition Selector for newitcnd_log_info",
+                                                                        "Plan Rows": 5,
+                                                                        "Total Cost": 100,
+                                                                        "Dynamic Scan Id": 1,
+                                                                        "Startup Cost": 10,
+                                                                        "Plan Width": 4,
+                                                                        "Partitions selected": 1
+                                                                    },
+                                                                    {
+                                                                        "Actual Loops": 0,
+                                                                        "Actual Rows": 0,
+                                                                        "Actual Total Time": 0,
+                                                                        "Filter": "(((transaction_id)::text = (tmp_transactionid.transaction_id)::text) AND (test_time >= '2024-10-01 00:00:00'::timestamp without time zone) AND ((wc)::text = '50'::text))",
+                                                                        "Node Type": "Dynamic Bitmap Heap Scan on newitcnd_log_info",
+                                                                        "Plans": [
+                                                                            {
+                                                                                "Actual Loops": 0,
+                                                                                "Actual Rows": 0,
+                                                                                "Actual Total Time": 0,
+                                                                                "Node Type": "BitmapAnd",
+                                                                                "Plans": [
+                                                                                    {
+                                                                                        "Actual Loops": 6,
+                                                                                        "Actual Rows": 10,
+                                                                                        "Actual Startup Time": 0.216,
+                                                                                        "Actual Total Time": 0.634,
+                                                                                        "Node Type": "Dynamic Bitmap Index Scan on idx_inframinio_newitcnd_log_info_transaction_id",
+                                                                                        "Plan Rows": 0,
+                                                                                        "Total Cost": 0,
+                                                                                        "Startup Cost": 0,
+                                                                                        "Plan Width": 0,
+                                                                                        "Index Cond": "((transaction_id)::text = (tmp_transactionid.transaction_id)::text)"
+                                                                                    },
+                                                                                    {
+                                                                                        "Actual Loops": 6,
+                                                                                        "Actual Rows": 28641,
+                                                                                        "Actual Startup Time": 0.917,
+                                                                                        "Actual Total Time": 2.842,
+                                                                                        "Node Type": "Dynamic Bitmap Index Scan on idx_inframinio_newitcnd_log_info_testtime",
+                                                                                        "Plan Rows": 0,
+                                                                                        "Total Cost": 0,
+                                                                                        "Startup Cost": 0,
+                                                                                        "Plan Width": 0,
+                                                                                        "Index Cond": "(test_time >= '2024-10-01 00:00:00'::timestamp without time zone)"
+                                                                                    }
+                                                                                ],
+                                                                                "Plan Rows": 0,
+                                                                                "Total Cost": 0,
+                                                                                "Startup Cost": 0,
+                                                                                "Plan Width": 0
+                                                                            }
+                                                                        ],
+                                                                        "Plan Rows": 1,
+                                                                        "Total Cost": 431.42,
+                                                                        "Dynamic Scan Id": 1,
+                                                                        "Startup Cost": 0,
+                                                                        "Plan Width": 141,
+                                                                        "Recheck Cond": "(((transaction_id)::text = (tmp_transactionid.transaction_id)::text) AND (test_time >= '2024-10-01 00:00:00'::timestamp without time zone))",
+                                                                        "Heap Blocks": "exact=74281912 lossy=40572984"
+                                                                    }
+                                                                ],
+                                                                "Plan Rows": 1,
+                                                                "Total Cost": 431.42,
+                                                                "Startup Cost": 0,
+                                                                "Plan Width": 141
+                                                            }
+                                                        ],
+                                                        "Plan Rows": 1,
+                                                        "Total Cost": 862.42,
+                                                        "Startup Cost": 0,
+                                                        "Plan Width": 141,
+                                                        "Join Filter": "true"
+                                                    }
+                                                ],
+                                                "Plan Rows": 1,
+                                                "Total Cost": 862.42,
+                                                "Startup Cost": 0,
+                                                "Plan Width": 141,
+                                                "Sort Key": [
+                                                    "newitcnd_log_info.path",
+                                                    "newitcnd_log_info.cdt"
+                                                ],
+                                                "Sort Method": "quicksort",
+                                                "Sort Space Used": "660",
+                                                "Sort Space Type": "Memory"
+                                            }
+                                        ],
+                                        "Plan Rows": 1,
+                                        "Total Cost": 862.42,
+                                        "Startup Cost": 0,
+                                        "Plan Width": 16,
+                                        "Partition By": "newitcnd_log_info.path",
+                                        "Order By": "newitcnd_log_info.cdt"
+                                    }
+                                ],
+                                "Plan Rows": 1,
+                                "Total Cost": 862.42,
+                                "Startup Cost": 0,
+                                "Plan Width": 8
+                            }
+                        ],
+                        "Plan Rows": 1,
+                        "Total Cost": 862.42,
+                        "Startup Cost": 0,
+                        "Plan Width": 16
+                    }
+                ],
+                "Plan Rows": 1,
+                "Total Cost": 862.42,
+                "Data Slice Count": 20,
+                "Node Count": 1,
+                "Slice Id": "slice1",
+                "Segments Count": 20,
+                "Startup Cost": 0,
+                "Plan Width": 16
+            }
+        ],
+        "Plan Rows": 1,
+        "Total Cost": 862.42,
+        "Startup Cost": 0,
+        "Plan Width": 16
+    },
+    "Planning Time": 180.573,
+    "Slice": [
+        {
+            "Slice Num": "0",
+            "ExecutorMemory": {
+                "Average memory": "263K bytes"
+            }
+        },
+        {
+            "Slice Num": "1",
+            "ExecutorMemory": {
+                "Average memory": "1599K bytes",
+                "Number of worker threads": "20",
+                "Maximum memory": "1599K bytes"
+            },
+            "WorkMemory": "370K bytes"
+        },
+        {
+            "Slice Num": "2",
+            "ExecutorMemory": {}
+        }
+    ],
+    "Memory used": 262144,
+    "Optimizer": "Pivotal Optimizer (GPORCA)",
+    "Execution Time": 38.771
+}
