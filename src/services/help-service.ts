@@ -387,10 +387,12 @@ const notMiscProperties: string[] = [
   NodeProp.NODE_ID,
   NodeProp.ROWS_REMOVED_BY_FILTER,
   NodeProp.ROWS_REMOVED_BY_JOIN_FILTER,
+  NodeProp.ROWS_REMOVED_BY_INDEX_RECHECK,
   NodeProp.ACTUAL_ROWS_REVISED,
   NodeProp.PLAN_ROWS_REVISED,
   NodeProp.ROWS_REMOVED_BY_FILTER_REVISED,
   NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED,
+  NodeProp.ROWS_REMOVED_BY_INDEX_RECHECK_REVISED,
   "size", // Manually added to use FlexTree
   NodeProp.RELATION_NAME,
   NodeProp.ALIAS,

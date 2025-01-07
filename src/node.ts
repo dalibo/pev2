@@ -110,23 +110,19 @@ export default function useNode(
   }
 
   type NodePropStrings = keyof typeof NodeProp
-  const rowsRemovedProp = computed((): NodePropStrings => {
-    const nodeKey = Object.keys(node).find(
-      (key) =>
-        key === NodeProp.ROWS_REMOVED_BY_FILTER_REVISED ||
-        key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED,
-    )
-    return Object.keys(NodeProp).find(
-      (prop) => NodeProp[prop as NodePropStrings] === nodeKey,
-    ) as NodePropStrings
-  })
+  const nodeKey = Object.keys(node).find(
+    (key) =>
+      key === NodeProp.ROWS_REMOVED_BY_FILTER_REVISED ||
+      key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED ||
+      key === NodeProp.ROWS_REMOVED_BY_INDEX_RECHECK_REVISED,
+  )
+  const rowsRemovedProp: NodePropStrings = Object.keys(NodeProp).find(
+    (prop) => NodeProp[prop as NodePropStrings] === nodeKey,
+  ) as NodePropStrings
 
   function calculateRowsRemoved() {
-    if (rowsRemovedProp.value) {
-      type NodePropStrings = keyof typeof NodeProp
-      const removed = node[
-        NodeProp[rowsRemovedProp.value as NodePropStrings]
-      ] as number
+    if (rowsRemovedProp) {
+      const removed = node[NodeProp[rowsRemovedProp]] as number
       rowsRemoved.value = removed
       const actual = node[NodeProp.ACTUAL_ROWS_REVISED]
       rowsRemovedPercent.value = _.floor((removed / (removed + actual)) * 100)
@@ -230,6 +226,12 @@ export default function useNode(
   const filterDetailTooltip = computed((): string => {
     return `Filter used:<br><pre class="mb-0" style="white-space: pre-wrap;"><code>${
       node[NodeProp.FILTER]
+    }</code></pre>`
+  })
+
+  const indexRecheckTooltip = computed((): string => {
+    return `Recheck condition:<br><pre class="mb-0" style="white-space: pre-wrap;"><code>${
+      node[NodeProp.RECHECK_COND]
     }</code></pre>`
   })
 
@@ -522,6 +524,7 @@ export default function useNode(
     heapFetchesClass,
     heapFetchesTooltip,
     highlightValue,
+    indexRecheckTooltip,
     isNeverExecuted,
     isParallelAware,
     localDirtiedPercent,
