@@ -100,8 +100,6 @@ export class Node {
   [NodeProp.PLANS]!: Node[];
   [NodeProp.PLAN_ROWS]!: number;
   [NodeProp.PLAN_ROWS_REVISED]?: number;
-  [NodeProp.ROWS_REMOVED_BY_FILTER_REVISED]?: number;
-  [NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED]?: number;
   [NodeProp.SUBPLAN_NAME]?: string;
   [NodeProp.TOTAL_COST]!: number;
   [NodeProp.WORKERS]?: Worker[];

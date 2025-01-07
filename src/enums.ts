@@ -52,6 +52,7 @@ export enum NodeProp {
   PLAN_WIDTH = "Plan Width",
   ROWS_REMOVED_BY_FILTER = "Rows Removed by Filter",
   ROWS_REMOVED_BY_JOIN_FILTER = "Rows Removed by Join Filter",
+  ROWS_REMOVED_BY_INDEX_RECHECK = "Rows Removed by Index Recheck",
   ACTUAL_STARTUP_TIME = "Actual Startup Time",
   ACTUAL_TOTAL_TIME = "Actual Total Time",
   ACTUAL_LOOPS = "Actual Loops",
@@ -105,6 +106,7 @@ export enum NodeProp {
   STRATEGY = "Strategy",
   PARTIAL_MODE = "Partial Mode",
   OPERATION = "Operation",
+  RECHECK_COND = "Recheck Cond",
 
   // computed by pev
   NODE_ID = "nodeId",
@@ -115,6 +117,7 @@ export enum NodeProp {
   PLAN_ROWS_REVISED = "*Plan Rows Revised",
   ROWS_REMOVED_BY_FILTER_REVISED = "*Rows Removed by Filter",
   ROWS_REMOVED_BY_JOIN_FILTER_REVISED = "*Rows Removed by Join Filter",
+  ROWS_REMOVED_BY_INDEX_RECHECK_REVISED = "*Rows Removed by Index Recheck",
 
   PLANNER_ESTIMATE_FACTOR = "*Planner Row Estimate Factor",
   PLANNER_ESTIMATE_DIRECTION = "*Planner Row Estimate Direction",
@@ -216,6 +219,8 @@ nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER] = PropType.rows
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] = PropType.rows
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_FILTER_REVISED] = PropType.rows
 nodePropTypes[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED] = PropType.rows
+nodePropTypes[NodeProp.ROWS_REMOVED_BY_INDEX_RECHECK] = PropType.rows
+nodePropTypes[NodeProp.ROWS_REMOVED_BY_INDEX_RECHECK_REVISED] = PropType.rows
 nodePropTypes[NodeProp.HEAP_FETCHES] = PropType.rows
 nodePropTypes[NodeProp.OUTPUT] = PropType.list
 nodePropTypes[NodeProp.SORT_KEY] = PropType.list

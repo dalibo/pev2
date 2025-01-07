@@ -56,6 +56,7 @@ const {
   filterDetailTooltip,
   formattedProp,
   heapFetchesClass,
+  indexRecheckTooltip,
   plannerRowEstimateDirection,
   plannerRowEstimateValue,
   rowsRemoved,
@@ -261,7 +262,15 @@ watch(activeTab, () => {
           fixed-width
           :icon="faInfoCircle"
           class="text-muted"
+          v-tippy="{ allowHTML: true, content: indexRecheckTooltip }"
+          v-if="rowsRemovedProp == 'ROWS_REMOVED_BY_INDEX_RECHECK_REVISED'"
+        ></FontAwesomeIcon>
+        <FontAwesomeIcon
+          fixed-width
+          :icon="faInfoCircle"
+          class="text-muted"
           v-tippy="{ allowHTML: true, content: filterDetailTooltip }"
+          v-else
         ></FontAwesomeIcon>
       </div>
       <div v-if="node[NodeProp.HEAP_FETCHES]">
