@@ -59,15 +59,20 @@ const handleBatchSubmit = () => {
     queryInput: item.query,
     planInput: item.explain
   }))
+  
+  // 修复事件参数传递
   window.dispatchEvent(new CustomEvent('plan-submit', {
-    detail: selectedItems
+    detail: structuredClone(selectedItems) // 使用深拷贝避免引用问题
   }))
+  
   showModal.value = false
   importedData.value = []
 }
 
 const handleImportCancel = () => {
   showModal.value = false
+  // 强制清空选择状态
+  importedData.value.forEach(item => item.selected = false)
   importedData.value = []
 }
 
