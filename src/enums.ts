@@ -126,7 +126,7 @@ export enum NodeProp {
   AVERAGE_IO_READ_TIME = "*I/O Read Speed (exclusive)",
   AVERAGE_IO_WRITE_TIME = "*I/O Write Speed (exclusive)",
 
-  WORKERS_PLANNED_BY_GATHER = "*Workers Planned By Gather",
+  WORKERS_PLANNED_BY_GATHER = "Workers Planned By Gather",
 
   CTE_SCAN = "CTE Scan",
   CTE_NAME = "CTE Name",
@@ -135,6 +135,16 @@ export enum NodeProp {
   ARRAY_INDEX_KEY = "arrayIndex",
 
   PEV_PLAN_TAG = "plan_",
+
+  // Citus specific properties
+  CUSTOM_PLAN_PROVIDER = "Custom Plan Provider",
+  DISTRIBUTED_QUERY = "Distributed Query",
+  TASK_COUNT = "Task Count",
+  TASKS_SHOWN = "Tasks Shown",
+  REMOTE_NODE = "Remote Node",
+  REMOTE_PLAN_DETAILS = "Remote Plan Details",
+  WORKER = "Worker",
+  WORKER_NUMBER = "Worker Number",
 }
 
 export enum PropType {
@@ -227,3 +237,10 @@ export enum SortSpaceMemoryProp {
   AVERAGE_SORT_SPACE_USED = "Average Sort Space Used",
   PEAK_SORT_SPACE_USED = "Peak Sort Space Used",
 }
+
+// Add Citus specific property types
+nodePropTypes[NodeProp.TASK_COUNT] = PropType.increment
+nodePropTypes[NodeProp.CUSTOM_PLAN_PROVIDER] = PropType.list
+nodePropTypes[NodeProp.DISTRIBUTED_QUERY] = PropType.json
+nodePropTypes[NodeProp.REMOTE_NODE] = PropType.list
+nodePropTypes[NodeProp.REMOTE_PLAN_DETAILS] = PropType.json

@@ -6,8 +6,17 @@ import { nodePropTypes, PropType } from "@/enums"
 export class HelpService {
   public nodeId = 0
 
-  public getNodeTypeDescription(nodeType: string) {
-    return NODE_DESCRIPTIONS[nodeType.toUpperCase()]
+  public getNodeTypeDescription(nodeType: string): string {
+    switch (nodeType) {
+      case "Citus Distributed Query Job":
+        return `
+          A distributed query node in Citus that coordinates the execution across multiple worker nodes.
+          This node represents the coordinator's plan for distributing and executing the query across the cluster.
+          It contains information about task distribution, worker nodes, and the actual execution plan on worker nodes.
+        `
+      default:
+        return NODE_DESCRIPTIONS[nodeType.toUpperCase()]
+    }
   }
 
   public getHelpMessage(helpMessage: string) {
@@ -49,6 +58,19 @@ export const NODE_DESCRIPTIONS: INodeDescription = {
   MEMOIZE: `is used to cache the results of the inner side of a nested loop. It avoids executing underlying nodes when the results for the current parameters are already in the cache.`,
   GATHER: `reads the results of the parallel workers, in an undefined order.`,
   "GATHER MERGE": `reads the results of the parallel workers, preserving any ordering.`,
+  "CITUS DISTRIBUTED QUERY JOB": `
+    A distributed query node in Citus that coordinates the execution across multiple worker nodes.
+    This node represents the coordinator's plan for distributing and executing the query across the cluster.
+  `,
+  "CITUS JOB": `
+    A Citus job node that represents a distributed execution job.
+    Contains information about task distribution and manages multiple task nodes.
+  `,
+  "CITUS TASK": `
+    A Citus task node that represents a single execution unit on a worker node.
+    The node name includes the worker node information (e.g., host=worker1 port=5432).
+    Contains the actual execution plan that will be executed on the specified worker node.
+  `,
 }
 
 interface IHelpMessage {

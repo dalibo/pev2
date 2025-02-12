@@ -67,19 +67,24 @@ const samples = ref<Sample[]>([
   ["Parallel (4 workers)", plan_parallel_2_source, plan_parallel_2_query],
 ])
 
-function submitPlan() {
+function _submitPlan(name, query, plan) {
   let newPlan: Plan = ["", "", ""]
   newPlan[0] =
-    queryName.value ||
+    name ||
     "New Plan - " +
       new Date().toLocaleString("en-US", {
         dateStyle: "medium",
         timeStyle: "medium",
       })
-  newPlan[1] = planInput.value
-  newPlan[2] = queryInput.value
+  newPlan[1] = plan
+  newPlan[2] = query
   newPlan[3] = new Date().toISOString()
   savePlanData(newPlan)
+  return newPlan
+}
+
+function submitPlan() {
+  let newPlan: Plan = _submitPlan(queryName.value, queryInput.value, planInput.value)
 
   setPlanData(...newPlan)
 }
@@ -96,11 +101,30 @@ onMounted(() => {
   const noHashURL = window.location.href.replace(/#.*$/, "")
   window.history.replaceState("", document.title, noHashURL)
   loadPlans()
+  window.addEventListener('plan-submit', ((event: CustomEvent) => {
+    const plans = event.detail
+    plans.forEach(plan => {
+      _submitPlan(plan.queryName, plan.queryInput, plan.planInput)
+    })
+    loadPlans()
+  }) as EventListener)
+
+  window.addEventListener('plans-clean', ((event: CustomEvent) => {
+    cleanPlans()
+  }) as EventListener)
 })
 
 async function loadPlans() {
   const plans = await idb.getPlans()
   savedPlans.value = plans.slice().reverse()
+}
+
+async function cleanPlans() {
+  const plans = await idb.getPlans()
+  plans.forEach(plan => {
+    idb.deletePlan(plan)
+  })
+  savedPlans.value = []
 }
 
 function loadPlan(plan?: Plan) {

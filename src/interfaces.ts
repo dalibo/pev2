@@ -254,3 +254,24 @@ export interface JIT {
 
 // A plan node with id, node, isLastSibling, branches
 export type Row = [number, Node, boolean, number[]]
+
+// Add Citus specific interfaces
+export interface CitusTask {
+  Node: string
+  "Remote Plan": Array<Array<{ Plan: Node }>>
+}
+
+export interface CitusDistributedQuery {
+  "Task Count": number
+  "Tasks Shown": string
+  Tasks: CitusTask[]
+}
+
+export interface ICitusNode extends Node {
+  "Custom Plan Provider": string
+  "Distributed Query": CitusDistributedQuery
+  "Task Count"?: number
+  "Tasks Shown"?: string
+  "Remote Node"?: string
+  "Remote Plan Details"?: Node
+}

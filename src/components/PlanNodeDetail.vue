@@ -2,7 +2,7 @@
 import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
 import type { Ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
-import type { IPlan, Node, ViewOptions } from "@/interfaces"
+import type { IPlan, Node, ViewOptions, ICitusNode } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
 import { formatNodeProp } from "@/filters"
 import { EstimateDirection, NodeProp } from "@/enums"
@@ -22,6 +22,8 @@ import {
   faFilter,
   faInfoCircle,
   faUndo,
+  faServer,
+  faProjectDiagram,
 } from "@fortawesome/free-solid-svg-icons"
 
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
@@ -120,6 +122,33 @@ function formattedProp(propName: keyof typeof NodeProp) {
 watch(activeTab, () => {
   window.setTimeout(() => updateSize && updateSize(node), 1)
 })
+
+const isCitusNode = computed(() => {
+  return node[NodeProp.NODE_TYPE] === "Citus Distributed Query Job"
+})
+
+const citusNode = computed(() => {
+  return node as ICitusNode
+})
+
+const hasMiscInfo = computed(() => {
+  return !!(
+    node.Options ||
+    node.Settings ||
+    node["Sort Method"] ||
+    node["Sort Key"] ||
+    node["Sort Space Used"] ||
+    node["Sort Space Type"] ||
+    node["Join Type"] ||
+    node["Inner Unique"] ||
+    node["Hash Buckets"] ||
+    node["Hash Batches"] ||
+    node["Original Hash Batches"] ||
+    node["Peak Memory Usage"] ||
+    node["Parent Relationship"] ||
+    node["Subplan Name"]
+  )
+})
 </script>
 
 <template>
@@ -183,10 +212,25 @@ watch(activeTab, () => {
       <li class="nav-item">
         <a
           class="nav-link"
-          :class="{ active: activeTab === 'misc' }"
+          :class="{
+            active: activeTab === 'misc',
+            disabled: !isCitusNode && !hasMiscInfo,
+          }"
           @click.prevent.stop="activeTab = 'misc'"
           href=""
           >Misc</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          :class="{
+            active: activeTab === 'citus',
+            disabled: !isCitusNode,
+          }"
+          @click.prevent.stop="activeTab = 'citus'"
+          href=""
+          >Citus</a
         >
       </li>
     </ul>
@@ -211,6 +255,15 @@ watch(activeTab, () => {
           <strong>{{ executionTimePercent }}</strong
           ><span class="text-secondary">%</span>
         </template>
+      </div>
+      <div v-if="node[NodeProp.REMOTE_NODE]">
+        <FontAwesomeIcon
+          fixed-width
+          :icon="faServer"
+          class="text-secondary"
+        ></FontAwesomeIcon>
+        <b>Remote Node:</b>
+        <span class="px-1">{{ node[NodeProp.REMOTE_NODE] }}</span>
       </div>
       <div>
         <FontAwesomeIcon
@@ -444,6 +497,42 @@ watch(activeTab, () => {
     <div class="tab-pane" :class="{ 'show active': activeTab === 'misc' }">
       <!-- misc tab -->
       <misc-detail :node="node" />
+    </div>
+    <div class="tab-pane" :class="{ 'show active': activeTab === 'citus' }">
+      <div v-if="isCitusNode">
+        <div class="mb-2">
+          <FontAwesomeIcon
+            fixed-width
+            :icon="faServer"
+            class="text-secondary"
+          ></FontAwesomeIcon>
+          <b>Distributed Execution:</b>
+          <div class="ms-4">
+            <div>Task Count: {{ citusNode['Task Count'] }}</div>
+            <div>Tasks Shown: {{ citusNode['Tasks Shown'] }}</div>
+            <div v-if="citusNode['Remote Node']">
+              Remote Node: {{ citusNode['Remote Node'] }}
+            </div>
+          </div>
+        </div>
+        <div v-if="citusNode['Remote Plan Details']" class="mt-3">
+          <FontAwesomeIcon
+            fixed-width
+            :icon="faProjectDiagram"
+            class="text-secondary"
+          ></FontAwesomeIcon>
+          <b>Remote Plan:</b>
+          <div class="ms-4">
+            <div>Node Type: {{ citusNode['Remote Plan Details'][NodeProp.NODE_TYPE] }}</div>
+            <div v-if="citusNode['Remote Plan Details'][NodeProp.RELATION_NAME]">
+              Relation: {{ citusNode['Remote Plan Details'][NodeProp.RELATION_NAME] }}
+            </div>
+            <div v-if="citusNode['Remote Plan Details'][NodeProp.INDEX_NAME]">
+              Index: {{ citusNode['Remote Plan Details'][NodeProp.INDEX_NAME] }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
