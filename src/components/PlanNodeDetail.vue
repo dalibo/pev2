@@ -221,18 +221,6 @@ const hasMiscInfo = computed(() => {
           >Misc</a
         >
       </li>
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          :class="{
-            active: activeTab === 'citus',
-            disabled: !isCitusNode,
-          }"
-          @click.prevent.stop="activeTab = 'citus'"
-          href=""
-          >Citus</a
-        >
-      </li>
     </ul>
   </div>
   <div class="card-body tab-content">
@@ -508,10 +496,10 @@ const hasMiscInfo = computed(() => {
           ></FontAwesomeIcon>
           <b>Distributed Execution:</b>
           <div class="ms-4">
-            <div>Task Count: {{ citusNode['Task Count'] }}</div>
-            <div>Tasks Shown: {{ citusNode['Tasks Shown'] }}</div>
+            <div>Task Count: {{ citusNode["Task Count"] }}</div>
+            <div>Tasks Shown: {{ citusNode["Tasks Shown"] }}</div>
             <div v-if="citusNode['Remote Node']">
-              Remote Node: {{ citusNode['Remote Node'] }}
+              Remote Node: {{ citusNode["Remote Node"] }}
             </div>
           </div>
         </div>
@@ -523,12 +511,18 @@ const hasMiscInfo = computed(() => {
           ></FontAwesomeIcon>
           <b>Remote Plan:</b>
           <div class="ms-4">
-            <div>Node Type: {{ citusNode['Remote Plan Details'][NodeProp.NODE_TYPE] }}</div>
-            <div v-if="citusNode['Remote Plan Details'][NodeProp.RELATION_NAME]">
-              Relation: {{ citusNode['Remote Plan Details'][NodeProp.RELATION_NAME] }}
+            <div>
+              Node Type:
+              {{ citusNode["Remote Plan Details"][NodeProp.NODE_TYPE] }}
+            </div>
+            <div
+              v-if="citusNode['Remote Plan Details'][NodeProp.RELATION_NAME]"
+            >
+              Relation:
+              {{ citusNode["Remote Plan Details"][NodeProp.RELATION_NAME] }}
             </div>
             <div v-if="citusNode['Remote Plan Details'][NodeProp.INDEX_NAME]">
-              Index: {{ citusNode['Remote Plan Details'][NodeProp.INDEX_NAME] }}
+              Index: {{ citusNode["Remote Plan Details"][NodeProp.INDEX_NAME] }}
             </div>
           </div>
         </div>

@@ -125,6 +125,8 @@ export class Node {
     | string[]
     | undefined
     | [number, number]
+    | CitusDistributedQuery
+    | Node
   constructor(type?: string) {
     if (!type) {
       return
@@ -261,10 +263,20 @@ export interface CitusTask {
   "Remote Plan": Array<Array<{ Plan: Node }>>
 }
 
+// export interface CitusDistributedQuery {
+//   "Task Count": number
+//   "Tasks Shown": string
+//   Tasks: CitusTask[]
+// }
+
 export interface CitusDistributedQuery {
   "Task Count": number
   "Tasks Shown": string
-  Tasks: CitusTask[]
+  Job: {
+    "Task Count": number
+    "Tasks Shown": string
+    Tasks: CitusTask[]
+  }
 }
 
 export interface ICitusNode extends Node {

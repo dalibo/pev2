@@ -16,6 +16,7 @@ import type {
   JIT,
   SortGroups,
   ICitusNode,
+  CitusDistributedQuery,
 } from "@/interfaces"
 import { Node, Worker } from "@/interfaces"
 import clarinet from "clarinet"
@@ -36,16 +37,13 @@ interface CitusTask {
   "Remote Plan": Array<Array<{ Plan: Node }>>
 }
 
-interface CitusDistributedQuery {
-  "Task Count": number
-  "Tasks Shown": string
-  Tasks: CitusTask[]
-}
-
-interface CitusCustomScan extends Node {
-  "Custom Plan Provider": string
-  "Distributed Query": CitusDistributedQuery
-}
+// interface CitusDistributedQuery {
+//   Job: {
+//     "Task Count": number
+//     "Tasks Shown": string
+//     Tasks: CitusTask[]
+//   }
+// }
 
 export class PlanService {
   private static instance: PlanService
@@ -1284,34 +1282,40 @@ export class PlanService {
       const citusNode = node as ICitusNode
       if (citusNode["Custom Plan Provider"] === "Citus Adaptive") {
         citusNode[NodeProp.NODE_TYPE] = "Citus Distributed Query Job"
-        
+
         if (citusNode["Distributed Query"]) {
-          const distributedQuery = citusNode["Distributed Query"]
+          const distributedQuery = citusNode[
+            "Distributed Query"
+          ] as unknown as CitusDistributedQuery
           // Use type assertion to allow property deletion
-          delete (citusNode as {[key: string]: any})["Distributed Query"]
+          delete (citusNode as { [key: string]: any })["Distributed Query"]
 
           // Create Task nodes
           const taskNodes: Node[] = []
-          if (distributedQuery.Job.Tasks) {
-            distributedQuery.Job.Tasks.forEach((task, index) => {
-              const taskNode = new Node("Citus Task")
-              taskNode[NodeProp.NODE_TYPE] = "Citus Task"
-              taskNode[NodeProp.REMOTE_NODE] = task.Node
-              
-              if (task["Remote Plan"] && task["Remote Plan"].length > 0) {
-                const remotePlan = task["Remote Plan"][0][0]
-                // Process remote plan as a regular plan
-                this.processNode(remotePlan.Plan, plan)
-                // Add remote plan as child of task node
-                if (!taskNode[NodeProp.PLANS]) {
-                  taskNode[NodeProp.PLANS] = []
+          if (distributedQuery.Job) {
+            citusNode["Task Count"] = distributedQuery.Job["Task Count"]
+            citusNode["Tasks Shown"] = distributedQuery.Job["Tasks Shown"]
+            if (distributedQuery.Job.Tasks) {
+              distributedQuery.Job.Tasks.forEach((task, index) => {
+                const taskNode = new Node("Citus Task")
+                taskNode[NodeProp.NODE_TYPE] = "Citus Task"
+                taskNode[NodeProp.REMOTE_NODE] = task.Node
+
+                if (task["Remote Plan"] && task["Remote Plan"].length > 0) {
+                  const remotePlan = task["Remote Plan"][0][0]
+                  // Process remote plan as a regular plan
+                  this.processNode(remotePlan.Plan, plan)
+                  // Add remote plan as child of task node
+                  if (!taskNode[NodeProp.PLANS]) {
+                    taskNode[NodeProp.PLANS] = []
+                  }
+                  taskNode[NodeProp.PLANS].push(remotePlan.Plan)
                 }
-                taskNode[NodeProp.PLANS].push(remotePlan.Plan)
-              }
-              taskNodes.push(taskNode)
-            })
+                taskNodes.push(taskNode)
+              })
+            }
           }
-          
+
           // Add task nodes as children of job node
           citusNode[NodeProp.PLANS] = taskNodes
         }
