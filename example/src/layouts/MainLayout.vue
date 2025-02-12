@@ -39,11 +39,17 @@ const handleFileImport = (event: Event) => {
 
   Papa.parse(file, {
     complete: (results) => {
-      // 跳过标题行，并添加 selected 属性
+      // 获取表头并确定列索引
+      const headers = results.data[0].map((h: string) => h.trim().toLowerCase())
+      const queryIndex = headers.indexOf('query')
+      const explainIndex = headers.indexOf('explain')
+      const nameIndex = headers.indexOf('name')
+
+      // 处理数据行（从第二行开始）
       importedData.value = results.data.slice(1).map((row: any) => ({
-        name: row[0]?.trim(),
-        query: row[1]?.trim(),
-        explain: row[2]?.trim(),
+        name: nameIndex !== -1 ? row[nameIndex]?.trim() : '',
+        query: queryIndex !== -1 ? row[queryIndex]?.trim() : '',
+        explain: explainIndex !== -1 ? row[explainIndex]?.trim() : '',
         selected: false
       }))
       showModal.value = true
