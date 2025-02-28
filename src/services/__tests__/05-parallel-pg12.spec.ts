@@ -1,3 +1,4 @@
+import { describe, expect, test } from "vitest"
 import { PlanService } from "@/services/plan-service"
 import type { IPlan, IPlanContent } from "@/interfaces"
 
@@ -20,7 +21,7 @@ Gather Merge  (cost=648.47..749.15 rows=8624 width=8)
   const root = plan.content.Plan
   const seqScanNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    seqScanNode && expect(seqScanNode["Node Type"]).toEqual("Seq Scan")
+    expect(seqScanNode["Node Type"]).toEqual("Seq Scan")
     expect(seqScanNode).toHaveProperty("*Workers Planned By Gather", 2)
   })
 })
@@ -45,7 +46,7 @@ Execution Time: 5.844 ms
   const root = plan.content.Plan
   const seqScanNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    seqScanNode && expect(seqScanNode["Node Type"]).toEqual("Seq Scan")
+    expect(seqScanNode["Node Type"]).toEqual("Seq Scan")
     expect(seqScanNode).toHaveProperty("*Workers Planned By Gather", 2)
   })
 })
@@ -77,7 +78,7 @@ Execution Time: 5.941 ms
   const root = plan.content.Plan
   const seqScanNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    seqScanNode && expect(seqScanNode["Node Type"]).toEqual("Seq Scan")
+    expect(seqScanNode["Node Type"]).toEqual("Seq Scan")
     expect(seqScanNode).toHaveProperty("*Workers Planned By Gather", 2)
   })
 })
@@ -99,14 +100,12 @@ Finalize Aggregate  (cost=423.63..423.64 rows=1 width=8)
   const root = plan.content.Plan
   const partialAggregateNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    partialAggregateNode &&
-      expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
+    expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
     expect(partialAggregateNode).toHaveProperty("*Workers Planned By Gather")
   })
   const bitmapIndexScanNode = root && root.Plans[0].Plans[0].Plans[0].Plans[0]
   test("Node is parallel (not ANALYZE, not VERBOSE)", () => {
-    bitmapIndexScanNode &&
-      expect(bitmapIndexScanNode["Node Type"]).toEqual("Bitmap Index Scan")
+    expect(bitmapIndexScanNode["Node Type"]).toEqual("Bitmap Index Scan")
     expect(bitmapIndexScanNode).toHaveProperty("*Workers Planned By Gather", 4)
   })
 })
@@ -132,14 +131,12 @@ Execution Time: 9.025 ms
   const root = plan.content.Plan
   const partialAggregateNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    partialAggregateNode &&
-      expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
+    expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
     expect(partialAggregateNode).toHaveProperty("*Workers Planned By Gather")
   })
   const bitmapIndexScanNode = root && root.Plans[0].Plans[0].Plans[0].Plans[0]
   test("Node isn't parallel", () => {
-    bitmapIndexScanNode &&
-      expect(bitmapIndexScanNode["Node Type"]).toEqual("Bitmap Index Scan")
+    expect(bitmapIndexScanNode["Node Type"]).toEqual("Bitmap Index Scan")
   })
 })
 
@@ -163,14 +160,12 @@ Finalize Aggregate  (cost=423.63..423.64 rows=1 width=8)
   const root = plan.content.Plan
   const partialAggregateNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    partialAggregateNode &&
-      expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
+    expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
     expect(partialAggregateNode).toHaveProperty("*Workers Planned By Gather")
   })
   const bitmapIndexScanNode = root && root.Plans[0].Plans[0].Plans[0].Plans[0]
   test("Node isn't parallel", () => {
-    bitmapIndexScanNode &&
-      expect(bitmapIndexScanNode["Node Type"]).toEqual("Bitmap Index Scan")
+    expect(bitmapIndexScanNode["Node Type"]).toEqual("Bitmap Index Scan")
     expect(bitmapIndexScanNode).toHaveProperty("*Workers Planned By Gather", 4)
   })
 })
@@ -207,13 +202,11 @@ Execution Time: 5.646 ms
   const root = plan.content.Plan
   const partialAggregateNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    partialAggregateNode &&
-      expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
+    expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
     expect(partialAggregateNode).toHaveProperty("*Workers Planned By Gather")
   })
   const bitmapIndexScanNode = root && root.Plans[0].Plans[0].Plans[0].Plans[0]
   test("Node isn't parallel", () => {
-    bitmapIndexScanNode &&
-      expect(bitmapIndexScanNode["Node Type"]).toEqual("Bitmap Index Scan")
+    expect(bitmapIndexScanNode["Node Type"]).toEqual("Bitmap Index Scan")
   })
 })

@@ -12,4 +12,4 @@ export const SelectNodeKey: InjectionKey<
 
 export const ViewOptionsKey: InjectionKey<ViewOptions> = Symbol("viewOptions")
 
-export const PlanKey: InjectionKey<Ref<IPlan>> = Symbol("plan")
+export const PlanKey: InjectionKey<Ref<IPlan | undefined>> = Symbol("plan")

@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest"
 import { PlanService } from "@/services/plan-service"
 import type { IPlan, IPlanContent } from "@/interfaces"
 import { NodeProp } from "@/enums"
@@ -163,7 +164,6 @@ Execution Time: 1639.241 ms
   const plan: IPlan = planService.createPlan("", r, "")
   it("takes workers into account", () => {
     const parallelhashjoin = findNodeById(plan, 5)
-    parallelhashjoin &&
-      expect(parallelhashjoin[NodeProp.NODE_TYPE]).toBe("Hash Join")
+    expect(parallelhashjoin?.[NodeProp.NODE_TYPE]).toBe("Hash Join")
   })
 })

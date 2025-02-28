@@ -1,3 +1,4 @@
+import { describe, expect, test } from "vitest"
 import { PlanService } from "@/services/plan-service"
 import type { IPlanContent } from "@/interfaces"
 
@@ -44,7 +45,7 @@ describe("PlanService", () => {
 ]`
     const json = planService.parseJson(source) as unknown as IPlanContent
     const workers = json?.Plan?.Workers
-    workers && expect(workers.length).toEqual(2)
+    expect(workers?.length).toEqual(2)
     expect(workers?.[0]["Sort Method"]).toEqual("external merge")
     expect(workers?.[0]["Actual Startup Time"]).toEqual(1487.846)
   })

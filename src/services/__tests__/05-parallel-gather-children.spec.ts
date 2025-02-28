@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest"
 import { PlanService } from "@/services/plan-service"
 import type { IPlan, IPlanContent } from "@/interfaces"
 
@@ -39,9 +40,8 @@ Execution Time: 1626.725 ms
   const root = plan.content.Plan
   it("doesn't not multiply by number of loops", () => {
     const aggregateNode = root && root.Plans[0].Plans[0].Plans[0]
-    aggregateNode &&
-      expect(
-        1.79 - (aggregateNode["*Duration (exclusive)"] as number) < 0.01
-      ).toBeTruthy()
+    expect(
+      1.79 - (aggregateNode["*Duration (exclusive)"] as number) < 0.01
+    ).toBeTruthy()
   })
 })

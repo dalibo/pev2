@@ -54,7 +54,7 @@ interface Props {
 }
 const props = defineProps<Props>()
 
-const version = __APP_VERSION__ // eslint-disable-line no-undef
+const version = __APP_VERSION__
 
 const rootEl = ref(null) // The root Element of this instance
 const activeTab = ref<string>("")
@@ -62,7 +62,7 @@ const queryText = ref<string>("")
 const parsed = ref<boolean>(false)
 const plan = ref<IPlan>()
 const planEl = ref()
-let planStats = reactive<IPlanStats>({} as IPlanStats)
+const planStats = reactive<IPlanStats>({} as IPlanStats)
 const rootNode = computed(() => plan.value && plan.value.content.Plan)
 const selectedNodeId = ref<number>(NaN)
 const selectedNode = ref<Node | undefined>(undefined)
@@ -109,7 +109,7 @@ const layout = flextree({
   },
   spacing: (
     nodeA: FlexHierarchyPointNode<Node>,
-    nodeB: FlexHierarchyPointNode<Node>
+    nodeB: FlexHierarchyPointNode<Node>,
   ) => Math.pow(nodeA.path(nodeB).length, 1.5),
 })
 
@@ -125,7 +125,7 @@ onBeforeMount(() => {
     planJson = planService.fromSource(props.planSource) as IPlanContent
     parsed.value = true
     setActiveTab("plan")
-  } catch (e) {
+  } catch {
     parsed.value = false
     plan.value = undefined
     return
@@ -250,11 +250,11 @@ onMounted(() => {
                 Math.max(
                   minScale,
                   0.8 /
-                    Math.max((x1 - x0) / rect.width, (y1 - y0) / rect.height)
-                )
-              )
+                    Math.max((x1 - x0) / rect.width, (y1 - y0) / rect.height),
+                ),
+              ),
             )
-            .translate(-(x0 + x1) / 2, 10)
+            .translate(-(x0 + x1) / 2, 10),
         )
     }
   })
@@ -293,7 +293,7 @@ const lineGen = computed(() => {
       target.x,
       target.y - k / 2,
       target.x,
-      target.y
+      target.y,
     )
     return path.toString()
   }
@@ -342,7 +342,7 @@ function centerNode(nodeId: number): void {
   }
   let x = -treeNode["x"]
   let y = -treeNode["y"]
-  let k = scale.value
+  const k = scale.value
   x = x * k + rect.width / 2
   y = y * k + rect.height / 2
   d3.select(planEl.value.$el)
@@ -366,34 +366,34 @@ const setActiveTab = (tab: string) => {
 }
 
 function getLayoutExtent(
-  layoutRootNode: FlexHierarchyPointNode<Node>
+  layoutRootNode: FlexHierarchyPointNode<Node>,
 ): [number, number, number, number] {
   const minX =
     _.min(
       _.map(layoutRootNode.descendants(), (childNode) => {
         return childNode.x - childNode.xSize / 2
-      })
+      }),
     ) || 0
 
   const maxX =
     _.max(
       _.map(layoutRootNode.descendants(), (childNode) => {
         return childNode.x + childNode.xSize / 2
-      })
+      }),
     ) || 0
 
   const minY =
     _.min(
       _.map(layoutRootNode.descendants(), (childNode) => {
         return childNode.y
-      })
+      }),
     ) || 0
 
   const maxY =
     _.max(
       _.map(layoutRootNode.descendants(), (childNode) => {
         return childNode.y + childNode.ySize
-      })
+      }),
     ) || 0
   return [minX, maxX, minY, maxY]
 }
@@ -408,20 +408,20 @@ watch(
     data.concat(
       tree.value
         .descendants()
-        .map((item: FlexHierarchyPointNode<Node>) => item.data.size)
+        .map((item: FlexHierarchyPointNode<Node>) => item.data.size),
     )
     _.each(ctes.value, (tree) => {
       data.concat(
         tree
           .descendants()
-          .map((item: FlexHierarchyPointNode<Node>) => item.data.size)
+          .map((item: FlexHierarchyPointNode<Node>) => item.data.size),
       )
     })
     return data
   },
   () => {
     doLayout()
-  }
+  },
 )
 
 function updateNodeSize(node: Node, size: [number, number]) {
@@ -624,7 +624,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         stroke="#B3D7D7"
                         :stroke-width="
                           edgeWeight(
-                            link.target.data[NodeProp.ACTUAL_ROWS_REVISED]
+                            link.target.data[NodeProp.ACTUAL_ROWS_REVISED],
                           )
                         "
                         fill="none"
@@ -639,7 +639,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         stroke="grey"
                         :stroke-width="
                           edgeWeight(
-                            link.target.data[NodeProp.ACTUAL_ROWS_REVISED]
+                            link.target.data[NodeProp.ACTUAL_ROWS_REVISED],
                           )
                         "
                         stroke-linecap="square"
@@ -685,7 +685,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                           stroke="grey"
                           :stroke-width="
                             edgeWeight(
-                              link.target.data[NodeProp.ACTUAL_ROWS_REVISED]
+                              link.target.data[NodeProp.ACTUAL_ROWS_REVISED],
                             )
                           "
                           stroke-linecap="square"

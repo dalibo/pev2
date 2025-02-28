@@ -40,7 +40,7 @@ if (!selectNode) {
 const highlightedNodeId = inject(HighlightedNodeIdKey)
 
 // The main plan + init plans (all flatten)
-let plans: Row[][] = [[]]
+const plans: Row[][] = [[]]
 let tippyInstances: Instance[] = []
 let tippySingleton!: CreateSingletonInstance
 

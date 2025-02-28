@@ -1,14 +1,18 @@
+import { describe, expect, test } from "vitest"
 import { PlanService } from "@/services/plan-service"
 import _ from "lodash"
 import * as fs from "fs"
+import { fileURLToPath } from "url"
 import * as path from "path"
+
+const __filename = fileURLToPath(import.meta.url)
 
 // Those tests are automatically built from the files in the `from-text`
 // directory.
 // The xxx-plan file is parsed and the result is expected to equal the content
 // of the corresponding xxx-expect file.
 
-const dir = path.join(path.dirname(module.filename), "from-text")
+const dir = path.join(path.dirname(__filename), "from-text")
 const files = fs.readdirSync(dir)
 let tests = files.map((file: string) => file.replace(/-.*/, ""))
 tests = _.uniq(tests)

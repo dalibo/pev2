@@ -1,3 +1,4 @@
+import { describe, expect, test } from "vitest"
 import { PlanService } from "@/services/plan-service"
 import type { IPlan, IPlanContent } from "@/interfaces"
 
@@ -19,7 +20,6 @@ describe("PlanService", () => {
     const plan: IPlan = planService.createPlan("", r, "")
     const root = plan.content.Plan
     const aggregateNode = root && root.Plans[0].Plans[0].Plans[0]
-    aggregateNode &&
-      expect(aggregateNode["*Workers Planned By Gather"]).toEqual(12)
+    expect(aggregateNode["*Workers Planned By Gather"]).toEqual(12)
   })
 })

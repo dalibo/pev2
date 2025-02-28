@@ -350,7 +350,7 @@ export class PlanService {
     let isJson = false
     try {
       isJson = JSON.parse(source)
-    } catch (error) {
+    } catch {
       // continue
     }
 

@@ -1,9 +1,12 @@
+import { describe, expect, test } from "vitest"
 import { PlanService } from "@/services/plan-service"
 import _ from "lodash"
 import * as fs from "fs"
+import { fileURLToPath } from "url"
 import * as path from "path"
 
-const dir = path.join(path.dirname(module.filename), "12-line-wrapped-plans")
+const __filename = fileURLToPath(import.meta.url)
+const dir = path.join(path.dirname(__filename), "12-line-wrapped-plans")
 const files = fs.readdirSync(dir)
 let tests = files.map((file: string) => file.replace(/-.*/, ""))
 tests = _.uniq(tests)
