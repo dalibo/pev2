@@ -47,7 +47,6 @@
     "@types/d3": "^7.4.3",
     "@types/humanize-duration": "^3.27.1",
     "@types/lodash": "^4.14.202",
-    "@types/splitpanes": "^2.2.6",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.4.0",
