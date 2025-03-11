@@ -6,6 +6,8 @@ import {
   NodeProp,
   SortSpaceMemoryProp,
   WorkerProp,
+  SliceProp,
+  ExecutorMemoryEnum,
 } from "@/enums"
 import { splitBalanced } from "@/services/help-service"
 import type {
@@ -14,6 +16,7 @@ import type {
   IPlanContent,
   IPlanStats,
   JIT,
+  Slice,
   SortGroups,
 } from "@/interfaces"
 import { Node, Worker } from "@/interfaces"
@@ -487,7 +490,7 @@ export class PlanService {
         out[out.length - 1] += line
       } else if (
         line.match(
-          /^(?:Total\s+runtime|Planning\s+time|Execution\s+time|Time|Filter|Output|JIT)/i
+          /^(?:Total\s+runtime|Planning\s+time|Memory\s+used|\s+\(slice\d+\)|Optimizer|Execution\s+time|Time|Filter|Output|JIT)/i
         )
       ) {
         out.push(line)
@@ -556,34 +559,49 @@ export class PlanService {
 
       const emptyLineMatches = new RegExp(emptyLineRegex).exec(line)
       const headerMatches = new RegExp(headerRegex).exec(line)
+      // Gather Motion、Broadcast Motion and Redistribute Motion
+      const motion =
+        "(?:(\\d+)+:(\\d+)+\\s+\\((slice\\d+);\\s*segments:\\s*(\\d+)+\\))?"
+      // dynamic scan node
+      const dynamic = "(\\(dynamic scan id:\\s*(\\d+)\\))?"
 
       /*
        * Groups
        * 1: prefix
        * 2: type
-       * 3: estimated_startup_cost
-       * 4: estimated_total_cost
-       * 5: estimated_rows
-       * 6: estimated_row_width
-       * 7: actual_time_first
-       * 8: actual_time_last
-       * 9: actual_rows
-       * 10: actual_loops
-       * 11: actual_rows_
-       * 12: actual_loops_
-       * 13: never_executed
-       * 14: estimated_startup_cost
-       * 15: estimated_total_cost
-       * 16: estimated_rows
-       * 17: estimated_row_width
-       * 18: actual_time_first
-       * 19: actual_time_last
-       * 20: actual_rows
-       * 21: actual_loops
+       * 3: dynamic_scan
+       * 4: dynamic_scan_id
+       * 5: data_slice_count
+       * 6: node_count
+       * 7: slice_id
+       * 8: segments_count
+       * 9: estimated_startup_cost
+       * 10: estimated_total_cost
+       * 11: estimated_rows
+       * 12: estimated_row_width
+       * 13: actual_time_first
+       * 14: actual_time_last
+       * 15: actual_rows
+       * 16: actual_loops
+       * 17: actual_rows_
+       * 18: actual_loops_
+       * 19: never_executed
+       * 20: estimated_startup_cost
+       * 21: estimated_total_cost
+       * 22: estimated_rows
+       * 23: estimated_row_width
+       * 24: actual_time_first
+       * 25: actual_time_last
+       * 26: actual_rows
+       * 27: actual_loops
        */
       const nodeRegex = new RegExp(
         prefixRegex +
           typeRegex +
+          "\\s*" +
+          dynamic +
+          "\\s*" +
+          motion +
           "\\s*" +
           nonCapturingGroupOpen +
           (nonCapturingGroupOpen +
@@ -657,54 +675,80 @@ export class PlanService {
       const extraRegex = /^(\s*)(\S.*\S)\s*$/g
       const extraMatches = extraRegex.exec(line)
 
+      /*
+       * Groups
+       * 1: slice num
+       * 2: average memory
+       * 3: number of worker threads
+       * 4: maximum memory
+       * 5: worke memory
+       */
+      const sliceRegex =
+        /\(slice(\d+)\)\s+(?:Executor\s+memory:\s*)?(?:(\d+?K\s+bytes))?(?:\s+avg\s+x\s+(\d+)?\s+workers)?(?:,\s*(\d+?K\s+bytes)\s+max\s+\(seg\d+\))?(?:\.\s+Work_mem:\s*(\d+?K\s+bytes)\s+max\.)?/
+      const sliceMathches = sliceRegex.exec(line)
+
       if (emptyLineMatches || headerMatches) {
         return
       } else if (nodeMatches && !cteMatches && !subMatches) {
         //const prefix = nodeMatches[1]
-        const neverExecuted = nodeMatches[13]
+        const neverExecuted = nodeMatches[19]
         const newNode: Node = new Node(nodeMatches[2])
+        if (nodeMatches[4]) {
+          newNode[NodeProp.DYNAMIC_SCAN_ID] = parseInt(nodeMatches[4])
+        }
         if (
-          (nodeMatches[3] && nodeMatches[4]) ||
-          (nodeMatches[14] && nodeMatches[15])
+          nodeMatches[5] &&
+          nodeMatches[6] &&
+          nodeMatches[7] &&
+          nodeMatches[8]
+        ) {
+          newNode[NodeProp.DATA_SLICE_COUNT] = parseInt(nodeMatches[5])
+          newNode[NodeProp.NODE_COUNT] = parseInt(nodeMatches[6])
+          newNode[NodeProp.SLICE_ID] = nodeMatches[7]
+          newNode[NodeProp.SEGMENTS_COUNT] = parseInt(nodeMatches[8])
+        }
+        if (
+          (nodeMatches[9] && nodeMatches[10]) ||
+          (nodeMatches[20] && nodeMatches[21])
         ) {
           newNode[NodeProp.STARTUP_COST] = parseFloat(
-            nodeMatches[3] || nodeMatches[14]
+            nodeMatches[9] || nodeMatches[20]
           )
           newNode[NodeProp.TOTAL_COST] = parseFloat(
-            nodeMatches[4] || nodeMatches[15]
+            nodeMatches[10] || nodeMatches[21]
           )
           newNode[NodeProp.PLAN_ROWS] = parseInt(
-            nodeMatches[5] || nodeMatches[16],
+            nodeMatches[11] || nodeMatches[22],
             0
           )
           newNode[NodeProp.PLAN_WIDTH] = parseInt(
-            nodeMatches[6] || nodeMatches[17],
+            nodeMatches[12] || nodeMatches[23],
             0
           )
         }
         if (
-          (nodeMatches[7] && nodeMatches[8]) ||
-          (nodeMatches[18] && nodeMatches[19])
+          (nodeMatches[13] && nodeMatches[14]) ||
+          (nodeMatches[24] && nodeMatches[25])
         ) {
           newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
-            nodeMatches[7] || nodeMatches[18]
+            nodeMatches[13] || nodeMatches[24]
           )
           newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
-            nodeMatches[8] || nodeMatches[19]
+            nodeMatches[14] || nodeMatches[25]
           )
         }
 
         if (
-          (nodeMatches[9] && nodeMatches[10]) ||
-          (nodeMatches[11] && nodeMatches[12]) ||
-          (nodeMatches[20] && nodeMatches[21])
+          (nodeMatches[15] && nodeMatches[16]) ||
+          (nodeMatches[17] && nodeMatches[18]) ||
+          (nodeMatches[26] && nodeMatches[27])
         ) {
           newNode[NodeProp.ACTUAL_ROWS] = parseInt(
-            nodeMatches[9] || nodeMatches[11] || nodeMatches[20],
+            nodeMatches[15] || nodeMatches[17] || nodeMatches[26],
             0
           )
           newNode[NodeProp.ACTUAL_LOOPS] = parseInt(
-            nodeMatches[10] || nodeMatches[12] || nodeMatches[21],
+            nodeMatches[16] || nodeMatches[18] || nodeMatches[27],
             0
           )
         }
@@ -844,7 +888,20 @@ export class PlanService {
             elementsAtDepth.push([depth, element])
           }
         }
-      } else if (extraMatches) {
+      } else if (sliceMathches) {
+        _.remove(elementsAtDepth, (e) => e[0] >= depth || depth == 1)
+        root.Slice = root.Slice || []
+        const sliceDetail: Slice = {
+          [SliceProp.SLICE_NUM]: sliceMathches[1],
+          ExecutorMemory: {
+            [ExecutorMemoryEnum.AVERAGE_MEMORY]: sliceMathches[2],
+            [ExecutorMemoryEnum.NUMBER_OF_WORKER_THREADS]: sliceMathches[3],
+            [ExecutorMemoryEnum.MAXIMUM_MEMORY]: sliceMathches[4],
+          },
+          WorkMemory: sliceMathches[5],
+        }
+        root.Slice.push(sliceDetail)
+      } else if (extraMatches && !sliceMathches) {
         //const prefix = extraMatches[1]
 
         // Remove elements from elementsAtDepth for deeper levels

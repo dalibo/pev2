@@ -1,0 +1,69 @@
+{
+  "Plan": {
+      "Actual Loops": 1,
+      "Actual Rows": 10,
+      "Node Type": "Limit",
+      "Plans": [
+          {
+              "Actual Loops": 1,
+              "Actual Rows": 10,
+              "Node Type": "Gather Motion",
+              "Plans": [
+                  {
+                      "Actual Loops": 1,
+                      "Actual Rows": 10,
+                      "Node Type": "Limit",
+                      "Plans": [
+                          {
+                              "Actual Loops": 1,
+                              "Actual Rows": 10,
+                              "Node Type": "Seq Scan",
+                              "Plan Rows": 41381704,
+                              "Total Cost": 5233.35,
+                              "Relation Name": "fact_pca_yield_unit",
+                              "Startup Cost": 0,
+                              "Plan Width": 181
+                          }
+                      ],
+                      "Plan Rows": 2,
+                      "Total Cost": 19164.91,
+                      "Startup Cost": 0,
+                      "Plan Width": 181
+                  }
+              ],
+              "Plan Rows": 10,
+              "Total Cost": 19164.92,
+              "Data Slice Count": 6,
+              "Node Count": 1,
+              "Slice Id": "slice1",
+              "Segments Count": 6,
+              "Startup Cost": 0,
+              "Plan Width": 181
+          }
+      ],
+      "Plan Rows": 2,
+      "Total Cost": 19164.92,
+      "Startup Cost": 0,
+      "Plan Width": 181
+  },
+  "Planning Time": 23.128,
+  "Slice": [
+      {
+          "Slice Num": "0",
+          "ExecutorMemory": {
+              "Average memory": "155K bytes"
+          }
+      },
+      {
+          "Slice Num": "1",
+          "ExecutorMemory": {
+              "Average memory": "65K bytes",
+              "Number of worker threads": "6",
+              "Maximum memory": "65K bytes"
+          }
+      }
+  ],
+  "Memory used": 524288,
+  "Optimizer": "Pivotal Optimizer (GPORCA)",
+  "Execution Time": 1.72
+}

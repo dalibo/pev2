@@ -1,0 +1,10 @@
+Limit  (cost=0.00..19164.92 rows=2 width=181) (actual time=0.438..0.513 rows=10 loops=1)
+  ->  Gather Motion 6:1  (slice1; segments: 6)  (cost=0.00..19164.92 rows=10 width=181) (actual time=0.435..0.474 rows=10 loops=1)
+        ->  Limit  (cost=0.00..19164.91 rows=2 width=181) (actual time=0.014..0.016 rows=10 loops=1)
+              ->  Seq Scan on fact_pca_yield_unit  (cost=0.00..5233.35 rows=41381704 width=181) (actual time=0.012..0.013 rows=10 loops=1)
+Planning time: 23.128 ms
+  (slice0)    Executor memory: 155K bytes.
+  (slice1)    Executor memory: 65K bytes avg x 6 workers, 65K bytes max (seg0).
+Memory used:  524288kB
+Optimizer: Pivotal Optimizer (GPORCA)
+Execution time: 1.720 ms

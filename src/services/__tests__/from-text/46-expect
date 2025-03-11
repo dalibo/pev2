@@ -1,0 +1,200 @@
+{
+    "Plan": {
+        "Node Type": "Limit",
+        "Plans": [
+            {
+                "Node Type": "Gather Motion",
+                "Plans": [
+                    {
+                        "Node Type": "Result",
+                        "Plans": [
+                            {
+                                "Filter": "((row_number() OVER (?)) = 1)",
+                                "Node Type": "Result",
+                                "Plans": [
+                                    {
+                                        "Node Type": "WindowAgg",
+                                        "Plans": [
+                                            {
+                                                "Node Type": "Sort",
+                                                "Plans": [
+                                                    {
+                                                        "Node Type": "Hash Join",
+                                                        "Plans": [
+                                                            {
+                                                                "Node Type": "Hash Join",
+                                                                "Plans": [
+                                                                    {
+                                                                        "Node Type": "Seq Scan",
+                                                                        "Plan Rows": 294235,
+                                                                        "Total Cost": 493.47,
+                                                                        "Relation Name": "fact_sn_info",
+                                                                        "Startup Cost": 0,
+                                                                        "Plan Width": 221
+                                                                    },
+                                                                    {
+                                                                        "Node Type": "Hash",
+                                                                        "Plans": [
+                                                                            {
+                                                                                "Node Type": "Redistribute Motion",
+                                                                                "Plans": [
+                                                                                    {
+                                                                                        "Node Type": "Hash Join",
+                                                                                        "Plans": [
+                                                                                            {
+                                                                                                "Node Type": "Seq Scan",
+                                                                                                "Plan Rows": 41326,
+                                                                                                "Total Cost": 438.18,
+                                                                                                "Relation Name": "dim_cpu_dn",
+                                                                                                "Startup Cost": 0,
+                                                                                                "Plan Width": 103
+                                                                                            },
+                                                                                            {
+                                                                                                "Node Type": "Hash",
+                                                                                                "Plans": [
+                                                                                                    {
+                                                                                                        "Node Type": "Redistribute Motion",
+                                                                                                        "Plans": [
+                                                                                                            {
+                                                                                                                "Node Type": "Seq Scan",
+                                                                                                                "Plan Rows": 706,
+                                                                                                                "Total Cost": 431.07,
+                                                                                                                "Relation Name": "temp_pca_shipping",
+                                                                                                                "Startup Cost": 0,
+                                                                                                                "Plan Width": 95
+                                                                                                            }
+                                                                                                        ],
+                                                                                                        "Plan Rows": 706,
+                                                                                                        "Total Cost": 431.68,
+                                                                                                        "Data Slice Count": 6,
+                                                                                                        "Node Count": 6,
+                                                                                                        "Slice Id": "slice1",
+                                                                                                        "Segments Count": 6,
+                                                                                                        "Startup Cost": 0,
+                                                                                                        "Plan Width": 95,
+                                                                                                        "Hash Key": "temp_pca_shipping.dn"
+                                                                                                    }
+                                                                                                ],
+                                                                                                "Plan Rows": 706,
+                                                                                                "Total Cost": 431.68,
+                                                                                                "Startup Cost": 431.68,
+                                                                                                "Plan Width": 95
+                                                                                            }
+                                                                                        ],
+                                                                                        "Plan Rows": 1411,
+                                                                                        "Total Cost": 1009.9,
+                                                                                        "Join Type": "Right",
+                                                                                        "Startup Cost": 0,
+                                                                                        "Plan Width": 182,
+                                                                                        "Hash Cond": "((dim_cpu_dn.dn)::text = (temp_pca_shipping.dn)::text)"
+                                                                                    }
+                                                                                ],
+                                                                                "Plan Rows": 1411,
+                                                                                "Total Cost": 1011.9,
+                                                                                "Data Slice Count": 6,
+                                                                                "Node Count": 6,
+                                                                                "Slice Id": "slice2",
+                                                                                "Segments Count": 6,
+                                                                                "Startup Cost": 0,
+                                                                                "Plan Width": 182,
+                                                                                "Hash Key": "temp_pca_shipping.mcbsno"
+                                                                            }
+                                                                        ],
+                                                                        "Plan Rows": 1411,
+                                                                        "Total Cost": 1011.9,
+                                                                        "Startup Cost": 1011.9,
+                                                                        "Plan Width": 182
+                                                                    }
+                                                                ],
+                                                                "Plan Rows": 1411,
+                                                                "Total Cost": 1724.95,
+                                                                "Startup Cost": 0,
+                                                                "Plan Width": 392,
+                                                                "Hash Cond": "((fact_sn_info.mcbsno)::text = (temp_pca_shipping.mcbsno)::text)"
+                                                            },
+                                                            {
+                                                                "Node Type": "Hash",
+                                                                "Plans": [
+                                                                    {
+                                                                        "Node Type": "Broadcast Motion",
+                                                                        "Plans": [
+                                                                            {
+                                                                                "Node Type": "Seq Scan",
+                                                                                "Plan Rows": 21,
+                                                                                "Total Cost": 431,
+                                                                                "Relation Name": "pca_shipctrl_address",
+                                                                                "Startup Cost": 0,
+                                                                                "Plan Width": 20
+                                                                            }
+                                                                        ],
+                                                                        "Plan Rows": 125,
+                                                                        "Total Cost": 431.03,
+                                                                        "Data Slice Count": 6,
+                                                                        "Node Count": 6,
+                                                                        "Slice Id": "slice3",
+                                                                        "Segments Count": 6,
+                                                                        "Startup Cost": 0,
+                                                                        "Plan Width": 20
+                                                                    }
+                                                                ],
+                                                                "Plan Rows": 125,
+                                                                "Total Cost": 431.03,
+                                                                "Startup Cost": 431.03,
+                                                                "Plan Width": 20
+                                                            }
+                                                        ],
+                                                        "Plan Rows": 1411,
+                                                        "Total Cost": 2158.65,
+                                                        "Join Type": "Left",
+                                                        "Startup Cost": 0,
+                                                        "Plan Width": 408,
+                                                        "Hash Cond": "(temp_pca_shipping.shipto = pca_shipctrl_address.id)"
+                                                    }
+                                                ],
+                                                "Plan Rows": 1411,
+                                                "Total Cost": 2192.79,
+                                                "Startup Cost": 0,
+                                                "Plan Width": 408,
+                                                "Sort Key": [
+                                                    "fact_sn_info.mcbsno",
+                                                    "temp_pca_shipping.pack_date"
+                                                ]
+                                            }
+                                        ],
+                                        "Plan Rows": 1411,
+                                        "Total Cost": 2193.36,
+                                        "Startup Cost": 0,
+                                        "Plan Width": 388,
+                                        "Partition By": "fact_sn_info.mcbsno",
+                                        "Order By": "temp_pca_shipping.pack_date"
+                                    }
+                                ],
+                                "Plan Rows": 565,
+                                "Total Cost": 2193.41,
+                                "Startup Cost": 0,
+                                "Plan Width": 380
+                            }
+                        ],
+                        "Plan Rows": 565,
+                        "Total Cost": 2193.61,
+                        "Startup Cost": 0,
+                        "Plan Width": 356
+                    }
+                ],
+                "Plan Rows": 3386,
+                "Total Cost": 2197.18,
+                "Data Slice Count": 6,
+                "Node Count": 1,
+                "Slice Id": "slice4",
+                "Segments Count": 6,
+                "Startup Cost": 0,
+                "Plan Width": 356
+            }
+        ],
+        "Plan Rows": 565,
+        "Total Cost": 2198.39,
+        "Startup Cost": 0,
+        "Plan Width": 356
+    },
+    "Optimizer": "Pivotal Optimizer (GPORCA)"
+}

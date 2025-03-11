@@ -57,6 +57,11 @@ export enum NodeProp {
   ACTUAL_LOOPS = "Actual Loops",
   STARTUP_COST = "Startup Cost",
   TOTAL_COST = "Total Cost",
+  DATA_SLICE_COUNT = "Data Slice Count",
+  NODE_COUNT = "Node Count",
+  SLICE_ID = "Slice Id",
+  SEGMENTS_COUNT = "Segments Count",
+  DYNAMIC_SCAN_ID = "Dynamic Scan Id",
   PLANS = "Plans",
   RELATION_NAME = "Relation Name",
   SCHEMA = "Schema",
@@ -136,6 +141,18 @@ export enum NodeProp {
   ARRAY_INDEX_KEY = "arrayIndex",
 
   PEV_PLAN_TAG = "plan_",
+}
+
+export enum SliceProp {
+  SLICE_NUM = "Slice Num",
+  EXECUTOR_MEMORY = "ExecutorMemory",
+  WORK_MEMORY = "WorkMemory",
+}
+
+export enum ExecutorMemoryEnum {
+  AVERAGE_MEMORY = "Average memory",
+  NUMBER_OF_WORKER_THREADS = "Number of worker threads",
+  MAXIMUM_MEMORY = "Maximum memory",
 }
 
 export enum PropType {

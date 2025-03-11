@@ -2,6 +2,12 @@
 
 $compact-width: 50px;
 $bg-color: #fff;
+.execution-memory-node {
+  border-radius: 4px;
+  padding: 10px 8px;
+  background-color: #f9f9f9;
+  margin: 10px 0;
+}
 .plan-node {
   cursor: default;
   text-decoration: none;

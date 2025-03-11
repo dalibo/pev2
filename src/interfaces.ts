@@ -28,6 +28,7 @@ export interface IPlanContent {
   maxIo?: number
   maxEstimateFactor?: number
   Triggers?: ITrigger[]
+  Slice?: Slice[]
   JIT?: JIT
   "Query Text"?: string
   [k: string]:
@@ -36,6 +37,7 @@ export interface IPlanContent {
     | string
     | IBlocksStats
     | ITrigger[]
+    | Slice[]
     | JIT
     | undefined
 }
@@ -47,9 +49,23 @@ export interface ITrigger {
   Calls: string
 }
 
+export interface Slice {
+  [SliceProp.SLICE_NUM]: string
+  [SliceProp.EXECUTOR_MEMORY]?: ExecutorMemory
+  [SliceProp.WORK_MEMORY]?: string
+}
+
+export interface ExecutorMemory {
+  [ExecutorMemoryEnum.AVERAGE_MEMORY]?: string
+  [ExecutorMemoryEnum.NUMBER_OF_WORKER_THREADS]?: string
+  [ExecutorMemoryEnum.MAXIMUM_MEMORY]?: string
+}
+
 export interface IPlanStats {
   executionTime?: number
   planningTime?: number
+  memoryUsed?: number
+  optimizer?: string
   maxRows: number
   maxCost: number
   maxDuration: number
@@ -65,7 +81,12 @@ export type IBlocksStats = {
   [key in BufferLocation]: number
 }
 
-import { EstimateDirection, NodeProp } from "@/enums"
+import {
+  EstimateDirection,
+  NodeProp,
+  ExecutorMemoryEnum,
+  SliceProp,
+} from "@/enums"
 
 // Class to create nodes when parsing text
 export class Node {
