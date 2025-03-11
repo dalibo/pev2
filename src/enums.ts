@@ -103,6 +103,7 @@ export enum NodeProp {
   EXCLUSIVE_DURATION = "*Duration (exclusive)",
   EXCLUSIVE_COST = "*Cost (exclusive)",
   ACTUAL_ROWS_REVISED = "*Actual Rows Revised",
+  ACTUAL_ROWS_FRACTIONAL = "*Actual Rows Is Fractional",
   PLAN_ROWS_REVISED = "*Plan Rows Revised",
   ROWS_REMOVED_BY_FILTER_REVISED = "*Rows Removed by Filter",
   ROWS_REMOVED_BY_JOIN_FILTER_REVISED = "*Rows Removed by Join Filter",
@@ -165,6 +166,7 @@ nodePropTypes[NodeProp.ACTUAL_LOOPS] = PropType.loops
 nodePropTypes[NodeProp.PLAN_ROWS] = PropType.rows
 nodePropTypes[NodeProp.PLAN_WIDTH] = PropType.bytes
 nodePropTypes[NodeProp.ACTUAL_ROWS_REVISED] = PropType.rows
+nodePropTypes[NodeProp.ACTUAL_ROWS_FRACTIONAL] = PropType.boolean
 nodePropTypes[NodeProp.PLAN_ROWS_REVISED] = PropType.rows
 nodePropTypes[NodeProp.ACTUAL_TOTAL_TIME] = PropType.duration
 nodePropTypes[NodeProp.ACTUAL_STARTUP_TIME] = PropType.duration
