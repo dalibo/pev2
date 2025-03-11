@@ -3,6 +3,7 @@
   "version": "1.12.1",
   "homepage": "https://github.com/dalibo/pev2",
   "license": "PostgreSQL license",
+  "type": "module",
   "files": [
     "dist"
   ],
