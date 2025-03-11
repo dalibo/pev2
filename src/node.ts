@@ -245,12 +245,15 @@ export default function useNode(
     if (node[NodeProp.WORKERS_LAUNCHED]) {
       return node[NodeProp.WORKERS_LAUNCHED] as number
     }
+    if (node[NodeProp.WORKERS_LAUNCHED_BY_GATHER]) {
+      return node[NodeProp.WORKERS_LAUNCHED_BY_GATHER] as number
+    }
     const workers = node[NodeProp.WORKERS] as Worker[]
     return workers ? workers.length : NaN
   })
 
   const workersPlannedCount = computed((): number => {
-    return node[NodeProp.WORKERS_PLANNED_BY_GATHER] as number
+    return node[NodeProp.WORKERS_LAUNCHED] as number || node[NodeProp.WORKERS_PLANNED_BY_GATHER] as number
   })
 
   const workersPlannedCountReversed = computed((): number[] => {
