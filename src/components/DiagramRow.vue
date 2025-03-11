@@ -11,6 +11,7 @@ import {
   ViewOptionsKey,
 } from "@/symbols"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
+import { HelpService } from "@/services/help-service"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
 import LevelDivider from "@/components/LevelDivider.vue"
 import useNode from "@/node"
@@ -39,6 +40,9 @@ if (!selectNode) {
   throw new Error(`Could not resolve ${SelectNodeKey.description}`)
 }
 const highlightedNodeId = inject(HighlightedNodeIdKey)
+
+const helpService = new HelpService()
+const getHelpMessage = helpService.getHelpMessage
 
 const _viewOptions = inject(ViewOptionsKey) as ViewOptions
 const {
@@ -74,6 +78,13 @@ function getTooltipContent(node: Node): string {
       break
     case Metric.io:
       content += ioTooltip.value
+
+      if (
+        node[NodeProp.WORKERS_PLANNED] ||
+        node[NodeProp.WORKERS_PLANNED_BY_GATHER]
+      ) {
+        content += `<br><small>${getHelpMessage("io timings parallel")}</small>`
+      }
       break
   }
   if (node[NodeProp.CTE_NAME]) {
