@@ -409,12 +409,16 @@ export default function useNode(
     ].join("")
   })
 
+  const rowsIsFractional = computed((): boolean => {
+    return !!node[NodeProp.ACTUAL_ROWS_FRACTIONAL]
+  })
+
   const hasSeveralLoops = computed((): boolean => {
     return (node[NodeProp.ACTUAL_LOOPS] as number) > 1
   })
 
   const tilde = computed((): string => {
-    return hasSeveralLoops.value ? "~" : ""
+    return !rowsIsFractional.value && hasSeveralLoops.value ? "~" : ""
   })
 
   const buffersByLocationTooltip = computed(

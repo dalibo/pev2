@@ -551,7 +551,7 @@ export class PlanService {
       const closeParenthesisRegex = "\\)"
       // tslint:disable-next-line:max-line-length
       const actualRegex =
-        "(?:actual\\stime=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\srows=(\\d+)\\sloops=(\\d+)|actual\\srows=(\\d+)\\sloops=(\\d+)|(never\\s+executed))"
+        "(?:actual\\stime=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\srows=(\\d+(?:\\.\\d+)?)\\sloops=(\\d+)|actual\\srows=(\\d+(?:\\.\\d+)?)\\sloops=(\\d+)|(never\\s+executed))"
       const optionalGroup = "?"
 
       const emptyLineMatches = new RegExp(emptyLineRegex).exec(line)
@@ -699,10 +699,11 @@ export class PlanService {
           (nodeMatches[11] && nodeMatches[12]) ||
           (nodeMatches[20] && nodeMatches[21])
         ) {
-          newNode[NodeProp.ACTUAL_ROWS] = parseInt(
-            nodeMatches[9] || nodeMatches[11] || nodeMatches[20],
-            0
-          )
+          const actual_rows = nodeMatches[9] || nodeMatches[11] || nodeMatches[20]
+          if (actual_rows.indexOf(".") != -1) {
+            newNode[NodeProp.ACTUAL_ROWS_FRACTIONAL] = true
+          }
+          newNode[NodeProp.ACTUAL_ROWS] = parseFloat(actual_rows)
           newNode[NodeProp.ACTUAL_LOOPS] = parseInt(
             nodeMatches[10] || nodeMatches[12] || nodeMatches[21],
             0
