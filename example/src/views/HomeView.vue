@@ -68,7 +68,7 @@ const samples = ref<Sample[]>([
 ])
 
 function submitPlan() {
-  let newPlan: Plan = ["", "", ""]
+  const newPlan: Plan = ["", "", ""]
   newPlan[0] =
     queryName.value ||
     "New Plan - " +

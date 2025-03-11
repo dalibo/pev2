@@ -1,3 +1,4 @@
+import { describe, expect, test } from "vitest"
 import { PlanService } from "@/services/plan-service"
 import type { IPlan, IPlanContent } from "@/interfaces"
 
@@ -19,11 +20,11 @@ describe("PlanService", () => {
     // Materialize duration: total time * loops - Seq Scan duration
     const mDuration = 0.008 * 402 - 0.015
     const root = plan.content.Plan
-    root && expect(root.Plans[1]["*Duration (exclusive)"]).toBe(mDuration)
+    expect(root.Plans[1]["*Duration (exclusive)"]).toBe(mDuration)
 
     // Nested Loop duration: total time - (Materialize duration + Seq Scan
     // duration) - Seq Scan duration
     const nlDuration = 10.198 - (mDuration + 0.015) - 0.058
-    root && expect(root["*Duration (exclusive)"]).toBe(nlDuration)
+    expect(root["*Duration (exclusive)"]).toBe(nlDuration)
   })
 })

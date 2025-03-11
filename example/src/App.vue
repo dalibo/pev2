@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, computed, provide } from "vue"
 import AboutView from "./views/AboutView.vue"
 import HomeView from "./views/HomeView.vue"

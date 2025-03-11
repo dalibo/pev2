@@ -40,7 +40,7 @@ if (!selectNode) {
 }
 const highlightedNodeId = inject(HighlightedNodeIdKey)
 
-const viewOptions = inject(ViewOptionsKey) as ViewOptions
+const _viewOptions = inject(ViewOptionsKey) as ViewOptions
 const {
   buffersByLocationTooltip,
   costTooltip,
@@ -50,7 +50,7 @@ const {
   nodeName,
   rowsTooltip,
   timeTooltip,
-} = useNode(plan, node, viewOptions)
+} = useNode(plan, node, _viewOptions)
 
 function getTooltipContent(node: Node): string {
   let content = ""
@@ -69,7 +69,7 @@ function getTooltipContent(node: Node): string {
       break
     case Metric.buffers:
       content += buffersByLocationTooltip.value(
-        diagramViewOptions.buffersMetric
+        diagramViewOptions.buffersMetric,
       )
       break
     case Metric.io:
@@ -90,7 +90,7 @@ watch(
     if (newVal == node.nodeId && rootEl.value) {
       scrollTo?.(rootEl.value)
     }
-  }
+  },
 )
 </script>
 
@@ -179,7 +179,7 @@ watch(
             width:
               Math.round(
                 (node[NodeProp.ACTUAL_ROWS_REVISED] / plan.planStats.maxRows) *
-                  100
+                  100,
               ) + '%',
           }"
           aria-valuenow="15"
@@ -269,7 +269,7 @@ watch(
           :style="{
             width:
               Math.round(
-                (node[NodeProp.EXCLUSIVE_COST] / plan.planStats.maxCost) * 100
+                (node[NodeProp.EXCLUSIVE_COST] / plan.planStats.maxCost) * 100,
               ) + '%',
           }"
           aria-valuenow="15"
@@ -300,7 +300,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] /
                   plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -320,7 +320,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] /
                   plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -340,7 +340,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
                   plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -360,7 +360,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
                   plan.planStats.maxBlocks?.[BufferLocation.shared]) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -387,7 +387,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] /
                   plan.planStats.maxBlocks?.[BufferLocation.temp]) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -402,7 +402,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
                   plan.planStats.maxBlocks?.[BufferLocation.temp]) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -430,7 +430,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
                   plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -445,7 +445,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] /
                   plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -462,7 +462,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
                   plan.planStats.maxBlocks?.[BufferLocation.local]) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -478,7 +478,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
                   plan.planStats?.maxBlocks?.[BufferLocation.local]) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -505,7 +505,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_IO_READ_TIME] /
                   plan.planStats?.maxIo) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"
@@ -521,7 +521,7 @@ watch(
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
                   plan.planStats?.maxIo) *
-                  100
+                  100,
               ) || 0) + '%',
           }"
           aria-valuenow="15"

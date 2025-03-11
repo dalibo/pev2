@@ -91,9 +91,11 @@ watch(selectedNodeId, () => {
 function centerCte() {
   const cteNode = findNodeBySubplanName(
     plan.value,
-    node[NodeProp.CTE_NAME] as string
+    node[NodeProp.CTE_NAME] as string,
   )
-  cteNode && selectNode?.(cteNode.nodeId, true)
+  if (cteNode) {
+    selectNode?.(cteNode.nodeId, true)
+  }
 }
 </script>
 
@@ -209,7 +211,7 @@ function centerCte() {
                 v-html="
                   sortKeys(
                     node[NodeProp.SORT_KEY] as string[],
-                    node[NodeProp.PRESORTED_KEY] as string[]
+                    node[NodeProp.PRESORTED_KEY] as string[],
                   )
                 "
               ></span>

@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest"
 import { PlanService } from "@/services/plan-service"
 import type { IPlan, IPlanContent } from "@/interfaces"
 
@@ -82,9 +83,7 @@ describe("PlanService", () => {
   const plan: IPlan = planService.createPlan("", r, "")
   it("doesn't not multiply by number of loops", () => {
     const root = plan.content.Plan
-    root &&
-      expect(root.Plans[0].Plans[0]["*Duration (exclusive)"]).toEqual(400.681)
-    root &&
-      expect(root.Plans[0]["*Duration (exclusive)"]).toEqual(2020.558 - 400.681)
+    expect(root.Plans[0].Plans[0]["*Duration (exclusive)"]).toEqual(400.681)
+    expect(root.Plans[0]["*Duration (exclusive)"]).toEqual(2020.558 - 400.681)
   })
 })

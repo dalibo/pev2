@@ -9,7 +9,7 @@ import { NodeProp } from "../enums"
 import LevelDivider from "@/components/LevelDivider.vue"
 const plan = inject(PlanKey) as Ref<IPlan>
 
-let plans: Row[][] = [[]]
+const plans: Row[][] = [[]]
 
 onBeforeMount((): void => {
   flatten(plans[0], 0, plan.value.content.Plan, true, [])
