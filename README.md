@@ -33,7 +33,7 @@ open it in your favorite internet browser.
   href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css"
   rel="stylesheet"
 />
-<link rel="stylesheet" href="https://unpkg.com/pev2/dist/style.css" />
+<link rel="stylesheet" href="https://unpkg.com/pev2/dist/pev2.css" />
 
 <div id="app">
   <pev2 :plan-source="plan" plan-query="" />
@@ -72,7 +72,7 @@ Declare the `PEV2` component and use it:
 
 ```javascript
 import { Plan } from "pev2"
-import "pev2/dist/style.css"
+import "pev2/dist/pev2.css"
 
 export default {
   name: "PEV2 example",
