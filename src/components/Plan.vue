@@ -120,6 +120,18 @@ onBeforeMount(() => {
   if (savedOptions) {
     _.assignIn(viewOptions, JSON.parse(savedOptions))
   }
+
+  nextTick(() => {
+    onHashChange()
+  })
+  window.addEventListener("hashchange", onHashChange)
+
+  loadPlan()
+})
+
+watch(props, updatePlan)
+
+function loadPlan() {
   let planJson: IPlanContent
   try {
     planJson = planService.fromSource(props.planSource) as IPlanContent
@@ -150,10 +162,6 @@ onBeforeMount(() => {
   planStats.settings = content.Settings as Settings
   plan.value.planStats = planStats
 
-  nextTick(() => {
-    onHashChange()
-  })
-  window.addEventListener("hashchange", onHashChange)
   if (rootNode.value) {
     tree.value = layout.hierarchy(rootNode.value, (v: Node) => v.Plans)
   }
@@ -162,8 +170,9 @@ onBeforeMount(() => {
     const tree = layout.hierarchy(cte, (v: Node) => v.Plans)
     ctes.value.push(tree)
   })
+
   doLayout()
-})
+}
 
 function doLayout() {
   layoutRootNode.value = layout(tree.value)
@@ -228,6 +237,10 @@ onMounted(() => {
   if (!planEl.value) {
     return
   }
+  setExtent()
+})
+
+function setExtent() {
   d3.select(planEl.value.$el).call(zoomListener)
   nextTick(() => {
     if (layoutRootNode.value) {
@@ -258,7 +271,13 @@ onMounted(() => {
         )
     }
   })
-})
+}
+
+function updatePlan() {
+  loadPlan()
+  doLayout()
+  setExtent()
+}
 
 onBeforeUnmount(() => {
   window.removeEventListener("hashchange", onHashChange)
@@ -647,7 +666,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       />
                       <foreignObject
                         v-for="(item, index) in layoutRootNode?.descendants()"
-                        :key="index"
+                        :key="item"
                         :x="item.x - item.xSize / 2"
                         :y="item.y"
                         :width="item.xSize"
