@@ -103,7 +103,7 @@ function flatten(
   level: number,
   node: Node,
   isLast: boolean,
-  branches: number[]
+  branches: number[],
 ) {
   // [level, node, isLastSibbling, branches]
   output.push([level, node, isLast, _.concat([], branches)])
@@ -117,7 +117,7 @@ function flatten(
       level + 1,
       subnode,
       subnode === _.last(node.Plans),
-      branches
+      branches,
     )
   })
   if (!isLast) {
