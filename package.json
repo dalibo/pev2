@@ -8,13 +8,13 @@
     "dist"
   ],
   "main": "./dist/pev2.umd.js",
-  "module": "./dist/pev2.mjs",
+  "module": "./dist/pev2.es.js",
   "exports": {
     ".": {
-      "import": "./dist/pev2.mjs",
+      "import": "./dist/pev2.es.js",
       "require": "./dist/pev2.umd.js"
     },
-    "./dist/style.css": "./dist/style.css"
+    "./pev2.css": "./dist/pev2.css"
   },
   "scripts": {
     "dev": "vite",

@@ -10,7 +10,7 @@ const build = process.env.LIB
       lib: {
         entry: path.resolve(__dirname, "src/components/index.ts"),
         name: "pev2",
-        fileName: "pev2",
+        fileName: (format, entryName) => `pev2.${format}.js`,
       },
       rollupOptions: {
         external: ["vue"],
