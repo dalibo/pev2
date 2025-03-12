@@ -10,6 +10,7 @@ import {
   reactive,
   ref,
   watch,
+  watchEffect,
 } from "vue"
 import type { Ref } from "vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
@@ -40,7 +41,7 @@ if (!selectNode) {
 const highlightedNodeId = inject(HighlightedNodeIdKey)
 
 // The main plan + init plans (all flatten)
-const plans: Row[][] = [[]]
+const plans: Row[][] = ref([[]])
 let tippyInstances: Instance[] = []
 let tippySingleton!: CreateSingletonInstance
 
@@ -54,12 +55,16 @@ onBeforeMount((): void => {
   if (savedOptions) {
     _.assignIn(viewOptions, JSON.parse(savedOptions))
   }
-  flatten(plans[0], 0, plan.value.content.Plan, true, [])
+})
+
+watchEffect(() => {
+  const plans_ = [[]]
+  flatten(plans_[0], 0, plan.value.content.Plan, true, [])
 
   _.each(plan.value.ctes, (cte) => {
     const flat: Row[] = []
     flatten(flat, 0, cte, true, [])
-    plans.push(flat)
+    plans_.push(flat)
   })
 
   // switch to the first buffers tab if data not available for the currently
@@ -68,10 +73,8 @@ onBeforeMount((): void => {
   if (_.indexOf(planBufferLocation, viewOptions.buffersMetric) === -1) {
     viewOptions.buffersMetric = _.min(planBufferLocation) as BufferLocation
   }
-})
-
-onMounted((): void => {
-  loadTooltips()
+  plans.value = plans_
+  nextTick(loadTooltips)
 })
 
 watch(viewOptions, onViewOptionsChanged)
@@ -284,7 +287,7 @@ provide("scrollTo", scrollTo)
         v-if="dataAvailable"
         :class="{ highlight: !!highlightedNodeId }"
       >
-        <tbody v-for="(flat, index) in plans" :key="index">
+        <tbody v-for="(flat, index) in plans" :key="flat">
           <tr v-if="index === 0 && plans.length > 1">
             <th colspan="3" class="subplan">Main Query Plan</th>
           </tr>
