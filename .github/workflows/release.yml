@@ -1,4 +1,4 @@
-# This workflow uploads index.html file to release assets
+# This workflow uploads pev2.html file to release assets
 
 name: Release
 
@@ -22,10 +22,14 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build
+    - name: Create a copy (for legacy)
+      run: cp dist-app/index.html dist-app/pev2.html
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        files: dist-app/index.html
+        files: |
+          dist-app/pev2.html
+          dist-app/index.html
         # To only send out release mails when the release 
         # notes have been manually added
         draft: true

@@ -19,7 +19,7 @@ colleagues or customers.
 PEV2 can be run locally without any external internet resource.
 
 Simply download
-[index.html](https://www.github.com/dalibo/pev2/releases/latest/download/index.html),
+[pev2.html](https://www.github.com/dalibo/pev2/releases/latest/download/pev2.html),
 open it in your favorite internet browser.
 
 ## Integrated in a web application
