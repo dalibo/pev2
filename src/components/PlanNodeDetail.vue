@@ -322,42 +322,6 @@ watch(activeTab, () => {
     </div>
     <div class="tab-pane" :class="{ 'show active': activeTab === 'iobuffer' }">
       <!-- iobuffer tab -->
-      <dl
-        v-if="
-          node[NodeProp.EXCLUSIVE_IO_READ_TIME] ||
-          node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]
-        "
-        class="mb-2 list-inline"
-      >
-        <dt class="list-inline-item align-top">
-          <b> I/O Timings: </b>
-        </dt>
-        <dd class="list-inline-item">
-          <span v-if="node[NodeProp.EXCLUSIVE_IO_READ_TIME]" class="ms-2">
-            <b>Read:&nbsp;</b>
-            {{ formattedProp("EXCLUSIVE_IO_READ_TIME") }}
-            <small>~{{ formattedProp("AVERAGE_IO_READ_TIME") }}</small>
-            <FontAwesomeIcon
-              :icon="faInfoCircle"
-              class="cursor-help d-inline-block text-secondary"
-              v-tippy="{
-                content: getHelpMessage('io timings parallel'),
-              }"
-              v-if="
-                node[NodeProp.WORKERS_PLANNED] ||
-                node[NodeProp.WORKERS_PLANNED_BY_GATHER]
-              "
-            ></FontAwesomeIcon>
-          </span>
-          <br />
-          <span v-if="node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]" class="ms-2">
-            <b>Write:&nbsp;</b>
-            {{ formattedProp("EXCLUSIVE_IO_WRITE_TIME") }}
-            <small>~{{ formattedProp("AVERAGE_IO_WRITE_TIME") }}</small>
-          </span>
-        </dd>
-      </dl>
-      <b> Blocks: </b>
       <table class="table table-sm">
         <tbody>
           <tr>
@@ -373,18 +337,45 @@ watch(activeTab, () => {
               class="text-end"
               v-html="formattedProp('EXCLUSIVE_SHARED_HIT_BLOCKS') || '-'"
             ></td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_SHARED_READ_BLOCKS') || '-'"
-            ></td>
+            <td class="text-end">
+              <div
+                v-html="formattedProp('EXCLUSIVE_SHARED_READ_BLOCKS') || '-'"
+              ></div>
+              <div
+                v-if="node[NodeProp.EXCLUSIVE_IO_READ_TIME]"
+                class="ms-2 small fst-italic text-body-secondary"
+              >
+                in {{ formattedProp("EXCLUSIVE_IO_READ_TIME") }}
+                <small>~{{ formattedProp("AVERAGE_IO_READ_TIME") }}</small>
+                <FontAwesomeIcon
+                  :icon="faInfoCircle"
+                  class="cursor-help d-inline-block"
+                  v-tippy="{
+                    content: getHelpMessage('io timings parallel'),
+                  }"
+                  v-if="
+                    node[NodeProp.WORKERS_PLANNED] ||
+                    node[NodeProp.WORKERS_PLANNED_BY_GATHER]
+                  "
+                ></FontAwesomeIcon>
+              </div>
+            </td>
             <td
               class="text-end"
               v-html="formattedProp('EXCLUSIVE_SHARED_DIRTIED_BLOCKS') || '-'"
             ></td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_SHARED_WRITTEN_BLOCKS') || '-'"
-            ></td>
+            <td class="text-end">
+              <div
+                v-html="formattedProp('EXCLUSIVE_SHARED_WRITTEN_BLOCKS') || '-'"
+              ></div>
+              <div
+                v-if="node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]"
+                class="ms-2 small fst-italic text-body-secondary"
+              >
+                in {{ formattedProp("EXCLUSIVE_IO_WRITE_TIME") }}
+                <small>~{{ formattedProp("AVERAGE_IO_WRITE_TIME") }}</small>
+              </div>
+            </td>
           </tr>
           <tr>
             <th>Temp</th>
