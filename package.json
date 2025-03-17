@@ -38,7 +38,7 @@
     "highlight.js": "^11.11.1",
     "humanize-duration": "^3.33.0",
     "lodash": "^4.17.21",
-    "splitpanes": "^3.1.8",
+    "splitpanes": "^3.2.0",
     "vue": "^3.5.22",
     "vue-clipboard3": "^2.0.0",
     "vue-tippy": "^6.7.1"
