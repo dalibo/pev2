@@ -1,8 +1,13 @@
 Not a real plan. Showing how line breaks (with empty space at the begining) in an Output can break parsing.
+Also parsing shouldn't break if Output is followed by new node at a lower level.
                                                                     QUERY PLAN                                                                     
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
- Nested Loop Left Join  (cost=11.95..28.52 rows=5 width=157)
-   ->  Bitmap Heap Scan on public.rel_users_exams  (cost=11.80..20.27 rows=5 width=52)
-         Output: rel_users_exams.user_username, rel_users_exams.exam_id,
- rel_users_exams.started_at, rel_users_exams.finished_at
-         ->  Bitmap Index Scan on rel_users_exams_pkey  (cost=0.00..11.80 rows=5 width=0)
+ Nested Loop Left Join  (cost=0.00..0.00 rows=1 width=1)
+   ->  Bitmap Heap Scan on a  (cost=0.00..0.00 rows=1 width=1)
+         Output: blah,
+ dude 
+         ->  Bitmap Index Scan on rel_users_exams_pkey  (cost=0.00..0.00 rows=1 width=0)
+   ->  Sort  (cost=0.00..0.00 rows=1 width=1)
+         ->  Seq Scan on a  (cost=0.00..0.00 rows=1 width=1)
+               Output: a1
+   ->  Sort  (cost=0.00..0.00 rows=1 width=1)
