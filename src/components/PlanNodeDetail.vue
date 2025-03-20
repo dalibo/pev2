@@ -336,7 +336,7 @@ watch(activeTab, () => {
           <span v-if="node[NodeProp.EXCLUSIVE_IO_READ_TIME]" class="ms-2">
             <b>Read:&nbsp;</b>
             {{ formattedProp("EXCLUSIVE_IO_READ_TIME") }}
-            <small>~{{ formattedProp("AVERAGE_IO_READ_TIME") }}</small>
+            <small>~{{ formattedProp("AVERAGE_IO_READ_SPEED") }}</small>
             <FontAwesomeIcon
               :icon="faInfoCircle"
               class="cursor-help d-inline-block text-secondary"
@@ -353,7 +353,7 @@ watch(activeTab, () => {
           <span v-if="node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]" class="ms-2">
             <b>Write:&nbsp;</b>
             {{ formattedProp("EXCLUSIVE_IO_WRITE_TIME") }}
-            <small>~{{ formattedProp("AVERAGE_IO_WRITE_TIME") }}</small>
+            <small>~{{ formattedProp("AVERAGE_IO_WRITE_SPEED") }}</small>
           </span>
         </dd>
       </dl>
