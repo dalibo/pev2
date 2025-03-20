@@ -110,8 +110,8 @@ export class Node {
   [NodeProp.WORKERS_PLANNED_BY_GATHER]?: number;
   [NodeProp.EXCLUSIVE_IO_READ_TIME]!: number;
   [NodeProp.EXCLUSIVE_IO_WRITE_TIME]!: number;
-  [NodeProp.AVERAGE_IO_READ_TIME]!: number;
-  [NodeProp.AVERAGE_IO_WRITE_TIME]!: number;
+  [NodeProp.AVERAGE_IO_READ_SPEED]!: number;
+  [NodeProp.AVERAGE_IO_WRITE_SPEED]!: number;
   [k: string]:
     | Node[]
     | Options

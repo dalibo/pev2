@@ -124,8 +124,8 @@ export enum NodeProp {
 
   EXCLUSIVE_IO_READ_TIME = "*I/O Read Time (exclusive)",
   EXCLUSIVE_IO_WRITE_TIME = "*I/O Write Time (exclusive)",
-  AVERAGE_IO_READ_TIME = "*I/O Read Speed (exclusive)",
-  AVERAGE_IO_WRITE_TIME = "*I/O Write Speed (exclusive)",
+  AVERAGE_IO_READ_SPEED = "*I/O Read Speed (exclusive)",
+  AVERAGE_IO_WRITE_SPEED = "*I/O Write Speed (exclusive)",
 
   WORKERS_PLANNED_BY_GATHER = "*Workers Planned By Gather",
   WORKERS_LAUNCHED_BY_GATHER = "*Workers Launched By Gather",
@@ -198,8 +198,8 @@ nodePropTypes[NodeProp.IO_WRITE_TIME] = PropType.duration
 
 nodePropTypes[NodeProp.EXCLUSIVE_IO_READ_TIME] = PropType.duration
 nodePropTypes[NodeProp.EXCLUSIVE_IO_WRITE_TIME] = PropType.duration
-nodePropTypes[NodeProp.AVERAGE_IO_READ_TIME] = PropType.transferRate
-nodePropTypes[NodeProp.AVERAGE_IO_WRITE_TIME] = PropType.transferRate
+nodePropTypes[NodeProp.AVERAGE_IO_READ_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.AVERAGE_IO_WRITE_SPEED] = PropType.transferRate
 
 nodePropTypes[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] = PropType.blocks
 nodePropTypes[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] = PropType.blocks

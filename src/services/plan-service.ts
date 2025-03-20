@@ -1216,23 +1216,23 @@ export class PlanService {
   }
 
   private calculateIoTimingsAverage(node: Node) {
-    const ioReadTime = (node[NodeProp["IO_READ_TIME"]] as number) || 0
+    const ioReadTime = (node[NodeProp["EXCLUSIVE_IO_READ_TIME"]] as number) || 0
     if (ioReadTime) {
       const sharedReadBlocks =
-        (node[NodeProp["SHARED_READ_BLOCKS"]] as number) || 0
+        (node[NodeProp["EXCLUSIVE_SHARED_READ_BLOCKS"]] as number) || 0
       const localReadBlocks =
-        (node[NodeProp["LOCAL_READ_BLOCKS"]] as number) || 0
-      node[NodeProp["AVERAGE_IO_READ_TIME"]] =
+        (node[NodeProp["EXCLUSIVE_LOCAL_READ_BLOCKS"]] as number) || 0
+      node[NodeProp["AVERAGE_IO_READ_SPEED"]] =
         (sharedReadBlocks + localReadBlocks) / (ioReadTime / 1000)
     }
 
-    const ioWriteTime = (node[NodeProp["IO_WRITE_TIME"]] as number) || 0
+    const ioWriteTime = (node[NodeProp["EXCLUSIVE_IO_WRITE_TIME"]] as number) || 0
     if (ioWriteTime) {
       const sharedWriteBlocks =
-        (node[NodeProp["SHARED_WRITTEN_BLOCKS"]] as number) || 0
+        (node[NodeProp["EXCLUSIVE_SHARED_WRITTEN_BLOCKS"]] as number) || 0
       const localWriteBlocks =
-        (node[NodeProp["LOCAL_WRITTEN_BLOCKS"]] as number) || 0
-      node[NodeProp["AVERAGE_IO_WRITE_TIME"]] =
+        (node[NodeProp["EXCLUSIVE_LOCAL_WRITTEN_BLOCKS"]] as number) || 0
+      node[NodeProp["AVERAGE_IO_WRITE_SPEED"]] =
         (sharedWriteBlocks + localWriteBlocks) / (ioWriteTime / 1000)
     }
   }

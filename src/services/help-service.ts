@@ -340,8 +340,8 @@ const notMiscProperties: string[] = [
   NodeProp.HASH_CONDITION,
   NodeProp.EXCLUSIVE_IO_READ_TIME,
   NodeProp.EXCLUSIVE_IO_WRITE_TIME,
-  NodeProp.AVERAGE_IO_READ_TIME,
-  NodeProp.AVERAGE_IO_WRITE_TIME,
+  NodeProp.AVERAGE_IO_READ_SPEED,
+  NodeProp.AVERAGE_IO_WRITE_SPEED,
   NodeProp.IO_READ_TIME, // Exclusive value already shown in IO tab
   NodeProp.IO_WRITE_TIME, // Exclusive value already shown in IO tab
   NodeProp.HEAP_FETCHES,

@@ -55,9 +55,9 @@ const triggersTotalDuration = computed(() => {
 
 function averageIO(node: Node) {
   const read = node[NodeProp.IO_READ_TIME]
-  const read_average = node[NodeProp.AVERAGE_IO_READ_TIME]
+  const read_average = node[NodeProp.AVERAGE_IO_READ_SPEED]
   const write = node[NodeProp.IO_WRITE_TIME]
-  const write_average = node[NodeProp.AVERAGE_IO_WRITE_TIME]
+  const write_average = node[NodeProp.AVERAGE_IO_WRITE_SPEED]
   const r = []
   if (read) {
     r.push(
@@ -65,7 +65,7 @@ function averageIO(node: Node) {
         NodeProp.IO_READ_TIME,
         read
       )} <small class="text-body-secondary">~${formatNodeProp(
-        NodeProp.AVERAGE_IO_READ_TIME,
+        NodeProp.AVERAGE_IO_READ_SPEED,
         read_average
       )}</small>`
     )
@@ -76,7 +76,7 @@ function averageIO(node: Node) {
         NodeProp.IO_WRITE_TIME,
         write
       )} <small class="text-body-secondary">~${formatNodeProp(
-        NodeProp.AVERAGE_IO_WRITE_TIME,
+        NodeProp.AVERAGE_IO_WRITE_SPEED,
         write_average
       )}</small>`
     )
@@ -283,8 +283,8 @@ function hasParallelChildren(node: Node) {
       class="d-inline-block border-start px-2 position-relative"
       v-if="
         rootNode &&
-        (rootNode[NodeProp.AVERAGE_IO_READ_TIME] ||
-          rootNode[NodeProp.AVERAGE_IO_WRITE_TIME])
+        (rootNode[NodeProp.AVERAGE_IO_READ_SPEED] ||
+          rootNode[NodeProp.AVERAGE_IO_WRITE_SPEED])
       "
     >
       IO: <span v-html="averageIO(rootNode)"></span>

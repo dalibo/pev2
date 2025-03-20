@@ -502,9 +502,9 @@ export default function useNode(
   const ioTooltip = computed((): string => {
     let text = ""
     const read = node[NodeProp.EXCLUSIVE_IO_READ_TIME]
-    const averageRead = node[NodeProp.AVERAGE_IO_READ_TIME]
+    const averageRead = node[NodeProp.AVERAGE_IO_READ_SPEED]
     const write = node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]
-    const averageWrite = node[NodeProp.AVERAGE_IO_WRITE_TIME]
+    const averageWrite = node[NodeProp.AVERAGE_IO_WRITE_SPEED]
     text += '<table class="table table-dark table-sm table-borderless mb-0">'
     text += read
       ? '<tr><td>Read:</td><td class="text-end">' +
