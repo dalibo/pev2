@@ -3,7 +3,7 @@ import { PlanService } from "@/services/plan-service"
 import type { IPlan, IPlanContent } from "@/interfaces"
 
 describe("PlanService", () => {
-  test("Computes exclusive cost correctly", () => {
+  test("Takes fractional rows into account correctly", () => {
     const planService = new PlanService()
     const source = `
                                                    QUERY PLAN
