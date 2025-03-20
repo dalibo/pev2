@@ -205,7 +205,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
       <GridProgressBar
         :percentage="
           Math.round(
-            (node[NodeProp.EXCLUSIVE_COST] / plan.planStats.maxCost) * 100
+            (node[NodeProp.EXCLUSIVE_COST] / plan.planStats.maxCost) * 100,
           )
         "
       ></GridProgressBar>
@@ -317,11 +317,11 @@ function formattedProp(propName: keyof typeof NodeProp) {
             <span class="text-secondary">by</span>
             <span
               v-html="
-                      sortKeys(
-                        node[NodeProp.SORT_KEY] as string[],
-                        node[NodeProp.PRESORTED_KEY] as string[]
-                      )
-                    "
+                sortKeys(
+                  node[NodeProp.SORT_KEY] as string[],
+                  node[NodeProp.PRESORTED_KEY] as string[],
+                )
+              "
             ></span>
           </template>
           <template v-if="node[NodeProp.JOIN_TYPE]">
@@ -455,7 +455,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
         class="position-relative"
         v-tippy="{
           content: buffersByMetricTooltip(
-            NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS
+            NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS,
           ),
           allowHTML: true,
         }"
@@ -475,7 +475,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
         class="position-relative"
         v-tippy="{
           content: buffersByMetricTooltip(
-            NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS
+            NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS,
           ),
           allowHTML: true,
         }"
@@ -495,7 +495,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
         class="position-relative"
         v-tippy="{
           content: buffersByMetricTooltip(
-            NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS
+            NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS,
           ),
           allowHTML: true,
         }"
@@ -533,7 +533,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
         class="position-relative"
         v-tippy="{
           content: buffersByMetricTooltip(
-            NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS
+            NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS,
           ),
           allowHTML: true,
         }"
@@ -589,7 +589,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
         class="position-relative"
         v-tippy="{
           content: buffersByMetricTooltip(
-            NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS
+            NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS,
           ),
           allowHTML: true,
         }"
@@ -609,7 +609,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
         class="position-relative"
         v-tippy="{
           content: buffersByMetricTooltip(
-            NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS
+            NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS,
           ),
           allowHTML: true,
         }"
