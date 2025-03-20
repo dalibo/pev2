@@ -112,6 +112,8 @@ export class Node {
   [NodeProp.EXCLUSIVE_IO_WRITE_TIME]!: number;
   [NodeProp.AVERAGE_IO_READ_SPEED]!: number;
   [NodeProp.AVERAGE_IO_WRITE_SPEED]!: number;
+  [NodeProp.IO_READ_TIME]!: number;
+  [NodeProp.IO_WRITE_TIME]!: number;
   [k: string]:
     | Node[]
     | Options

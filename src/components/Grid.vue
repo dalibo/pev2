@@ -64,6 +64,30 @@ const hasTime = computed((): boolean => {
   })
 })
 
+const hasIORead = computed((): boolean => {
+  return _.some(plans, (plan: Row[]) => {
+    return _.some(plan, (row: Row) => {
+      return row[1][NodeProp.IO_READ_TIME] || 0 > 1
+    })
+  })
+})
+
+const hasIOWrite = computed((): boolean => {
+  return _.some(plans, (plan: Row[]) => {
+    return _.some(plan, (row: Row) => {
+      return row[1][NodeProp.IO_WRITE_TIME] || 0 > 1
+    })
+  })
+})
+
+const hasIO = computed((): boolean => {
+  return hasIORead.value || hasIOWrite.value
+})
+
+const ioColumns = computed((): number => {
+  return _.filter([hasIORead.value, hasIOWrite.value], (v) => v).length
+})
+
 const hasRows = computed((): boolean => {
   return _.some(plans, (plan: Row[]) => {
     return _.some(plan, (row: Row) => {
@@ -290,8 +314,12 @@ const columns = computed(() => {
   <div>
     <table class="table table-sm table-hover">
       <thead class="table-secondary sticky-top" style="z-index: 2">
-        <tr v-if="columnsRight.length > 0">
-          <th :colspan="2 + columnsLeft.length"></th>
+        <tr v-if="hasIO || columnsRight.length > 0" class="table-group">
+          <th colspan="2">
+            <!-- id & time -->
+          </th>
+          <th class="text-center" :colspan="ioColumns" v-if="hasIO">io</th>
+          <th :colspan="columnsLeft.length"></th>
           <th
             class="text-center"
             :colspan="sharedBlocksColumns"
@@ -317,6 +345,8 @@ const columns = computed(() => {
         <tr>
           <th class="text-center"></th>
           <th class="text-center" v-if="hasTime">time</th>
+          <th class="text-center" v-if="hasIORead">read</th>
+          <th class="text-center" v-if="hasIOWrite">write</th>
           <th class="text-center" v-if="hasRows">rows</th>
           <th class="text-center" v-if="hasEstimation">estim</th>
           <th class="text-center" v-if="hasCost">cost</th>
@@ -371,3 +401,21 @@ const columns = computed(() => {
     </table>
   </div>
 </template>
+
+<style scoped>
+table {
+  thead tr.table-group {
+    th {
+      border-left: 1px solid #b5b6b7;
+      border-bottom: 0;
+    }
+    /*
+     * This targets the second empty cell in a pair
+     * and avoids border between 2 empty cells
+     */
+    th:empty + th:empty {
+      border-left: 0;
+    }
+  }
+}
+</style>

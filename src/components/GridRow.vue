@@ -13,6 +13,7 @@ import {
   formatNodeProp,
   keysToString,
   sortKeys,
+  transferRate,
 } from "@/filters"
 import LevelDivider from "@/components/LevelDivider.vue"
 import GridProgressBar from "@/components/GridProgressBar.vue"
@@ -54,6 +55,7 @@ const {
   executionTimePercent,
   heapFetchesClass,
   heapFetchesTooltip,
+  ioTooltip,
   localDirtiedPercent,
   localHitPercent,
   localReadPercent,
@@ -130,6 +132,46 @@ function formattedProp(propName: keyof typeof NodeProp) {
         <template v-if="executionTimePercent !== Infinity">
           {{ executionTimePercent }}%
         </template>
+      </div>
+    </td>
+    <td
+      class="text-end grid-progress-cell text-nowrap"
+      v-if="node[NodeProp.IO_READ_TIME]"
+      v-tippy="{ content: ioTooltip, allowHTML: true }"
+    >
+      <GridProgressBar
+        :percentage="
+          (node[NodeProp.EXCLUSIVE_IO_READ_TIME] /
+            (plan.content.Plan[NodeProp.IO_READ_TIME] +
+              plan.content.Plan[NodeProp.IO_WRITE_TIME])) *
+          100
+        "
+      ></GridProgressBar>
+      {{ Math.round(node[NodeProp.EXCLUSIVE_IO_READ_TIME]).toLocaleString() }}
+      <div v-if="showDetails" class="small text-body-secondary">
+        {{ duration(node[NodeProp.EXCLUSIVE_IO_READ_TIME]) }}
+        <br />
+        {{ transferRate(node[NodeProp.AVERAGE_IO_READ_SPEED]) }}
+      </div>
+    </td>
+    <td
+      class="text-end grid-progress-cell text-nowrap"
+      v-if="node[NodeProp.IO_WRITE_TIME]"
+      v-tippy="{ content: ioTooltip, allowHTML: true }"
+    >
+      <GridProgressBar
+        :percentage="
+          (node[NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
+            (plan.content.Plan[NodeProp.IO_READ_TIME] +
+              plan.content.Plan[NodeProp.IO_WRITE_TIME])) *
+          100
+        "
+      ></GridProgressBar>
+      {{ Math.round(node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]).toLocaleString() }}
+      <div v-if="showDetails" class="small text-body-secondary">
+        {{ duration(node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]) }}
+        <br />
+        {{ transferRate(node[NodeProp.AVERAGE_IO_WRITE_SPEED]) }}
       </div>
     </td>
     <td
