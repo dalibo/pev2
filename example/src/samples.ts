@@ -18,7 +18,8 @@ const plan1_source = `Nested Loop Left Join  (cost=11.95..28.52 rows=5 width=157
 Planning Time: 1.110 ms
 Execution Time: 0.170 ms
 `
-const plan1_query = `SELECT rel_users_exams.user_username AS rel_users_exams_user_username,
+const plan1_query = `/* A join between two tables */
+SELECT rel_users_exams.user_username AS rel_users_exams_user_username,
          rel_users_exams.exam_id AS rel_users_exams_exam_id,
          rel_users_exams.started_at AS rel_users_exams_started_at,
          rel_users_exams.finished_at AS rel_users_exams_finished_at,
@@ -460,7 +461,8 @@ const plan2_source = `[
 ]
 `
 
-const plan2_query = `SELECT rel_users_exams.user_username AS rel_users_exams_user_username,
+const plan2_query = `/* Three joins */
+SELECT rel_users_exams.user_username AS rel_users_exams_user_username,
          rel_users_exams.exam_id AS rel_users_exams_exam_id,
          rel_users_exams.started_at AS rel_users_exams_started_at,
          rel_users_exams.finished_at AS rel_users_exams_finished_at,
@@ -5986,9 +5988,9 @@ interface Sample extends Array<string> {
 }
 
 const samples = <Sample[]>[
-  ["Example 1 TEXT", plan1_source, plan1_query],
-  ["Example 1 JSON", plan1_source_json, plan1_query],
-  ["Example 2", plan2_source, plan2_query],
+  ["Simple join (TEXT format)", plan1_source, plan1_query],
+  ["Simple join (JSON format)", plan1_source_json, plan1_query],
+  ["Three joins, missing an index", plan2_source, plan2_query],
   ["Example 3", plan3_source, plan3_query],
   ["Example 5", plan5_source, plan5_query],
   ["With subplan", plan6_source, ""],
