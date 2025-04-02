@@ -1,4 +1,4 @@
-export const plan1_source = `Nested Loop Left Join  (cost=11.95..28.52 rows=5 width=157) (actual time=0.010..0.010 rows=0 loops=1)
+const plan1_source = `Nested Loop Left Join  (cost=11.95..28.52 rows=5 width=157) (actual time=0.010..0.010 rows=0 loops=1)
   Output: rel_users_exams.user_username, rel_users_exams.exam_id, rel_users_exams.started_at, rel_users_exams.finished_at, exam_1.id, exam_1.title, exam_1.date_from, exam_1.date_to, exam_1.created, exam_1.created_by_, exam_1.duration, exam_1.success_threshold, exam_1.published
   Inner Unique: true
   Join Filter: (exam_1.id = rel_users_exams.exam_id)
@@ -18,7 +18,7 @@ export const plan1_source = `Nested Loop Left Join  (cost=11.95..28.52 rows=5 wi
 Planning Time: 1.110 ms
 Execution Time: 0.170 ms
 `
-export const plan1_query = `SELECT rel_users_exams.user_username AS rel_users_exams_user_username,
+const plan1_query = `SELECT rel_users_exams.user_username AS rel_users_exams_user_username,
          rel_users_exams.exam_id AS rel_users_exams_exam_id,
          rel_users_exams.started_at AS rel_users_exams_started_at,
          rel_users_exams.finished_at AS rel_users_exams_finished_at,
@@ -37,7 +37,7 @@ JOIN exam AS exam_1
 WHERE 1 = rel_users_exams.exam_id;
 `
 
-export const plan1_source_json = `[
+const plan1_source_json = `[
   {
     "Plan": {
       "Node Type": "Nested Loop",
@@ -190,7 +190,7 @@ export const plan1_source_json = `[
   }
 ]`
 
-export const plan2_source = `[
+const plan2_source = `[
   {
     "Plan": {
       "Node Type": "Sort",
@@ -460,7 +460,7 @@ export const plan2_source = `[
 ]
 `
 
-export const plan2_query = `SELECT rel_users_exams.user_username AS rel_users_exams_user_username,
+const plan2_query = `SELECT rel_users_exams.user_username AS rel_users_exams_user_username,
          rel_users_exams.exam_id AS rel_users_exams_exam_id,
          rel_users_exams.started_at AS rel_users_exams_started_at,
          rel_users_exams.finished_at AS rel_users_exams_finished_at,
@@ -532,7 +532,7 @@ WHERE rel_users_exams.user_username = %(param_1)s
 ORDER BY  question_1.id;
 `
 
-export const plan3_source = `[
+const plan3_source = `[
   {
     "Plan": {
       "Node Type": "Result",
@@ -682,11 +682,11 @@ export const plan3_source = `[
 ]
 `
 
-export const plan3_query = `SELECT feature_name, tags->'tourism' As tourism_type FROM ch03.paris
+const plan3_query = `SELECT feature_name, tags->'tourism' As tourism_type FROM ch03.paris
     WHERE ar_num = 8 AND tags?'tourism';
 `
 
-export const plan4_source = `[
+const plan4_source = `[
   {
     "Plan": {
       "Node Type": "Sort",
@@ -2144,7 +2144,7 @@ export const plan4_source = `[
 ]
 `
 
-export const plan5_source = `
+const plan5_source = `
 [
   {
     "Plan": {
@@ -2709,7 +2709,7 @@ export const plan5_source = `
 ]
 `
 
-export const plan5_query = `SELECT c.state,
+const plan5_query = `SELECT c.state,
   cat.categoryname,
   sum(o.netamount),
   sum(o.totalamount)
@@ -2723,7 +2723,7 @@ GROUP BY c.state, cat.categoryname
 ORDER BY c.state, sum(o.totalamount) DESC LIMIT 10 OFFSET 1;
 `
 
-export const plan6_source = `"Limit  (cost=1.27..3878.21 rows=5 width=172) (actual time=0.245..2.544 rows=5 loops=1)"
+const plan6_source = `"Limit  (cost=1.27..3878.21 rows=5 width=172) (actual time=0.245..2.544 rows=5 loops=1)"
 "  ->  Nested Loop  (cost=1.27..48075.41 rows=62 width=172) (actual time=0.244..2.539 rows=5 loops=1)"
 "        ->  Nested Loop  (cost=0.84..2420.02 rows=65 width=85) (actual time=0.137..0.151 rows=5 loops=1)"
 "              ->  Nested Loop  (cost=0.42..2356.20 rows=5 width=85) (actual time=0.118..0.119 rows=1 loops=1)"
@@ -2756,7 +2756,7 @@ export const plan6_source = `"Limit  (cost=1.27..3878.21 rows=5 width=172) (actu
 "Planning Time: 2.916 ms"
 "Execution Time: 2.900 ms"`
 
-export const plan7_source = String.raw`
+const plan7_source = String.raw`
                                                                          QUERY PLAN
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
  Merge on public.t1  (cost=1824058.07..1336099696.57 rows=0 width=0) (actual time=16254.981..16254.984 rows=0 loops=1)
@@ -2817,7 +2817,7 @@ export const plan7_source = String.raw`
 (55 lignes)
 `
 
-export const plan7_query = String.raw`
+const plan7_query = String.raw`
 -- create a plan with all written/buffers/shared/local/temp at once
 
 \timing off
@@ -2866,7 +2866,7 @@ WHEN MATCHED THEN
   UPDATE SET filler=t2b.filler, x=null ;
 `
 
-export const plan9_source = `Append (actual time=102.409..302.675 rows=3 loops=1)
+const plan9_source = `Append (actual time=102.409..302.675 rows=3 loops=1)
   CTE init
     ->  Append (actual time=102.397..302.649 rows=2 loops=1)
           ->  Function Scan on pg_sleep pg_sleep_for (actual time=102.396..102.398 rows=1 loops=1)
@@ -2878,7 +2878,7 @@ Planning Time: 47.003 ms
 Execution Time: 303.905 ms
 `
 
-export const plan9_query = `WITH init AS (
+const plan9_query = `WITH init AS (
  SELECT * FROM pg_sleep_for('100ms')
  UNION ALL
  SELECT * FROM pg_sleep_for('200ms')
@@ -2888,7 +2888,7 @@ UNION ALL
 (SELECT * FROM init);
 `
 
-export const plan8_source = String.raw`{
+const plan8_source = String.raw`{
   "Plan": {
     "Node Type": "Hash Join",
     "Parallel Aware": false,
@@ -5720,7 +5720,7 @@ export const plan8_source = String.raw`{
 }
 `
 
-export const plan_parallel_source = `[
+const plan_parallel_source = `[
   {
     "Plan": {
       "Node Type": "Aggregate",
@@ -5850,7 +5850,7 @@ export const plan_parallel_source = `[
   }
 ]`
 
-export const plan_parallel_2_query = `select
+const plan_parallel_2_query = `select
         l_shipmode,
         sum(case
                 when o_orderpriority = '1-URGENT'
@@ -5881,7 +5881,7 @@ order by
 LIMIT 1;
 `
 
-export const plan_parallel_2_source = ` Limit  (cost=1964755.66..1964961.44 rows=1 width=27) (actual time=7579.592..7922.997 rows=1 loops=1)
+const plan_parallel_2_source = ` Limit  (cost=1964755.66..1964961.44 rows=1 width=27) (actual time=7579.592..7922.997 rows=1 loops=1)
    ->  Finalize GroupAggregate  (cost=1964755.66..1966196.11 rows=7 width=27) (actual time=7579.590..7579.591 rows=1 loops=1)
          Group Key: lineitem.l_shipmode
          ->  Gather Merge  (cost=1964755.66..1966195.83 rows=28 width=27) (actual time=7559.593..7922.319 rows=6 loops=1)
@@ -5907,7 +5907,7 @@ export const plan_parallel_2_source = ` Limit  (cost=1964755.66..1964961.44 rows
  Planning Time: 0.977 ms
  Execution Time: 7923.770 ms`
 
-export const plan_trigger_source = `                                                                                            QUERY PLAN
+const plan_trigger_source = `                                                                                            QUERY PLAN
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  Delete on emailmessages  (cost=224.85..38989.92 rows=5000 width=34) (actual time=217158.570..217158.570 rows=0 loops=1)
    Buffers: shared hit=2579331 read=506594 dirtied=503671
@@ -5937,9 +5937,9 @@ export const plan_trigger_source = `                                            
  Execution time: 381072.164 ms
 (26 rows)`
 
-export const plan_trigger_query = `DELETE FROM emailmessages where emailmessageid in ( select emailmessageid from emailmessages limit 5000 );`
+const plan_trigger_query = `DELETE FROM emailmessages where emailmessageid in ( select emailmessageid from emailmessages limit 5000 );`
 
-export const plan_trigger_2_source = `[
+const plan_trigger_2_source = `[
   {
     "Plan": {
       "Node Type": "ModifyTable",
@@ -6012,4 +6012,29 @@ export const plan_trigger_2_source = `[
   }
 ]`
 
-export const plan_trigger_2_query = `INSERT INTO brut.emp VALUES (10000, NOW(), 'pouet');`
+const plan_trigger_2_query = `INSERT INTO brut.emp VALUES (10000, NOW(), 'pouet');`
+
+interface Sample extends Array<string> {
+  0: string
+  1: string
+  2: string
+}
+
+const samples = <Sample[]>[
+  ["Example 1 TEXT", plan1_source, plan1_query],
+  ["Example 1 JSON", plan1_source_json, plan1_query],
+  ["Example 2", plan2_source, plan2_query],
+  ["Example 3", plan3_source, plan3_query],
+  ["Example 5", plan5_source, plan5_query],
+  ["With subplan", plan6_source, ""],
+  ["With Buffers", plan7_source, plan7_query],
+  ["With CTE", plan9_source, plan9_query],
+  ["With CTEs", plan4_source, ""],
+  ["Very large plan", plan8_source, ""],
+  ["With trigger", plan_trigger_2_source, plan_trigger_2_query],
+  ["With trigger (plain text)", plan_trigger_source, plan_trigger_query],
+  ["Parallel (verbose)", plan_parallel_source, ""],
+  ["Parallel (4 workers)", plan_parallel_2_source, plan_parallel_2_query],
+]
+
+export default samples

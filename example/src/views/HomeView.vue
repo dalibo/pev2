@@ -7,31 +7,7 @@ import { time_ago } from "../utils"
 import MainLayout from "../layouts/MainLayout.vue"
 import Plan from "@/components/Plan.vue"
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons"
-import {
-  plan1_source,
-  plan1_source_json,
-  plan1_query,
-  plan2_source,
-  plan2_query,
-  plan3_source,
-  plan3_query,
-  plan4_source,
-  plan5_source,
-  plan5_query,
-  plan6_source,
-  plan7_source,
-  plan7_query,
-  plan8_source,
-  plan9_source,
-  plan9_query,
-  plan_parallel_source,
-  plan_parallel_2_source,
-  plan_parallel_2_query,
-  plan_trigger_source,
-  plan_trigger_query,
-  plan_trigger_2_source,
-  plan_trigger_2_query,
-} from "../samples.ts"
+import samples from "../samples.ts"
 
 import idb from "../idb"
 
@@ -43,29 +19,6 @@ const queryName = ref<string>("")
 const draggingPlan = ref<boolean>(false)
 const draggingQuery = ref<boolean>(false)
 const savedPlans = ref<Plan[]>()
-
-interface Sample extends Array<string> {
-  0: string
-  1: string
-  2: string
-}
-
-const samples = ref<Sample[]>([
-  ["Example 1 TEXT", plan1_source, plan1_query],
-  ["Example 1 JSON", plan1_source_json, plan1_query],
-  ["Example 2", plan2_source, plan2_query],
-  ["Example 3", plan3_source, plan3_query],
-  ["Example 5", plan5_source, plan5_query],
-  ["With subplan", plan6_source, ""],
-  ["With Buffers", plan7_source, plan7_query],
-  ["With CTE", plan9_source, plan9_query],
-  ["With CTEs", plan4_source, ""],
-  ["Very large plan", plan8_source, ""],
-  ["With trigger", plan_trigger_2_source, plan_trigger_2_query],
-  ["With trigger (plain text)", plan_trigger_source, plan_trigger_query],
-  ["Parallel (verbose)", plan_parallel_source, ""],
-  ["Parallel (4 workers)", plan_parallel_2_source, plan_parallel_2_query],
-])
 
 function submitPlan() {
   const newPlan: Plan = ["", "", ""]
