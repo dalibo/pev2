@@ -499,7 +499,7 @@ WHERE rel_users_exams.user_username = %(param_1)s
 ORDER BY  question_1.id;
 `
 
-const plan4_source = `[
+const plan_many_ctes = `[
   {
     "Plan": {
       "Node Type": "Sort",
@@ -5840,8 +5840,8 @@ const samples = <Sample[]>[
   ["Example 5", plan5_source, plan5_query],
   ["With subplan", plan6_source, ""],
   ["With Buffers", plan7_source, plan7_query],
-  ["With CTE", plan9_source, plan9_query],
-  ["With CTEs", plan4_source, ""],
+  ["A CTE", plan9_source, plan9_query],
+  ["Many CTEs", plan_many_ctes, ""],
   ["Very large plan", plan8_source, ""],
   ["With trigger", plan_trigger_2_source, plan_trigger_2_query],
   ["With trigger (plain text)", plan_trigger_source, plan_trigger_query],
