@@ -360,6 +360,7 @@ const notMiscProperties: string[] = [
   NodeProp.ALIAS,
   NodeProp.FUNCTION_NAME,
   NodeProp.STRATEGY,
+  NodeProp.PARTIAL_MODE,
 ]
 
 export function shouldShowProp(key: string, value: unknown): boolean {

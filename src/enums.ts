@@ -97,6 +97,7 @@ export enum NodeProp {
   PRESORTED_KEY = "Presorted Key",
   FILTER = "Filter",
   STRATEGY = "Strategy",
+  PARTIAL_MODE = "Partial Mode",
 
   // computed by pev
   NODE_ID = "nodeId",

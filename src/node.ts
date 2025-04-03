@@ -87,6 +87,7 @@ export default function useNode(
 
   const nodeName = computed((): string => {
     let nodeName = isParallelAware.value ? "Parallel " : ""
+    nodeName += node[NodeProp.PARTIAL_MODE] ? node[NodeProp.PARTIAL_MODE] + " " : ""
     nodeName += node[NodeProp.NODE_TYPE]
     return nodeName
   })

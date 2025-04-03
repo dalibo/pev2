@@ -542,6 +542,7 @@ export class PlanService {
       const emptyLineRegex = "^s*$"
       const headerRegex = "^\\s*(QUERY|---|#).*$"
       const prefixRegex = "^(\\s*->\\s*|\\s*)"
+      const partialModeRegex = "(Finalize|Simple|Partial)*"
       const typeRegex = "([^\\r\\n\\t\\f\\v\\:\\(]*?)"
       // tslint:disable-next-line:max-line-length
       const estimationRegex =
@@ -561,29 +562,32 @@ export class PlanService {
       /*
        * Groups
        * 1: prefix
-       * 2: type
-       * 3: estimated_startup_cost
-       * 4: estimated_total_cost
-       * 5: estimated_rows
-       * 6: estimated_row_width
-       * 7: actual_time_first
-       * 8: actual_time_last
-       * 9: actual_rows
-       * 10: actual_loops
-       * 11: actual_rows_
-       * 12: actual_loops_
-       * 13: never_executed
-       * 14: estimated_startup_cost
-       * 15: estimated_total_cost
-       * 16: estimated_rows
-       * 17: estimated_row_width
-       * 18: actual_time_first
-       * 19: actual_time_last
-       * 20: actual_rows
-       * 21: actual_loops
+       * 2: partial mode
+       * 3: type
+       * 4: estimated_startup_cost
+       * 5: estimated_total_cost
+       * 6: estimated_rows
+       * 7: estimated_row_width
+       * 8: actual_time_first
+       * 9: actual_time_last
+       * 10: actual_rows
+       * 11: actual_loops
+       * 12: actual_rows_
+       * 13: actual_loops_
+       * 15: never_executed
+       * 15: estimated_startup_cost
+       * 16: estimated_total_cost
+       * 17: estimated_rows
+       * 18: estimated_row_width
+       * 19: actual_time_first
+       * 20: actual_time_last
+       * 21: actual_rows
+       * 22: actual_loops
        */
       const nodeRegex = new RegExp(
         prefixRegex +
+          partialModeRegex +
+          "\\s*" +
           typeRegex +
           "\\s*" +
           nonCapturingGroupOpen +
@@ -662,53 +666,57 @@ export class PlanService {
         return
       } else if (nodeMatches && !cteMatches && !subMatches) {
         //const prefix = nodeMatches[1]
-        const neverExecuted = nodeMatches[13]
-        const newNode: Node = new Node(nodeMatches[2])
+        const neverExecuted = nodeMatches[14]
+        const newNode: Node = new Node(nodeMatches[3])
         if (
-          (nodeMatches[3] && nodeMatches[4]) ||
-          (nodeMatches[14] && nodeMatches[15])
+          (nodeMatches[4] && nodeMatches[5]) ||
+          (nodeMatches[15] && nodeMatches[16])
         ) {
           newNode[NodeProp.STARTUP_COST] = parseFloat(
-            nodeMatches[3] || nodeMatches[14]
-          )
-          newNode[NodeProp.TOTAL_COST] = parseFloat(
             nodeMatches[4] || nodeMatches[15]
           )
+          newNode[NodeProp.TOTAL_COST] = parseFloat(
+            nodeMatches[5] || nodeMatches[16]
+          )
           newNode[NodeProp.PLAN_ROWS] = parseInt(
-            nodeMatches[5] || nodeMatches[16],
+            nodeMatches[6] || nodeMatches[17],
             0
           )
           newNode[NodeProp.PLAN_WIDTH] = parseInt(
-            nodeMatches[6] || nodeMatches[17],
+            nodeMatches[7] || nodeMatches[18],
             0
           )
         }
         if (
-          (nodeMatches[7] && nodeMatches[8]) ||
-          (nodeMatches[18] && nodeMatches[19])
+          (nodeMatches[8] && nodeMatches[9]) ||
+          (nodeMatches[19] && nodeMatches[20])
         ) {
           newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
-            nodeMatches[7] || nodeMatches[18]
+            nodeMatches[8] || nodeMatches[19]
           )
           newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
-            nodeMatches[8] || nodeMatches[19]
+            nodeMatches[9] || nodeMatches[20]
           )
         }
 
         if (
-          (nodeMatches[9] && nodeMatches[10]) ||
-          (nodeMatches[11] && nodeMatches[12]) ||
-          (nodeMatches[20] && nodeMatches[21])
+          (nodeMatches[10] && nodeMatches[11]) ||
+          (nodeMatches[12] && nodeMatches[13]) ||
+          (nodeMatches[21] && nodeMatches[22])
         ) {
-          const actual_rows = nodeMatches[9] || nodeMatches[11] || nodeMatches[20]
+          const actual_rows = nodeMatches[10] || nodeMatches[12] || nodeMatches[21]
           if (actual_rows.indexOf(".") != -1) {
             newNode[NodeProp.ACTUAL_ROWS_FRACTIONAL] = true
           }
           newNode[NodeProp.ACTUAL_ROWS] = parseFloat(actual_rows)
           newNode[NodeProp.ACTUAL_LOOPS] = parseInt(
-            nodeMatches[10] || nodeMatches[12] || nodeMatches[21],
+            nodeMatches[11] || nodeMatches[13] || nodeMatches[22],
             0
           )
+        }
+
+        if (nodeMatches[2]) {
+          newNode[NodeProp.PARTIAL_MODE] = nodeMatches[2]
         }
 
         if (neverExecuted) {
