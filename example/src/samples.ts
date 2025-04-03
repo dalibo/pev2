@@ -2522,7 +2522,8 @@ const plan5_source = `
 ]
 `
 
-const plan5_query = `SELECT c.state,
+const plan5_query = `/* An aggregate with four joins */
+SELECT c.state,
   cat.categoryname,
   sum(o.netamount),
   sum(o.totalamount)
@@ -5762,7 +5763,7 @@ const samples = <Sample[]>[
   ["Simple join (TEXT format)", plan1_source, plan1_query],
   ["Simple join (JSON format)", plan1_source_json, plan1_query],
   ["Three joins, missing an index", plan2_source, plan2_query],
-  ["Example 5", plan5_source, plan5_query],
+  ["Aggregate with four joins", plan5_source, plan5_query],
   ["With subplan", plan6_source, ""],
   ["With Buffers", plan7_source, plan7_query],
   ["A CTE", plan9_source, plan9_query],
