@@ -5753,6 +5753,35 @@ const plan_trigger_source = `                                                   
 
 const plan_trigger_query = `DELETE FROM emailmessages where emailmessageid in ( select emailmessageid from emailmessages limit 5000 );`
 
+const plan_4partitions_source = `
+ Append  (cost=0.43..170502.33 rows=4018259 width=97) (actual time=0.007..464.318 rows=4000001 loops=1)
+   Buffers: shared hit=39 read=69641
+   I/O Timings: shared read=66.219
+   ->  Index Scan using pgbench_accounts_2_pkey on pgbench_accounts_2 pgbench_accounts_1  (cost=0.43..8.45 rows=1 width=97) (actual time=0.006..0.007 rows=1 loops=1)
+         Index Cond: ((aid >= 5000000) AND (aid <= 9000000))
+         Buffers: shared hit=4
+   ->  Seq Scan on pgbench_accounts_3 pgbench_accounts_2  (cost=0.00..78484.00 rows=2500000 width=97) (actual time=0.032..163.701 rows=2500000 loops=1)
+         Filter: ((aid >= 5000000) AND (aid <= 9000000))
+         Buffers: shared hit=32 read=40952
+         I/O Timings: shared read=32.345
+   ->  Index Scan using pgbench_accounts_4_pkey on pgbench_accounts_4 pgbench_accounts_3  (cost=0.43..71918.59 rows=1518258 width=97) (actual time=0.020..148.504 rows=1500000 loops=1)
+         Index Cond: ((aid >= 5000000) AND (aid <= 9000000))
+         Buffers: shared hit=3 read=28689
+         I/O Timings: shared read=33.874
+ Settings: jit = 'off'
+ Planning:
+   Buffers: shared hit=20
+ Planning Time: 0.271 ms
+ Execution Time: 548.488 ms
+`
+
+const plan_4partitions_query = `
+/* Query on a pgbench database with 4 partitions,
+   only 3 are used */
+EXPLAIN (ANALYZE,BUFFERS,SETTINGS)
+SELECT * from pgbench_accounts where aid  BETWEEN  5000000 AND 9000000 ;
+`
+
 interface Sample extends Array<string> {
   0: string
   1: string
@@ -5772,6 +5801,7 @@ const samples = <Sample[]>[
   ["DELETE with triggers", plan_trigger_source, plan_trigger_query],
   ["Parallel (verbose)", plan_parallel_source, ""],
   ["Parallel (4 workers)", plan_parallel_2_source, plan_parallel_2_query],
+  ["Partitions", plan_4partitions_source, plan_4partitions_query],
 ]
 
 export default samples
