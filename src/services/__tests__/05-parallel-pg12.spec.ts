@@ -100,7 +100,8 @@ Finalize Aggregate  (cost=423.63..423.64 rows=1 width=8)
   const root = plan.content.Plan
   const partialAggregateNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
+    expect(partialAggregateNode["Node Type"]).toEqual("Aggregate")
+    expect(partialAggregateNode["Partial Mode"]).toEqual("Partial")
     expect(partialAggregateNode).toHaveProperty("*Workers Planned By Gather")
   })
   const bitmapIndexScanNode = root && root.Plans[0].Plans[0].Plans[0].Plans[0]
@@ -131,7 +132,8 @@ Execution Time: 9.025 ms
   const root = plan.content.Plan
   const partialAggregateNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
+    expect(partialAggregateNode["Node Type"]).toEqual("Aggregate")
+    expect(partialAggregateNode["Partial Mode"]).toEqual("Partial")
     expect(partialAggregateNode).toHaveProperty("*Workers Planned By Gather")
   })
   const bitmapIndexScanNode = root && root.Plans[0].Plans[0].Plans[0].Plans[0]
@@ -160,7 +162,8 @@ Finalize Aggregate  (cost=423.63..423.64 rows=1 width=8)
   const root = plan.content.Plan
   const partialAggregateNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
+    expect(partialAggregateNode["Node Type"]).toEqual("Aggregate")
+    expect(partialAggregateNode["Partial Mode"]).toEqual("Partial")
     expect(partialAggregateNode).toHaveProperty("*Workers Planned By Gather")
   })
   const bitmapIndexScanNode = root && root.Plans[0].Plans[0].Plans[0].Plans[0]
@@ -202,7 +205,8 @@ Execution Time: 5.646 ms
   const root = plan.content.Plan
   const partialAggregateNode = root && root.Plans[0].Plans[0]
   test("Node is parallel", () => {
-    expect(partialAggregateNode["Node Type"]).toEqual("Partial Aggregate")
+    expect(partialAggregateNode["Node Type"]).toEqual("Aggregate")
+    expect(partialAggregateNode["Partial Mode"]).toEqual("Partial")
     expect(partialAggregateNode).toHaveProperty("*Workers Planned By Gather")
   })
   const bitmapIndexScanNode = root && root.Plans[0].Plans[0].Plans[0].Plans[0]
