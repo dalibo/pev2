@@ -5752,81 +5752,6 @@ const plan_trigger_source = `                                                   
 
 const plan_trigger_query = `DELETE FROM emailmessages where emailmessageid in ( select emailmessageid from emailmessages limit 5000 );`
 
-const plan_trigger_2_source = `[
-  {
-    "Plan": {
-      "Node Type": "ModifyTable",
-      "Operation": "Insert",
-      "Parallel Aware": false,
-      "Relation Name": "emp",
-      "Schema": "brut",
-      "Alias": "emp",
-      "Startup Cost": 0.0,
-      "Total Cost": 0.01,
-      "Plan Rows": 1,
-      "Plan Width": 44,
-      "Actual Startup Time": 0.401,
-      "Actual Total Time": 0.401,
-      "Actual Rows": 0,
-      "Actual Loops": 1,
-      "Shared Hit Blocks": 1,
-      "Shared Read Blocks": 0,
-      "Shared Dirtied Blocks": 0,
-      "Shared Written Blocks": 0,
-      "Local Hit Blocks": 0,
-      "Local Read Blocks": 0,
-      "Local Dirtied Blocks": 0,
-      "Local Written Blocks": 0,
-      "Temp Read Blocks": 0,
-      "Temp Written Blocks": 0,
-      "Plans": [
-        {
-          "Node Type": "Result",
-          "Parent Relationship": "Member",
-          "Parallel Aware": false,
-          "Startup Cost": 0.0,
-          "Total Cost": 0.01,
-          "Plan Rows": 1,
-          "Plan Width": 44,
-          "Actual Startup Time": 0.004,
-          "Actual Total Time": 0.004,
-          "Actual Rows": 1,
-          "Actual Loops": 1,
-          "Output": ["10000", "now()", "'pouet'::text"],
-          "Shared Hit Blocks": 0,
-          "Shared Read Blocks": 0,
-          "Shared Dirtied Blocks": 0,
-          "Shared Written Blocks": 0,
-          "Local Hit Blocks": 0,
-          "Local Read Blocks": 0,
-          "Local Dirtied Blocks": 0,
-          "Local Written Blocks": 0,
-          "Temp Read Blocks": 0,
-          "Temp Written Blocks": 0
-        }
-      ]
-    },
-    "Planning Time": 0.049,
-    "Triggers": [
-      {
-        "Trigger Name": "emp_stamp",
-        "Relation": "emp",
-        "Time": 1.565,
-        "Calls": 1
-      },
-      {
-        "Trigger Name": "emp_stamp2",
-        "Relation": "emp",
-        "Time": 0.106,
-        "Calls": 1
-      }
-    ],
-    "Execution Time": 2.121
-  }
-]`
-
-const plan_trigger_2_query = `INSERT INTO brut.emp VALUES (10000, NOW(), 'pouet');`
-
 interface Sample extends Array<string> {
   0: string
   1: string
@@ -5843,8 +5768,7 @@ const samples = <Sample[]>[
   ["A CTE", plan9_source, plan9_query],
   ["Many CTEs", plan_many_ctes, ""],
   ["Very large plan", plan8_source, ""],
-  ["With trigger", plan_trigger_2_source, plan_trigger_2_query],
-  ["With trigger (plain text)", plan_trigger_source, plan_trigger_query],
+  ["DELETE with triggers", plan_trigger_source, plan_trigger_query],
   ["Parallel (verbose)", plan_parallel_source, ""],
   ["Parallel (4 workers)", plan_parallel_2_source, plan_parallel_2_query],
 ]
