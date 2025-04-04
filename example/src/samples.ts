@@ -5766,7 +5766,7 @@ const samples = <Sample[]>[
   ["Aggregate with four joins", plan5_source, plan5_query],
   ["With subplan", plan6_source, ""],
   ["With Buffers", plan7_source, plan7_query],
-  ["A CTE", plan9_source, plan9_query],
+  ["A single CTE", plan9_source, plan9_query],
   ["Many CTEs", plan_many_ctes, ""],
   ["Very large plan", plan8_source, ""],
   ["DELETE with triggers", plan_trigger_source, plan_trigger_query],
