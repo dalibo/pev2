@@ -461,7 +461,7 @@ const plan2_source = `[
 ]
 `
 
-const plan2_query = `/* Three joins */
+const plan2_query = `/* Joins between four tables */
 SELECT rel_users_exams.user_username AS rel_users_exams_user_username,
          rel_users_exams.exam_id AS rel_users_exams_exam_id,
          rel_users_exams.started_at AS rel_users_exams_started_at,
