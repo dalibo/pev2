@@ -5534,6 +5534,145 @@ const plan8_source = String.raw`{
 }
 `
 
+const plan_asmany_source =` Merge on public.tb  (cost=262602.88..306621.45 rows=0 width=0) (actual time=7798.118..7798.122 rows=0 loops=1)
+   Tuples: inserted=9995 updated=9679 deleted=326
+   Buffers: shared hit=7731564 read=22226 dirtied=27295 written=38115, temp read=9593 written=27592
+   I/O Timings: shared read=22.960 write=186.426, temp read=17.017 write=119.861
+   WAL: records=5049414 fpi=5192 bytes=416135793
+   CTE tbl
+     ->  Insert on pg_temp.tblog  (cost=8704.82..8705.65 rows=0 width=0) (actual time=509.761..509.761 rows=0 loops=1)
+           Buffers: shared hit=3 read=5448 written=5276, local hit=494411 dirtied=2644 written=4269, temp read=1559 written=1568
+           I/O Timings: shared read=10.578 write=13.760, local write=54.430, temp read=2.942 write=6.888
+           ->  Sort  (cost=8704.82..8705.65 rows=333 width=12) (actual time=286.491..347.529 rows=489127 loops=1)
+                 Output: tb_1.i, tb_1.x
+                 Sort Key: tb_1.x
+                 Sort Method: external merge  Disk: 12472kB
+                 Buffers: shared hit=3 read=5448 written=5276, temp read=1559 written=1568
+                 I/O Timings: shared read=10.578 write=13.760, temp read=2.942 write=6.888
+                 ->  Bitmap Heap Scan on public.tb tb_1  (cost=180.48..8690.86 rows=333 width=12) (actual time=30.582..122.685 rows=489127 loops=1)
+                       Output: tb_1.i, tb_1.x
+                       Recheck Cond: ((tb_1.i >= 4000000) AND (tb_1.i <= 5000000))
+                       Filter: ((mod(tb_1.i, 99) > 0) AND (mod(tb_1.i, 98) > 0) AND (mod(tb_1.i, 98) > 0) AND ((tb_1.i + 1) > 0))
+                       Rows Removed by Filter: 10068
+                       Heap Blocks: exact=3181
+                       Buffers: shared hit=3 read=5448 written=5276
+                       I/O Timings: shared read=10.578 write=13.760
+                       ->  Bitmap Index Scan on tb_pkey  (cost=0.00..180.40 rows=8997 width=0) (actual time=30.251..30.251 rows=499195 loops=1)
+                             Index Cond: ((tb_1.i >= 4000000) AND (tb_1.i <= 5000000))
+                             Buffers: shared hit=2 read=2268 written=2181
+                             I/O Timings: shared read=4.315 write=5.384
+   CTE tabb
+     ->  Update on public.ta  (cost=96.13..93079.47 rows=1667044 width=18) (actual time=11.270..6418.935 rows=2499947 loops=1)
+           Output: ta_1.i, ta_1.x, ta_1.filler
+           Update on public.ta1 ta_1
+           Update on public.ta2 ta_2
+           Buffers: shared hit=7542762 read=22126 dirtied=26988 written=37604
+           I/O Timings: shared read=22.722 write=184.053
+           WAL: records=4999894 fpi=5162 bytes=412139886
+           InitPlan 3
+             ->  Result  (cost=96.12..96.13 rows=1 width=4) (actual time=0.052..0.053 rows=1 loops=1)
+                   Output: ((InitPlan 2).col1 / 2)
+                   Buffers: shared hit=2 read=2
+                   I/O Timings: shared read=0.007
+                   InitPlan 2
+                     ->  Limit  (cost=0.43..96.12 rows=1 width=4) (actual time=0.048..0.048 rows=1 loops=1)
+                           Output: tb_2.i
+                           Buffers: shared hit=2 read=2
+                           I/O Timings: shared read=0.007
+                           ->  Index Only Scan Backward using tb_pkey on public.tb tb_2  (cost=0.43..95690.29 rows=1000 width=4) (actual time=0.045..0.045 rows=1 loops=1)
+                                 Output: tb_2.i
+                                 Filter: (((tb_2.i + 1) > 0) AND ((tb_2.i + 2) > 0) AND (mod(tb_2.i, 99) = 0))
+                                 Rows Removed by Filter: 38
+                                 Heap Fetches: 39
+                                 Buffers: shared hit=2 read=2
+                                 I/O Timings: shared read=0.007
+           ->  Append  (cost=0.00..92983.35 rows=1667044 width=18) (actual time=0.078..650.328 rows=2499947 loops=1)
+                 Buffers: shared hit=2 read=22126 written=8891
+                 I/O Timings: shared read=22.722 write=25.883
+                 ->  Seq Scan on public.ta1 ta_1  (cost=0.00..84624.00 rows=1666667 width=18) (actual time=0.016..486.444 rows=2499947 loops=1)
+                       Output: '2'::double precision, ta_1.tableoid, ta_1.ctid
+                       Filter: (ta_1.i < (InitPlan 3).col1)
+                       Rows Removed by Filter: 2500053
+                       Buffers: shared read=22124 written=8891
+                       I/O Timings: shared read=22.715 write=25.883
+                 ->  Seq Scan on public.ta2 ta_2  (cost=0.00..24.12 rows=377 width=18) (never executed)
+                       Output: '2'::double precision, ta_2.tableoid, ta_2.ctid
+                       Filter: (ta_2.i < (InitPlan 3).col1)
+   CTE tab
+     ->  Limit  (cost=160767.33..160817.33 rows=20000 width=44) (actual time=7700.673..7704.219 rows=20000 loops=1)
+           Output: tabb.i, tabb.x, tabb.filler
+           Buffers: shared hit=7542762 read=22126 dirtied=26988 written=37604, temp read=9593 written=27592
+           I/O Timings: shared read=22.722 write=184.053, temp read=17.017 write=119.861
+           WAL: records=4999894 fpi=5162 bytes=412139886
+           ->  Sort  (cost=160767.33..164934.94 rows=1667044 width=44) (actual time=7563.572..7565.984 rows=20000 loops=1)
+                 Output: tabb.i, tabb.x, tabb.filler
+                 Sort Key: tabb.x
+                 Sort Method: external merge  Disk: 73440kB
+                 Buffers: shared hit=7542762 read=22126 dirtied=26988 written=37604, temp read=9593 written=27592
+                 I/O Timings: shared read=22.722 write=184.053, temp read=17.017 write=119.861
+                 WAL: records=4999894 fpi=5162 bytes=412139886
+                 ->  CTE Scan on tabb  (cost=0.00..33340.88 rows=1667044 width=44) (actual time=11.274..7104.296 rows=2499947 loops=1)
+                       Output: tabb.i, tabb.x, tabb.filler
+                       Buffers: shared hit=7542762 read=22126 dirtied=26988 written=37604, temp written=9155
+                       I/O Timings: shared read=22.722 write=184.053, temp write=58.774
+                       WAL: records=4999894 fpi=5162 bytes=412139886
+   ->  Nested Loop Left Join  (cost=0.43..44019.00 rows=20000 width=102) (actual time=7700.749..7733.331 rows=20000 loops=1)
+         Output: tb.ctid, tab.i, tab.filler, tab.*
+         Inner Unique: true
+         Buffers: shared hit=7612704 read=22189 dirtied=26988 written=37663, temp read=9593 written=27592
+         I/O Timings: shared read=22.871 write=184.243, temp read=17.017 write=119.861
+         WAL: records=4999894 fpi=5162 bytes=412139886
+         ->  CTE Scan on tab  (cost=0.00..400.00 rows=20000 width=96) (actual time=7700.708..7709.042 rows=20000 loops=1)
+               Output: tab.i, tab.filler, tab.*
+               Buffers: shared hit=7542762 read=22126 dirtied=26988 written=37604, temp read=9593 written=27592
+               I/O Timings: shared read=22.722 write=184.053, temp read=17.017 write=119.861
+               WAL: records=4999894 fpi=5162 bytes=412139886
+         ->  Index Scan using tb_pkey on public.tb  (cost=0.43..2.18 rows=1 width=10) (actual time=0.001..0.001 rows=1 loops=20000)
+               Output: tb.ctid, tb.i
+               Index Cond: (tb.i = tab.i)
+               Buffers: shared hit=69942 read=63 written=59
+               I/O Timings: shared read=0.149 write=0.190
+ Settings: work_mem = '3MB', random_page_cost = '1.5', parallel_tuple_cost = '0', jit_above_cost = '0', jit_inline_above_cost = '0', jit_optimize_above_cost = '0'
+ Planning:
+   Buffers: shared hit=26 read=1
+   I/O Timings: shared read=0.003
+   Memory: used=165kB  allocated=264kB
+ Planning Time: 0.289 ms
+ Trigger RI_ConstraintTrigger_a_18153 for constraint tc1_fkey on tb: time=4399.335 calls=326
+ Trigger RI_ConstraintTrigger_a_18161 for constraint tc2_fkey on tc1: time=6000.010 calls=326
+ JIT:
+   Functions: 31
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 1.340 ms (Deform 0.303 ms), Inlining 9.145 ms, Optimization 82.044 ms, Emission 57.043 ms, Total 149.572 ms
+ Serialization: time=0.000 ms  output=0kB  format=text
+ Execution Time: 18733.542 ms
+(112 lignes)
+`
+
+// Query with as many features as possible
+// Complete script: src/services/__tests__/20-as_many_features_as_possible.sql
+const plan_asmany_query = `EXPLAIN (ANALYZE,BUFFERS,VERBOSE,SETTINGS,WAL,SERIALIZE,MEMORY,FORMAT TEXT)
+WITH
+tBl  AS ( INSERT INTO tBlog SELECT i,x FROM tB
+          WHERE i BETWEEN 4000000 AND 5000000
+          AND mod(i,99)>0 AND mod(i,98)>0 AND mod(i,98)>0 and i+1>0 /* force bitmap index */
+          ORDER BY x),
+tAbb AS ( UPDATE tA SET x=2 WHERE i < (
+            SELECT max(i)/2 FROM tB  WHERE mod(i,99)=0  AND i+1>0 AND i+2>0  /* for bad stats */
+            )
+          RETURNING * ),
+tAb  AS MATERIALIZED ( SELECT * FROM tAbb ORDER BY x LIMIT 20000)
+MERGE INTO tB
+USING tAb ON (tB.i=tAb.i)
+WHEN NOT MATCHED THEN
+   INSERT VALUES (tAb.i, 0.0, '000')
+WHEN MATCHED AND tB.x > 0.97 THEN
+   DELETE  /*  will raise the ON DELETE trigger (very costly) */
+WHEN MATCHED THEN
+   UPDATE SET filler=tAb.filler
+;
+`
+
 const plan_parallel_source = `[
   {
     "Plan": {
@@ -5770,6 +5909,7 @@ const samples = <Sample[]>[
   ["Many CTEs", plan_many_ctes, ""],
   ["Very large plan", plan8_source, ""],
   ["DELETE with triggers", plan_trigger_source, plan_trigger_query],
+  ["Writing CTEs,buffers,temp", plan_asmany_source, plan_asmany_query],
   ["Parallel (verbose)", plan_parallel_source, ""],
   ["Parallel (4 workers)", plan_parallel_2_source, plan_parallel_2_query],
 ]
