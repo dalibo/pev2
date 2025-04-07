@@ -30,7 +30,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
-    "bootstrap": "^5.3.3",
+    "bootstrap": "^5.3.5",
     "clarinet": "^0.12.6",
     "d3": "^7.9.0",
     "d3-flextree": "^2.1.2",
