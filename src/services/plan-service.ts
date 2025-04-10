@@ -1275,5 +1275,9 @@ export class PlanService {
       }
       node[NodeProp.NODE_TYPE] = prefix + "Aggregate"
     }
+
+    if (node[NodeProp.NODE_TYPE] == "ModifyTable") {
+      node[NodeProp.NODE_TYPE] = node[NodeProp.OPERATION] as string
+    }
   }
 }
