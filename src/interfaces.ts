@@ -133,7 +133,7 @@ export class Node {
     }
     this[NodeProp.NODE_TYPE] = type
     // tslint:disable-next-line:max-line-length
-    const scanMatches =
+    const scanAndOperationMatches =
       /^((?:Parallel\s+)?(?:Seq\sScan|Tid.*Scan|Bitmap\s+Heap\s+Scan|(?:Async\s+)?Foreign\s+Scan|Update|Insert|Delete|Merge))\son\s(\S+)(?:\s+(\S+))?$/.exec(
         type
       )
@@ -148,11 +148,11 @@ export class Node {
       type
     )
     const subqueryMatches = /^(Subquery\sScan)\son\s(.+)$/.exec(type)
-    if (scanMatches) {
-      this[NodeProp.NODE_TYPE] = scanMatches[1]
-      this[NodeProp.RELATION_NAME] = scanMatches[2]
-      if (scanMatches[3]) {
-        this[NodeProp.ALIAS] = scanMatches[3]
+    if (scanAndOperationMatches) {
+      this[NodeProp.NODE_TYPE] = scanAndOperationMatches[1]
+      this[NodeProp.RELATION_NAME] = scanAndOperationMatches[2]
+      if (scanAndOperationMatches[3]) {
+        this[NodeProp.ALIAS] = scanAndOperationMatches[3]
       }
     } else if (bitmapMatches) {
       this[NodeProp.NODE_TYPE] = bitmapMatches[1]
