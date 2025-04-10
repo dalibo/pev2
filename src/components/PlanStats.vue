@@ -63,22 +63,22 @@ function averageIO(node: Node) {
     r.push(
       `read=${formatNodeProp(
         NodeProp.IO_READ_TIME,
-        read
+        read,
       )} <small class="text-body-secondary">~${formatNodeProp(
         NodeProp.AVERAGE_IO_READ_SPEED,
-        read_average
-      )}</small>`
+        read_average,
+      )}</small>`,
     )
   }
   if (write) {
     r.push(
       `write=${formatNodeProp(
         NodeProp.IO_WRITE_TIME,
-        write
+        write,
       )} <small class="text-body-secondary">~${formatNodeProp(
         NodeProp.AVERAGE_IO_WRITE_SPEED,
-        write_average
-      )}</small>`
+        write_average,
+      )}</small>`,
     )
   }
   return r.join(", ")
@@ -134,12 +134,13 @@ function hasParallelChildren(node: Node) {
         <span class="stat-value">
           <span
             :class="
-                      'mb-0 p-0 px-1 alert ' +
-                      planningTimeClass(
-                        (plan.planStats.planningTime / (plan.planStats.executionTime as number)) *
-                         100
-                      )
-                    "
+              'mb-0 p-0 px-1 alert ' +
+              planningTimeClass(
+                (plan.planStats.planningTime /
+                  (plan.planStats.executionTime as number)) *
+                  100,
+              )
+            "
             v-html="duration(plan.planStats.planningTime)"
           ></span>
         </span>
@@ -155,7 +156,7 @@ function hasParallelChildren(node: Node) {
           :class="
             'mb-0 p-0 px-1 alert ' +
             planningTimeClass(
-              (plan.planStats.jitTime / plan.planStats.executionTime) * 100
+              (plan.planStats.jitTime / plan.planStats.executionTime) * 100,
             )
           "
           v-html="duration(plan.planStats.jitTime)"
