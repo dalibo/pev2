@@ -85,7 +85,7 @@ function averageIO(node: Node) {
 }
 
 function hasParallelChildren(node: Node) {
-  return node.Plans.some(function iter(a) {
+  return node.Plans?.some(function iter(a) {
     if (a[NodeProp.WORKERS_PLANNED] || a[NodeProp.WORKERS_PLANNED_BY_GATHER]) {
       return true
     }
