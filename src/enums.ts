@@ -98,6 +98,7 @@ export enum NodeProp {
   FILTER = "Filter",
   STRATEGY = "Strategy",
   PARTIAL_MODE = "Partial Mode",
+  OPERATION = "Operation",
 
   // computed by pev
   NODE_ID = "nodeId",
