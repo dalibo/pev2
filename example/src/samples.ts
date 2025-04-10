@@ -5909,7 +5909,7 @@ const samples = <Sample[]>[
   ["Many CTEs", plan_many_ctes, ""],
   ["Very large plan", plan8_source, ""],
   ["DELETE with triggers", plan_trigger_source, plan_trigger_query],
-  ["Writing CTEs,buffers,temp", plan_asmany_source, plan_asmany_query],
+  ["With many options", plan_asmany_source, plan_asmany_query],
   ["Parallel (verbose)", plan_parallel_source, ""],
   ["Parallel (4 workers)", plan_parallel_2_source, plan_parallel_2_query],
 ]
