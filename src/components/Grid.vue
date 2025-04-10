@@ -249,6 +249,12 @@ const columnsLeft = computed<string[]>(() => {
   if (hasTime.value) {
     cols.push("time")
   }
+  if (hasIORead.value) {
+    cols.push("ioread")
+  }
+  if (hasIOWrite.value) {
+    cols.push("iowrite")
+  }
   if (hasRows.value) {
     cols.push("rows")
   }

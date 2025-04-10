@@ -136,43 +136,49 @@ function formattedProp(propName: keyof typeof NodeProp) {
     </td>
     <td
       class="text-end grid-progress-cell text-nowrap"
-      v-if="node[NodeProp.IO_READ_TIME]"
+      v-if="columns.includes('ioread')"
       v-tippy="{ content: ioTooltip, allowHTML: true }"
     >
-      <GridProgressBar
-        :percentage="
-          (node[NodeProp.EXCLUSIVE_IO_READ_TIME] /
-            (plan.content.Plan[NodeProp.IO_READ_TIME] +
-              plan.content.Plan[NodeProp.IO_WRITE_TIME])) *
-          100
-        "
-      ></GridProgressBar>
-      {{ Math.round(node[NodeProp.EXCLUSIVE_IO_READ_TIME]).toLocaleString() }}
-      <div v-if="showDetails" class="small text-body-secondary">
-        {{ duration(node[NodeProp.EXCLUSIVE_IO_READ_TIME]) }}
-        <br />
-        {{ transferRate(node[NodeProp.AVERAGE_IO_READ_SPEED]) }}
-      </div>
+      <template v-if="node[NodeProp.IO_READ_TIME]">
+        <GridProgressBar
+          :percentage="
+            (node[NodeProp.EXCLUSIVE_IO_READ_TIME] /
+              (plan.content.Plan[NodeProp.IO_READ_TIME] +
+                plan.content.Plan[NodeProp.IO_WRITE_TIME])) *
+            100
+          "
+        ></GridProgressBar>
+        {{ Math.round(node[NodeProp.EXCLUSIVE_IO_READ_TIME]).toLocaleString() }}
+        <div v-if="showDetails" class="small text-body-secondary">
+          {{ duration(node[NodeProp.EXCLUSIVE_IO_READ_TIME]) }}
+          <br />
+          {{ transferRate(node[NodeProp.AVERAGE_IO_READ_SPEED]) }}
+        </div>
+      </template>
     </td>
     <td
       class="text-end grid-progress-cell text-nowrap"
-      v-if="node[NodeProp.IO_WRITE_TIME]"
+      v-if="columns.includes('iowrite')"
       v-tippy="{ content: ioTooltip, allowHTML: true }"
     >
-      <GridProgressBar
-        :percentage="
-          (node[NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
-            (plan.content.Plan[NodeProp.IO_READ_TIME] +
-              plan.content.Plan[NodeProp.IO_WRITE_TIME])) *
-          100
-        "
-      ></GridProgressBar>
-      {{ Math.round(node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]).toLocaleString() }}
-      <div v-if="showDetails" class="small text-body-secondary">
-        {{ duration(node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]) }}
-        <br />
-        {{ transferRate(node[NodeProp.AVERAGE_IO_WRITE_SPEED]) }}
-      </div>
+      <template v-if="node[NodeProp.IO_WRITE_TIME]">
+        <GridProgressBar
+          :percentage="
+            (node[NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
+              (plan.content.Plan[NodeProp.IO_READ_TIME] +
+                plan.content.Plan[NodeProp.IO_WRITE_TIME])) *
+            100
+          "
+        ></GridProgressBar>
+        {{
+          Math.round(node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]).toLocaleString()
+        }}
+        <div v-if="showDetails" class="small text-body-secondary">
+          {{ duration(node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]) }}
+          <br />
+          {{ transferRate(node[NodeProp.AVERAGE_IO_WRITE_SPEED]) }}
+        </div>
+      </template>
     </td>
     <td
       class="text-end grid-progress-cell text-nowrap"
