@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url)
 
 const dir = path.join(path.dirname(__filename), "from-text")
 const files = fs.readdirSync(dir)
-let tests = files.map((file: string) => file.replace(/-.*/, ""))
+let tests = files.map((file: string) => file.replace(/-([^-]+)$/, ""))
 tests = _.uniq(tests)
 tests.forEach((planTest: string) => {
   describe("From text: Plan " + planTest, () => {
