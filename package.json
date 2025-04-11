@@ -41,7 +41,7 @@
     "stream": "^0.0.3",
     "vue": "^3.2.45",
     "vue-clipboard3": "^2.0.0",
-    "vue-tippy": "^6.6.0"
+    "vue-tippy": "^6.7.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
