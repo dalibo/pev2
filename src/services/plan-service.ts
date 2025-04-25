@@ -17,7 +17,6 @@ import type {
   SortGroups,
 } from "@/interfaces"
 import { Node, Worker } from "@/interfaces"
-import clarinet from "clarinet"
 
 interface NodeElement {
   node: Node
@@ -402,62 +401,7 @@ export class PlanService {
 
   // Stream parse JSON as it can contain duplicate keys (workers)
   public parseJson(source: string) {
-    const parser = clarinet.parser()
-    type JsonElement = { [key: string]: JsonElement | null }
-    const elements: (JsonElement | never[])[] = []
-    let root: JsonElement | JsonElement[] | null = null
-    // Store the level and duplicated object|array
-    let duplicated: [number, JsonElement | null] | null = null
-    parser.onvalue = (v: JsonElement) => {
-      const current = elements[elements.length - 1] as JsonElement
-      if (_.isArray(current)) {
-        current.push(v)
-      } else {
-        const keys = Object.keys(current)
-        const lastKey = keys[keys.length - 1]
-        current[lastKey] = v
-      }
-    }
-    parser.onopenobject = (key: string) => {
-      const o: JsonElement = {}
-      o[key] = null
-      elements.push(o)
-    }
-    parser.onkey = (key: string) => {
-      const current = elements[elements.length - 1] as JsonElement
-      const keys = Object.keys(current)
-      if (keys.indexOf(key) !== -1) {
-        duplicated = [elements.length - 1, current[key]]
-      } else {
-        current[key] = null
-      }
-    }
-    parser.onopenarray = () => {
-      elements.push([])
-    }
-    parser.oncloseobject = parser.onclosearray = () => {
-      const popped = elements.pop() as JsonElement
-
-      if (!elements.length) {
-        root = popped
-      } else {
-        const current = elements[elements.length - 1] as JsonElement
-
-        if (duplicated && duplicated[0] === elements.length - 1) {
-          _.merge(duplicated[1], popped)
-          duplicated = null
-        } else {
-          if (_.isArray(current)) {
-            current.push(popped)
-          } else {
-            const keys = Object.keys(current)
-            const lastKey = keys[keys.length - 1]
-            current[lastKey] = popped
-          }
-        }
-      }
-    }
-    parser.write(source).close()
+    let root = JSON.parse(source);
     if (Array.isArray(root)) {
       root = root[0]
     }
