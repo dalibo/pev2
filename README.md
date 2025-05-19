@@ -35,7 +35,7 @@ open it in your favorite internet browser.
 />
 <link rel="stylesheet" href="https://unpkg.com/pev2/dist/pev2.css" />
 
-<div id="app">
+<div id="app" class="d-flex flex-column vh-100">
   <pev2 :plan-source="plan" plan-query="" />
 </div>
 
