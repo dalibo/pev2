@@ -271,6 +271,27 @@ watch(activeTab, () => {
           v-tippy="{ allowHTML: true, content: filterDetailTooltip }"
         ></FontAwesomeIcon>
       </div>
+
+      <div v-if="node[NodeProp.ROWS_REMOVED_BY_INDEX_RECHECK]">
+        <FontAwesomeIcon
+          fixed-width
+          :icon="faFilter"
+          class="text-secondary"
+        ></FontAwesomeIcon>
+        <b> {{ NodeProp.ROWS_REMOVED_BY_INDEX_RECHECK }}: </b>
+        <span class="px-1">{{
+          tilde + formattedProp("ROWS_REMOVED_BY_INDEX_RECHECK")
+        }}</span>
+        <FontAwesomeIcon
+          fixed-width
+          :icon="faInfoCircle"
+          class="text-muted"
+          v-tippy="{
+            content: `Not enough memory, try increasing work_mem`,
+          }"
+        ></FontAwesomeIcon>
+      </div>
+
       <div v-if="node[NodeProp.HEAP_FETCHES]">
         <FontAwesomeIcon
           fixed-width
