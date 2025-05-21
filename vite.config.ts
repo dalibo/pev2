@@ -4,6 +4,7 @@ import { fileURLToPath, URL } from "url"
 import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
 import { viteSingleFile } from "vite-plugin-singlefile"
+import dts from "vite-plugin-dts"
 
 const build = process.env.LIB
   ? {
@@ -49,6 +50,7 @@ export default defineConfig({
       },
     }),
     viteSingleFile(),
+    dts(),
   ],
   resolve: {
     alias: {
