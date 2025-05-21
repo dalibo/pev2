@@ -49,8 +49,11 @@ export default defineConfig({
         },
       },
     }),
-    viteSingleFile(),
-    dts(),
+    {
+      apply: 'build',
+      ...process.env.LIB ? undefined : viteSingleFile(),
+      ...process.env.LIB ? dts() : undefined,
+    },
   ],
   resolve: {
     alias: {
