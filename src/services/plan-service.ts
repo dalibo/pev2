@@ -401,7 +401,7 @@ export class PlanService {
 
   // Stream parse JSON as it can contain duplicate keys (workers)
   public parseJson(source: string) {
-    let root = JSON.parse(source);
+    let root = JSON.parse(source)
     if (Array.isArray(root)) {
       root = root[0]
     }
@@ -648,7 +648,8 @@ export class PlanService {
           (nodeMatches[12] && nodeMatches[13]) ||
           (nodeMatches[21] && nodeMatches[22])
         ) {
-          const actual_rows = nodeMatches[10] || nodeMatches[12] || nodeMatches[21]
+          const actual_rows =
+            nodeMatches[10] || nodeMatches[12] || nodeMatches[21]
           if (actual_rows.indexOf(".") != -1) {
             newNode[NodeProp.ACTUAL_ROWS_FRACTIONAL] = true
           }
@@ -1168,7 +1169,8 @@ export class PlanService {
   }
 
   private calculateIoTimingsAverage(node: Node) {
-    const ioReadTime = (node[NodeProp["EXCLUSIVE_IO_READ_TIME"]] as number) || 0
+    const ioReadTime =
+      (node[NodeProp["EXCLUSIVE_IO_READ_TIME"]] as number) || 0
     if (ioReadTime) {
       const sharedReadBlocks =
         (node[NodeProp["EXCLUSIVE_SHARED_READ_BLOCKS"]] as number) || 0
@@ -1178,7 +1180,8 @@ export class PlanService {
         (sharedReadBlocks + localReadBlocks) / (ioReadTime / 1000)
     }
 
-    const ioWriteTime = (node[NodeProp["EXCLUSIVE_IO_WRITE_TIME"]] as number) || 0
+    const ioWriteTime =
+      (node[NodeProp["EXCLUSIVE_IO_WRITE_TIME"]] as number) || 0
     if (ioWriteTime) {
       const sharedWriteBlocks =
         (node[NodeProp["EXCLUSIVE_SHARED_WRITTEN_BLOCKS"]] as number) || 0
