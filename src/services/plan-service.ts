@@ -503,31 +503,30 @@ export class PlanService {
       const emptyLineMatches = new RegExp(emptyLineRegex).exec(line)
       const headerMatches = new RegExp(headerRegex).exec(line)
 
-      /*
-       * Groups
-       * 1: prefix
-       * 2: partial mode
-       * 3: type
-       * 4: estimated_startup_cost
-       * 5: estimated_total_cost
-       * 6: estimated_rows
-       * 7: estimated_row_width
-       * 8: actual_time_first
-       * 9: actual_time_last
-       * 10: actual_rows
-       * 11: actual_loops
-       * 12: actual_rows_
-       * 13: actual_loops_
-       * 15: never_executed
-       * 15: estimated_startup_cost
-       * 16: estimated_total_cost
-       * 17: estimated_rows
-       * 18: estimated_row_width
-       * 19: actual_time_first
-       * 20: actual_time_last
-       * 21: actual_rows
-       * 22: actual_loops
-       */
+      enum NodeMatch {
+        Prefix = 1,
+        PartialMode,
+        Type,
+        EstimatedStartupCost1,
+        EstimatedTotalCost1,
+        EstimatedRows,
+        EstimatedRowWidth,
+        ActualTimeFirst1,
+        ActualTimeLast1,
+        ActualRows1,
+        ActualLoops1,
+        ActualRows1bis,
+        ActualLoops1bis,
+        NeverExecuted,
+        EstimatedStartupCost2,
+        EstimatedTotalCost2,
+        EstimatedRows2,
+        EstimatedRowWidth2,
+        ActualTimeFirst2,
+        ActualTimeLast2,
+        ActualRows2,
+        ActualLoops2,
+      }
       const nodeRegex = new RegExp(
         prefixRegex +
           partialModeRegex +
@@ -566,28 +565,26 @@ export class PlanService {
       const cteRegex = /^(\s*)CTE\s+(\S+)\s*$/g
       const cteMatches = cteRegex.exec(line)
 
-      /*
-       * Groups
-       * 2: trigger name
-       * 3: time
-       * 4: calls
-       */
+      enum TriggerMatch {
+        Name = 2,
+        Time,
+        Calls,
+      }
       const triggerRegex =
         /^(\s*)Trigger\s+(.*):\s+time=(\d+\.\d+)\s+calls=(\d+)\s*$/g
       const triggerMatches = triggerRegex.exec(line)
 
-      /*
-       * Groups
-       * 2: Worker number
-       * 3: actual_time_first
-       * 4: actual_time_last
-       * 5: actual_rows
-       * 6: actual_loops
-       * 7: actual_rows_
-       * 8: actual_loops_
-       * 9: never_executed
-       * 10: extra
-       */
+      enum WorkerMatch {
+        Number = 2,
+        ActualTimeFirst,
+        ActualTimeLast,
+        ActualRows,
+        ActualLoops,
+        ActualRowsBis,
+        ActualLoopsBis,
+        NeverExecuted,
+        Extra,
+      }
       const workerRegex = new RegExp(
         /^(\s*)Worker\s+(\d+):\s+/.source +
           nonCapturingGroupOpen +
@@ -609,59 +606,76 @@ export class PlanService {
       if (emptyLineMatches || headerMatches) {
         return
       } else if (nodeMatches && !cteMatches && !subMatches) {
-        //const prefix = nodeMatches[1]
-        const neverExecuted = nodeMatches[14]
-        const newNode: Node = new Node(nodeMatches[3])
+        //const prefix = nodeMatches[NodeMatch.Prefix]
+        const neverExecuted = nodeMatches[NodeMatch.NeverExecuted]
+        const newNode: Node = new Node(nodeMatches[NodeMatch.Type])
         if (
-          (nodeMatches[4] && nodeMatches[5]) ||
-          (nodeMatches[15] && nodeMatches[16])
+          (nodeMatches[NodeMatch.EstimatedStartupCost1] &&
+            nodeMatches[NodeMatch.EstimatedTotalCost1]) ||
+          (nodeMatches[NodeMatch.EstimatedStartupCost2] &&
+            nodeMatches[NodeMatch.EstimatedTotalCost2])
         ) {
           newNode[NodeProp.STARTUP_COST] = parseFloat(
-            nodeMatches[4] || nodeMatches[15]
+            nodeMatches[NodeMatch.EstimatedStartupCost1] ||
+              nodeMatches[NodeMatch.EstimatedStartupCost2]
           )
           newNode[NodeProp.TOTAL_COST] = parseFloat(
-            nodeMatches[5] || nodeMatches[16]
+            nodeMatches[NodeMatch.EstimatedTotalCost1] ||
+              nodeMatches[NodeMatch.EstimatedTotalCost2]
           )
           newNode[NodeProp.PLAN_ROWS] = parseInt(
-            nodeMatches[6] || nodeMatches[17],
+            nodeMatches[NodeMatch.EstimatedRows] ||
+              nodeMatches[NodeMatch.EstimatedRows2],
             0
           )
           newNode[NodeProp.PLAN_WIDTH] = parseInt(
-            nodeMatches[7] || nodeMatches[18],
+            nodeMatches[NodeMatch.EstimatedRowWidth] ||
+              nodeMatches[NodeMatch.EstimatedRowWidth2],
             0
           )
         }
         if (
-          (nodeMatches[8] && nodeMatches[9]) ||
-          (nodeMatches[19] && nodeMatches[20])
+          (nodeMatches[NodeMatch.ActualTimeFirst1] &&
+            nodeMatches[NodeMatch.ActualTimeLast1]) ||
+          (nodeMatches[NodeMatch.ActualTimeFirst2] &&
+            nodeMatches[NodeMatch.ActualTimeLast2])
         ) {
           newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
-            nodeMatches[8] || nodeMatches[19]
+            nodeMatches[NodeMatch.ActualTimeFirst1] ||
+              nodeMatches[NodeMatch.ActualTimeFirst2]
           )
           newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
-            nodeMatches[9] || nodeMatches[20]
+            nodeMatches[NodeMatch.ActualTimeLast1] ||
+              nodeMatches[NodeMatch.ActualTimeLast2]
           )
         }
 
         if (
-          (nodeMatches[10] && nodeMatches[11]) ||
-          (nodeMatches[12] && nodeMatches[13]) ||
-          (nodeMatches[21] && nodeMatches[22])
+          (nodeMatches[NodeMatch.ActualRows1] &&
+            nodeMatches[NodeMatch.ActualLoops1]) ||
+          (nodeMatches[NodeMatch.ActualRows1bis] &&
+            nodeMatches[NodeMatch.ActualLoops1bis]) ||
+          (nodeMatches[NodeMatch.ActualRows2] &&
+            nodeMatches[NodeMatch.ActualLoops2])
         ) {
           const actual_rows =
-            nodeMatches[10] || nodeMatches[12] || nodeMatches[21]
+            nodeMatches[NodeMatch.ActualRows1] ||
+            nodeMatches[NodeMatch.ActualRows1bis] ||
+            nodeMatches[NodeMatch.ActualRows2]
           if (actual_rows.indexOf(".") != -1) {
             newNode[NodeProp.ACTUAL_ROWS_FRACTIONAL] = true
           }
           newNode[NodeProp.ACTUAL_ROWS] = parseFloat(actual_rows)
           newNode[NodeProp.ACTUAL_LOOPS] = parseInt(
-            nodeMatches[11] || nodeMatches[13] || nodeMatches[22],
+            nodeMatches[NodeMatch.ActualLoops1] ||
+              nodeMatches[NodeMatch.ActualLoops1bis] ||
+              nodeMatches[NodeMatch.ActualLoops2],
             0
           )
         }
 
-        if (nodeMatches[2]) {
-          newNode[NodeProp.PARTIAL_MODE] = nodeMatches[2]
+        if (nodeMatches[NodeMatch.PartialMode]) {
+          newNode[NodeProp.PARTIAL_MODE] = nodeMatches[NodeMatch.PartialMode]
         }
 
         if (neverExecuted) {
@@ -732,7 +746,7 @@ export class PlanService {
         elementsAtDepth.push([depth, element])
       } else if (workerMatches) {
         //const prefix = workerMatches[1]
-        const workerNumber = parseInt(workerMatches[2], 0)
+        const workerNumber = parseInt(workerMatches[WorkerMatch.Number], 0)
         const previousElement = _.last(elementsAtDepth)?.[1] as NodeElement
         if (!previousElement) {
           return
@@ -745,20 +759,35 @@ export class PlanService {
           worker = new Worker(workerNumber)
           previousElement.node[NodeProp.WORKERS]?.push(worker)
         }
-        if (workerMatches[3] && workerMatches[4]) {
-          worker[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(workerMatches[3])
-          worker[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(workerMatches[4])
-          worker[NodeProp.ACTUAL_ROWS] = parseInt(workerMatches[5], 0)
-          worker[NodeProp.ACTUAL_LOOPS] = parseInt(workerMatches[6], 0)
+        if (
+          workerMatches[WorkerMatch.ActualTimeFirst] &&
+          workerMatches[WorkerMatch.ActualTimeLast]
+        ) {
+          worker[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
+            workerMatches[WorkerMatch.ActualTimeFirst]
+          )
+          worker[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
+            workerMatches[WorkerMatch.ActualTimeLast]
+          )
+          worker[NodeProp.ACTUAL_ROWS] = parseInt(
+            workerMatches[WorkerMatch.ActualRows],
+            0
+          )
+          worker[NodeProp.ACTUAL_LOOPS] = parseInt(
+            workerMatches[WorkerMatch.ActualLoops],
+            0
+          )
         }
 
-        if (this.parseSort(workerMatches[10], worker)) {
+        if (this.parseSort(workerMatches[WorkerMatch.Extra], worker)) {
           return
         }
 
         // extra info
-        const info = workerMatches[10].split(/: (.+)/).filter((x) => x)
-        if (workerMatches[10]) {
+        const info = workerMatches[WorkerMatch.Extra]
+          .split(/: (.+)/)
+          .filter((x) => x)
+        if (workerMatches[WorkerMatch.Extra]) {
           if (!info[1]) {
             return
           }
@@ -766,14 +795,13 @@ export class PlanService {
           worker[property] = info[1]
         }
       } else if (triggerMatches) {
-        //const prefix = triggerMatches[1]
         // Remove elements from elementsAtDepth for deeper levels
         _.remove(elementsAtDepth, (e) => e[0] >= depth)
         root.Triggers = root.Triggers || []
         root.Triggers.push({
-          "Trigger Name": triggerMatches[2],
-          Time: this.parseTime(triggerMatches[3]),
-          Calls: triggerMatches[4],
+          "Trigger Name": triggerMatches[TriggerMatch.Name],
+          Time: this.parseTime(triggerMatches[TriggerMatch.Time]),
+          Calls: triggerMatches[TriggerMatch.Calls],
         })
       } else if (jitMatches) {
         let element
@@ -901,19 +929,18 @@ export class PlanService {
   }
 
   private parseSort(text: string, el: Node | Worker): boolean {
-    /*
-     * Groups
-     * 2: Sort Method
-     * 3: Sort Space Type
-     * 4: Sort Space Used
-     */
+    enum SortMatch {
+      Method = 2,
+      SpaceType,
+      SpaceUsed,
+    }
     const sortRegex =
       /^(\s*)Sort Method:\s+(.*)\s+(Memory|Disk):\s+(?:(\S*)kB)\s*$/g
     const sortMatches = sortRegex.exec(text)
     if (sortMatches) {
-      el[NodeProp.SORT_METHOD] = sortMatches[2].trim()
-      el[NodeProp.SORT_SPACE_USED] = sortMatches[4]
-      el[NodeProp.SORT_SPACE_TYPE] = sortMatches[3]
+      el[NodeProp.SORT_METHOD] = sortMatches[SortMatch.Method].trim()
+      el[NodeProp.SORT_SPACE_USED] = sortMatches[SortMatch.SpaceUsed]
+      el[NodeProp.SORT_SPACE_TYPE] = sortMatches[SortMatch.SpaceType]
       return true
     }
     return false
