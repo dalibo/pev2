@@ -497,7 +497,7 @@ export class PlanService {
       const closeParenthesisRegex = "\\)"
       // tslint:disable-next-line:max-line-length
       const actualRegex =
-        "(?:actual\\stime=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\srows=(\\d+(?:\\.\\d+)?)\\sloops=(\\d+)|actual\\srows=(\\d+(?:\\.\\d+)?)\\sloops=(\\d+)|(never\\s+executed))"
+        "(?:actual(?:\\stime=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+))?\\srows=(\\d+(?:\\.\\d+)?)\\sloops=(\\d+)|(never\\s+executed))"
       const optionalGroup = "?"
 
       const emptyLineMatches = new RegExp(emptyLineRegex).exec(line)
@@ -515,8 +515,6 @@ export class PlanService {
         ActualTimeLast1,
         ActualRows1,
         ActualLoops1,
-        ActualRows1bis,
-        ActualLoops1bis,
         NeverExecuted,
         EstimatedStartupCost2,
         EstimatedTotalCost2,
@@ -580,8 +578,6 @@ export class PlanService {
         ActualTimeLast,
         ActualRows,
         ActualLoops,
-        ActualRowsBis,
-        ActualLoopsBis,
         NeverExecuted,
         Extra,
       }
@@ -653,14 +649,11 @@ export class PlanService {
         if (
           (nodeMatches[NodeMatch.ActualRows1] &&
             nodeMatches[NodeMatch.ActualLoops1]) ||
-          (nodeMatches[NodeMatch.ActualRows1bis] &&
-            nodeMatches[NodeMatch.ActualLoops1bis]) ||
           (nodeMatches[NodeMatch.ActualRows2] &&
             nodeMatches[NodeMatch.ActualLoops2])
         ) {
           const actual_rows =
             nodeMatches[NodeMatch.ActualRows1] ||
-            nodeMatches[NodeMatch.ActualRows1bis] ||
             nodeMatches[NodeMatch.ActualRows2]
           if (actual_rows.indexOf(".") != -1) {
             newNode[NodeProp.ACTUAL_ROWS_FRACTIONAL] = true
@@ -668,7 +661,6 @@ export class PlanService {
           newNode[NodeProp.ACTUAL_ROWS] = parseFloat(actual_rows)
           newNode[NodeProp.ACTUAL_LOOPS] = parseInt(
             nodeMatches[NodeMatch.ActualLoops1] ||
-              nodeMatches[NodeMatch.ActualLoops1bis] ||
               nodeMatches[NodeMatch.ActualLoops2],
             0
           )
