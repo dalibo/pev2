@@ -469,6 +469,112 @@ export class PlanService {
     // Array to keep reference to previous nodes with there depth
     const elementsAtDepth: ElementAtDepth[] = []
 
+    const indentationRegex = /^\s*/
+    const emptyLineRegex = /^s*$/
+    const headerRegex = /^\\s*(QUERY|---|#).*$/
+
+    const prefixPattern = "^(\\s*->\\s*|\\s*)"
+    const partialPattern = "(Finalize|Simple|Partial)*"
+    const typePattern = "([^\\r\\n\\t\\f\\v\\:\\(]*?)"
+    // tslint:disable-next-line:max-line-length
+    const estimationPattern =
+      "\\(cost=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\s+rows=(\\d+)\\s+width=(\\d+)\\)"
+    const nonCapturingGroupOpen = "(?:"
+    const nonCapturingGroupClose = ")"
+    const openParenthesisPattern = "\\("
+    const closeParenthesisPattern = "\\)"
+    // tslint:disable-next-line:max-line-length
+    const actualPattern =
+      "(?:actual(?:\\stime=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+))?\\srows=(\\d+(?:\\.\\d+)?)\\sloops=(\\d+)|(never\\s+executed))"
+    const optionalGroup = "?"
+
+    // tslint:disable-next-line:max-line-length
+    const subRegex =
+      /^(\s*)((?:Sub|Init)Plan)\s*(?:\d+\s*)?\s*(?:\(returns.*\)\s*)?$/gm
+
+    const cteRegex = /^(\s*)CTE\s+(\S+)\s*$/g
+
+    enum TriggerMatch {
+      Name = 2,
+      Time,
+      Calls,
+    }
+    const triggerRegex =
+      /^(\s*)Trigger\s+(.*):\s+time=(\d+\.\d+)\s+calls=(\d+)\s*$/g
+
+    enum WorkerMatch {
+      Number = 2,
+      ActualTimeFirst,
+      ActualTimeLast,
+      ActualRows,
+      ActualLoops,
+      NeverExecuted,
+      Extra,
+    }
+    const workerRegex = new RegExp(
+      "^(\\s*)Worker\\s+(\\d+):\\s+" +
+        nonCapturingGroupOpen +
+        actualPattern +
+        nonCapturingGroupClose +
+        optionalGroup +
+        "(.*)" +
+        "\\s*$"
+    )
+
+    const jitRegex = /^(\s*)JIT:\s*$/
+    const extraRegex = /^(\s*)(\S.*\S)\s*$/
+
+    enum NodeMatch {
+      Prefix = 1,
+      PartialMode,
+      Type,
+      EstimatedStartupCost1,
+      EstimatedTotalCost1,
+      EstimatedRows,
+      EstimatedRowWidth,
+      ActualTimeFirst1,
+      ActualTimeLast1,
+      ActualRows1,
+      ActualLoops1,
+      NeverExecuted,
+      EstimatedStartupCost2,
+      EstimatedTotalCost2,
+      EstimatedRows2,
+      EstimatedRowWidth2,
+      ActualTimeFirst2,
+      ActualTimeLast2,
+      ActualRows2,
+      ActualLoops2,
+    }
+    const nodeRegex = new RegExp(
+      prefixPattern +
+        partialPattern +
+        "\\s*" +
+        typePattern +
+        "\\s*" +
+        nonCapturingGroupOpen +
+        (nonCapturingGroupOpen +
+          estimationPattern +
+          "\\s+" +
+          openParenthesisPattern +
+          actualPattern +
+          closeParenthesisPattern +
+          nonCapturingGroupClose) +
+        "|" +
+        nonCapturingGroupOpen +
+        estimationPattern +
+        nonCapturingGroupClose +
+        "|" +
+        nonCapturingGroupOpen +
+        openParenthesisPattern +
+        actualPattern +
+        closeParenthesisPattern +
+        nonCapturingGroupClose +
+        nonCapturingGroupClose +
+        "\\s*$",
+      "m"
+    )
+
     _.each(lines, (line: string) => {
       // Remove any trailing "
       line = line.replace(/"\s*$/, "")
@@ -477,126 +583,21 @@ export class PlanService {
       // Replace tabs with 4 spaces
       line = line.replace(/\t/gm, "    ")
 
-      const indentationRegex = /^\s*/
       const match = line.match(indentationRegex)
       const depth = match ? match[0].length : 0
       // remove indentation
       line = line.replace(indentationRegex, "")
 
-      const emptyLineRegex = "^s*$"
-      const headerRegex = "^\\s*(QUERY|---|#).*$"
-      const prefixRegex = "^(\\s*->\\s*|\\s*)"
-      const partialModeRegex = "(Finalize|Simple|Partial)*"
-      const typeRegex = "([^\\r\\n\\t\\f\\v\\:\\(]*?)"
-      // tslint:disable-next-line:max-line-length
-      const estimationRegex =
-        "\\(cost=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\s+rows=(\\d+)\\s+width=(\\d+)\\)"
-      const nonCapturingGroupOpen = "(?:"
-      const nonCapturingGroupClose = ")"
-      const openParenthesisRegex = "\\("
-      const closeParenthesisRegex = "\\)"
-      // tslint:disable-next-line:max-line-length
-      const actualRegex =
-        "(?:actual(?:\\stime=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+))?\\srows=(\\d+(?:\\.\\d+)?)\\sloops=(\\d+)|(never\\s+executed))"
-      const optionalGroup = "?"
-
-      const emptyLineMatches = new RegExp(emptyLineRegex).exec(line)
-      const headerMatches = new RegExp(headerRegex).exec(line)
-
-      enum NodeMatch {
-        Prefix = 1,
-        PartialMode,
-        Type,
-        EstimatedStartupCost1,
-        EstimatedTotalCost1,
-        EstimatedRows,
-        EstimatedRowWidth,
-        ActualTimeFirst1,
-        ActualTimeLast1,
-        ActualRows1,
-        ActualLoops1,
-        NeverExecuted,
-        EstimatedStartupCost2,
-        EstimatedTotalCost2,
-        EstimatedRows2,
-        EstimatedRowWidth2,
-        ActualTimeFirst2,
-        ActualTimeLast2,
-        ActualRows2,
-        ActualLoops2,
-      }
-      const nodeRegex = new RegExp(
-        prefixRegex +
-          partialModeRegex +
-          "\\s*" +
-          typeRegex +
-          "\\s*" +
-          nonCapturingGroupOpen +
-          (nonCapturingGroupOpen +
-            estimationRegex +
-            "\\s+" +
-            openParenthesisRegex +
-            actualRegex +
-            closeParenthesisRegex +
-            nonCapturingGroupClose) +
-          "|" +
-          nonCapturingGroupOpen +
-          estimationRegex +
-          nonCapturingGroupClose +
-          "|" +
-          nonCapturingGroupOpen +
-          openParenthesisRegex +
-          actualRegex +
-          closeParenthesisRegex +
-          nonCapturingGroupClose +
-          nonCapturingGroupClose +
-          "\\s*$",
-        "gm"
-      )
+      const emptyLineMatches = emptyLineRegex.exec(line)
+      const headerMatches = headerRegex.exec(line)
       const nodeMatches = nodeRegex.exec(line)
-
-      // tslint:disable-next-line:max-line-length
-      const subRegex =
-        /^(\s*)((?:Sub|Init)Plan)\s*(?:\d+\s*)?\s*(?:\(returns.*\)\s*)?$/gm
       const subMatches = subRegex.exec(line)
 
-      const cteRegex = /^(\s*)CTE\s+(\S+)\s*$/g
       const cteMatches = cteRegex.exec(line)
-
-      enum TriggerMatch {
-        Name = 2,
-        Time,
-        Calls,
-      }
-      const triggerRegex =
-        /^(\s*)Trigger\s+(.*):\s+time=(\d+\.\d+)\s+calls=(\d+)\s*$/g
       const triggerMatches = triggerRegex.exec(line)
-
-      enum WorkerMatch {
-        Number = 2,
-        ActualTimeFirst,
-        ActualTimeLast,
-        ActualRows,
-        ActualLoops,
-        NeverExecuted,
-        Extra,
-      }
-      const workerRegex = new RegExp(
-        /^(\s*)Worker\s+(\d+):\s+/.source +
-          nonCapturingGroupOpen +
-          actualRegex +
-          nonCapturingGroupClose +
-          optionalGroup +
-          "(.*)" +
-          "\\s*$",
-        "g"
-      )
       const workerMatches = workerRegex.exec(line)
-
-      const jitRegex = /^(\s*)JIT:\s*$/g
       const jitMatches = jitRegex.exec(line)
 
-      const extraRegex = /^(\s*)(\S.*\S)\s*$/g
       const extraMatches = extraRegex.exec(line)
 
       if (emptyLineMatches || headerMatches) {
