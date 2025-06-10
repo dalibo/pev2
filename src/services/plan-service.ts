@@ -447,11 +447,13 @@ export class PlanService {
         }
       } else if (
         0 < out.length &&
-        out[out.length - 1].match(/^\s*Output/i) &&
+        out[out.length - 1].match(/^.*,\s*$/) &&
         !sameIndent(out[out.length - 1], line) &&
         !line.match(/^\s*->/i)
       ) {
-        // If previous line was Output and current line is not same indent
+        // If previous line was an info line (Output, Sort Key, … with a list
+        // of items separated by coma ",")
+        // and current line is not same indent
         // (which would mean a new information line)
         out[out.length - 1] += line
       } else {
