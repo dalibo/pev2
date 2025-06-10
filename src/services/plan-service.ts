@@ -425,9 +425,13 @@ export class PlanService {
     }
 
     _.each(lines, (line: string) => {
-      if (countChar(line, /\)/g) > countChar(line, /\(/g)) {
-        // if there more closing parenthesis this means that it's the
-        // continuation of a previous line
+      const previousLine = out[out.length - 1]
+      if (
+        previousLine &&
+        countChar(previousLine, /\)/g) != countChar(previousLine, /\(/g)
+      ) {
+        // if number of opening/closing parenthesis doesn't match in the
+        // previous line, this means the current line is the continuation of previous line
         out[out.length - 1] += line
       } else if (
         line.match(
@@ -447,8 +451,8 @@ export class PlanService {
         }
       } else if (
         0 < out.length &&
-        out[out.length - 1].match(/^.*,\s*$/) &&
-        !sameIndent(out[out.length - 1], line) &&
+        previousLine.match(/^.*,\s*$/) &&
+        !sameIndent(previousLine, line) &&
         !line.match(/^\s*->/i)
       ) {
         // If previous line was an info line (Output, Sort Key, … with a list
