@@ -134,7 +134,7 @@ export class Node {
     this[NodeProp.NODE_TYPE] = type
     // tslint:disable-next-line:max-line-length
     const scanAndOperationMatches =
-      /^((?:Parallel\s+)?(?:Seq\sScan|Tid.*Scan|Bitmap\s+Heap\s+Scan|(?:Async\s+)?Foreign\s+Scan|Update|Insert|Delete|Merge))\son\s(\S+)(?:\s+(\S+))?$/.exec(
+      /^((?:Parallel\s+)?(?:Seq|Tid.*|Bitmap\s+Heap|WorkTable|(?:Async\s+)?Foreign)\s+Scan|Update|Insert|Delete|Merge)\son\s(\S+)(?:\s+(\S+))?$/.exec(
         type
       )
     const bitmapMatches = /^(Bitmap\s+Index\s+Scan)\son\s(\S+)$/.exec(type)
