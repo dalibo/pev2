@@ -1,46 +1,141 @@
 <script lang="ts" setup>
-import { ref } from "vue"
+import { computed, reactive } from "vue"
 import type { Node } from "@/interfaces"
-import { NodeProp } from "@/enums"
-import { duration, transferRate } from "@/filters"
-import { HelpService } from "@/services/help-service"
+import { NodeProp, Scope } from "@/enums"
+import IoTimingsRow from "@/components/IoTimingsRow.vue"
+
 interface Props {
   node: Node
+  exclusive?: boolean
 }
-const props = defineProps<Props>()
-const read = ref(props.node[NodeProp.EXCLUSIVE_IO_READ_TIME])
-const averageRead = ref(props.node[NodeProp.AVERAGE_IO_READ_SPEED])
-const write = ref(props.node[NodeProp.EXCLUSIVE_IO_WRITE_TIME])
-const averageWrite = ref(props.node[NodeProp.AVERAGE_IO_WRITE_SPEED])
-const helpService = new HelpService()
-const getHelpMessage = helpService.getHelpMessage
+const props = withDefaults(defineProps<Props>(), {
+  exclusive: () => false,
+})
+
+const exclusivePrefix = computed(() => (props.exclusive ? "EXCLUSIVE_" : ""))
+
+const node = reactive<Node>(props.node)
 </script>
 
 <template>
-  IO:
-  <table class="table table-sm table-borderless mb-0">
-    <tbody>
-      <tr v-if="read">
-        <td>Read:</td>
-        <td class="text-end">
-          {{ duration(read) }}
-          <br /><small>~ {{ transferRate(averageRead) }}</small>
-        </td>
-      </tr>
-      <tr v-if="write">
-        <td>Write:</td>
-        <td class="text-end">
-          {{ duration(write) }}
-          <br /><small>~ {{ transferRate(averageWrite) }}</small>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <template
+  <table
+    class="table table-sm"
     v-if="
-      node[NodeProp.WORKERS_PLANNED] || node[NodeProp.WORKERS_PLANNED_BY_GATHER]
+      node[
+        NodeProp[(exclusivePrefix + 'IO_READ_TIME') as keyof typeof NodeProp]
+      ] ||
+      node[
+        NodeProp[(exclusivePrefix + 'IO_WRITE_TIME') as keyof typeof NodeProp]
+      ] ||
+      node[
+        NodeProp[
+          (exclusivePrefix + 'SHARED_IO_READ_TIME') as keyof typeof NodeProp
+        ]
+      ] ||
+      node[
+        NodeProp[
+          (exclusivePrefix + 'SHARED_IO_WRITE_TIME') as keyof typeof NodeProp
+        ]
+      ] ||
+      node[
+        NodeProp[
+          (exclusivePrefix + 'LOCAL_IO_READ_TIME') as keyof typeof NodeProp
+        ]
+      ] ||
+      node[
+        NodeProp[
+          (exclusivePrefix + 'LOCAL_IO_WRITE_TIME') as keyof typeof NodeProp
+        ]
+      ] ||
+      node[
+        NodeProp[
+          (exclusivePrefix + 'TEMP_IO_READ_TIME') as keyof typeof NodeProp
+        ]
+      ] ||
+      node[
+        NodeProp[
+          (exclusivePrefix + 'TEMP_IO_WRITE_TIME') as keyof typeof NodeProp
+        ]
+      ]
     "
   >
-    <small>{{ getHelpMessage("io timings parallel") }}</small>
-  </template>
+    <thead>
+      <tr>
+        <th class="text-nowrap">I/O Timings</th>
+        <td class="text-end" width="50%">Read</td>
+        <td class="text-end" width="50%">Write</td>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- No temp IO: only one line for all IOs is needed -->
+      <io-timings-row
+        :node="node"
+        v-if="
+          node[
+            NodeProp[
+              (exclusivePrefix + 'IO_READ_TIME') as keyof typeof NodeProp
+            ]
+          ] ||
+          node[
+            NodeProp[
+              (exclusivePrefix + 'IO_WRITE_TIME') as keyof typeof NodeProp
+            ]
+          ]
+        "
+        :exclusive="exclusive"
+      />
+      <io-timings-row
+        :node="node"
+        v-if="
+          node[
+            NodeProp[
+              (exclusivePrefix + 'SHARED_IO_READ_TIME') as keyof typeof NodeProp
+            ]
+          ] ||
+          node[
+            NodeProp[
+              (exclusivePrefix +
+                'SHARED_IO_WRITE_TIME') as keyof typeof NodeProp
+            ]
+          ]
+        "
+        :scope="Scope.SHARED"
+        :exclusive="exclusive"
+      />
+      <io-timings-row
+        :node="node"
+        v-if="
+          node[
+            NodeProp[
+              (exclusivePrefix + 'LOCAL_IO_READ_TIME') as keyof typeof NodeProp
+            ]
+          ] ||
+          node[
+            NodeProp[
+              (exclusivePrefix + 'LOCAL_IO_WRITE_TIME') as keyof typeof NodeProp
+            ]
+          ]
+        "
+        :scope="Scope.LOCAL"
+        :exclusive="exclusive"
+      />
+      <io-timings-row
+        :node="node"
+        v-if="
+          node[
+            NodeProp[
+              (exclusivePrefix + 'TEMP_IO_READ_TIME') as keyof typeof NodeProp
+            ]
+          ] ||
+          node[
+            NodeProp[
+              (exclusivePrefix + 'TEMP_IO_WRITE_TIME') as keyof typeof NodeProp
+            ]
+          ]
+        "
+        :scope="Scope.TEMP"
+        :exclusive="exclusive"
+      />
+    </tbody>
+  </table>
 </template>

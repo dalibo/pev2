@@ -89,6 +89,8 @@ watch(
       <io-tooltip
         :node="node"
         v-else-if="diagramViewOptions.metric == Metric.io"
+        exclusive
+        class="mb-0"
       />
       <template v-else-if="diagramViewOptions.metric == Metric.rows">
         <div v-html="rowsTooltip"></div>
@@ -491,8 +493,8 @@ watch(
         style="height: 5px"
         v-else-if="
           diagramViewOptions.metric == Metric.io &&
-          (plan.content.Plan[NodeProp['IO_READ_TIME']] ||
-            plan.content.Plan[NodeProp['IO_WRITE_TIME']])
+          (plan.content.Plan[NodeProp.SUM_IO_READ_TIME] ||
+            plan.content.Plan[NodeProp.SUM_IO_WRITE_TIME])
         "
       >
         <div
@@ -502,7 +504,7 @@ watch(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_IO_READ_TIME] /
+                (node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME] /
                   plan.planStats?.maxIo) *
                   100,
               ) || 0) + '%',
@@ -518,7 +520,7 @@ watch(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
+                (node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME] /
                   plan.planStats?.maxIo) *
                   100,
               ) || 0) + '%',

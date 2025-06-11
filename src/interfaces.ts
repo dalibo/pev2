@@ -110,10 +110,36 @@ export class Node {
   [NodeProp.WORKERS_PLANNED_BY_GATHER]?: number;
   [NodeProp.EXCLUSIVE_IO_READ_TIME]!: number;
   [NodeProp.EXCLUSIVE_IO_WRITE_TIME]!: number;
+  [NodeProp.EXCLUSIVE_SHARED_IO_READ_TIME]!: number;
+  [NodeProp.EXCLUSIVE_SHARED_IO_WRITE_TIME]!: number;
+  [NodeProp.EXCLUSIVE_LOCAL_IO_READ_TIME]!: number;
+  [NodeProp.EXCLUSIVE_LOCAL_IO_WRITE_TIME]!: number;
+  [NodeProp.EXCLUSIVE_TEMP_IO_READ_TIME]!: number;
+  [NodeProp.EXCLUSIVE_TEMP_IO_WRITE_TIME]!: number;
+  [NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]!: number;
+  [NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME]!: number;
   [NodeProp.AVERAGE_IO_READ_SPEED]!: number;
   [NodeProp.AVERAGE_IO_WRITE_SPEED]!: number;
+  [NodeProp.AVERAGE_SHARED_IO_READ_SPEED]!: number;
+  [NodeProp.AVERAGE_SHARED_IO_WRITE_SPEED]!: number;
+  [NodeProp.AVERAGE_LOCAL_IO_READ_SPEED]!: number;
+  [NodeProp.AVERAGE_LOCAL_IO_WRITE_SPEED]!: number;
+  [NodeProp.AVERAGE_TEMP_IO_READ_SPEED]!: number;
+  [NodeProp.AVERAGE_TEMP_IO_WRITE_SPEED]!: number;
+  [NodeProp.AVERAGE_SUM_IO_READ_SPEED]!: number;
+  [NodeProp.AVERAGE_SUM_IO_WRITE_SPEED]!: number;
+  [NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_READ_SPEED]!: number;
+  [NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_WRITE_SPEED]!: number;
   [NodeProp.IO_READ_TIME]!: number;
   [NodeProp.IO_WRITE_TIME]!: number;
+  [NodeProp.SHARED_IO_READ_TIME]!: number;
+  [NodeProp.SHARED_IO_WRITE_TIME]!: number;
+  [NodeProp.LOCAL_IO_READ_TIME]!: number;
+  [NodeProp.LOCAL_IO_WRITE_TIME]!: number;
+  [NodeProp.TEMP_IO_READ_TIME]!: number;
+  [NodeProp.TEMP_IO_WRITE_TIME]!: number;
+  [NodeProp.SUM_IO_READ_TIME]!: number;
+  [NodeProp.SUM_IO_WRITE_TIME]!: number;
   [NodeProp.PARTIAL_MODE]!: string;
   [k: string]:
     | Node[]

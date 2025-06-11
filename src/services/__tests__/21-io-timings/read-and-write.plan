@@ -1,0 +1,28 @@
+ Sort  (cost=662411.02..663385.77 rows=389900 width=12) (actual time=79447.528..79480.788 rows=415874 loops=1)
+   Sort Key: s.max_strength DESC NULLS LAST, p.id
+   Sort Method: quicksort  Memory: 31783kB
+   Buffers: shared hit=323557 read=232912 written=10900
+   I/O Timings: read=77240.327 write=222.281
+   ->  Hash Left Join  (cost=2688.36..626203.46 rows=389900 width=12) (actual time=73602.258..79139.147 rows=415874 loops=1)
+         Hash Cond: ((p.org_id = s.org_id) AND (p.id = s.external_id))
+         Buffers: shared hit=323551 read=232912 written=10900
+         I/O Timings: read=77240.327 write=222.281
+         ->  Index Scan using persons_pkey on persons p  (cost=0.57..621468.69 rows=389900 width=8) (actual time=0.017..5331.909 rows=415874 loops=1)
+               Index Cond: (org_id = 7)
+               Filter: (type = 0)
+               Rows Removed by Filter: 347
+               Buffers: shared hit=323458 read=82125 written=4694
+               I/O Timings: read=4545.702 write=86.673
+         ->  Hash  (cost=2644.17..2644.17 rows=2908 width=16) (actual time=73602.213..73602.214 rows=149755 loops=1)
+               Buckets: 262144 (originally 4096)  Batches: 1 (originally 1)  Memory Usage: 9068kB
+               Buffers: shared hit=93 read=150787 written=6206
+               I/O Timings: read=72694.625 write=135.607
+               ->  Index Scan using persons_max_rel_strengths_org_id_internal_id_external_id_index on persons_max_rel_strengths s  (cost=0.58..2644.17 rows=2908 width=16) (actual time=4.677..73498.577 rows=149755 loops=1)
+                     Index Cond: ((org_id = 7) AND (internal_id = 68233836))
+                     Buffers: shared hit=93 read=150787 written=6206
+                     I/O Timings: read=72694.625 write=135.607
+ Planning:
+   Buffers: shared hit=540 read=11 written=3
+   I/O Timings: read=0.059 write=0.366
+ Planning Time: 3.115 ms
+ Execution Time: 79515.870 ms
