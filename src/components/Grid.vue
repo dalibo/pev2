@@ -325,7 +325,7 @@ const columns = computed(() => {
             <!-- id & time -->
           </th>
           <th class="text-center" :colspan="ioColumns" v-if="hasIO">io</th>
-          <th :colspan="columnsLeft.length"></th>
+          <th :colspan="columnsLeft.length - ioColumns"></th>
           <th
             class="text-center"
             :colspan="sharedBlocksColumns"
