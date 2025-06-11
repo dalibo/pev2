@@ -10,6 +10,7 @@ import { directive as vTippy } from "vue-tippy"
 import { NodeProp } from "../enums"
 import { formatNodeProp } from "@/filters"
 import JitDetails from "@/components/JitDetails.vue"
+import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
@@ -20,6 +21,7 @@ const plan = inject(PlanKey) as Ref<IPlan>
 const showSettings = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
 const showJitDetails = ref<boolean>(false)
+const showIO = ref<boolean>(false)
 const rootNode = computed(() => plan.value && plan.value.content.Plan)
 
 const planningTimeClass = (percent: number) => {
@@ -54,31 +56,17 @@ const triggersTotalDuration = computed(() => {
 })
 
 function averageIO(node: Node) {
-  const read = node[NodeProp.IO_READ_TIME]
-  const read_average = node[NodeProp.AVERAGE_IO_READ_SPEED]
-  const write = node[NodeProp.IO_WRITE_TIME]
-  const write_average = node[NodeProp.AVERAGE_IO_WRITE_SPEED]
+  const readAverage = node[NodeProp.AVERAGE_SUM_IO_READ_SPEED]
+  const writeAverage = node[NodeProp.AVERAGE_SUM_IO_WRITE_SPEED]
   const r = []
-  if (read) {
+  if (readAverage) {
     r.push(
-      `read=${formatNodeProp(
-        NodeProp.IO_READ_TIME,
-        read,
-      )} <small class="text-body-secondary">~${formatNodeProp(
-        NodeProp.AVERAGE_IO_READ_SPEED,
-        read_average,
-      )}</small>`,
+      `read=~${formatNodeProp(NodeProp.AVERAGE_SUM_IO_READ_SPEED, readAverage)}`,
     )
   }
-  if (write) {
+  if (writeAverage) {
     r.push(
-      `write=${formatNodeProp(
-        NodeProp.IO_WRITE_TIME,
-        write,
-      )} <small class="text-body-secondary">~${formatNodeProp(
-        NodeProp.AVERAGE_IO_WRITE_SPEED,
-        write_average,
-      )}</small>`,
+      `write=~${formatNodeProp(NodeProp.AVERAGE_SUM_IO_WRITE_SPEED, writeAverage)}`,
     )
   }
   return r.join(", ")
@@ -279,13 +267,11 @@ function hasParallelChildren(node: Node) {
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
-      v-if="
-        rootNode &&
-        (rootNode[NodeProp.AVERAGE_IO_READ_SPEED] ||
-          rootNode[NodeProp.AVERAGE_IO_WRITE_SPEED])
-      "
+      v-if="averageIO(rootNode)"
     >
-      IO: <span v-html="averageIO(rootNode)"></span>
+      <span class="stat-label">
+        IO: <span v-html="averageIO(rootNode)"></span>
+      </span>
       <FontAwesomeIcon
         :icon="faInfoCircle"
         class="cursor-help d-inline-block text-secondary"
@@ -294,6 +280,22 @@ function hasParallelChildren(node: Node) {
         }"
         v-if="hasParallelChildren(rootNode)"
       ></FontAwesomeIcon>
+      <button
+        @click.prevent="showIO = !showIO"
+        class="bg-transparent border-0 p-0 m-0 ps-1"
+      >
+        <FontAwesomeIcon
+          :icon="faCaretDown"
+          class="text-secondary"
+        ></FontAwesomeIcon>
+      </button>
+      <div class="stat-dropdown-container text-start" v-if="showIO">
+        <button
+          class="btn btn-xs btn-close float-end"
+          v-on:click="showIO = false"
+        ></button>
+        <io-tooltip :node="rootNode" class="mb-0" />
+      </div>
     </div>
   </div>
 </template>

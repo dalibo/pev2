@@ -1,0 +1,10 @@
+                                                       QUERY PLAN
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Index Scan using idea_1 on domains  (cost=0.56..8.59 rows=3407 width=60) (actual time=0.049..23.552 rows=8183 loops=1)
+   Index Cond: ((domain ~>=~ 'hu'::text) AND (domain ~<~ 'hv'::text))
+   Filter: (domain ~~ 'hu%'::text)
+   Buffers: local hit=1008849 dirtied=4425 written=8272
+   I/O Timings: local write=25.997
+ Planning Time: 0.073 ms
+ Execution Time: 23.826 ms
+(7 rows)

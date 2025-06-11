@@ -67,7 +67,12 @@ const hasTime = computed((): boolean => {
 const hasIORead = computed((): boolean => {
   return _.some(plans, (plan: Row[]) => {
     return _.some(plan, (row: Row) => {
-      return row[1][NodeProp.IO_READ_TIME] || 0 > 1
+      return (
+        row[1][NodeProp.IO_READ_TIME] ||
+        row[1][NodeProp.SHARED_IO_READ_TIME] ||
+        row[1][NodeProp.LOCAL_IO_READ_TIME] ||
+        row[1][NodeProp.TEMP_IO_READ_TIME]
+      )
     })
   })
 })
@@ -75,7 +80,12 @@ const hasIORead = computed((): boolean => {
 const hasIOWrite = computed((): boolean => {
   return _.some(plans, (plan: Row[]) => {
     return _.some(plan, (row: Row) => {
-      return row[1][NodeProp.IO_WRITE_TIME] || 0 > 1
+      return (
+        row[1][NodeProp.IO_WRITE_TIME] ||
+        row[1][NodeProp.SHARED_IO_WRITE_TIME] ||
+        row[1][NodeProp.LOCAL_IO_WRITE_TIME] ||
+        row[1][NodeProp.TEMP_IO_WRITE_TIME]
+      )
     })
   })
 })
