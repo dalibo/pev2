@@ -87,6 +87,12 @@ export enum NodeProp {
   LOCAL_WRITTEN_BLOCKS = "Local Written Blocks",
   IO_READ_TIME = "I/O Read Time",
   IO_WRITE_TIME = "I/O Write Time",
+  SHARED_IO_READ_TIME = "Shared I/O Read Time",
+  SHARED_IO_WRITE_TIME = "Shared I/O Write Time",
+  LOCAL_IO_READ_TIME = "Local I/O Read Time",
+  LOCAL_IO_WRITE_TIME = "Local I/O Write Time",
+  TEMP_IO_READ_TIME = "Temp I/O Read Time",
+  TEMP_IO_WRITE_TIME = "Temp I/O Write Time",
   OUTPUT = "Output",
   HEAP_FETCHES = "Heap Fetches",
   WAL_RECORDS = "WAL Records",
@@ -124,10 +130,39 @@ export enum NodeProp {
   EXCLUSIVE_LOCAL_DIRTIED_BLOCKS = "*Local Dirtied Blocks (exclusive)",
   EXCLUSIVE_LOCAL_WRITTEN_BLOCKS = "*Local Written Blocks (exclusive)",
 
+  AVERAGE_IO_READ_SPEED = "*I/O Read Speed",
+  AVERAGE_IO_WRITE_SPEED = "*I/O Write Speed",
+  AVERAGE_SHARED_IO_READ_SPEED = "*Shared I/O Read Speed",
+  AVERAGE_SHARED_IO_WRITE_SPEED = "*Shared I/O Write Speed",
+  AVERAGE_LOCAL_IO_READ_SPEED = "*Local I/O Read Speed",
+  AVERAGE_LOCAL_IO_WRITE_SPEED = "*Local I/O Write Speed",
+  AVERAGE_TEMP_IO_READ_SPEED = "*Temp I/O Read Speed",
+  AVERAGE_TEMP_IO_WRITE_SPEED = "*Temp I/O Write Speed",
+
   EXCLUSIVE_IO_READ_TIME = "*I/O Read Time (exclusive)",
   EXCLUSIVE_IO_WRITE_TIME = "*I/O Write Time (exclusive)",
-  AVERAGE_IO_READ_SPEED = "*I/O Read Speed (exclusive)",
-  AVERAGE_IO_WRITE_SPEED = "*I/O Write Speed (exclusive)",
+  EXCLUSIVE_AVERAGE_IO_READ_SPEED = "*I/O Read Speed (exclusive)",
+  EXCLUSIVE_AVERAGE_IO_WRITE_SPEED = "*I/O Write Speed (exclusive)",
+  EXCLUSIVE_SHARED_IO_READ_TIME = "*Shared I/O Read Time (exclusive)",
+  EXCLUSIVE_SHARED_IO_WRITE_TIME = "*Shared I/O Write Time (exclusive)",
+  EXCLUSIVE_AVERAGE_SHARED_IO_READ_SPEED = "*Shared I/O Read Speed (exclusive)",
+  EXCLUSIVE_AVERAGE_SHARED_IO_WRITE_SPEED = "*Shared I/O Write Speed (exclusive)",
+  EXCLUSIVE_LOCAL_IO_READ_TIME = "*Local I/O Read Time (exclusive)",
+  EXCLUSIVE_LOCAL_IO_WRITE_TIME = "*Local I/O Write Time (exclusive)",
+  EXCLUSIVE_AVERAGE_LOCAL_IO_READ_SPEED = "*Local I/O Read Speed (exclusive)",
+  EXCLUSIVE_AVERAGE_LOCAL_IO_WRITE_SPEED = "*Local I/O Write Speed (exclusive)",
+  EXCLUSIVE_TEMP_IO_READ_TIME = "*Temp I/O Read Time (exclusive)",
+  EXCLUSIVE_TEMP_IO_WRITE_TIME = "*Temp I/O Write Time (exclusive)",
+  EXCLUSIVE_AVERAGE_TEMP_IO_READ_SPEED = "*Temp I/O Read Speed (exclusive)",
+  EXCLUSIVE_AVERAGE_TEMP_IO_WRITE_SPEED = "*Temp I/O Write Speed (exclusive)",
+  SUM_IO_READ_TIME = "*I/O Read Time (all scopes)",
+  SUM_IO_WRITE_TIME = "*I/O Write Time (all scopes)",
+  AVERAGE_SUM_IO_READ_SPEED = "*I/O Read Time speed (all scopes)",
+  AVERAGE_SUM_IO_WRITE_SPEED = "*I/O Write Time speed (all scopes)",
+  EXCLUSIVE_SUM_IO_READ_TIME = "*I/O Read Time (exclusive, all scopes)",
+  EXCLUSIVE_SUM_IO_WRITE_TIME = "*I/O Write Time (exclusive, all scopes)",
+  EXCLUSIVE_AVERAGE_SUM_IO_READ_SPEED = "*I/O Read Time speed (exclusive, all scopes)",
+  EXCLUSIVE_AVERAGE_SUM_IO_WRITE_SPEED = "*I/O Write Time speed (exclusive, all scopes)",
 
   WORKERS_PLANNED_BY_GATHER = "*Workers Planned By Gather",
   WORKERS_LAUNCHED_BY_GATHER = "*Workers Launched By Gather",
@@ -197,11 +232,50 @@ nodePropTypes[NodeProp.PLANNER_ESTIMATE_DIRECTION] = PropType.estimateDirection
 
 nodePropTypes[NodeProp.IO_READ_TIME] = PropType.duration
 nodePropTypes[NodeProp.IO_WRITE_TIME] = PropType.duration
+nodePropTypes[NodeProp.SUM_IO_READ_TIME] = PropType.duration
+nodePropTypes[NodeProp.SUM_IO_WRITE_TIME] = PropType.duration
+nodePropTypes[NodeProp.AVERAGE_SUM_IO_READ_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.AVERAGE_SUM_IO_WRITE_SPEED] = PropType.transferRate
+
+nodePropTypes[NodeProp.IO_READ_TIME] = PropType.duration
+nodePropTypes[NodeProp.IO_WRITE_TIME] = PropType.duration
+nodePropTypes[NodeProp.AVERAGE_IO_READ_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.AVERAGE_IO_WRITE_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.SHARED_IO_READ_TIME] = PropType.duration
+nodePropTypes[NodeProp.SHARED_IO_WRITE_TIME] = PropType.duration
+nodePropTypes[NodeProp.AVERAGE_SHARED_IO_READ_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.AVERAGE_SHARED_IO_WRITE_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.LOCAL_IO_READ_TIME] = PropType.duration
+nodePropTypes[NodeProp.LOCAL_IO_WRITE_TIME] = PropType.duration
+nodePropTypes[NodeProp.AVERAGE_LOCAL_IO_READ_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.AVERAGE_LOCAL_IO_WRITE_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.TEMP_IO_READ_TIME] = PropType.duration
+nodePropTypes[NodeProp.TEMP_IO_WRITE_TIME] = PropType.duration
+nodePropTypes[NodeProp.AVERAGE_TEMP_IO_READ_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.AVERAGE_TEMP_IO_WRITE_SPEED] = PropType.transferRate
 
 nodePropTypes[NodeProp.EXCLUSIVE_IO_READ_TIME] = PropType.duration
 nodePropTypes[NodeProp.EXCLUSIVE_IO_WRITE_TIME] = PropType.duration
-nodePropTypes[NodeProp.AVERAGE_IO_READ_SPEED] = PropType.transferRate
-nodePropTypes[NodeProp.AVERAGE_IO_WRITE_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.EXCLUSIVE_AVERAGE_IO_READ_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.EXCLUSIVE_AVERAGE_IO_WRITE_SPEED] = PropType.transferRate
+nodePropTypes[NodeProp.EXCLUSIVE_SHARED_IO_READ_TIME] = PropType.duration
+nodePropTypes[NodeProp.EXCLUSIVE_SHARED_IO_WRITE_TIME] = PropType.duration
+nodePropTypes[NodeProp.EXCLUSIVE_AVERAGE_SHARED_IO_READ_SPEED] =
+  PropType.transferRate
+nodePropTypes[NodeProp.EXCLUSIVE_AVERAGE_SHARED_IO_WRITE_SPEED] =
+  PropType.transferRate
+nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_IO_READ_TIME] = PropType.duration
+nodePropTypes[NodeProp.EXCLUSIVE_LOCAL_IO_WRITE_TIME] = PropType.duration
+nodePropTypes[NodeProp.EXCLUSIVE_AVERAGE_LOCAL_IO_READ_SPEED] =
+  PropType.transferRate
+nodePropTypes[NodeProp.EXCLUSIVE_AVERAGE_LOCAL_IO_WRITE_SPEED] =
+  PropType.transferRate
+nodePropTypes[NodeProp.EXCLUSIVE_TEMP_IO_READ_TIME] = PropType.duration
+nodePropTypes[NodeProp.EXCLUSIVE_TEMP_IO_WRITE_TIME] = PropType.duration
+nodePropTypes[NodeProp.EXCLUSIVE_AVERAGE_TEMP_IO_READ_SPEED] =
+  PropType.transferRate
+nodePropTypes[NodeProp.EXCLUSIVE_AVERAGE_TEMP_IO_WRITE_SPEED] =
+  PropType.transferRate
 
 nodePropTypes[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] = PropType.blocks
 nodePropTypes[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] = PropType.blocks
@@ -235,4 +309,10 @@ export enum SortGroupsProp {
 export enum SortSpaceMemoryProp {
   AVERAGE_SORT_SPACE_USED = "Average Sort Space Used",
   PEAK_SORT_SPACE_USED = "Peak Sort Space Used",
+}
+
+export enum Scope {
+  SHARED = "shared",
+  LOCAL = "local",
+  TEMP = "temp",
 }

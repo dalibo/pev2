@@ -191,8 +191,8 @@ export class PlanService {
     }
     function sumIo(o: Node) {
       return (
-        (o[NodeProp.EXCLUSIVE_IO_READ_TIME] as number) +
-        (o[NodeProp.EXCLUSIVE_IO_WRITE_TIME] as number)
+        (o[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME] as number) +
+        (o[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME] as number)
       )
     }
     const highestIo = _.maxBy(flat, (o) => {
@@ -1026,29 +1026,90 @@ export class PlanService {
     const iotimingsRegex = /I\/O Timings:\s+(.*)\s*$/g
     const iotimingsMatches = iotimingsRegex.exec(text)
 
-    /*
-     * Groups:
-     * 1: type
-     * 2: info
-     */
-    if (iotimingsMatches) {
-      // Initiate with default value
+    if (!iotimingsMatches) {
+      return false
+    }
+
+    const scopeRegex =
+      /\b(shared\/local|shared|local|temp)((?:\s+(?:read|write)=\d+(?:\.\d+)?)+)/g
+    const operationRegex = /(read|write)=(\d+(?:\.\d+)?)/g
+
+    const results = []
+    let scopeMatch
+    let operationMatch
+
+    // 1. Handle scoped timings like "local read=10 write=20"
+    while ((scopeMatch = scopeRegex.exec(text)) !== null) {
+      const scope = scopeMatch[1]
+      const operationsString = scopeMatch[2]
+
+      const entry = { scope, read: 0, write: 0 }
+
+      while (
+        (operationMatch = operationRegex.exec(operationsString)) !== null
+      ) {
+        entry[operationMatch[1] as "read" | "write"] = parseFloat(
+          operationMatch[2],
+        )
+      }
+
+      results.push(entry)
+    }
+
+    // 2. Handle unscoped timings like "read=0.011" outside of scoped blocks
+    const rest = text.replace(scopeRegex, "")
+    const unscoped = { scope: undefined, read: 0, write: 0 }
+    let found = false
+
+    while ((operationMatch = operationRegex.exec(rest)) !== null) {
+      unscoped[operationMatch[1] as "read" | "write"] = parseFloat(
+        operationMatch[2],
+      )
+      found = true
+    }
+
+    if (found) {
+      results.push(unscoped)
+    }
+
+    const scopeIsDetailed = _.some(results, (result) => {
+      return result.scope == "shared" || result.scope == "local"
+    })
+
+    const scopeIsPartiallyDetailed = _.some(results, (result) => {
+      return result.scope == "shared/local"
+    })
+
+    // Initiate with default value
+    if (scopeIsDetailed) {
+      el[NodeProp.SHARED_IO_READ_TIME] = 0
+      el[NodeProp.SHARED_IO_WRITE_TIME] = 0
+      el[NodeProp.LOCAL_IO_READ_TIME] = 0
+      el[NodeProp.LOCAL_IO_WRITE_TIME] = 0
+    } else {
       el[NodeProp.IO_READ_TIME] = 0
       el[NodeProp.IO_WRITE_TIME] = 0
-
-      _.each(iotimingsMatches[1].split(/\s+/), (timing) => {
-        const s = timing.split(/=/)
-        const method = s[0]
-        const value = parseFloat(s[1])
-        const prop = ("IO_" +
-          _.upperCase(method) +
-          "_TIME") as keyof typeof NodeProp
-        const nodeProp = NodeProp[prop] as unknown as keyof typeof Node
-        el[nodeProp] = value
-      })
-      return true
     }
-    return false
+    if (scopeIsPartiallyDetailed || scopeIsDetailed) {
+      el[NodeProp.TEMP_IO_READ_TIME] = 0
+      el[NodeProp.TEMP_IO_WRITE_TIME] = 0
+    }
+
+    results.forEach((result) => {
+      ;["read", "write"].forEach((operation) => {
+        let prop = `IO_${_.upperCase(operation)}_TIME` as keyof typeof NodeProp
+
+        if (result.scope && result.scope != "shared/local") {
+          prop = (_.upperCase(result.scope) +
+            "_" +
+            prop) as keyof typeof NodeProp
+        }
+        const nodeProp = NodeProp[prop] as unknown as keyof typeof Node
+        el[nodeProp] = result[operation as "read" | "write"]
+      })
+    })
+
+    return true
   }
 
   private parseOptions(text: string, el: Node): boolean {
@@ -1180,6 +1241,12 @@ export class PlanService {
       "LOCAL_WRITTEN_BLOCKS",
       "IO_READ_TIME",
       "IO_WRITE_TIME",
+      "SHARED_IO_READ_TIME",
+      "SHARED_IO_WRITE_TIME",
+      "LOCAL_IO_READ_TIME",
+      "LOCAL_IO_WRITE_TIME",
+      "TEMP_IO_READ_TIME",
+      "TEMP_IO_WRITE_TIME",
     ]
     _.each(properties, (property) => {
       const sum = Number(
@@ -1208,17 +1275,83 @@ export class PlanService {
       node[NodeProp["AVERAGE_IO_READ_SPEED"]] =
         (sharedReadBlocks + localReadBlocks) / (ioReadTime / 1000)
     }
-
-    const ioWriteTime =
-      (node[NodeProp["EXCLUSIVE_IO_WRITE_TIME"]] as number) || 0
-    if (ioWriteTime) {
-      const sharedWriteBlocks =
-        (node[NodeProp["EXCLUSIVE_SHARED_WRITTEN_BLOCKS"]] as number) || 0
-      const localWriteBlocks =
-        (node[NodeProp["EXCLUSIVE_LOCAL_WRITTEN_BLOCKS"]] as number) || 0
-      node[NodeProp["AVERAGE_IO_WRITE_SPEED"]] =
-        (sharedWriteBlocks + localWriteBlocks) / (ioWriteTime / 1000)
+    // The matrix to match I/O Timings with Buffers
+    let scopesMatrix
+    if (_.isUndefined(node[NodeProp.TEMP_IO_READ_TIME])) {
+      // pre Pg15
+      scopesMatrix = {
+        "": ["shared", "local"],
+      }
+    } else if (!_.isUndefined(node[NodeProp.IO_READ_TIME])) {
+      // pg15-16
+      scopesMatrix = {
+        "": ["shared", "local"],
+        temp: ["temp"],
+      }
+    } else {
+      // pg17+
+      scopesMatrix = {
+        shared: ["shared"],
+        local: ["local"],
+        temp: ["temp"],
+      }
     }
+    const operations = ["read", "write"]
+    const buffersOperations = ["read", "written"]
+
+    _.forEach(scopesMatrix, (buffersScopes, timingScope) => {
+      operations.forEach((operation, index) => {
+        ;["exclusive_", ""].forEach((prefix) => {
+          const timeProp =
+            `${prefix}${timingScope ? timingScope + "_" : ""}io_${operation}_time`.toUpperCase() as keyof typeof NodeProp
+          const speedProp =
+            `${prefix}average_${timingScope ? timingScope + "_" : ""}io_${operation}_speed`.toUpperCase() as keyof typeof NodeProp
+          const time = (node[NodeProp[timeProp]] as number) || 0
+          const buffersOperation = buffersOperations[index]
+          const buffers = _.sumBy(buffersScopes, (bufferScope) => {
+            const bufferProp =
+              `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof NodeProp
+            return (node[NodeProp[bufferProp]] as number) || 0
+          })
+          if (time) {
+            node[NodeProp[speedProp] as unknown as keyof typeof Node] = Number(
+              (buffers / (time / 1000)).toFixed(3),
+            )
+          }
+        })
+      })
+    })
+
+    // We also compute sum and average speed for read / write timings for all scopes
+    operations.forEach((operation, index) => {
+      ;["exclusive_", ""].forEach((prefix) => {
+        const sumTimeProp =
+          `${prefix}sum_io_${operation}_time`.toUpperCase() as keyof typeof NodeProp
+        const speedProp =
+          `${prefix}average_sum_io_${operation}_speed`.toUpperCase() as keyof typeof NodeProp
+        let time = 0
+        let buffers = 0
+        _.forEach(scopesMatrix, (buffersScopes, timingScope) => {
+          const timeProp =
+            `${prefix}${timingScope ? timingScope + "_" : ""}io_${operation}_time`.toUpperCase() as keyof typeof NodeProp
+          time += (node[NodeProp[timeProp]] as number) || 0
+          const buffersOperation = buffersOperations[index]
+          buffers += _.sumBy(buffersScopes, (bufferScope) => {
+            const bufferProp =
+              `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof NodeProp
+            return (node[NodeProp[bufferProp]] as number) || 0
+          })
+        })
+        node[NodeProp[sumTimeProp] as unknown as keyof typeof Node] = Number(
+          time.toFixed(3),
+        )
+        if (time) {
+          node[NodeProp[speedProp] as unknown as keyof typeof Node] = Number(
+            (buffers / (time / 1000)).toFixed(3),
+          )
+        }
+      })
+    })
   }
 
   private findOutputProperty(node: Node): boolean {

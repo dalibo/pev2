@@ -1,0 +1,9 @@
+ Seq Scan on public.actor  (cost=0.00..4.00 rows=200 width=25) (actual time=0.010..0.030 rows=200 loops=1)
+   Output: actor_id, first_name, last_name, last_update
+   Buffers: shared read=2
+   I/O Timings: read=0.011
+ Planning:
+   Buffers: shared hit=39 read=7
+   I/O Timings: read=0.049
+ Planning Time: 0.223 ms
+ Execution Time: 0.049 ms
