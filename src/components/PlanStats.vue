@@ -180,66 +180,63 @@ function hasParallelChildren(node: Node) {
         </div>
       </span>
     </div>
-    <div class="d-inline-block border-start px-2 position-relative">
+    <div
+      class="d-inline-block border-start px-2 position-relative"
+      v-if="plan.planStats.triggers && plan.planStats.triggers.length"
+    >
       <span class="stat-label">Triggers: </span>
-      <template
-        v-if="plan.planStats.triggers && plan.planStats.triggers.length"
+      <span class="stat-value">
+        <span
+          :class="
+            'mb-0 p-0 px-1 alert ' + durationClass(totalTriggerDurationPercent)
+          "
+          v-html="duration(triggersTotalDuration)"
+        ></span>
+      </span>
+      <button
+        @click.prevent="showTriggers = !showTriggers"
+        class="bg-transparent border-0 p-0 m-0 ps-1"
       >
-        <span class="stat-value">
-          <span
-            :class="
-              'mb-0 p-0 px-1 alert ' +
-              durationClass(totalTriggerDurationPercent)
-            "
-            v-html="duration(triggersTotalDuration)"
-          ></span>
-        </span>
+        <FontAwesomeIcon
+          :icon="faCaretDown"
+          class="text-secondary"
+        ></FontAwesomeIcon>
+      </button>
+      <div class="stat-dropdown-container text-start" v-if="showTriggers">
         <button
-          @click.prevent="showTriggers = !showTriggers"
-          class="bg-transparent border-0 p-0 m-0 ps-1"
-        >
-          <FontAwesomeIcon
-            :icon="faCaretDown"
-            class="text-secondary"
-          ></FontAwesomeIcon>
-        </button>
-        <div class="stat-dropdown-container text-start" v-if="showTriggers">
-          <button
-            class="btn btn-xs btn-close float-end"
-            v-on:click="showTriggers = false"
-          ></button>
-          <h3>Triggers</h3>
-          <div v-for="(trigger, index) in plan.planStats.triggers" :key="index">
-            {{ trigger["Trigger Name"] }}
-            <br />
-            <span class="text-secondary">Called</span> {{ trigger["Calls"]
-            }}<span class="text-secondary">&times;</span>
-            <span class="float-end">
-              <span
-                :class="
-                  'p-0 px-1 alert ' +
-                  durationClass(triggerDurationPercent(trigger))
-                "
-                v-html="duration(trigger.Time)"
-              ></span>
-              | {{ triggerDurationPercent(trigger)
-              }}<span class="text-secondary">%</span>
-            </span>
-            <br />
-            <span class="text-secondary" v-if="trigger.Relation">on</span>
-            {{ trigger.Relation }}
-            <div class="clearfix"></div>
-            <hr
-              v-if="
-                plan.planStats.triggers &&
-                index != plan.planStats.triggers.length - 1
+          class="btn btn-xs btn-close float-end"
+          v-on:click="showTriggers = false"
+        ></button>
+        <h3>Triggers</h3>
+        <div v-for="(trigger, index) in plan.planStats.triggers" :key="index">
+          {{ trigger["Trigger Name"] }}
+          <br />
+          <span class="text-secondary">Called</span> {{ trigger["Calls"]
+          }}<span class="text-secondary">&times;</span>
+          <span class="float-end">
+            <span
+              :class="
+                'p-0 px-1 alert ' +
+                durationClass(triggerDurationPercent(trigger))
               "
-              class="my-2"
-            />
-          </div>
+              v-html="duration(trigger.Time)"
+            ></span>
+            | {{ triggerDurationPercent(trigger)
+            }}<span class="text-secondary">%</span>
+          </span>
+          <br />
+          <span class="text-secondary" v-if="trigger.Relation">on</span>
+          {{ trigger.Relation }}
+          <div class="clearfix"></div>
+          <hr
+            v-if="
+              plan.planStats.triggers &&
+              index != plan.planStats.triggers.length - 1
+            "
+            class="my-2"
+          />
         </div>
-      </template>
-      <span v-else class="text-secondary"> N/A </span>
+      </div>
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
