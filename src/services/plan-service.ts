@@ -1182,15 +1182,19 @@ export class PlanService {
       "IO_WRITE_TIME",
     ]
     _.each(properties, (property) => {
-      const sum = _.sumBy(node[NodeProp.PLANS], (child: Node) => {
-        return (child[NodeProp[property]] as number) || 0
-      })
+      const sum = Number(
+        _.sumBy(node[NodeProp.PLANS], (child: Node) => {
+          return (child[NodeProp[property]] as number) || 0
+        }).toFixed(3),
+      )
       const exclusivePropertyString = ("EXCLUSIVE_" +
         property) as keyof typeof NodeProp
       const nodeProp = NodeProp[
         exclusivePropertyString
       ] as unknown as keyof typeof Node
-      node[nodeProp] = (node[NodeProp[property]] as number) - sum
+      node[nodeProp] = Number(
+        ((node[NodeProp[property]] as number) - sum).toFixed(3),
+      )
     })
   }
 
