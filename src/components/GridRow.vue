@@ -19,6 +19,8 @@ import GridProgressBar from "@/components/GridProgressBar.vue"
 import WorkersDetail from "@/components/WorkersDetail.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
 import SeverityBullet from "@/components/SeverityBullet.vue"
+import IoTooltip from "@/components/tooltip/IoTooltip.vue"
+import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
 import useNode from "@/node"
 import { directive as vTippy } from "vue-tippy"
 import { HelpService } from "@/services/help-service"
@@ -55,7 +57,6 @@ const {
   formattedProp,
   heapFetchesClass,
   heapFetchesTooltip,
-  ioTooltip,
   localDirtiedPercent,
   localHitPercent,
   localReadPercent,
@@ -74,7 +75,6 @@ const {
   sharedWrittenPercent,
   tempReadPercent,
   tempWrittenPercent,
-  timeTooltip,
   tilde,
 } = useNode(plan, node, viewOptions)
 const showDetails = ref<boolean>(false)
@@ -87,10 +87,14 @@ const showDetails = ref<boolean>(false)
         <span class="font-weight-normal small">#{{ node.nodeId }} </span>
       </a>
     </td>
-    <td
+    <tippy
       class="text-end grid-progress-cell text-nowrap"
+      tag="td"
       v-if="columns.includes('time')"
     >
+      <template #content>
+        <time-tooltip :node="node" />
+      </template>
       <GridProgressBar
         :percentage="
           (node[NodeProp.EXCLUSIVE_DURATION] /
@@ -107,10 +111,7 @@ const showDetails = ref<boolean>(false)
         "
       ></GridProgressBar>
       <!-- time -->
-      <div
-        class="position-relative d-flex"
-        v-tippy="{ content: timeTooltip, allowHTML: true }"
-      >
+      <div class="position-relative d-flex">
         <severity-bullet
           :severity="durationClass"
           v-if="durationClass"
@@ -126,12 +127,15 @@ const showDetails = ref<boolean>(false)
           {{ executionTimePercent }}%
         </template>
       </div>
-    </td>
-    <td
+    </tippy>
+    <tippy
       class="text-end grid-progress-cell text-nowrap"
+      tag="td"
       v-if="columns.includes('ioread')"
-      v-tippy="{ content: ioTooltip, allowHTML: true }"
     >
+      <template #content>
+        <io-tooltip :node="node" />
+      </template>
       <template v-if="node[NodeProp.IO_READ_TIME]">
         <GridProgressBar
           :percentage="
@@ -148,12 +152,15 @@ const showDetails = ref<boolean>(false)
           {{ transferRate(node[NodeProp.AVERAGE_IO_READ_SPEED]) }}
         </div>
       </template>
-    </td>
-    <td
+    </tippy>
+    <tippy
       class="text-end grid-progress-cell text-nowrap"
+      tag="td"
       v-if="columns.includes('iowrite')"
-      v-tippy="{ content: ioTooltip, allowHTML: true }"
     >
+      <template #content>
+        <io-tooltip :node="node" />
+      </template>
       <template v-if="node[NodeProp.IO_WRITE_TIME]">
         <GridProgressBar
           :percentage="
@@ -172,7 +179,7 @@ const showDetails = ref<boolean>(false)
           {{ transferRate(node[NodeProp.AVERAGE_IO_WRITE_SPEED]) }}
         </div>
       </template>
-    </td>
+    </tippy>
     <td
       class="text-end grid-progress-cell text-nowrap"
       v-if="columns.includes('rows')"

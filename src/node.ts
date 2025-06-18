@@ -9,15 +9,7 @@ import {
   EstimateDirection,
   HighlightType,
 } from "@/enums"
-import {
-  blocks,
-  cost,
-  duration,
-  factor,
-  formatNodeProp,
-  rows,
-  transferRate,
-} from "@/filters"
+import { blocks, cost, duration, factor, formatNodeProp, rows } from "@/filters"
 import { numberToColorHsl } from "@/services/color-service"
 
 export default function useNode(
@@ -370,15 +362,6 @@ export default function useNode(
     )
   })
 
-  const timeTooltip = computed((): string => {
-    return [
-      "Duration: <br>Exclusive: ",
-      duration(node[NodeProp.EXCLUSIVE_DURATION]),
-      ", Total: ",
-      duration(node[NodeProp.ACTUAL_TOTAL_TIME]),
-    ].join("")
-  })
-
   const rowsTooltip = computed((): string => {
     return ["Rows: ", rows(node[NodeProp.ACTUAL_ROWS_REVISED] as number)].join(
       "",
@@ -461,8 +444,7 @@ export default function useNode(
             written = node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]
             break
         }
-        text +=
-          '<table class="table table-dark table-sm table-borderless mb-0">'
+        text += '<table class="table table-sm table-borderless mb-0">'
         text += hit
           ? '<tr><td>Hit:</td><td class="text-end">' +
             blocks(hit, true) +
@@ -505,38 +487,12 @@ export default function useNode(
   )
 
   const buffersByMetricTooltip = computed(() => (metric: NodeProp): string => {
-    let text = '<table class="table table-dark table-sm table-borderless mb-0">'
+    let text = '<table class="table table-sm table-borderless mb-0">'
     text += `<tr><td>${metric}:</td><td class="text-end">`
     if (node[metric]) {
       text += `${blocks(node[metric] as number, true)}</td></tr>`
     }
     return text
-  })
-
-  const ioTooltip = computed((): string => {
-    let text = ""
-    const read = node[NodeProp.EXCLUSIVE_IO_READ_TIME]
-    const averageRead = node[NodeProp.AVERAGE_IO_READ_SPEED]
-    const write = node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]
-    const averageWrite = node[NodeProp.AVERAGE_IO_WRITE_SPEED]
-    text += '<table class="table table-dark table-sm table-borderless mb-0">'
-    text += read
-      ? '<tr><td>Read:</td><td class="text-end">' +
-        duration(read) +
-        "<br><small>~" +
-        transferRate(averageRead) +
-        "</small>" +
-        "</td></tr>"
-      : ""
-    text += write
-      ? '<tr><td>Write:</td><td class="text-end">' +
-        duration(write) +
-        "<br><small>~" +
-        transferRate(averageWrite) +
-        "</small>" +
-        "</td></tr>"
-      : ""
-    return "IO " + text
   })
 
   const heapFetchesTooltip = computed((): string => {
@@ -568,7 +524,6 @@ export default function useNode(
     heapFetchesClass,
     heapFetchesTooltip,
     highlightValue,
-    ioTooltip,
     isNeverExecuted,
     isParallelAware,
     localDirtiedPercent,
@@ -592,7 +547,6 @@ export default function useNode(
     tempReadPercent,
     tempWrittenPercent,
     tilde,
-    timeTooltip,
     workersLaunchedCount,
     workersPlannedCount,
     workersPlannedCountReversed,
