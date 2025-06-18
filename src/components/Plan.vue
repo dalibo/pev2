@@ -41,6 +41,7 @@ import { HighlightType, NodeProp } from "@/enums"
 import { json_, pgsql_ } from "@/filters"
 
 import "tippy.js/dist/tippy.css"
+import "tippy.js/themes/light.css"
 import * as d3 from "d3"
 import {
   flextree,
