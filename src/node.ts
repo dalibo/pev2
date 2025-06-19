@@ -9,7 +9,15 @@ import {
   EstimateDirection,
   HighlightType,
 } from "@/enums"
-import { blocks, cost, duration, factor, rows, transferRate } from "@/filters"
+import {
+  blocks,
+  cost,
+  duration,
+  factor,
+  formatNodeProp,
+  rows,
+  transferRate,
+} from "@/filters"
 import { numberToColorHsl } from "@/services/color-service"
 
 export default function useNode(
@@ -535,6 +543,13 @@ export default function useNode(
     return `Heap Fetches: ${node[NodeProp.HEAP_FETCHES]?.toLocaleString()}`
   })
 
+  // returns the formatted prop
+  function formattedProp(propName: keyof typeof NodeProp) {
+    const property = NodeProp[propName]
+    const value = node[property]
+    return formatNodeProp(property, value)
+  }
+
   return {
     barColor,
     barWidth,
@@ -549,6 +564,7 @@ export default function useNode(
     executionTimePercent,
     filterTooltip,
     filterDetailTooltip,
+    formattedProp,
     heapFetchesClass,
     heapFetchesTooltip,
     highlightValue,

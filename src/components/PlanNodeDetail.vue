@@ -4,7 +4,6 @@ import type { Ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
-import { formatNodeProp } from "@/filters"
 import { EstimateDirection, NodeProp } from "@/enums"
 import useNode from "@/node"
 import WorkersDetail from "@/components/WorkersDetail.vue"
@@ -55,6 +54,7 @@ const {
   estimationClass,
   executionTimePercent,
   filterDetailTooltip,
+  formattedProp,
   heapFetchesClass,
   plannerRowEstimateDirection,
   plannerRowEstimateValue,
@@ -110,13 +110,6 @@ const shouldShowIoBuffers = computed((): boolean => {
   const sum = _.sum(values)
   return sum > 0
 })
-
-// returns the formatted prop
-function formattedProp(propName: keyof typeof NodeProp) {
-  const property = NodeProp[propName]
-  const value = node[property]
-  return formatNodeProp(property, value)
-}
 
 watch(activeTab, () => {
   window.setTimeout(() => updateSize && updateSize(node), 1)
