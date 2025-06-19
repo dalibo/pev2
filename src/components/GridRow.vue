@@ -10,7 +10,6 @@ import {
   cost,
   duration,
   factor,
-  formatNodeProp,
   keysToString,
   sortKeys,
   transferRate,
@@ -53,6 +52,7 @@ const {
   estimateFactorPercent,
   estimateFactorTooltip,
   executionTimePercent,
+  formattedProp,
   heapFetchesClass,
   heapFetchesTooltip,
   ioTooltip,
@@ -78,13 +78,6 @@ const {
   tilde,
 } = useNode(plan, node, viewOptions)
 const showDetails = ref<boolean>(false)
-
-// returns the formatted prop
-function formattedProp(propName: keyof typeof NodeProp) {
-  const property = NodeProp[propName]
-  const value = node[property]
-  return formatNodeProp(property, value)
-}
 </script>
 <template>
   <tr @click="showDetails = !showDetails" class="node">
