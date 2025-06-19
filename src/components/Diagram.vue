@@ -190,6 +190,7 @@ provide("scrollTo", scrollTo)
             class="btn btn-outline-secondary"
             :class="{ active: viewOptions.metric === Metric.io }"
             v-on:click="viewOptions.metric = Metric.io"
+            :disabled="!plan.planStats.maxIo"
           >
             IO
           </button>
