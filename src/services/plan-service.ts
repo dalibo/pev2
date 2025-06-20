@@ -260,6 +260,7 @@ export class PlanService {
         "PLAN_ROWS",
         "ROWS_REMOVED_BY_FILTER",
         "ROWS_REMOVED_BY_JOIN_FILTER",
+        "ROWS_REMOVED_BY_INDEX_RECHECK",
       ],
       (prop: keyof typeof NodeProp) => {
         if (!_.isUndefined(node[NodeProp[prop]])) {
