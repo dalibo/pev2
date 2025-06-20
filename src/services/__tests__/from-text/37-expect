@@ -1,26 +1,26 @@
-{                                                                          
-  "Plan": {      
+{
+  "Plan": {
     "Actual Loops": 1,
     "Actual Rows": 11000000,
     "Actual Startup Time": 19388.365,
-    "Actual Total Time": 21360.337, 
-    "Node Type": "Sort",      
-    "Plans": [              
-      {                          
-        "Actual Loops": 1,     
+    "Actual Total Time": 21360.337,
+    "Node Type": "Sort",
+    "Plans": [
+      {
+        "Actual Loops": 1,
         "Actual Rows": 11000000,
         "Actual Startup Time": 0.035,
         "Actual Total Time": 3226.246,
-        "Node Type": "Append",    
-        "Plans": [                
-          {              
-            "Actual Loops": 1, 
-            "Actual Rows": 1000000, 
+        "Node Type": "Append",
+        "Plans": [
+          {
+            "Actual Loops": 1,
+            "Actual Rows": 1000000,
             "Actual Startup Time": 0.033,
             "Actual Total Time": 210.609,
             "Node Type": "Seq Scan",
             "Plan Rows": 344274,
-            "Total Cost": 19836.74,        
+            "Total Cost": 19836.74,
             "Relation Name": "pg_temp_5.pp",
             "Startup Cost": 0,
             "Plan Width": 352,
@@ -29,16 +29,16 @@
             "Local Read Blocks": 16394,
             "Local Written Blocks": 16394,
             "Local Dirtied Blocks": 16394,
-            "I/O Read Time": 39.73, 
-            "I/O Write Time": 0    
-          },                                                               
+            "I/O Read Time": 39.73,
+            "I/O Write Time": 0
+          },
           {
-            "Actual Loops": 1,                                             
+            "Actual Loops": 1,
             "Actual Rows": 10000000,
             "Actual Startup Time": 0.007,
             "Actual Total Time": 2169.508,
-            "Node Type": "Seq Scan",                                       
-            "Plan Rows": 9999844,                                          
+            "Node Type": "Seq Scan",
+            "Plan Rows": 9999844,
             "Total Cost": 263933.44,
             "Relation Name": "public.pgbench_accounts",
             "Startup Cost": 0,
@@ -58,10 +58,10 @@
         "Plan Width": 105,
         "Shared Hit Blocks": 32,
         "Shared Read Blocks": 163903,
-        "Shared Written Blocks": 0, 
-        "Shared Dirtied Blocks": 0, 
+        "Shared Written Blocks": 0,
+        "Shared Dirtied Blocks": 0,
         "Local Hit Blocks": 0,
-        "Local Read Blocks": 16394, 
+        "Local Read Blocks": 16394,
         "Local Written Blocks": 16394,
         "Local Dirtied Blocks": 16394,
         "I/O Read Time": 1116.067,

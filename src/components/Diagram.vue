@@ -3,9 +3,7 @@ import _ from "lodash"
 import {
   computed,
   inject,
-  nextTick,
   onBeforeMount,
-  onMounted,
   provide,
   reactive,
   ref,
@@ -21,8 +19,6 @@ import { HighlightedNodeIdKey, PlanKey, SelectNodeKey } from "@/symbols"
 import DiagramRow from "@/components/DiagramRow.vue"
 
 import { directive as vTippy } from "vue-tippy"
-import tippy, { createSingleton } from "tippy.js"
-import type { CreateSingletonInstance, Instance } from "tippy.js"
 
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
@@ -41,8 +37,6 @@ const highlightedNodeId = inject(HighlightedNodeIdKey)
 
 // The main plan + init plans (all flatten)
 const plans: Row[][] = [[]]
-let tippyInstances: Instance[] = []
-let tippySingleton!: CreateSingletonInstance
 
 const viewOptions = reactive({
   metric: Metric.time,
@@ -70,29 +64,10 @@ onBeforeMount((): void => {
   }
 })
 
-onMounted((): void => {
-  loadTooltips()
-})
-
 watch(viewOptions, onViewOptionsChanged)
 
 function onViewOptionsChanged() {
   localStorage.setItem("diagramViewOptions", JSON.stringify(viewOptions))
-  nextTick(loadTooltips)
-}
-
-function loadTooltips(): void {
-  if (tippySingleton) {
-    tippySingleton.destroy()
-  }
-  _.each(tippyInstances, (instance) => {
-    instance.destroy()
-  })
-  tippyInstances = tippy(".diagram tr.node")
-  tippySingleton = createSingleton(tippyInstances, {
-    delay: 100,
-    allowHTML: true,
-  })
 }
 
 function flatten(
@@ -100,7 +75,7 @@ function flatten(
   level: number,
   node: Node,
   isLast: boolean,
-  branches: number[]
+  branches: number[],
 ) {
   // [level, node, isLastSibbling, branches]
   output.push([level, node, isLast, _.concat([], branches)])
@@ -114,7 +89,7 @@ function flatten(
       level + 1,
       subnode,
       subnode === _.last(node.Plans),
-      branches
+      branches,
     )
   })
   if (!isLast) {
@@ -189,6 +164,7 @@ provide("scrollTo", scrollTo)
             class="btn btn-outline-secondary"
             :class="{ active: viewOptions.metric === Metric.io }"
             v-on:click="viewOptions.metric = Metric.io"
+            :disabled="!plan.planStats.maxIo"
           >
             IO
           </button>

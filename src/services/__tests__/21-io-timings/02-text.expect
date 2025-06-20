@@ -1,0 +1,7 @@
+{
+  "Shared I/O Write Time": 23.77,
+  "Local I/O Write Time": 25.997,
+  "Temp I/O Read Time": 324,
+  "*I/O Read Time (all scopes)": 324,
+  "*I/O Write Time (all scopes)": 49.767
+}

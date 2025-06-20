@@ -11,9 +11,10 @@ import {
   ViewOptionsKey,
 } from "@/symbols"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
-import { HelpService } from "@/services/help-service"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
 import LevelDivider from "@/components/LevelDivider.vue"
+import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
+import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 import useNode from "@/node"
 
 interface Props {
@@ -41,57 +42,15 @@ if (!selectNode) {
 }
 const highlightedNodeId = inject(HighlightedNodeIdKey)
 
-const helpService = new HelpService()
-const getHelpMessage = helpService.getHelpMessage
-
 const _viewOptions = inject(ViewOptionsKey) as ViewOptions
 const {
   buffersByLocationTooltip,
   costTooltip,
   estimateFactorPercent,
   estimateFactorTooltip,
-  ioTooltip,
   nodeName,
   rowsTooltip,
-  timeTooltip,
 } = useNode(plan, node, _viewOptions)
-
-function getTooltipContent(node: Node): string {
-  let content = ""
-  switch (diagramViewOptions.metric) {
-    case Metric.time:
-      content += timeTooltip.value
-      break
-    case Metric.rows:
-      content += rowsTooltip.value
-      break
-    case Metric.estimate_factor:
-      content += estimateFactorTooltip.value
-      break
-    case Metric.cost:
-      content += costTooltip.value
-      break
-    case Metric.buffers:
-      content += buffersByLocationTooltip.value(
-        diagramViewOptions.buffersMetric,
-      )
-      break
-    case Metric.io:
-      content += ioTooltip.value
-
-      if (
-        node[NodeProp.WORKERS_PLANNED] ||
-        node[NodeProp.WORKERS_PLANNED_BY_GATHER]
-      ) {
-        content += `<br><small>${getHelpMessage("io timings parallel")}</small>`
-      }
-      break
-  }
-  if (node[NodeProp.CTE_NAME]) {
-    content += "<br><em>CTE " + node[NodeProp.CTE_NAME] + "</em>"
-  }
-  return content
-}
 
 const scrollTo = inject<(el: Element) => null>("scrollTo")
 
@@ -106,19 +65,49 @@ watch(
 </script>
 
 <template>
-  <tr
+  <tippy
     class="no-focus-outline node"
     :class="{
       selected: node.nodeId === selectedNodeId,
       highlight: node.nodeId === highlightedNodeId,
     }"
-    :data-tippy-content="getTooltipContent(node)"
+    tag="tr"
     @mouseenter="highlightedNodeId = node.nodeId"
     @mouseleave="highlightedNodeId = undefined"
     @click.prevent="selectNode(node.nodeId, true)"
-    ref="rootEl"
   >
-    <td class="node-index">
+    <template #content>
+      <template v-if="node[NodeProp.CTE_NAME]">
+        <div>
+          <em>CTE {{ node[NodeProp.CTE_NAME] }} </em>
+        </div>
+      </template>
+      <time-tooltip
+        :node="node"
+        v-if="diagramViewOptions.metric == Metric.time"
+      />
+      <io-tooltip
+        :node="node"
+        v-else-if="diagramViewOptions.metric == Metric.io"
+        exclusive
+        class="mb-0"
+      />
+      <template v-else-if="diagramViewOptions.metric == Metric.rows">
+        <div v-html="rowsTooltip"></div>
+      </template>
+      <template v-else-if="diagramViewOptions.metric == Metric.estimate_factor">
+        <div v-html="estimateFactorTooltip"></div>
+      </template>
+      <template v-else-if="diagramViewOptions.metric == Metric.cost">
+        <div v-html="costTooltip"></div>
+      </template>
+      <template v-else-if="diagramViewOptions.metric == Metric.buffers">
+        <div
+          v-html="buffersByLocationTooltip(diagramViewOptions.buffersMetric)"
+        ></div
+      ></template>
+    </template>
+    <td class="node-index" ref="rootEl">
       <span class="fw-normal small">#{{ node.nodeId }} </span>
     </td>
     <td class="node-type pe-2">
@@ -503,8 +492,8 @@ watch(
         style="height: 5px"
         v-else-if="
           diagramViewOptions.metric == Metric.io &&
-          (plan.content.Plan[NodeProp['IO_READ_TIME']] ||
-            plan.content.Plan[NodeProp['IO_WRITE_TIME']])
+          (plan.content.Plan[NodeProp['SUM_IO_READ_TIME']] ||
+            plan.content.Plan[NodeProp['SUM_IO_WRITE_TIME']])
         "
       >
         <div
@@ -514,7 +503,7 @@ watch(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_IO_READ_TIME] /
+                (node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME] /
                   plan.planStats?.maxIo) *
                   100,
               ) || 0) + '%',
@@ -530,7 +519,7 @@ watch(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
+                (node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME] /
                   plan.planStats?.maxIo) *
                   100,
               ) || 0) + '%',
@@ -541,5 +530,5 @@ watch(
         ></div>
       </div>
     </td>
-  </tr>
+  </tippy>
 </template>

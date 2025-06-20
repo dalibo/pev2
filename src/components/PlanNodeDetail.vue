@@ -4,9 +4,9 @@ import type { Ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
-import { formatNodeProp } from "@/filters"
 import { EstimateDirection, NodeProp } from "@/enums"
 import useNode from "@/node"
+import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 import WorkersDetail from "@/components/WorkersDetail.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
 import { PlanKey, ViewOptionsKey } from "@/symbols"
@@ -47,7 +47,6 @@ const activeTab = ref<string>("general")
 
 const helpService = new HelpService()
 const getNodeTypeDescription = helpService.getNodeTypeDescription
-const getHelpMessage = helpService.getHelpMessage
 
 const {
   costClass,
@@ -55,6 +54,7 @@ const {
   estimationClass,
   executionTimePercent,
   filterDetailTooltip,
+  formattedProp,
   heapFetchesClass,
   plannerRowEstimateDirection,
   plannerRowEstimateValue,
@@ -110,13 +110,6 @@ const shouldShowIoBuffers = computed((): boolean => {
   const sum = _.sum(values)
   return sum > 0
 })
-
-// returns the formatted prop
-function formattedProp(propName: keyof typeof NodeProp) {
-  const property = NodeProp[propName]
-  const value = node[property]
-  return formatNodeProp(property, value)
-}
 
 watch(activeTab, () => {
   window.setTimeout(() => updateSize && updateSize(node), 1)
@@ -322,53 +315,20 @@ watch(activeTab, () => {
     </div>
     <div class="tab-pane" :class="{ 'show active': activeTab === 'iobuffer' }">
       <!-- iobuffer tab -->
-      <dl
-        v-if="
-          node[NodeProp.EXCLUSIVE_IO_READ_TIME] ||
-          node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]
-        "
-        class="mb-2 list-inline"
-      >
-        <dt class="list-inline-item align-top">
-          <b> I/O Timings: </b>
-        </dt>
-        <dd class="list-inline-item">
-          <span v-if="node[NodeProp.EXCLUSIVE_IO_READ_TIME]" class="ms-2">
-            <b>Read:&nbsp;</b>
-            {{ formattedProp("EXCLUSIVE_IO_READ_TIME") }}
-            <small>~{{ formattedProp("AVERAGE_IO_READ_SPEED") }}</small>
-            <FontAwesomeIcon
-              :icon="faInfoCircle"
-              class="cursor-help d-inline-block text-secondary"
-              v-tippy="{
-                content: getHelpMessage('io timings parallel'),
-              }"
-              v-if="
-                node[NodeProp.WORKERS_PLANNED] ||
-                node[NodeProp.WORKERS_PLANNED_BY_GATHER]
-              "
-            ></FontAwesomeIcon>
-          </span>
-          <br />
-          <span v-if="node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]" class="ms-2">
-            <b>Write:&nbsp;</b>
-            {{ formattedProp("EXCLUSIVE_IO_WRITE_TIME") }}
-            <small>~{{ formattedProp("AVERAGE_IO_WRITE_SPEED") }}</small>
-          </span>
-        </dd>
-      </dl>
-      <b> Blocks: </b>
+      <io-tooltip :node="node" exclusive />
       <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Blocks</th>
+            <td class="text-end" width="25%">Hit</td>
+            <td class="text-end" width="25%">Read</td>
+            <td class="text-end" width="25%">Dirtied</td>
+            <td class="text-end" width="25%">Written</td>
+          </tr>
+        </thead>
         <tbody>
           <tr>
-            <td></td>
-            <th class="text-end" width="25%">Hit</th>
-            <th class="text-end" width="25%">Read</th>
-            <th class="text-end" width="25%">Dirtied</th>
-            <th class="text-end" width="25%">Written</th>
-          </tr>
-          <tr>
-            <th>Shared</th>
+            <td>Shared</td>
             <td
               class="text-end"
               v-html="formattedProp('EXCLUSIVE_SHARED_HIT_BLOCKS') || '-'"
@@ -387,7 +347,7 @@ watch(activeTab, () => {
             ></td>
           </tr>
           <tr>
-            <th>Temp</th>
+            <td>Temp</td>
             <td class="text-end bg-hatched"></td>
             <td
               class="text-end"
@@ -400,7 +360,7 @@ watch(activeTab, () => {
             ></td>
           </tr>
           <tr>
-            <th>Local</th>
+            <td>Local</td>
             <td
               class="text-end"
               v-html="formattedProp('EXCLUSIVE_LOCAL_HIT_BLOCKS') || '-'"

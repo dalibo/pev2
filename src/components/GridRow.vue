@@ -10,7 +10,6 @@ import {
   cost,
   duration,
   factor,
-  formatNodeProp,
   keysToString,
   sortKeys,
   transferRate,
@@ -20,6 +19,8 @@ import GridProgressBar from "@/components/GridProgressBar.vue"
 import WorkersDetail from "@/components/WorkersDetail.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
 import SeverityBullet from "@/components/SeverityBullet.vue"
+import IoTooltip from "@/components/tooltip/IoTooltip.vue"
+import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
 import useNode from "@/node"
 import { directive as vTippy } from "vue-tippy"
 import { HelpService } from "@/services/help-service"
@@ -53,9 +54,9 @@ const {
   estimateFactorPercent,
   estimateFactorTooltip,
   executionTimePercent,
+  formattedProp,
   heapFetchesClass,
   heapFetchesTooltip,
-  ioTooltip,
   localDirtiedPercent,
   localHitPercent,
   localReadPercent,
@@ -74,17 +75,9 @@ const {
   sharedWrittenPercent,
   tempReadPercent,
   tempWrittenPercent,
-  timeTooltip,
   tilde,
 } = useNode(plan, node, viewOptions)
 const showDetails = ref<boolean>(false)
-
-// returns the formatted prop
-function formattedProp(propName: keyof typeof NodeProp) {
-  const property = NodeProp[propName]
-  const value = node[property]
-  return formatNodeProp(property, value)
-}
 </script>
 <template>
   <tr @click="showDetails = !showDetails" class="node">
@@ -94,10 +87,14 @@ function formattedProp(propName: keyof typeof NodeProp) {
         <span class="font-weight-normal small">#{{ node.nodeId }} </span>
       </a>
     </td>
-    <td
+    <tippy
       class="text-end grid-progress-cell text-nowrap"
+      tag="td"
       v-if="columns.includes('time')"
     >
+      <template #content>
+        <time-tooltip :node="node" />
+      </template>
       <GridProgressBar
         :percentage="
           (node[NodeProp.EXCLUSIVE_DURATION] /
@@ -114,10 +111,7 @@ function formattedProp(propName: keyof typeof NodeProp) {
         "
       ></GridProgressBar>
       <!-- time -->
-      <div
-        class="position-relative d-flex"
-        v-tippy="{ content: timeTooltip, allowHTML: true }"
-      >
+      <div class="position-relative d-flex">
         <severity-bullet
           :severity="durationClass"
           v-if="durationClass"
@@ -133,53 +127,65 @@ function formattedProp(propName: keyof typeof NodeProp) {
           {{ executionTimePercent }}%
         </template>
       </div>
-    </td>
-    <td
+    </tippy>
+    <tippy
       class="text-end grid-progress-cell text-nowrap"
+      tag="td"
       v-if="columns.includes('ioread')"
-      v-tippy="{ content: ioTooltip, allowHTML: true }"
     >
-      <template v-if="node[NodeProp.IO_READ_TIME]">
-        <GridProgressBar
-          :percentage="
-            (node[NodeProp.EXCLUSIVE_IO_READ_TIME] /
-              (plan.content.Plan[NodeProp.IO_READ_TIME] +
-                plan.content.Plan[NodeProp.IO_WRITE_TIME])) *
-            100
-          "
-        ></GridProgressBar>
-        {{ Math.round(node[NodeProp.EXCLUSIVE_IO_READ_TIME]).toLocaleString() }}
-        <div v-if="showDetails" class="small text-body-secondary">
-          {{ duration(node[NodeProp.EXCLUSIVE_IO_READ_TIME]) }}
-          <br />
-          {{ transferRate(node[NodeProp.AVERAGE_IO_READ_SPEED]) }}
-        </div>
+      <template #content>
+        <io-tooltip :node="node" class="mb-0" exclusive />
       </template>
-    </td>
-    <td
-      class="text-end grid-progress-cell text-nowrap"
-      v-if="columns.includes('iowrite')"
-      v-tippy="{ content: ioTooltip, allowHTML: true }"
-    >
-      <template v-if="node[NodeProp.IO_WRITE_TIME]">
+      <template v-if="node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]">
         <GridProgressBar
           :percentage="
-            (node[NodeProp.EXCLUSIVE_IO_WRITE_TIME] /
-              (plan.content.Plan[NodeProp.IO_READ_TIME] +
-                plan.content.Plan[NodeProp.IO_WRITE_TIME])) *
+            (node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME] /
+              (plan.content.Plan[NodeProp.SUM_IO_READ_TIME] +
+                plan.content.Plan[NodeProp.SUM_IO_WRITE_TIME])) *
             100
           "
         ></GridProgressBar>
         {{
-          Math.round(node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]).toLocaleString()
+          Math.round(node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]).toLocaleString()
         }}
         <div v-if="showDetails" class="small text-body-secondary">
-          {{ duration(node[NodeProp.EXCLUSIVE_IO_WRITE_TIME]) }}
+          {{ duration(node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]) }}
           <br />
-          {{ transferRate(node[NodeProp.AVERAGE_IO_WRITE_SPEED]) }}
+          {{ transferRate(node[NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_READ_SPEED]) }}
         </div>
       </template>
-    </td>
+    </tippy>
+    <tippy
+      class="text-end grid-progress-cell text-nowrap"
+      tag="td"
+      v-if="columns.includes('iowrite')"
+    >
+      <template #content>
+        <io-tooltip :node="node" class="mb-0" exclusive />
+      </template>
+      <template v-if="node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME]">
+        <GridProgressBar
+          :percentage="
+            (node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME] /
+              (plan.content.Plan[NodeProp.SUM_IO_READ_TIME] +
+                plan.content.Plan[NodeProp.SUM_IO_WRITE_TIME])) *
+            100
+          "
+        ></GridProgressBar>
+        {{
+          Math.round(
+            node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME],
+          ).toLocaleString()
+        }}
+        <div v-if="showDetails" class="small text-body-secondary">
+          {{ duration(node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME]) }}
+          <br />
+          {{
+            transferRate(node[NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_WRITE_SPEED])
+          }}
+        </div>
+      </template>
+    </tippy>
     <td
       class="text-end grid-progress-cell text-nowrap"
       v-if="columns.includes('rows')"
