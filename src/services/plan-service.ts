@@ -77,6 +77,8 @@ export class PlanService {
       this.flat = this.flat.concat(_.flattenDeep(this.recurse([cte as Node])))
     })
 
+    this.fixCteScansDuration(plan)
+    this.fixInitPlanUsageDuration(plan)
     this.calculateMaximums(plan)
     return plan
   }
@@ -278,12 +280,106 @@ export class PlanService {
     )
   }
 
+  public fixCteScansDuration(plan: IPlan) {
+    // No need for fix if plan is not analyzed
+    if (!plan.isAnalyze) {
+      return
+    }
+
+    // Iterate over the CTEs
+    _.each(plan.ctes, (cte) => {
+      // Time spent in the CTE itself
+      const cteDuration = cte[NodeProp.ACTUAL_TOTAL_TIME]
+
+      // Find all nodes that are "CTE Scan" for the given CTE
+      const cteScans = _.filter(
+        this.flat,
+        (node) =>
+          `CTE ${node[NodeProp.CTE_NAME]}` == cte[NodeProp.SUBPLAN_NAME],
+      )
+
+      // Sum of exclusive time for the CTE Scans
+      const sumScansDuration = _.sumBy(
+        cteScans,
+        (node) => node[NodeProp.EXCLUSIVE_DURATION],
+      )
+
+      // Subtract exclusive time proportionally
+      _.each(cteScans, (node) => {
+        node[NodeProp.EXCLUSIVE_DURATION] =
+          node[NodeProp.EXCLUSIVE_DURATION] -
+          (cteDuration * node[NodeProp.ACTUAL_TOTAL_TIME]) / sumScansDuration
+      })
+    })
+  }
+
+  public fixInitPlanUsageDuration(plan: IPlan) {
+    // No need for fix if plan is not analyzed
+    if (!plan.isAnalyze) {
+      return
+    }
+
+    // Find all initPlans
+    const initPlans = _.filter(
+      this.flat,
+      (node) => node[NodeProp.PARENT_RELATIONSHIP] == "InitPlan",
+    )
+
+    _.each(initPlans, (subPlan) => {
+      // Get the sub plan name
+      // It can be either:
+      //  - InitPlan 2 (returns $1) -> $1
+      //  - InitPlan 2 -> InitPlan 2
+      if (!subPlan[NodeProp.SUBPLAN_NAME]) {
+        return
+      }
+      const matches = /(InitPlan\s+[1-9]+)(?:\s+\(returns (\$[0-9]+)\))*/m.exec(
+        subPlan[NodeProp.SUBPLAN_NAME],
+      )
+      if (!matches) {
+        return
+      }
+      const name = matches[2] || matches[1]
+
+      // Find all nodes that are using data from this InitPlan
+      // There should be the name of the sub plan somewhere in the extra info
+      _.each(
+        _.filter(
+          this.flat,
+          (node) => node[NodeProp.PARENT_RELATIONSHIP] != "InitPlan",
+        ),
+        (node) => {
+          _.each(node, (value) => {
+            if (typeof value != "string") {
+              return
+            }
+            // Value for node property should contain sub plan name (with a number
+            // matching exactly)
+            const matches = new RegExp(
+              `.*${name.replace(/[^a-zA-Z0-9]/g, "\\$&")}[0-9]?`,
+            ).exec(value)
+            if (matches) {
+              node[NodeProp.EXCLUSIVE_DURATION] -=
+                subPlan[NodeProp.ACTUAL_TOTAL_TIME]
+              // Stop iterating for this node
+              return false
+            }
+          })
+        },
+      )
+    })
+  }
+
   // function to get the sum of actual durations of a a node children
   public childrenDuration(node: Node, duration: number) {
     _.each(node[NodeProp.PLANS], (child) => {
       // Subtract sub plans duration from this node except for InitPlans
       // (ie. CTE)
-      if (child[NodeProp.PARENT_RELATIONSHIP] !== "InitPlan") {
+      if (
+        child[NodeProp.PARENT_RELATIONSHIP] !== "InitPlan" ||
+        (child[NodeProp.PARENT_RELATIONSHIP] == "InitPlan" &&
+          node[NodeProp.NODE_TYPE] == "Result")
+      ) {
         duration += child[NodeProp.ACTUAL_TOTAL_TIME] || 0 // Duration may not be set
       }
     })

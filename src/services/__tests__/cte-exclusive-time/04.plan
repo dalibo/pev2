@@ -1,0 +1,13 @@
+ Limit  (cost=3474.45..3474.45 rows=1 width=6) (actual time=0.078..0.080 rows=0 loops=1)
+   InitPlan 1 (returns $0)
+     ->  Limit  (cost=0.56..2.58 rows=1 width=4) (actual time=0.060..0.060 rows=0 loops=1)
+           ->  Index Scan using pond_item_common_pkey on pond_item_common pond_item_common_1  (cost=0.56..2.58 rows=1 width=4) (actual time=0.060..0.060 rows=0 loops=1)
+                 Index Cond: (objectid = 333)
+   ->  Sort  (cost=3471.87..3471.87 rows=1 width=6) (actual time=0.078..0.078 rows=0 loops=1)
+         Sort Key: pond_item_common.nbr_sale, pond_item_common.objectid
+         Sort Method: quicksort  Memory: 25kB
+         ->  Index Scan using pond_item_common_x1 on pond_item_common  (cost=0.56..3471.86 rows=1 width=6) (actual time=0.063..0.063 rows=0 loops=1)
+               Index Cond: (pond_user = $0)
+               Filter: ((objectid <> 111) AND (status = 30) AND (1 = (misc_bits & 16)) AND (video_standard = ANY ('{1,2,3,4,5,6,7,8,9}'::integer[])))
+ Total runtime: 0.109 ms
+

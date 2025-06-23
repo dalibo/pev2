@@ -1,0 +1,14 @@
+Nested Loop  (cost=19202.84..76099.33 rows=53175 width=144) (actual time=146.530..2999.096 rows=4379 loops=1)
+  ->  HashAggregate  (cost=19202.08..19733.83 rows=53175 width=16) (actual time=144.782..147.879 rows=4379 loops=1)
+        Group Key: m.principal_id
+        ->  Hash Join  (cost=7564.47..18843.90 rows=143269 width=16) (actual time=121.642..142.157 rows=4608 loops=1)
+              Hash Cond: (se.id = m.community_id)
+              ->  Function Scan on find_all_id_under_node se  (cost=0.25..10.25 rows=1000 width=16) (actual time=0.603..0.604 rows=6 loops=1)
+              ->  Hash  (cost=5280.54..5280.54 rows=118054 width=32) (actual time=121.000..121.000 rows=117942 loops=1)
+                    Buckets: 65536  Batches: 4  Memory Usage: 2688kB
+                    ->  Seq Scan on member_community_map m  (cost=0.00..5280.54 rows=118054 width=32) (actual time=0.010..54.564 rows=117942 loops=1)
+  ->  CTE Scan on acl_row  (cost=0.76..1.03 rows=1 width=144) (actual time=0.649..0.650 rows=1 loops=4379)
+        CTE acl_row
+          ->  Result  (cost=0.00..0.76 rows=1 width=112) (actual time=0.607..0.607 rows=1 loops=4379)
+Planning time: 0.650 ms
+Execution time: 2999.940 ms
