@@ -41,7 +41,7 @@ function durationPercent(nodes: Node[]) {
 const perTable = computed(() => {
   const tables: { [key: string]: Node[] } = _.groupBy(
     _.filter(nodes, (n) => n[NodeProp.RELATION_NAME] !== undefined),
-    NodeProp.RELATION_NAME
+    NodeProp.RELATION_NAME,
   )
   const values: StatsTableItemType[] = []
   _.each(tables, (nodes, tableName) => {
@@ -59,7 +59,7 @@ const perTable = computed(() => {
 const perFunction = computed(() => {
   const functions: { [key: string]: Node[] } = _.groupBy(
     _.filter(nodes, (n) => n[NodeProp.FUNCTION_NAME] !== undefined),
-    NodeProp.FUNCTION_NAME
+    NodeProp.FUNCTION_NAME,
   )
   const values: StatsTableItemType[] = []
   _.each(functions, (nodes, functionName) => {
@@ -77,7 +77,7 @@ const perFunction = computed(() => {
 const perNodeType = computed(() => {
   const nodeTypes: { [key: string]: Node[] } = _.groupBy(
     nodes,
-    NodeProp.NODE_TYPE
+    NodeProp.NODE_TYPE,
   )
   const values: StatsTableItemType[] = []
   _.each(nodeTypes, (nodes, nodeType) => {
@@ -95,7 +95,7 @@ const perNodeType = computed(() => {
 const perIndex = computed(() => {
   const indexes: { [key: string]: Node[] } = _.groupBy(
     _.filter(nodes, (n) => n[NodeProp.INDEX_NAME] !== undefined),
-    NodeProp.INDEX_NAME
+    NodeProp.INDEX_NAME,
   )
   const values: StatsTableItemType[] = []
   _.each(indexes, (nodes, indexName) => {

@@ -58,7 +58,7 @@ function durationPercent(node: Node) {
   <tbody :class="expanded ? '' : 'd-none'">
     <tr
       v-for="node in _.reverse(
-        _.sortBy(props.value.nodes, NodeProp.EXCLUSIVE_DURATION)
+        _.sortBy(props.value.nodes, NodeProp.EXCLUSIVE_DURATION),
       )"
       :key="node.nodeId"
       style="font-size: smaller"

@@ -6,7 +6,7 @@ declare module "d3-flextree" {
       | number
       | ((
           nodeA: FlexHierarchyPointNode<Datum>,
-          nodeB: FlexHierarchyPointNode<Datum>
+          nodeB: FlexHierarchyPointNode<Datum>,
         ) => number)
   }): FlexTreeLayout<Datum>
 
@@ -48,7 +48,7 @@ declare module "d3-flextree" {
 
     hierarchy<Datum>(
       data: Datum,
-      children?: (d: Datum) => Iterable<Datum> | null | undefined
+      children?: (d: Datum) => Iterable<Datum> | null | undefined,
     ): FlexHierarchiePointNode<Datum>
   }
 }

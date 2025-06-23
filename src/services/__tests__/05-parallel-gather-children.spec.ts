@@ -41,7 +41,7 @@ Execution Time: 1626.725 ms
   it("doesn't not multiply by number of loops", () => {
     const aggregateNode = root && root.Plans[0].Plans[0].Plans[0]
     expect(
-      1.79 - (aggregateNode["*Duration (exclusive)"] as number) < 0.01
+      1.79 - (aggregateNode["*Duration (exclusive)"] as number) < 0.01,
     ).toBeTruthy()
   })
 })

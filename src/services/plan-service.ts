@@ -35,7 +35,7 @@ export class PlanService {
   public createPlan(
     planName: string,
     planContent: IPlanContent,
-    planQuery: string
+    planQuery: string,
   ): IPlan {
     // remove any extra white spaces in the middle of query
     // (\S) start match after any non-whitespace character => group 1
@@ -208,7 +208,7 @@ export class PlanService {
         if (f !== Infinity) {
           return f
         }
-      })
+      }),
     ) as number
     plan.content.maxEstimateFactor = highestEstimateFactor * 2 || 1
   }
@@ -268,7 +268,7 @@ export class PlanService {
           const revised = <number>node[NodeProp[prop]] * loops
           node[NodeProp[revisedProp] as unknown as keyof typeof Node] = revised
         }
-      }
+      },
     )
   }
 
@@ -435,7 +435,7 @@ export class PlanService {
         out[out.length - 1] += line
       } else if (
         line.match(
-          /^(?:Total\s+runtime|Planning\s+time|Execution\s+time|Time|Filter|Output|JIT)/i
+          /^(?:Total\s+runtime|Planning\s+time|Execution\s+time|Time|Filter|Output|JIT)/i,
         )
       ) {
         out.push(line)
@@ -524,7 +524,7 @@ export class PlanService {
         nonCapturingGroupClose +
         optionalGroup +
         "(.*)" +
-        "\\s*$"
+        "\\s*$",
     )
 
     const jitRegex = /^(\s*)JIT:\s*$/
@@ -578,7 +578,7 @@ export class PlanService {
         nonCapturingGroupClose +
         nonCapturingGroupClose +
         "\\s*$",
-      "m"
+      "m",
     )
 
     _.each(lines, (line: string) => {
@@ -620,21 +620,21 @@ export class PlanService {
         ) {
           newNode[NodeProp.STARTUP_COST] = parseFloat(
             nodeMatches[NodeMatch.EstimatedStartupCost1] ||
-              nodeMatches[NodeMatch.EstimatedStartupCost2]
+              nodeMatches[NodeMatch.EstimatedStartupCost2],
           )
           newNode[NodeProp.TOTAL_COST] = parseFloat(
             nodeMatches[NodeMatch.EstimatedTotalCost1] ||
-              nodeMatches[NodeMatch.EstimatedTotalCost2]
+              nodeMatches[NodeMatch.EstimatedTotalCost2],
           )
           newNode[NodeProp.PLAN_ROWS] = parseInt(
             nodeMatches[NodeMatch.EstimatedRows] ||
               nodeMatches[NodeMatch.EstimatedRows2],
-            0
+            0,
           )
           newNode[NodeProp.PLAN_WIDTH] = parseInt(
             nodeMatches[NodeMatch.EstimatedRowWidth] ||
               nodeMatches[NodeMatch.EstimatedRowWidth2],
-            0
+            0,
           )
         }
         if (
@@ -645,11 +645,11 @@ export class PlanService {
         ) {
           newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
             nodeMatches[NodeMatch.ActualTimeFirst1] ||
-              nodeMatches[NodeMatch.ActualTimeFirst2]
+              nodeMatches[NodeMatch.ActualTimeFirst2],
           )
           newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
             nodeMatches[NodeMatch.ActualTimeLast1] ||
-              nodeMatches[NodeMatch.ActualTimeLast2]
+              nodeMatches[NodeMatch.ActualTimeLast2],
           )
         }
 
@@ -669,7 +669,7 @@ export class PlanService {
           newNode[NodeProp.ACTUAL_LOOPS] = parseInt(
             nodeMatches[NodeMatch.ActualLoops1] ||
               nodeMatches[NodeMatch.ActualLoops2],
-            0
+            0,
           )
         }
 
@@ -763,18 +763,18 @@ export class PlanService {
           workerMatches[WorkerMatch.ActualTimeLast]
         ) {
           worker[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
-            workerMatches[WorkerMatch.ActualTimeFirst]
+            workerMatches[WorkerMatch.ActualTimeFirst],
           )
           worker[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
-            workerMatches[WorkerMatch.ActualTimeLast]
+            workerMatches[WorkerMatch.ActualTimeLast],
           )
           worker[NodeProp.ACTUAL_ROWS] = parseInt(
             workerMatches[WorkerMatch.ActualRows],
-            0
+            0,
           )
           worker[NodeProp.ACTUAL_LOOPS] = parseInt(
             workerMatches[WorkerMatch.ActualLoops],
-            0
+            0,
           )
         }
 
@@ -817,7 +817,7 @@ export class PlanService {
           }
           if (_.last(lastElement.node?.[NodeProp.WORKERS])) {
             const worker: Worker = _.last(
-              lastElement.node?.[NodeProp.WORKERS]
+              lastElement.node?.[NodeProp.WORKERS],
             ) as Worker
             worker.JIT = {} as JIT
             element = {
@@ -1142,12 +1142,12 @@ export class PlanService {
         [SortGroupsProp.GROUP_COUNT]: parseInt(matches[2], 0),
         [SortGroupsProp.SORT_METHODS_USED]: _.map(
           matches[3].split(","),
-          _.trim
+          _.trim,
         ),
         [SortGroupsProp.SORT_SPACE_MEMORY]: {
           [SortSpaceMemoryProp.AVERAGE_SORT_SPACE_USED]: parseInt(
             matches[4],
-            0
+            0,
           ),
           [SortSpaceMemoryProp.PEAK_SORT_SPACE_USED]: parseInt(matches[5], 0),
         },
@@ -1195,8 +1195,7 @@ export class PlanService {
   }
 
   private calculateIoTimingsAverage(node: Node) {
-    const ioReadTime =
-      (node[NodeProp["EXCLUSIVE_IO_READ_TIME"]] as number) || 0
+    const ioReadTime = (node[NodeProp["EXCLUSIVE_IO_READ_TIME"]] as number) || 0
     if (ioReadTime) {
       const sharedReadBlocks =
         (node[NodeProp["EXCLUSIVE_SHARED_READ_BLOCKS"]] as number) || 0

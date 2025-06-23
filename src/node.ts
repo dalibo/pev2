@@ -15,7 +15,7 @@ import { numberToColorHsl } from "@/services/color-service"
 export default function useNode(
   plan: Ref<IPlan>,
   node: Node,
-  viewOptions: ViewOptions
+  viewOptions: ViewOptions,
 ) {
   const executionTimePercent = ref<number>(NaN)
   // UI flags
@@ -51,7 +51,7 @@ export default function useNode(
           break
         }
         barWidth.value = Math.round(
-          (value / (plan.value.planStats.maxDuration as number)) * 100
+          (value / (plan.value.planStats.maxDuration as number)) * 100,
         )
         highlightValue.value = duration(value)
         break
@@ -63,7 +63,7 @@ export default function useNode(
         }
         barWidth.value =
           Math.round(
-            (value / (plan.value.planStats.maxRows as number)) * 100
+            (value / (plan.value.planStats.maxRows as number)) * 100,
           ) || 0
         highlightValue.value = rows(value)
         break
@@ -74,7 +74,7 @@ export default function useNode(
           break
         }
         barWidth.value = Math.round(
-          (value / (plan.value.planStats.maxCost as number)) * 100
+          (value / (plan.value.planStats.maxCost as number)) * 100,
         )
         highlightValue.value = cost(value)
         break
@@ -87,7 +87,9 @@ export default function useNode(
 
   const nodeName = computed((): string => {
     let nodeName = isParallelAware.value ? "Parallel " : ""
-    nodeName += node[NodeProp.PARTIAL_MODE] ? node[NodeProp.PARTIAL_MODE] + " " : ""
+    nodeName += node[NodeProp.PARTIAL_MODE]
+      ? node[NodeProp.PARTIAL_MODE] + " "
+      : ""
     nodeName += node[NodeProp.NODE_TYPE]
     return nodeName
   })
@@ -112,10 +114,10 @@ export default function useNode(
     const nodeKey = Object.keys(node).find(
       (key) =>
         key === NodeProp.ROWS_REMOVED_BY_FILTER_REVISED ||
-        key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED
+        key === NodeProp.ROWS_REMOVED_BY_JOIN_FILTER_REVISED,
     )
     return Object.keys(NodeProp).find(
-      (prop) => NodeProp[prop as NodePropStrings] === nodeKey
+      (prop) => NodeProp[prop as NodePropStrings] === nodeKey,
     ) as NodePropStrings
   })
 
@@ -254,7 +256,10 @@ export default function useNode(
   })
 
   const workersPlannedCount = computed((): number => {
-    return node[NodeProp.WORKERS_LAUNCHED] as number || node[NodeProp.WORKERS_PLANNED_BY_GATHER] as number
+    return (
+      (node[NodeProp.WORKERS_LAUNCHED] as number) ||
+      (node[NodeProp.WORKERS_PLANNED_BY_GATHER] as number)
+    )
   })
 
   const workersPlannedCountReversed = computed((): number[] => {
@@ -368,7 +373,7 @@ export default function useNode(
 
   const rowsTooltip = computed((): string => {
     return ["Rows: ", rows(node[NodeProp.ACTUAL_ROWS_REVISED] as number)].join(
-      ""
+      "",
     )
   })
 
@@ -488,7 +493,7 @@ export default function useNode(
             break
         }
         return text
-      }
+      },
   )
 
   const buffersByMetricTooltip = computed(() => (metric: NodeProp): string => {

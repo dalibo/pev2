@@ -135,17 +135,17 @@ export class Node {
     // tslint:disable-next-line:max-line-length
     const scanAndOperationMatches =
       /^((?:Parallel\s+)?(?:Seq|Tid.*|Bitmap\s+Heap|WorkTable|(?:Async\s+)?Foreign)\s+Scan|Update|Insert|Delete|Merge)\son\s(\S+)(?:\s+(\S+))?$/.exec(
-        type
+        type,
       )
     const bitmapMatches = /^(Bitmap\s+Index\s+Scan)\son\s(\S+)$/.exec(type)
     // tslint:disable-next-line:max-line-length
     const indexMatches =
       /^((?:Parallel\s+)?Index(?:\sOnly)?\sScan(?:\sBackward)?)\susing\s(\S+)\son\s(\S+)(?:\s+(\S+))?$/.exec(
-        type
+        type,
       )
     const cteMatches = /^(CTE\sScan)\son\s(\S+)(?:\s+(\S+))?$/.exec(type)
     const functionMatches = /^(Function\sScan)\son\s(\S+)(?:\s+(\S+))?$/.exec(
-      type
+      type,
     )
     const subqueryMatches = /^(Subquery\sScan)\son\s(.+)$/.exec(type)
     if (scanAndOperationMatches) {
@@ -181,7 +181,7 @@ export class Node {
       this[NodeProp.ALIAS] = subqueryMatches[2]
     }
     const parallelMatches = /^(Parallel\s+)(.*)/.exec(
-      <string>this[NodeProp.NODE_TYPE]
+      <string>this[NodeProp.NODE_TYPE],
     )
     if (parallelMatches) {
       this[NodeProp.NODE_TYPE] = parallelMatches[2]
@@ -190,7 +190,7 @@ export class Node {
 
     const joinMatches = /(.*)\sJoin$/.exec(<string>this[NodeProp.NODE_TYPE])
     const joinModifierMatches = /(.*)\s+(Full|Left|Right|Anti)/.exec(
-      <string>this[NodeProp.NODE_TYPE]
+      <string>this[NodeProp.NODE_TYPE],
     )
     if (joinMatches) {
       this[NodeProp.NODE_TYPE] = joinMatches[1]

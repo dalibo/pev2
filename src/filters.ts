@@ -84,7 +84,7 @@ export function keysToString(value: string[] | string): string {
 
 export function sortKeys(
   sort: string[],
-  presort: string[] | undefined
+  presort: string[] | undefined,
 ): string {
   return _.map(sort, (v) => {
     let result = _.escape(v)
@@ -118,7 +118,7 @@ export function formatBytes(value: number, precision = 2) {
   const i = Math.floor(Math.log(value) / Math.log(k))
   const compiled = _.template("${value} ${unit}")
   const valueString = parseFloat(
-    (value / Math.pow(k, i)).toPrecision(dm)
+    (value / Math.pow(k, i)).toPrecision(dm),
   ).toLocaleString()
   return compiled({ value: valueString, unit: units[i] })
 }
@@ -151,7 +151,7 @@ export function list(value: string[] | string): string {
     value = value.split(/\s*,\s*/)
   }
   const compiled = _.template(
-    "<% _.forEach(lines, function(line) { %><li><%= line %></li><% }); %>"
+    "<% _.forEach(lines, function(line) { %><li><%= line %></li><% }); %>",
   )
   return (
     '<ul class="list-unstyled mb-0">' + compiled({ lines: value }) + "</ul>"
@@ -160,7 +160,7 @@ export function list(value: string[] | string): string {
 
 function sortGroups(value: string): string {
   const app = createApp(SortGroup, { sortGroup: value }).mount(
-    document.createElement("div")
+    document.createElement("div"),
   )
   return app.$el.outerHTML
 }
@@ -174,7 +174,7 @@ export function transferRate(value: number): string {
 
 function jit(value: JIT): string {
   const app = createApp(JitDetails, { jit: value }).mount(
-    document.createElement("div")
+    document.createElement("div"),
   )
   return app.$el.outerHTML
 }

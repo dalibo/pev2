@@ -50,7 +50,6 @@ $buffers-colors: (
   written: map-get($severity-colors, 4),
 ) !default;
 
-
 /**
  * Shared buffers classes
  */
@@ -63,14 +62,15 @@ $buffers-colors: (
   }
 }
 
-
-.btn-group-xs > .btn, .btn-xs {
-  padding: .25rem .4rem;
+.btn-group-xs > .btn,
+.btn-xs {
+  padding: 0.25rem 0.4rem;
   font-size: $font-size-sm;
-  border-radius: .2rem;
+  border-radius: 0.2rem;
 
-  &, .fa {
-    line-height: .5;
+  &,
+  .fa {
+    line-height: 0.5;
   }
 }
 
@@ -81,7 +81,16 @@ $buffers-colors: (
   $color: $gray-lightest;
   $angle: 45deg;
   $progress-height: 1rem !default;
-  background-image: linear-gradient($angle, $color 25%, transparent 25%, transparent 50%, $color 50%, $color 75%, transparent 75%, transparent);
+  background-image: linear-gradient(
+    $angle,
+    $color 25%,
+    transparent 25%,
+    transparent 50%,
+    $color 50%,
+    $color 75%,
+    transparent 75%,
+    transparent
+  );
   background-size: $progress-height $progress-height;
 }
 
