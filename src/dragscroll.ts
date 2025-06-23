@@ -53,7 +53,8 @@ export default class Dragscroll {
         this.element.scrollTo(
           this.startScrollPositionX +
             (this.startMousePositionX - event.screenX),
-          this.startScrollPositionY + (this.startMousePositionY - event.screenY)
+          this.startScrollPositionY +
+            (this.startMousePositionY - event.screenY),
         )
       }
     })

@@ -35,7 +35,7 @@ defineProps<Props>()
             Average:
             {{
               kilobytes(
-                sortGroup["Sort Space Memory"]["Average Sort Space Used"]
+                sortGroup["Sort Space Memory"]["Average Sort Space Used"],
               )
             }}
             <br />

@@ -78,7 +78,7 @@ export function scrollChildIntoParentView(
   parent: Element,
   child: Element,
   shouldCenter: boolean,
-  done?: () => void
+  done?: () => void,
 ) {
   if (!child) {
     return
@@ -281,7 +281,7 @@ export function findNodeById(plan: IPlan, id: number): Node | undefined {
 
 export function findNodeBySubplanName(
   plan: IPlan,
-  subplanName: string
+  subplanName: string,
 ): Node | undefined {
   let o: Node | undefined = undefined
   if (plan.ctes) {

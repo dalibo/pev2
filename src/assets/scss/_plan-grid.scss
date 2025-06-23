@@ -9,9 +9,12 @@ $grid-progress-margin: 1px;
     // Truly attach borders to th even when collapsed when using sticky
     border-collapse: separate;
     border-spacing: 0;
-    > tbody, > thead, & {
+    > tbody,
+    > thead,
+    & {
       > tr {
-        > th, > td {
+        > th,
+        > td {
           font-size: $font-size-base;
           min-width: 20px;
           padding-left: $grid-progress-padding-x;
@@ -29,7 +32,7 @@ $grid-progress-margin: 1px;
   }
 
   .tree-lines {
-    font-family: 'monospace';
+    font-family: "monospace";
   }
 
   tr.node {
@@ -50,8 +53,10 @@ $grid-progress-margin: 1px;
     height: initial;
     $progress-gutter: 2px;
     left: calc($grid-progress-padding-x - $progress-gutter);
-    top: calc($grid-progress-margin * -1 + $grid-progress-padding-y - $progress-gutter);
-    height: calc(1em + $progress-gutter *2);
+    top: calc(
+      $grid-progress-margin * -1 + $grid-progress-padding-y - $progress-gutter
+    );
+    height: calc(1em + $progress-gutter * 2);
     width: calc(100% - $grid-progress-padding-x * 2 + $progress-gutter * 2);
     z-index: 0;
     font-size: inherit;

@@ -17,9 +17,9 @@ describe("PlanService", () => {
     const plan: IPlan = planService.createPlan("", r, "")
     const root = plan.content.Plan
     expect(root?.["*I/O Read Time (exclusive)"]).toBe(1)
-    expect(root?.["*I/O Read Speed (exclusive)"]).toBe(2000)  // 16 Mo/s
+    expect(root?.["*I/O Read Speed (exclusive)"]).toBe(2000) // 16 Mo/s
 
     expect(root?.["*I/O Write Time (exclusive)"]).toBe(2)
-    expect(root?.["*I/O Write Speed (exclusive)"]).toBe(2000)  // 16 Mo/s
+    expect(root?.["*I/O Write Speed (exclusive)"]).toBe(2000) // 16 Mo/s
   })
 })

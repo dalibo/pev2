@@ -26,7 +26,7 @@ const getHelpMessage = helpService.getHelpMessage
 const { workersLaunchedCount, workersPlannedCount } = useNode(
   plan,
   node,
-  viewOptions
+  viewOptions,
 )
 </script>
 <template>
