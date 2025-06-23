@@ -1,0 +1,76 @@
+                                                                                                                                                   QUERY PLAN
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+ Subquery Scan location_state_templates  (cost=18119.01..18688.60 rows=200 width=100) (actual time=135738.621..136606.664 rows=19057 loops=1)
+   CTE nested_templates
+     ->  Recursive Union  (cost=2657.85..17981.86 rows=1847 width=147) (actual time=130.693..135231.371 rows=56380 loops=1)
+           ->  GroupAggregate  (cost=2657.85..3055.15 rows=1827 width=80) (actual time=130.662..196.354 rows=18266 loops=1)
+                 ->  Sort  (cost=2657.85..2703.51 rows=18266 width=80) (actual time=130.630..146.372 rows=18266 loops=1)
+                       Sort Key: bt.componenturl, bt.assetid, bt.aspect, bt.templateid
+                       Sort Method:  external merge  Disk: 1488kB
+                       ->  Hash Left Join  (cost=59.05..552.90 rows=18266 width=80) (actual time=0.718..21.493 rows=18266 loops=1)
+                             Hash Cond: (bt.assetid = tal.assetid)
+                             Join Filter: ((bt.componenturl = tal.componenturl) AND (bt.aspect = tal.template_aspect))
+                             ->  Seq Scan on base_templates bt  (cost=0.00..411.66 rows=18266 width=72) (actual time=0.006..6.723 rows=18266 loops=1)
+                             ->  Hash  (cost=58.92..58.92 rows=10 width=76) (actual time=0.706..0.706 rows=266 loops=1)
+                                   ->  Seq Scan on template_aspect_limits tal  (cost=0.00..58.92 rows=10 width=76) (actual time=0.012..0.548 rows=266 loops=1)
+                                         Filter: ((propertyid)::text = ''::text)
+           ->  Append  (cost=1488.92..1488.98 rows=2 width=147) (actual time=67454.018..67477.691 rows=19057 loops=2)
+                 CTE nested_level
+                   ->  GroupAggregate  (cost=1488.74..1488.81 rows=1 width=187) (actual time=967.564..1029.975 rows=19057 loops=2)
+                         ->  Sort  (cost=1488.74..1488.74 rows=1 width=187) (actual time=966.769..977.630 rows=19076 loops=2)
+                               Sort Key: nt.componenturl, nt.assetid, tp.propertyid, (CASE WHEN (aluatpvp.aspect <@ nt.aspect) THEN nt.aspect ELSE aluatpvp.aspect END), nt.limits, aluatpvp.templateid, nt.aspect
+                               Sort Method:  quicksort  Memory: 17kB
+                               ->  Nested Loop Left Join  (cost=1480.41..1488.73 rows=1 width=187) (actual time=672.525..819.753 rows=19076 loops=2)
+                                     Join Filter: ((CASE WHEN (aluatpvp.aspect <@ nt.aspect) THEN nt.aspect ELSE aluatpvp.aspect END) = tal.template_aspect)
+                                     ->  Unique  (cost=1480.41..1480.43 rows=1 width=152) (actual time=672.495..703.064 rows=19057 loops=2)
+                                           ->  Sort  (cost=1480.41..1480.42 rows=1 width=152) (actual time=671.605..683.163 rows=19094 loops=2)
+                                                 Sort Key: nt.componenturl, nt.assetid, tp.propertyid, (CASE WHEN (aluatpvp.aspect <@ nt.aspect) THEN nt.aspect ELSE aluatpvp.aspect END), ea.system_sort_number
+                                                 Sort Method:  quicksort  Memory: 17kB
+                                                 ->  Nested Loop  (cost=970.03..1480.40 rows=1 width=152) (actual time=17.198..506.362 rows=19094 loops=2)
+                                                       Join Filter: (aluatpvp.aspect = ea.aspect)
+                                                       ->  Nested Loop Anti Join  (cost=970.03..1442.72 rows=1 width=148) (actual time=17.187..355.264 rows=19094 loops=2)
+                                                             Join Filter: (tal.limit_aspect <@ aluatpvp.aspect)
+                                                             ->  Nested Loop  (cost=966.50..1432.28 rows=1 width=148) (actual time=17.164..285.476 rows=19197 loops=2)
+                                                                   Join Filter: ((nt.aspect @> aluatpvp.aspect) OR (nt.aspect <@ aluatpvp.aspect))
+                                                                   ->  Hash Join  (cost=966.50..1401.33 rows=32 width=112) (actual time=17.108..40.393 rows=18266 loops=2)
+                                                                         Hash Cond: (nt.templateid = tp.templateid)
+                                                                         ->  WorkTable Scan on nested_templates nt  (cost=0.00..365.40 rows=18270 width=104) (actual time=0.043..15.877 rows=28190 loops=2)
+                                                                         ->  Hash  (cost=966.49..966.49 rows=1 width=16) (actual time=1.086..1.086 rows=6 loops=1)
+                                                                               ->  Nested Loop Semi Join  (cost=16.05..966.49 rows=1 width=16) (actual time=0.165..1.073 rows=6 loops=1)
+                                                                                     Join Filter: ((((tp.propertyid)::text = (p.propertyid)::text) AND ((p.type)::text = 'templateid'::text)) OR (tp.propertyid IS NULL))
+                                                                                     ->  Seq Scan on sq_p_template_properties tp  (cost=0.00..1.69 rows=69 width=16) (actual time=0.009..0.031 rows=69 loops=1)
+                                                                                     ->  Materialize  (cost=16.05..21.55 rows=550 width=86) (actual time=0.001..0.007 rows=21 loops=69)
+                                                                                           ->  Seq Scan on sq_p_property p  (cost=0.00..15.50 rows=550 width=86) (actual time=0.035..0.045 rows=23 loops=1)
+                                                                   ->  Index Scan using all_loadable_url_asset_templateid_property_value_positions_pkey on all_loadable_url_asset_templateid_property_value_positions aluatpvp  (cost=0.00..0.94 rows=1 width=104) (actual time=0.010..0.011 rows=1 loops=36532)
+                                                                         Index Cond: ((aluatpvp.componenturl = nt.componenturl) AND (aluatpvp.assetid = nt.assetid) AND ((aluatpvp.propertyid)::text = (tp.propertyid)::text))
+                                                             ->  Bitmap Heap Scan on template_aspect_limits tal  (cost=3.53..10.19 rows=10 width=40) (actual time=0.001..0.001 rows=0 loops=38394)
+                                                                   Recheck Cond: (tal.limitid = ANY (nt.limits))
+                                                                   ->  Bitmap Index Scan on template_aspect_limits_pkey  (cost=0.00..3.53 rows=10 width=0) (actual time=0.001..0.001 rows=0 loops=38394)
+                                                                         Index Cond: (tal.limitid = ANY (nt.limits))
+                                                       ->  Seq Scan on existing_aspects ea  (cost=0.00..22.30 rows=1230 width=36) (actual time=0.001..0.003 rows=7 loops=38188)
+                                     ->  Index Scan using template_aspect_limits_idx1 on template_aspect_limits tal  (cost=0.00..8.27 rows=1 width=108) (actual time=0.004..0.005 rows=0 loops=38114)
+                                           Index Cond: ((nt.componenturl = tal.componenturl) AND (nt.assetid = tal.assetid) AND ((tp.propertyid)::text = (tal.propertyid)::text))
+                 ->  Unique  (cost=0.11..0.12 rows=1 width=147) (actual time=67454.012..67454.012 rows=0 loops=2)
+                       ->  Sort  (cost=0.11..0.12 rows=1 width=147) (actual time=67454.010..67454.010 rows=0 loops=2)
+                             Sort Key: nl1.componenturl, nl1.assetid, nl2.propertyid, nl1.aspect
+                             Sort Method:  quicksort  Memory: 17kB
+                             ->  Nested Loop Anti Join  (cost=0.00..0.10 rows=1 width=147) (actual time=67453.981..67453.981 rows=0 loops=2)
+                                   Join Filter: ((nl1.componenturl = nl3.componenturl) AND (nl1.assetid = nl3.assetid) AND (nl1.aspect = nl3.aspect) AND ((nl2.propertyid)::text = (nl3.propertyid)::text))
+                                   ->  Nested Loop  (cost=0.00..0.06 rows=1 width=147) (actual time=968.533..35256.406 rows=1582 loops=2)
+                                         Join Filter: ((nl1.componenturl = nl2.componenturl) AND (nl1.assetid = nl2.assetid) AND (nl1.source_aspect = nl2.aspect))
+                                         ->  CTE Scan on nested_level nl1  (cost=0.00..0.02 rows=1 width=132) (actual time=967.757..984.136 rows=791 loops=2)
+                                               Filter: (aspect <> source_aspect)
+                                         ->  CTE Scan on nested_level nl2  (cost=0.00..0.02 rows=1 width=115) (actual time=0.005..24.307 rows=38114 loops=1582)
+                                   ->  CTE Scan on nested_level nl3  (cost=0.00..0.02 rows=1 width=111) (actual time=0.006..11.188 rows=17996 loops=3164)
+                 ->  CTE Scan on nested_level  (cost=0.00..0.02 rows=1 width=147) (actual time=0.004..14.390 rows=19057 loops=2)
+   ->  GroupAggregate  (cost=137.15..162.74 rows=200 width=72) (actual time=135738.483..135903.633 rows=19057 loops=1)
+         ->  Sort  (cost=137.15..141.77 rows=1847 width=72) (actual time=135738.428..135812.668 rows=56380 loops=1)
+               Sort Key: nt.componenturl, nt.assetid, nt.aspect
+               Sort Method:  external merge  Disk: 4632kB
+               ->  CTE Scan on nested_templates nt  (cost=0.00..36.94 rows=1847 width=72) (actual time=130.699..135337.593 rows=56380 loops=1)
+   SubPlan 3
+     ->  Aggregate  (cost=2.70..2.71 rows=1 width=12) (actual time=0.034..0.035 rows=1 loops=19057)
+           ->  Seq Scan on sq_p_template_properties  (cost=0.00..2.55 rows=58 width=12) (actual time=0.003..0.021 rows=22 loops=19057)
+                 Filter: (templateid = ANY ($3))

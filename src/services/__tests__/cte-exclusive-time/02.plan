@@ -1,0 +1,14 @@
+                                                         QUERY PLAN
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Append  (cost=0.07..0.35 rows=4 width=8) (actual time=101.225..504.954 rows=5 loops=1)
+   CTE x
+     ->  Function Scan on generate_series i  (cost=0.00..0.07 rows=5 width=8) (actual time=101.209..504.880 rows=5 loops=1)
+   ->  CTE Scan on x  (cost=0.00..0.11 rows=2 width=8) (actual time=101.223..504.937 rows=2 loops=1)
+         Filter: (i < 3)
+         Rows Removed by Filter: 3
+   ->  CTE Scan on x x_1  (cost=0.00..0.11 rows=2 width=8) (actual time=0.005..0.007 rows=3 loops=1)
+         Filter: (i > 2)
+         Rows Removed by Filter: 2
+ Planning Time: 0.499 ms
+ Execution Time: 505.124 ms
+(11 rows)

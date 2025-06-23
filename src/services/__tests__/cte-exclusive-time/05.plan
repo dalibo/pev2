@@ -1,0 +1,16 @@
+Aggregate  (cost=259470.50..259470.51 rows=1 width=8) (actual time=1938.292..1938.292 rows=1 loops=1)
+  InitPlan 2 (returns $1)
+    ->  Result  (cost=259419.20..259419.21 rows=1 width=32) (actual time=1736.419..1736.419 rows=1 loops=1)
+          InitPlan 1 (returns $0)
+            ->  Bitmap Heap Scan on user_data_read_access udr  (cost=2990.72..259419.20 rows=116503 width=4) (actual time=86.519..1727.318 rows=124468 loops=1)
+                  Recheck Cond: ((user_id = 1478) AND (entity_type_id = 3))
+                  Rows Removed by Index Recheck: 14687029
+                  Heap Blocks: exact=38322 lossy=79844
+                  ->  Bitmap Index Scan on user_data_read_access_uk1  (cost=0.00..2961.60 rows=116503 width=0) (actual time=71.005..71.005 rows=124468 loops=1)
+                        Index Cond: ((user_id = 1478) AND (entity_type_id = 3))
+  ->  Index Scan using pk_vendor on vendor v  (cost=0.42..51.27 rows=10 width=4) (actual time=1759.869..1931.146 rows=124468 loops=1)
+        Index Cond: (id = ANY ($1))
+        Filter: ((NOT deleted) AND (client_id = 1007))
+Planning time: 1.555 ms
+Execution time: 1938.457 ms
+
