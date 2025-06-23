@@ -28,9 +28,16 @@ interface JitElement {
   node: object
 }
 
+type recurseItemType = Array<[Node, recurseItemType]>
+
 export class PlanService {
   private static instance: PlanService
   private nodeId = 0
+  private flat: Node[] = []
+
+  private recurse(nodes: Node[]): recurseItemType {
+    return _.map(nodes, (node) => [node, this.recurse(node[NodeProp.PLANS])])
+  }
 
   public createPlan(
     planName: string,
@@ -62,6 +69,14 @@ export class PlanService {
 
     this.nodeId = 1
     this.processNode(planContent.Plan, plan)
+
+    this.flat = this.flat.concat(
+      _.flattenDeep(this.recurse([plan.content.Plan as Node])),
+    )
+    _.each(plan.ctes, (cte) => {
+      this.flat = this.flat.concat(_.flattenDeep(this.recurse([cte as Node])))
+    })
+
     this.calculateMaximums(plan)
     return plan
   }
@@ -109,32 +124,22 @@ export class PlanService {
   }
 
   public calculateMaximums(plan: IPlan) {
-    type recurseItemType = Array<[Node, recurseItemType]>
-    function recurse(nodes: Node[]): recurseItemType {
-      return _.map(nodes, (node) => [node, recurse(node[NodeProp.PLANS])])
-    }
-    let flat: Node[] = []
-    flat = flat.concat(_.flattenDeep(recurse([plan.content.Plan as Node])))
-    _.each(plan.ctes, (cte) => {
-      flat = flat.concat(_.flattenDeep(recurse([cte as Node])))
-    })
-
-    const largest = _.maxBy(flat, NodeProp.ACTUAL_ROWS_REVISED)
+    const largest = _.maxBy(this.flat, NodeProp.ACTUAL_ROWS_REVISED)
     if (largest) {
       plan.content.maxRows = largest[NodeProp.ACTUAL_ROWS_REVISED] as number
     }
 
-    const costliest = _.maxBy(flat, NodeProp.EXCLUSIVE_COST)
+    const costliest = _.maxBy(this.flat, NodeProp.EXCLUSIVE_COST)
     if (costliest) {
       plan.content.maxCost = costliest[NodeProp.EXCLUSIVE_COST] as number
     }
 
-    const totalCostliest = _.maxBy(flat, NodeProp.TOTAL_COST)
+    const totalCostliest = _.maxBy(this.flat, NodeProp.TOTAL_COST)
     if (totalCostliest) {
       plan.content.maxTotalCost = totalCostliest[NodeProp.TOTAL_COST] as number
     }
 
-    const slowest = _.maxBy(flat, NodeProp.EXCLUSIVE_DURATION)
+    const slowest = _.maxBy(this.flat, NodeProp.EXCLUSIVE_DURATION)
     if (slowest) {
       plan.content.maxDuration = slowest[NodeProp.EXCLUSIVE_DURATION] as number
     }
@@ -151,7 +156,7 @@ export class PlanService {
         (o[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] as number)
       )
     }
-    const highestShared = _.maxBy(flat, (o) => {
+    const highestShared = _.maxBy(this.flat, (o) => {
       return sumShared(o)
     }) as Node
     if (highestShared && sumShared(highestShared)) {
@@ -164,7 +169,7 @@ export class PlanService {
         (o[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] as number)
       )
     }
-    const highestTemp = _.maxBy(flat, (o) => {
+    const highestTemp = _.maxBy(this.flat, (o) => {
       return sumTemp(o)
     }) as Node
     if (highestTemp && sumTemp(highestTemp)) {
@@ -179,7 +184,7 @@ export class PlanService {
         (o[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] as number)
       )
     }
-    const highestLocal = _.maxBy(flat, (o) => {
+    const highestLocal = _.maxBy(this.flat, (o) => {
       return sumLocal(o)
     })
     if (highestLocal && sumLocal(highestLocal)) {
@@ -195,7 +200,7 @@ export class PlanService {
         (o[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME] as number)
       )
     }
-    const highestIo = _.maxBy(flat, (o) => {
+    const highestIo = _.maxBy(this.flat, (o) => {
       return sumIo(o)
     })
     if (highestIo && sumIo(highestIo)) {
@@ -203,7 +208,7 @@ export class PlanService {
     }
 
     const highestEstimateFactor = _.max(
-      _.map(flat, (node) => {
+      _.map(this.flat, (node) => {
         const f = node[NodeProp.PLANNER_ESTIMATE_FACTOR]
         if (f !== Infinity) {
           return f
