@@ -123,7 +123,8 @@ watch(
     </td>
     <td class="node-type pe-2">
       <level-divider
-        :isSubplan="!!node[NodeProp.SUBPLAN_NAME]"
+        :isSubplan="isSubplan"
+        isNode
         :isLastChild="!!isLastChild"
         :level="level"
         :branches="branches"

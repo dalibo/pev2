@@ -19,6 +19,7 @@ import { HelpService, scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlan, Node } from "@/interfaces"
 import { HighlightedNodeIdKey, PlanKey, SelectNodeKey } from "@/symbols"
 import DiagramRow from "@/components/DiagramRow.vue"
+import LevelDivider from "@/components/LevelDivider.vue"
 
 import { directive as vTippy } from "vue-tippy"
 import tippy, { createSingleton } from "tippy.js"
@@ -296,14 +297,14 @@ provide("scrollTo", scrollTo)
                 :class="{ 'fw-bold': isCTE(row[1]) }"
                 :colspan="isCTE(row[1]) ? 3 : 2"
               >
-                <span class="tree-lines">
-                  <template v-for="i in _.range(row[0])">
-                    <template v-if="_.indexOf(row[3], i) != -1">│</template
-                    ><template v-else-if="i !== 0">&emsp;</template> </template
-                  ><template v-if="index !== 0">{{
-                    row[2] ? "└" : "├"
-                  }}</template>
-                </span>
+                <level-divider
+                  :isSubplan="!!row[1][NodeProp.SUBPLAN_NAME]"
+                  :isLastChild="!!row[2]"
+                  :level="row[0]"
+                  :branches="row[3]"
+                  :index="index"
+                  dense
+                ></level-divider>
                 <a
                   class="fst-italic text-reset"
                   href=""
