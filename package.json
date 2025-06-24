@@ -40,7 +40,7 @@
     "splitpanes": "^3.1.8",
     "vue": "^3.5.17",
     "vue-clipboard3": "^2.0.0",
-    "vue-tippy": "^6.6.0"
+    "vue-tippy": "^6.7.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
