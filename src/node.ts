@@ -190,12 +190,10 @@ export default function useNode(
 
   const rowsRemovedClass = computed(() => {
     let c
-    // high percent of rows removed is relevant only when duration is high
-    // as well
-    const i = rowsRemovedPercent.value * executionTimePercent.value
-    if (i > 2000) {
+    const i = rowsRemovedPercent.value
+    if (i > 90) {
       c = 4
-    } else if (i > 500) {
+    } else if (i > 50) {
       c = 3
     }
     if (c) {
