@@ -84,7 +84,7 @@ const showDetails = ref<boolean>(false)
     <td class="node-index text-secondary">
       <!-- node id -->
       <a :href="`#plan/node/${node.nodeId}`" @click.stop>
-        <span class="font-weight-normal small">#{{ node.nodeId }} </span>
+        <span class="font-weight-normal">#{{ node.nodeId }} </span>
       </a>
     </td>
     <tippy
@@ -124,7 +124,7 @@ const showDetails = ref<boolean>(false)
           }}
         </span>
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ duration(node[NodeProp.EXCLUSIVE_DURATION]) }}
         <br />
         <template v-if="executionTimePercent !== Infinity">
@@ -154,7 +154,7 @@ const showDetails = ref<boolean>(false)
             minimumFractionDigits: 3,
           })
         }}
-        <div v-if="showDetails" class="small text-body-secondary">
+        <div v-if="showDetails" class="text-body-secondary mt-1">
           {{ duration(node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]) }}
           <br />
           {{ transferRate(node[NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_READ_SPEED]) }}
@@ -183,7 +183,7 @@ const showDetails = ref<boolean>(false)
             minimumFractionDigits: 3,
           })
         }}
-        <div v-if="showDetails" class="small text-body-secondary">
+        <div v-if="showDetails" class="text-body-secondary mt-1">
           {{ duration(node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME]) }}
           <br />
           {{
@@ -251,7 +251,7 @@ const showDetails = ref<boolean>(false)
         </div>
         <div
           v-if="showDetails && node[NodeProp.PLANNER_ESTIMATE_FACTOR] != 1"
-          class="small text-body-secondary"
+          class="text-body-secondary mt-1"
         >
           Planned:<br />
           {{ node[NodeProp.PLAN_ROWS_REVISED]?.toLocaleString() }}
@@ -306,7 +306,7 @@ const showDetails = ref<boolean>(false)
           ></severity-bullet>
           <span class="flex-grow-1"> {{ rowsRemovedPercentString }}% </span>
         </div>
-        <div v-if="showDetails" class="small text-body-secondary">
+        <div v-if="showDetails" class="text-body-secondary mt-1">
           {{ tilde + formattedProp(rowsRemovedProp) }}
         </div>
       </template>
@@ -502,7 +502,7 @@ const showDetails = ref<boolean>(false)
       >
         {{ blocks(node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]) }}
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]) }}
       </div>
     </td>
@@ -522,7 +522,7 @@ const showDetails = ref<boolean>(false)
       >
         {{ blocks(node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]) }}
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]) }}
       </div>
     </td>
@@ -542,7 +542,7 @@ const showDetails = ref<boolean>(false)
       >
         {{ blocks(node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]) }}
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]) }}
       </div>
     </td>
@@ -562,7 +562,7 @@ const showDetails = ref<boolean>(false)
       >
         {{ blocks(node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]) }}
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]) }}
       </div>
     </td>
@@ -580,7 +580,7 @@ const showDetails = ref<boolean>(false)
       >
         {{ blocks(node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]) }}
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]) }}
       </div>
     </td>
@@ -600,7 +600,7 @@ const showDetails = ref<boolean>(false)
       >
         {{ blocks(node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]) }}
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]) }}
       </div>
     </td>
@@ -618,7 +618,7 @@ const showDetails = ref<boolean>(false)
       >
         {{ blocks(node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]) }}
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]) }}
       </div>
     </td>
@@ -636,7 +636,7 @@ const showDetails = ref<boolean>(false)
       >
         {{ blocks(node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]) }}
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]) }}
       </div>
     </td>
@@ -656,7 +656,7 @@ const showDetails = ref<boolean>(false)
       >
         {{ blocks(node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]) }}
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]) }}
       </div>
     </td>
@@ -676,7 +676,7 @@ const showDetails = ref<boolean>(false)
       >
         {{ blocks(node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]) }}
       </div>
-      <div v-if="showDetails" class="small text-body-secondary">
+      <div v-if="showDetails" class="text-body-secondary mt-1">
         {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]) }}
       </div>
     </td>
