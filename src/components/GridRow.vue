@@ -117,7 +117,11 @@ const showDetails = ref<boolean>(false)
           v-if="durationClass"
         ></severity-bullet>
         <span class="flex-grow-1">
-          {{ Math.round(node[NodeProp.EXCLUSIVE_DURATION]).toLocaleString() }}
+          {{
+            node[NodeProp.EXCLUSIVE_DURATION].toLocaleString(undefined, {
+              minimumFractionDigits: 3,
+            })
+          }}
         </span>
       </div>
       <div v-if="showDetails" class="small text-body-secondary">
@@ -146,7 +150,9 @@ const showDetails = ref<boolean>(false)
           "
         ></GridProgressBar>
         {{
-          Math.round(node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]).toLocaleString()
+          node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME].toLocaleString(undefined, {
+            minimumFractionDigits: 3,
+          })
         }}
         <div v-if="showDetails" class="small text-body-secondary">
           {{ duration(node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]) }}
@@ -173,9 +179,9 @@ const showDetails = ref<boolean>(false)
           "
         ></GridProgressBar>
         {{
-          Math.round(
-            node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME],
-          ).toLocaleString()
+          node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME].toLocaleString(undefined, {
+            minimumFractionDigits: 3,
+          })
         }}
         <div v-if="showDetails" class="small text-body-secondary">
           {{ duration(node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME]) }}
