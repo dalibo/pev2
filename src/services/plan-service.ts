@@ -247,10 +247,7 @@ export class PlanService {
     }
 
     _.each(node[NodeProp.PLANS], (subPlan) => {
-      if (
-        subPlan[NodeProp.PARENT_RELATIONSHIP] !== "InitPlan" &&
-        subPlan[NodeProp.TOTAL_COST]
-      ) {
+      if (subPlan[NodeProp.TOTAL_COST]) {
         node[NodeProp.EXCLUSIVE_COST] =
           (node[NodeProp.EXCLUSIVE_COST] as number) -
           (subPlan[NodeProp.TOTAL_COST] as number)
