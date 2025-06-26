@@ -1351,9 +1351,16 @@ export class PlanService {
     ]
     _.each(properties, (property) => {
       const sum = Number(
-        _.sumBy(node[NodeProp.PLANS], (child: Node) => {
-          return (child[NodeProp[property]] as number) || 0
-        }).toFixed(3),
+        _.sumBy(
+          // Don't take subplans into account (InitPlan)
+          _.filter(
+            node[NodeProp.PLANS],
+            (child: Node) => !child[NodeProp.SUBPLAN_NAME],
+          ),
+          (child: Node) => {
+            return (child[NodeProp[property]] as number) || 0
+          },
+        ).toFixed(3),
       )
       const exclusivePropertyString = ("EXCLUSIVE_" +
         property) as keyof typeof NodeProp
