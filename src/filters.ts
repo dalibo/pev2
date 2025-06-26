@@ -50,8 +50,7 @@ export function cost(value: number): string {
   if (value === undefined) {
     return "N/A"
   }
-  value = parseFloat(value.toPrecision(3))
-  return value.toLocaleString()
+  return value.toLocaleString(undefined, { minimumFractionDigits: 2 })
 }
 
 export function rows(value: number): string {
