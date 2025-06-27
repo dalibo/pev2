@@ -399,11 +399,7 @@ export default function useNode(
   })
 
   const rowsRemovedTooltip = computed((): string => {
-    return [
-      "Rows removed by filter: ",
-      tilde.value,
-      rows(rowsRemoved.value),
-    ].join("")
+    return `${NodeProp[rowsRemovedProp]}: ${tilde.value}${rows(rowsRemoved.value)}`
   })
 
   const rowsIsFractional = computed((): boolean => {

@@ -133,7 +133,11 @@ const hasCost = computed((): boolean => {
 const hasFilter = computed((): boolean => {
   return _.some(plans, (plan: Row[]) => {
     return _.some(plan, (row: Row) => {
-      return row[1][NodeProp.ROWS_REMOVED_BY_FILTER]
+      return (
+        row[1][NodeProp.ROWS_REMOVED_BY_FILTER] ||
+        row[1][NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] ||
+        row[1][NodeProp.ROWS_REMOVED_BY_INDEX_RECHECK]
+      )
     })
   })
 })
