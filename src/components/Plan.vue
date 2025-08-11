@@ -60,7 +60,6 @@ const version = __APP_VERSION__
 const rootEl = ref(null) // The root Element of this instance
 const activeTab = ref<string>("")
 const queryText = ref<string>("")
-const parsed = ref<boolean>(false)
 const plan = ref<IPlan>()
 const planEl = ref()
 const planStats = reactive<IPlanStats>({} as IPlanStats)
@@ -124,10 +123,8 @@ onBeforeMount(() => {
   let planJson: IPlanContent
   try {
     planJson = planService.fromSource(props.planSource) as IPlanContent
-    parsed.value = true
     setActiveTab("plan")
   } catch {
-    parsed.value = false
     plan.value = undefined
     return
   }
@@ -431,7 +428,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
 </script>
 
 <template>
-  <div v-if="!parsed" class="flex-grow-1 d-flex justify-content-center">
+  <div v-if="!plan" class="flex-grow-1 d-flex justify-content-center">
     <div class="card align-self-center border-danger w-50">
       <div class="card-body">
         <h5 class="card-title text-danger">Couldn't parse plan</h5>
