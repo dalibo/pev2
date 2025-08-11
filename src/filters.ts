@@ -46,21 +46,21 @@ export function duration(value: number | undefined): string {
   return result.slice(0, 2).join(" ")
 }
 
-export function cost(value: number): string {
+export function cost(value: number | undefined): string {
   if (value === undefined) {
     return "N/A"
   }
   return value.toLocaleString(undefined, { minimumFractionDigits: 2 })
 }
 
-export function rows(value: number): string {
+export function rows(value: number | undefined): string {
   if (value === undefined) {
     return "N/A"
   }
   return value.toLocaleString()
 }
 
-export function loops(value: number): string {
+export function loops(value: number | undefined): string {
   if (value === undefined) {
     return "N/A"
   }
