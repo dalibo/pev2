@@ -31,7 +31,6 @@ interface JitElement {
 type recurseItemType = Array<[Node, recurseItemType]>
 
 export class PlanService {
-  private static instance: PlanService
   private nodeId = 0
   private flat: Node[] = []
 
