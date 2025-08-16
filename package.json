@@ -9,11 +9,11 @@
   ],
   "main": "./dist/pev2.umd.js",
   "module": "./dist/pev2.es.js",
-  "types": "./dist/components/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/pev2.es.js",
-      "require": "./dist/pev2.umd.js"
+      "require": "./dist/pev2.umd.js",
+      "types": "./dist/components/index.d.ts"
     },
     "./dist/pev2.css": "./dist/pev2.css"
   },
