@@ -446,19 +446,15 @@ export class PlanService {
   public fromSource(source: string) {
     source = this.cleanupSource(source)
 
-    let isJson = false
     try {
-      isJson = JSON.parse(source)
+      const data = JSON.parse(source)
+      return this.getPlanContent(data)
     } catch {
-      // continue
+      if (/^(\s*)(\[|\{)\s*\n.*?\1(\]|\})\s*/gms.exec(source)) {
+        return this.fromJson(source)
+      }
+      return this.fromText(source)
     }
-
-    if (isJson) {
-      return this.parseJson(source)
-    } else if (/^(\s*)(\[|\{)\s*\n.*?\1(\]|\})\s*/gms.exec(source)) {
-      return this.fromJson(source)
-    }
-    return this.fromText(source)
   }
 
   public fromJson(source: string) {
@@ -493,16 +489,16 @@ export class PlanService {
       // Replace two double quotes (added by pgAdmin)
       .replace(/""/gm, '"')
 
-    return this.parseJson(useSource)
+    const data = JSON.parse(useSource)
+    return this.getPlanContent(data)
   }
 
-  // Stream parse JSON as it can contain duplicate keys (workers)
-  public parseJson(source: string) {
-    let root = JSON.parse(source)
-    if (Array.isArray(root)) {
-      root = root[0]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private getPlanContent(value: any) {
+    if (Array.isArray(value)) {
+      return value[0]
     }
-    return root
+    return value
   }
 
   public splitIntoLines(text: string): string[] {
