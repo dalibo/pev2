@@ -50,10 +50,6 @@ export class PlanService {
     // '$1 ' reuse group 1 and and a single space
     planQuery = planQuery.replace(/(\S)(?!$)(\s{2,})/gm, "$1 ")
 
-    if (!planContent.Plan) {
-      throw new Error("Invalid plan")
-    }
-
     const plan: IPlan = {
       id: NodeProp.PEV_PLAN_TAG + new Date().getTime().toString(),
       name: planName || "plan created on " + new Date().toDateString(),
@@ -494,9 +490,12 @@ export class PlanService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private getPlanContent(value: any) {
+  private getPlanContent(value: any): IPlanContent {
     if (Array.isArray(value)) {
-      return value[0]
+      value = value[0]
+    }
+    if (!value.Plan) {
+      throw new Error("Invalid plan")
     }
     return value
   }
