@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import _ from "lodash"
-import type { Ref } from "vue"
-import { PlanKey } from "@/symbols"
-import { computed, inject, ref } from "vue"
-import type { IPlan, ITrigger, Node } from "@/interfaces"
+import { computed, ref } from "vue"
+import type { IPlanStats, ITrigger, JIT, Node } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
 import { duration, durationClass } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
@@ -15,14 +13,17 @@ import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 
+const { planStats, jitDetails, rootNode } = defineProps<{
+  planStats: IPlanStats
+  rootNode: Node
+  jitDetails?: JIT
+}>()
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
-const plan = inject(PlanKey) as Ref<IPlan>
 const showSettings = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
 const showJitDetails = ref<boolean>(false)
 const showIO = ref<boolean>(false)
-const rootNode = computed(() => plan.value && plan.value.content.Plan)
 
 const planningTimeClass = (percent: number) => {
   let c = NaN
@@ -40,19 +41,19 @@ const planningTimeClass = (percent: number) => {
 }
 
 const totalTriggerDurationPercent = computed(() => {
-  const executionTime = plan.value.planStats.executionTime || 0
+  const executionTime = planStats.executionTime || 0
   const totalDuration = triggersTotalDuration.value || 0
   return _.round((totalDuration / executionTime) * 100)
 })
 
 function triggerDurationPercent(trigger: ITrigger) {
-  const executionTime = plan.value.planStats.executionTime || 0
+  const executionTime = planStats.executionTime || 0
   const time = trigger.Time
   return _.round((time / executionTime) * 100)
 }
 
 const triggersTotalDuration = computed(() => {
-  return _.sumBy(plan.value.planStats.triggers, (o) => o.Time)
+  return _.sumBy(planStats.triggers, (o) => o.Time)
 })
 
 function averageIO(node: Node) {
@@ -85,11 +86,11 @@ function hasParallelChildren(node: Node) {
 <template>
   <div
     class="plan-stats flex-shrink-0 d-flex border-bottom border-top align-items-center"
-    v-if="plan"
+    v-if="planStats"
   >
     <div class="d-inline-block px-2">
       Execution time:
-      <template v-if="!plan.planStats.executionTime">
+      <template v-if="!planStats.executionTime">
         <span class="text-secondary">
           N/A
           <FontAwesomeIcon
@@ -102,13 +103,13 @@ function hasParallelChildren(node: Node) {
       <template v-else>
         <span
           class="stat-value"
-          v-html="duration(plan.planStats.executionTime)"
+          v-html="duration(planStats.executionTime)"
         ></span>
       </template>
     </div>
     <div class="d-inline-block border-start px-2">
       Planning time:
-      <template v-if="!plan.planStats.planningTime">
+      <template v-if="!planStats.planningTime">
         <span class="text-secondary">
           N/A
           <FontAwesomeIcon
@@ -124,19 +125,18 @@ function hasParallelChildren(node: Node) {
             :class="
               'mb-0 p-0 px-1 alert ' +
               planningTimeClass(
-                (plan.planStats.planningTime /
-                  (plan.planStats.executionTime as number)) *
+                (planStats.planningTime / (planStats.executionTime as number)) *
                   100,
               )
             "
-            v-html="duration(plan.planStats.planningTime)"
+            v-html="duration(planStats.planningTime)"
           ></span>
         </span>
       </template>
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
-      v-if="plan.planStats.jitTime && plan.planStats.executionTime"
+      v-if="planStats.jitTime && planStats.executionTime"
     >
       JIT:
       <span class="stat-value">
@@ -144,10 +144,10 @@ function hasParallelChildren(node: Node) {
           :class="
             'mb-0 p-0 px-1 alert ' +
             planningTimeClass(
-              (plan.planStats.jitTime / plan.planStats.executionTime) * 100,
+              (planStats.jitTime / planStats.executionTime) * 100,
             )
           "
-          v-html="duration(plan.planStats.jitTime)"
+          v-html="duration(planStats.jitTime)"
         ></span>
         <button
           @click.prevent="showJitDetails = !showJitDetails"
@@ -160,14 +160,14 @@ function hasParallelChildren(node: Node) {
         </button>
         <div class="stat-dropdown-container text-start" v-if="showJitDetails">
           <div>
-            <JitDetails :jit="plan.content.JIT" v-if="plan.content.JIT" />
+            <JitDetails :jit="jitDetails" v-if="jitDetails" />
           </div>
         </div>
       </span>
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
-      v-if="plan.planStats.triggers && plan.planStats.triggers.length"
+      v-if="planStats.triggers && planStats.triggers.length"
     >
       <span class="stat-label">Triggers: </span>
       <span class="stat-value">
@@ -193,7 +193,7 @@ function hasParallelChildren(node: Node) {
           v-on:click="showTriggers = false"
         ></button>
         <h3>Triggers</h3>
-        <div v-for="(trigger, index) in plan.planStats.triggers" :key="index">
+        <div v-for="(trigger, index) in planStats.triggers" :key="index">
           {{ trigger["Trigger Name"] }}
           <br />
           <span class="text-secondary">Called</span> {{ trigger["Calls"]
@@ -214,10 +214,7 @@ function hasParallelChildren(node: Node) {
           {{ trigger.Relation }}
           <div class="clearfix"></div>
           <hr
-            v-if="
-              plan.planStats.triggers &&
-              index != plan.planStats.triggers.length - 1
-            "
+            v-if="planStats.triggers && index != planStats.triggers.length - 1"
             class="my-2"
           />
         </div>
@@ -225,12 +222,12 @@ function hasParallelChildren(node: Node) {
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
-      v-if="plan.planStats.settings"
+      v-if="planStats.settings"
     >
       <span class="stat-label"
         >Settings:
         <span class="badge bg-secondary">{{
-          _.keys(plan.planStats.settings).length
+          _.keys(planStats.settings).length
         }}</span></span
       >
       <button
@@ -254,7 +251,7 @@ function hasParallelChildren(node: Node) {
         </em>
         <table class="table table-sm table-striped mb-0">
           <tbody>
-            <tr v-for="(value, key) in plan.planStats.settings" :key="key">
+            <tr v-for="(value, key) in planStats.settings" :key="key">
               <td>{{ key }}</td>
               <td>{{ value }}</td>
             </tr>

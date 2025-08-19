@@ -532,7 +532,11 @@ function updateNodeSize(node: Node, size: [number, number]) {
       >
         <!-- Plan tab -->
         <div class="d-flex flex-column flex-grow-1 overflow-hidden">
-          <PlanStats></PlanStats>
+          <PlanStats
+            :planStats="planStats"
+            :rootNode="rootNode!"
+            :jitDetails="plan.content.JIT"
+          />
           <div class="flex-grow-1 d-flex overflow-hidden">
             <div class="flex-grow-1 overflow-hidden">
               <Splitpanes
@@ -718,7 +722,11 @@ function updateNodeSize(node: Node, size: [number, number]) {
         v-if="activeTab === 'grid'"
       >
         <div class="overflow-hidden d-flex w-100 h-100 flex-column">
-          <PlanStats />
+          <PlanStats
+            :planStats="planStats"
+            :rootNode="rootNode!"
+            :jitDetails="plan.content.JIT"
+          />
           <Grid class="flex-grow-1 overflow-auto plan-grid" />
         </div>
       </div>
