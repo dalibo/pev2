@@ -49,11 +49,7 @@ export default defineConfig({
         },
       },
     }),
-    {
-      apply: 'build',
-      ...process.env.LIB ? undefined : viteSingleFile(),
-      ...process.env.LIB ? dts() : undefined,
-    },
+    process.env.LIB ? dts() : viteSingleFile()
   ],
   resolve: {
     alias: {
