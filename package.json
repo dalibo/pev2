@@ -12,9 +12,9 @@
   "types": "./dist/components/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/components/index.d.ts",
       "import": "./dist/pev2.es.js",
-      "require": "./dist/pev2.umd.js",
-      "types": "./dist/components/index.d.ts"
+      "require": "./dist/pev2.umd.js"
     },
     "./dist/pev2.css": "./dist/pev2.css"
   },
