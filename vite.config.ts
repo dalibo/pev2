@@ -5,6 +5,7 @@ import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
 import { viteSingleFile } from "vite-plugin-singlefile"
 import dts from "vite-plugin-dts"
+import purgecss from 'vite-plugin-purgecss';
 
 const build = process.env.LIB
   ? {
@@ -49,7 +50,21 @@ export default defineConfig({
         },
       },
     }),
-    process.env.LIB ? dts() : viteSingleFile()
+    {
+      ...purgecss({
+        content: ['./src/**/*.vue', './index.html', './example/**/*.vue'],
+        safelist: {
+          standard: [
+            /^c-/,
+            /^hljs-/,
+            /^splitpanes/,
+          ],
+          deep: [/tippy/],
+        }
+      }),
+      enforce: "post",
+    },
+    process.env.LIB ? dts() : viteSingleFile(),
   ],
   resolve: {
     alias: {
