@@ -551,6 +551,9 @@ function updateNodeSize(node: Node, size: [number, number]) {
                   <Diagram
                     ref="diagram"
                     class="d-flex flex-column flex-grow-1 overflow-hidden plan-diagram"
+                    :ctes="plan.ctes"
+                    :planStats="planStats"
+                    :rootNode="rootNode!"
                   />
                 </Pane>
                 <Pane ref="planEl" class="plan grab-bing position-relative">

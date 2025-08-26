@@ -9,13 +9,12 @@ import {
   ref,
   watch,
 } from "vue"
-import type { Ref } from "vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 import { BufferLocation, NodeProp, Metric } from "../enums"
 import { HelpService, scrollChildIntoParentView } from "@/services/help-service"
-import type { IPlan, Node } from "@/interfaces"
-import { HighlightedNodeIdKey, PlanKey, SelectNodeKey } from "@/symbols"
+import type { IPlanStats, Node } from "@/interfaces"
+import { HighlightedNodeIdKey, SelectNodeKey } from "@/symbols"
 import DiagramRow from "@/components/DiagramRow.vue"
 import LevelDivider from "@/components/LevelDivider.vue"
 
@@ -26,7 +25,11 @@ const getHelpMessage = helpService.getHelpMessage
 
 type Row = [number, Node, boolean, number[]]
 
-const plan = inject(PlanKey) as Ref<IPlan>
+const { ctes, planStats, rootNode } = defineProps<{
+  ctes: Node[]
+  planStats: IPlanStats
+  rootNode: Node
+}>()
 
 const container = ref(null) // The container element
 
@@ -49,9 +52,9 @@ onBeforeMount((): void => {
   if (savedOptions) {
     _.assignIn(viewOptions, JSON.parse(savedOptions))
   }
-  flatten(plans[0], 0, plan.value.content.Plan, true, [])
+  flatten(plans[0], 0, rootNode, true, [])
 
-  _.each(plan.value.ctes, (cte) => {
+  _.each(ctes, (cte) => {
     const flat: Row[] = []
     flatten(flat, 0, cte, true, [])
     plans.push(flat)
@@ -59,7 +62,7 @@ onBeforeMount((): void => {
 
   // switch to the first buffers tab if data not available for the currently
   // chosen one
-  const planBufferLocation = _.keys(plan.value.planStats.maxBlocks)
+  const planBufferLocation = _.keys(planStats.maxBlocks)
   if (_.indexOf(planBufferLocation, viewOptions.buffersMetric) === -1) {
     viewOptions.buffersMetric = _.min(planBufferLocation) as BufferLocation
   }
@@ -165,7 +168,7 @@ provide("scrollTo", scrollTo)
             class="btn btn-outline-secondary"
             :class="{ active: viewOptions.metric === Metric.io }"
             v-on:click="viewOptions.metric = Metric.io"
-            :disabled="!plan.planStats.maxIo"
+            :disabled="!planStats.maxIo"
           >
             IO
           </button>
@@ -179,7 +182,7 @@ provide("scrollTo", scrollTo)
               active: viewOptions.buffersMetric === BufferLocation.shared,
             }"
             v-on:click="viewOptions.buffersMetric = BufferLocation.shared"
-            :disabled="!plan.planStats.maxBlocks?.[BufferLocation.shared]"
+            :disabled="!planStats.maxBlocks?.[BufferLocation.shared]"
           >
             shared
           </button>
@@ -189,7 +192,7 @@ provide("scrollTo", scrollTo)
               active: viewOptions.buffersMetric === BufferLocation.temp,
             }"
             v-on:click="viewOptions.buffersMetric = BufferLocation.temp"
-            :disabled="!plan.planStats.maxBlocks?.[BufferLocation.temp]"
+            :disabled="!planStats.maxBlocks?.[BufferLocation.temp]"
           >
             temp
           </button>
@@ -199,7 +202,7 @@ provide("scrollTo", scrollTo)
               active: viewOptions.buffersMetric === BufferLocation.local,
             }"
             v-on:click="viewOptions.buffersMetric = BufferLocation.local"
-            :disabled="!plan.planStats.maxBlocks?.[BufferLocation.local]"
+            :disabled="!planStats.maxBlocks?.[BufferLocation.local]"
           >
             local
           </button>
