@@ -82,11 +82,11 @@ watch(
           <em>CTE {{ node[NodeProp.CTE_NAME] }} </em>
         </div>
       </template>
-      <time-tooltip
+      <TimeTooltip
         :node="node"
         v-if="diagramViewOptions.metric == Metric.time"
       />
-      <io-tooltip
+      <IoTooltip
         :node="node"
         v-else-if="diagramViewOptions.metric == Metric.io"
         exclusive
@@ -111,7 +111,7 @@ watch(
       <span class="fw-normal small">#{{ node.nodeId }} </span>
     </td>
     <td class="node-type pe-2">
-      <level-divider
+      <LevelDivider
         :isSubplan="isSubplan"
         isNode
         :isLastChild="!!isLastChild"
@@ -119,7 +119,7 @@ watch(
         :branches="branches"
         :index="index"
         dense
-      ></level-divider>
+      ></LevelDivider>
       {{ nodeName }}
     </td>
     <td>

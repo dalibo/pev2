@@ -395,19 +395,19 @@ const columns = computed(() => {
               :class="{ 'font-weight-bold': isCTE(row[1]) }"
               :colspan="columns.length + columnsRight.length"
             >
-              <level-divider
+              <LevelDivider
                 :isSubplan="!!row[1][NodeProp.SUBPLAN_NAME]"
                 :isLastChild="!!row[2]"
                 :level="row[0]"
                 :branches="row[3]"
                 :index="index"
-              ></level-divider>
+              ></LevelDivider>
               <b class="fst-italic text-reset">
                 {{ row[1][NodeProp.SUBPLAN_NAME] }}
               </b>
             </td>
           </tr>
-          <grid-row
+          <GridRow
             :node="row[1]"
             :isSubplan="!!row[1][NodeProp.SUBPLAN_NAME]"
             :isLastChild="!!row[2]"
@@ -415,7 +415,7 @@ const columns = computed(() => {
             :branches="row[3]"
             :index="index"
             :columns="columns"
-          ></grid-row>
+          ></GridRow>
         </template>
       </tbody>
     </table>

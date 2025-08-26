@@ -157,7 +157,7 @@ function centerCte() {
               {{ nodeName }}
             </h4>
             <div class="text-nowrap">
-              <node-badges :node="node" />
+              <NodeBadges :node="node" />
               <a
                 class="fw-normal small ms-1"
                 href=""
@@ -277,7 +277,7 @@ function centerCte() {
             </span>
           </div>
         </div>
-        <plan-node-detail :node="node" v-if="showDetails"></plan-node-detail>
+        <PlanNodeDetail :node="node" v-if="showDetails"></PlanNodeDetail>
       </div>
     </div>
   </div>

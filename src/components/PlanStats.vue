@@ -160,10 +160,7 @@ function hasParallelChildren(node: Node) {
         </button>
         <div class="stat-dropdown-container text-start" v-if="showJitDetails">
           <div>
-            <jit-details
-              :jit="plan.content.JIT"
-              v-if="plan.content.JIT"
-            ></jit-details>
+            <JitDetails :jit="plan.content.JIT" v-if="plan.content.JIT" />
           </div>
         </div>
       </span>
@@ -294,7 +291,7 @@ function hasParallelChildren(node: Node) {
           class="btn btn-xs btn-close float-end"
           v-on:click="showIO = false"
         ></button>
-        <io-tooltip :node="rootNode" class="mb-0" />
+        <IoTooltip :node="rootNode" class="mb-0" />
       </div>
     </div>
   </div>

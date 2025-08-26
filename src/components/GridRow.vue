@@ -93,7 +93,7 @@ const showDetails = ref<boolean>(false)
       v-if="columns.includes('time')"
     >
       <template #content>
-        <time-tooltip :node="node" />
+        <TimeTooltip :node="node" />
       </template>
       <GridProgressBar
         :percentage="
@@ -112,10 +112,10 @@ const showDetails = ref<boolean>(false)
       ></GridProgressBar>
       <!-- time -->
       <div class="position-relative d-flex">
-        <severity-bullet
+        <SeverityBullet
           :severity="durationClass"
           v-if="durationClass"
-        ></severity-bullet>
+        ></SeverityBullet>
         <span class="flex-grow-1">
           {{
             node[NodeProp.EXCLUSIVE_DURATION].toLocaleString(undefined, {
@@ -138,7 +138,7 @@ const showDetails = ref<boolean>(false)
       v-if="columns.includes('ioread')"
     >
       <template #content>
-        <io-tooltip :node="node" class="mb-0" exclusive />
+        <IoTooltip :node="node" class="mb-0" exclusive />
       </template>
       <template v-if="node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]">
         <GridProgressBar
@@ -167,7 +167,7 @@ const showDetails = ref<boolean>(false)
       v-if="columns.includes('iowrite')"
     >
       <template #content>
-        <io-tooltip :node="node" class="mb-0" exclusive />
+        <IoTooltip :node="node" class="mb-0" exclusive />
       </template>
       <template v-if="node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME]">
         <GridProgressBar
@@ -223,10 +223,10 @@ const showDetails = ref<boolean>(false)
           class="position-relative d-flex"
           v-if="node[NodeProp.PLANNER_ESTIMATE_FACTOR] != 1"
         >
-          <severity-bullet
+          <SeverityBullet
             :severity="estimationClass"
             v-if="estimationClass"
-          ></severity-bullet>
+          ></SeverityBullet>
           <span class="flex-grow-1">
             <span
               v-html="factor(node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0)"
@@ -274,10 +274,10 @@ const showDetails = ref<boolean>(false)
         class="position-relative d-flex"
         v-tippy="{ content: costTooltip, allowHTML: true }"
       >
-        <severity-bullet
+        <SeverityBullet
           :severity="costClass"
           v-if="costClass"
-        ></severity-bullet>
+        ></SeverityBullet>
         <span class="flex-grow-1">
           {{ cost(node[NodeProp.EXCLUSIVE_COST]) }}
         </span>
@@ -300,10 +300,10 @@ const showDetails = ref<boolean>(false)
           class="position-relative d-flex"
           v-tippy="{ content: rowsRemovedTooltip, allowHTML: true }"
         >
-          <severity-bullet
+          <SeverityBullet
             :severity="rowsRemovedClass"
             v-if="rowsRemovedClass"
-          ></severity-bullet>
+          ></SeverityBullet>
           <span class="flex-grow-1"> {{ rowsRemovedPercentString }}% </span>
         </div>
         <div v-if="showDetails" class="text-body-secondary mt-1">
@@ -319,10 +319,10 @@ const showDetails = ref<boolean>(false)
         class="position-relative d-flex"
         v-tippy="{ content: heapFetchesTooltip, allowHTML: true }"
       >
-        <severity-bullet
+        <SeverityBullet
           :severity="heapFetchesClass"
           v-if="heapFetchesClass"
-        ></severity-bullet>
+        ></SeverityBullet>
         <span class="flex-grow-1">
           {{ node[NodeProp.HEAP_FETCHES]?.toLocaleString() }}
         </span>
@@ -333,14 +333,14 @@ const showDetails = ref<boolean>(false)
       :class="showDetails ? '' : 'text-nowrap text-truncate overflow-hidden'"
       style="max-width: 0"
     >
-      <level-divider
+      <LevelDivider
         :isSubplan="isSubplan"
         isNode
         :isLastChild="isLastChild"
         :level="level"
         :branches="branches"
         :index="index"
-      ></level-divider>
+      ></LevelDivider>
       <div class="d-inline">
         <b
           class="border border-secondary px-1 bg-light"
@@ -469,7 +469,7 @@ const showDetails = ref<boolean>(false)
               :class="{ 'show active': activeTab === 'misc' }"
             >
               <!-- misc tab -->
-              <misc-detail :node="node" />
+              <MiscDetail :node="node" />
             </div>
             <div
               class="tab-pane p-1 border border-top-0 overflow-auto font-monospace"
@@ -482,7 +482,7 @@ const showDetails = ref<boolean>(false)
               class="tab-pane p-1 border border-top-0 rounded rounded-top-start-0"
               :class="{ 'show active': activeTab === 'workers' }"
             >
-              <workers-detail :node="node" />
+              <WorkersDetail :node="node" />
             </div>
           </div>
         </div>

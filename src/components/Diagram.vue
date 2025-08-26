@@ -273,14 +273,14 @@ provide("scrollTo", scrollTo)
                 :class="{ 'fw-bold': isCTE(row[1]) }"
                 :colspan="isCTE(row[1]) ? 3 : 2"
               >
-                <level-divider
+                <LevelDivider
                   :isSubplan="!!row[1][NodeProp.SUBPLAN_NAME]"
                   :isLastChild="!!row[2]"
                   :level="row[0]"
                   :branches="row[3]"
                   :index="index"
                   dense
-                ></level-divider>
+                ></LevelDivider>
                 <a
                   class="fst-italic text-reset"
                   href=""
@@ -290,7 +290,7 @@ provide("scrollTo", scrollTo)
                 </a>
               </td>
             </tr>
-            <diagram-row
+            <DiagramRow
               :node="row[1]"
               :isSubplan="!!row[1][NodeProp.SUBPLAN_NAME]"
               :isLastChild="!!row[2]"
@@ -298,7 +298,7 @@ provide("scrollTo", scrollTo)
               :branches="row[3]"
               :index="index"
               :viewOptions="viewOptions"
-            ></diagram-row>
+            ></DiagramRow>
           </template>
         </tbody>
       </table>

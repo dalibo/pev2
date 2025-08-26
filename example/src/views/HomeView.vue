@@ -103,7 +103,7 @@ function handleDrop(event: DragEvent) {
 </script>
 
 <template>
-  <main-layout>
+  <MainLayout>
     <div class="container">
       <div class="alert alert-warning">
         This is the demo application for
@@ -256,5 +256,5 @@ function handleDrop(event: DragEvent) {
         </div>
       </div>
     </div>
-  </main-layout>
+  </MainLayout>
 </template>

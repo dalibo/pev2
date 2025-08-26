@@ -19,6 +19,7 @@ export default defineConfigWithVueTs(
   },
   {
     rules: {
+      "vue/component-name-in-template-casing": "error",
       "vue/multi-word-component-names": [
         "error",
         {
