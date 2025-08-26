@@ -761,7 +761,12 @@ function updateNodeSize(node: Node, size: [number, number]) {
         class="tab-pane flex-grow-1 overflow-auto"
         :class="{ 'show active': activeTab === 'stats' }"
       >
-        <Stats v-if="plan" />
+        <Stats
+          v-if="plan"
+          :ctes="plan.ctes"
+          :planStats="planStats"
+          :rootNode="rootNode"
+        />
       </div>
     </div>
   </div>
