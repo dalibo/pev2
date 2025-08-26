@@ -727,7 +727,11 @@ function updateNodeSize(node: Node, size: [number, number]) {
             :rootNode="rootNode!"
             :jitDetails="plan.content.JIT"
           />
-          <Grid class="flex-grow-1 overflow-auto plan-grid" />
+          <Grid
+            class="flex-grow-1 overflow-auto plan-grid"
+            :ctes="plan.ctes"
+            :rootNode="rootNode!"
+          />
         </div>
       </div>
       <div
