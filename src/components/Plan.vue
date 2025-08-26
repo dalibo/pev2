@@ -442,7 +442,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
               style="max-height: 200px"
             ><code v-html="planSource"></code></pre>
           </div>
-          <copy :content="planSource" />
+          <Copy :content="planSource" />
         </div>
         <p class="card-text text-body-dark">
           The plan you submited couldn't be parsed. This may be a bug. You can
@@ -450,7 +450,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
         </p>
         <div class="d-flex align-items-center">
           <span class="text-secondary">
-            <logo-image />
+            <LogoImage />
             PEV2 <i>version {{ version }}</i>
           </span>
           <a
@@ -520,7 +520,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
       </ul>
       <div class="ms-auto me-2 small">
         <a href="https://github.com/dalibo/pev2" target="_blank">
-          <logo-image />
+          <LogoImage />
           {{ version }}
         </a>
       </div>
@@ -535,22 +535,21 @@ function updateNodeSize(node: Node, size: [number, number]) {
           <PlanStats></PlanStats>
           <div class="flex-grow-1 d-flex overflow-hidden">
             <div class="flex-grow-1 overflow-hidden">
-              <splitpanes
+              <Splitpanes
                 class="default-theme"
                 @resize="viewOptions.diagramWidth = $event[0].size"
               >
-                <pane
+                <Pane
                   :size="viewOptions.diagramWidth"
                   class="d-flex flex-column"
                   v-if="plan"
                 >
-                  <diagram
+                  <Diagram
                     ref="diagram"
                     class="d-flex flex-column flex-grow-1 overflow-hidden plan-diagram"
-                  >
-                  </diagram>
-                </pane>
-                <pane ref="planEl" class="plan grab-bing position-relative">
+                  />
+                </Pane>
+                <Pane ref="planEl" class="plan grab-bing position-relative">
                   <div
                     class="position-absolute m-1 p-1 bottom-0 end-0 rounded bg-white d-flex"
                     v-if="plan"
@@ -652,7 +651,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         height="1"
                         ref="root"
                       >
-                        <plan-node
+                        <PlanNode
                           :node="item.data"
                           class="d-flex justify-content-center position-fixed"
                         />
@@ -698,7 +697,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                           height="1"
                           ref="root"
                         >
-                          <plan-node
+                          <PlanNode
                             :node="item.data"
                             class="d-flex justify-content-center position-fixed"
                           />
@@ -706,8 +705,8 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       </g>
                     </g>
                   </svg>
-                </pane>
-              </splitpanes>
+                </Pane>
+              </Splitpanes>
             </div>
           </div>
           <!-- end Plan tab -->
@@ -719,8 +718,8 @@ function updateNodeSize(node: Node, size: [number, number]) {
         v-if="activeTab === 'grid'"
       >
         <div class="overflow-hidden d-flex w-100 h-100 flex-column">
-          <plan-stats></plan-stats>
-          <grid class="flex-grow-1 overflow-auto plan-grid"> </grid>
+          <PlanStats />
+          <Grid class="flex-grow-1 overflow-auto plan-grid" />
         </div>
       </div>
       <div
@@ -733,7 +732,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
               class="small p-2 mb-0"
             ><code v-html="json_(planSource)"></code></pre>
           </div>
-          <copy :content="planSource" />
+          <Copy :content="planSource" />
         </div>
       </div>
       <div
@@ -748,13 +747,13 @@ function updateNodeSize(node: Node, size: [number, number]) {
             ><code v-html="pgsql_(queryText)"></code></pre>
           </div>
         </div>
-        <copy :content="queryText" />
+        <Copy :content="queryText" />
       </div>
       <div
         class="tab-pane flex-grow-1 overflow-auto"
         :class="{ 'show active': activeTab === 'stats' }"
       >
-        <stats v-if="plan"></stats>
+        <Stats v-if="plan" />
       </div>
     </div>
   </div>

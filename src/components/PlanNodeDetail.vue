@@ -324,7 +324,7 @@ watch(activeTab, () => {
     </div>
     <div class="tab-pane" :class="{ 'show active': activeTab === 'iobuffer' }">
       <!-- iobuffer tab -->
-      <io-tooltip :node="node" exclusive />
+      <IoTooltip :node="node" exclusive />
       <table class="table table-sm">
         <thead>
           <tr>
@@ -422,11 +422,11 @@ watch(activeTab, () => {
       "
     >
       <!-- workers tab -->
-      <workers-detail :node="node" />
+      <WorkersDetail :node="node" />
     </div>
     <div class="tab-pane" :class="{ 'show active': activeTab === 'misc' }">
       <!-- misc tab -->
-      <misc-detail :node="node" />
+      <MiscDetail :node="node" />
     </div>
   </div>
 </template>

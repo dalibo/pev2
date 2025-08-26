@@ -68,7 +68,7 @@ const node = reactive<Node>(props.node)
     </thead>
     <tbody>
       <!-- No temp IO: only one line for all IOs is needed -->
-      <io-timings-row
+      <IoTimingsRow
         :node="node"
         v-if="
           node[
@@ -84,7 +84,7 @@ const node = reactive<Node>(props.node)
         "
         :exclusive="exclusive"
       />
-      <io-timings-row
+      <IoTimingsRow
         :node="node"
         v-if="
           node[
@@ -102,7 +102,7 @@ const node = reactive<Node>(props.node)
         :scope="Scope.SHARED"
         :exclusive="exclusive"
       />
-      <io-timings-row
+      <IoTimingsRow
         :node="node"
         v-if="
           node[
@@ -119,7 +119,7 @@ const node = reactive<Node>(props.node)
         :scope="Scope.LOCAL"
         :exclusive="exclusive"
       />
-      <io-timings-row
+      <IoTimingsRow
         :node="node"
         v-if="
           node[

@@ -7,11 +7,11 @@ const planData = inject("planData")
 </script>
 
 <template>
-  <main-layout :title="planData[2]">
-    <plan
+  <MainLayout :title="planData[2]">
+    <Plan
       v-if="planData[0]"
       :plan-source="planData[0]"
       :plan-query="planData[1]"
     />
-  </main-layout>
+  </MainLayout>
 </template>

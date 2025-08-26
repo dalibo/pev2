@@ -117,7 +117,7 @@ const perIndex = computed(() => {
       <div class="col">
         <div class="card">
           <div class="card-body">
-            <sorted-table
+            <SortedTable
               class="table table-sm mb-0"
               :values="perTable"
               sort="time"
@@ -126,22 +126,22 @@ const perIndex = computed(() => {
               <thead class="table-secondary">
                 <tr>
                   <th scope="col">
-                    <sort-link name="name">Table</sort-link>
+                    <SortLink name="name">Table</SortLink>
                   </th>
                   <th scope="col" class="text-end">
-                    <sort-link name="count">Count</sort-link>
+                    <SortLink name="count">Count</SortLink>
                   </th>
                   <th scope="col" colspan="2" class="text-end">
-                    <sort-link name="time">Time</sort-link>
+                    <SortLink name="time">Time</SortLink>
                   </th>
                 </tr>
               </thead>
               <template v-slot:body="sort">
                 <template v-for="value in sort.values" :key="value">
-                  <stats-table-item
+                  <StatsTableItem
                     :value="value as StatsTableItemType"
                     :executionTime="executionTime"
-                  ></stats-table-item>
+                  ></StatsTableItem>
                 </template>
               </template>
               <tbody v-if="!perTable.length">
@@ -151,14 +151,14 @@ const perIndex = computed(() => {
                   </td>
                 </tr>
               </tbody>
-            </sorted-table>
+            </SortedTable>
           </div>
         </div>
       </div>
       <div class="col">
         <div class="card">
           <div class="card-body">
-            <sorted-table
+            <SortedTable
               class="table table-sm mb-0"
               :values="perFunction"
               sort="time"
@@ -167,22 +167,22 @@ const perIndex = computed(() => {
               <thead class="table-secondary">
                 <tr>
                   <th scope="col">
-                    <sort-link name="name">Function</sort-link>
+                    <SortLink name="name">Function</SortLink>
                   </th>
                   <th scope="col" class="text-end">
-                    <sort-link name="count">Count</sort-link>
+                    <SortLink name="count">Count</SortLink>
                   </th>
                   <th scope="col" colspan="2" class="text-end">
-                    <sort-link name="time">Time</sort-link>
+                    <SortLink name="time">Time</SortLink>
                   </th>
                 </tr>
               </thead>
               <template v-slot:body="sort">
                 <template v-for="value in sort.values" :key="value">
-                  <stats-table-item
+                  <StatsTableItem
                     :value="value as StatsTableItemType"
                     :executionTime="executionTime"
-                  ></stats-table-item>
+                  ></StatsTableItem>
                 </template>
               </template>
               <tbody v-if="!perFunction.length">
@@ -192,14 +192,14 @@ const perIndex = computed(() => {
                   </td>
                 </tr>
               </tbody>
-            </sorted-table>
+            </SortedTable>
           </div>
         </div>
       </div>
       <div class="col">
         <div class="card">
           <div class="card-body">
-            <sorted-table
+            <SortedTable
               class="table table-sm mb-0"
               :values="perNodeType"
               sort="time"
@@ -208,32 +208,32 @@ const perIndex = computed(() => {
               <thead class="table-secondary">
                 <tr>
                   <th scope="col">
-                    <sort-link name="name">Node Type</sort-link>
+                    <SortLink name="name">Node Type</SortLink>
                   </th>
                   <th scope="col" class="text-end">
-                    <sort-link name="count">Count</sort-link>
+                    <SortLink name="count">Count</SortLink>
                   </th>
                   <th scope="col" colspan="2" class="text-end">
-                    <sort-link name="time">Time</sort-link>
+                    <SortLink name="time">Time</SortLink>
                   </th>
                 </tr>
               </thead>
               <template v-slot:body="sort">
                 <template v-for="value in sort.values" :key="value">
-                  <stats-table-item
+                  <StatsTableItem
                     :value="value as StatsTableItemType"
                     :executionTime="executionTime"
-                  ></stats-table-item>
+                  ></StatsTableItem>
                 </template>
               </template>
-            </sorted-table>
+            </SortedTable>
           </div>
         </div>
       </div>
       <div class="col">
         <div class="card">
           <div class="card-body">
-            <sorted-table
+            <SortedTable
               class="table table-sm mb-0"
               :values="perIndex"
               sort="time"
@@ -242,22 +242,22 @@ const perIndex = computed(() => {
               <thead class="table-secondary">
                 <tr>
                   <th scope="col">
-                    <sort-link name="name">Index</sort-link>
+                    <SortLink name="name">Index</SortLink>
                   </th>
                   <th scope="col" class="text-end">
-                    <sort-link name="count">Count</sort-link>
+                    <SortLink name="count">Count</SortLink>
                   </th>
                   <th scope="col" colspan="2" class="text-end">
-                    <sort-link name="time">Time</sort-link>
+                    <SortLink name="time">Time</SortLink>
                   </th>
                 </tr>
               </thead>
               <template v-slot:body="sort">
                 <template v-for="value in sort.values" :key="value">
-                  <stats-table-item
+                  <StatsTableItem
                     :value="value as StatsTableItemType"
                     :executionTime="executionTime"
-                  ></stats-table-item>
+                  ></StatsTableItem>
                 </template>
               </template>
               <tbody v-if="!perIndex.length">
@@ -267,7 +267,7 @@ const perIndex = computed(() => {
                   </td>
                 </tr>
               </tbody>
-            </sorted-table>
+            </SortedTable>
           </div>
         </div>
       </div>
