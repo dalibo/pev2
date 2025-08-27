@@ -1,20 +1,22 @@
 <script lang="ts" setup>
 import _ from "lodash"
-import { computed, inject, onBeforeMount, onMounted } from "vue"
-import type { Ref } from "vue"
-import type { IPlan, Node, Row } from "@/interfaces"
+import { computed, onBeforeMount, onMounted } from "vue"
+import type { Node, Row } from "@/interfaces"
 import GridRow from "@/components/GridRow.vue"
-import { PlanKey } from "@/symbols"
 import { NodeProp } from "../enums"
 import LevelDivider from "@/components/LevelDivider.vue"
-const plan = inject(PlanKey) as Ref<IPlan>
+
+const { ctes, rootNode } = defineProps<{
+  ctes?: Node[]
+  rootNode: Node
+}>()
 
 const plans: Row[][] = [[]]
 
 onBeforeMount((): void => {
-  flatten(plans[0], 0, plan.value.content.Plan, true, [])
+  flatten(plans[0], 0, rootNode, true, [])
 
-  _.each(plan.value.ctes, (cte) => {
+  _.each(ctes, (cte) => {
     const flat: Row[] = []
     flatten(flat, 0, cte, true, [])
     plans.push(flat)
