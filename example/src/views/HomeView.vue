@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, inject, ref, onMounted, watch } from "vue"
+import { Tippy } from "vue-tippy"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { Tippy } from "vue-tippy"
 
 import { time_ago } from "../utils"
 import MainLayout from "../layouts/MainLayout.vue"
@@ -11,6 +11,8 @@ import {
   faEdit,
   faInfoCircle,
   faTrash,
+  faDownload,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons"
 import samples from "../samples.ts"
 
@@ -33,6 +35,7 @@ const totalPages = computed(() => {
 const hovered = ref(null)
 const selectionMode = ref(false)
 const selection = ref<Plan[]>([])
+const messages = ref<string[]>([])
 
 const paginatedPlans = computed(() => {
   const start = (currentPage.value - 1) * pageSize
@@ -152,6 +155,7 @@ function deletePlans() {
     })
     loadPlans()
     selectionMode.value = false
+    addMessage(`Deleted ${plans.length} plans`)
   }
   // reset page
   currentPage.value = 1
@@ -204,6 +208,62 @@ watch(
     selection.value = []
   },
 )
+
+const fileInput = ref<HTMLInputElement | null>(null)
+
+function triggerImport() {
+  fileInput.value?.click()
+}
+
+async function handleImportFile(event: Event) {
+  const input = event.target as HTMLInputElement
+  if (!input.files?.length) return
+  const file = input.files[0]
+  const reader = new FileReader()
+  reader.onload = async () => {
+    try {
+      const plans = JSON.parse(reader.result as string)
+      const counts = await idb.importPlans(plans)
+      let message = `Imported ${counts[0]} plans`
+      if (counts[1]) {
+        message += ` <i>(${counts[1]} duplicates found)</i>`
+      }
+      addMessage(message)
+      loadPlans()
+    } catch (error: unknown) {
+      console.error("Invalid file format", error)
+      alert("Invalid file format")
+    }
+  }
+  reader.readAsText(file)
+}
+
+async function exportPlans(plans) {
+  if (!plans) {
+    plans = plansFromSelection()
+  }
+  const blob = new Blob([JSON.stringify(plans, null, 2)], {
+    type: "application/json",
+  })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = "plans.json"
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+  addMessage(`Exported ${plans.length} plans`)
+}
+
+function addMessage(text) {
+  const id = Date.now() + Math.random()
+
+  messages.value.push({ id, text })
+  setTimeout(() => {
+    messages.value = messages.value.filter((m) => m.id !== id)
+  }, 3000)
+}
 </script>
 
 <template>
@@ -329,6 +389,23 @@ watch(
               </Tippy>
             </div>
             <div class="d-flex align-items-center mb-2 ms-auto">
+              <Tippy>
+                <button class="btn btn-sm btn-primary" @click="triggerImport">
+                  <FontAwesomeIcon
+                    :icon="faDownload"
+                    class="me-2"
+                  ></FontAwesomeIcon>
+                  Import
+                </button>
+                <template #content>Import plans from a JSON file</template>
+              </Tippy>
+              <input
+                type="file"
+                accept=".json"
+                ref="fileInput"
+                class="d-none"
+                @change="handleImportFile"
+              />
               <button
                 class="btn btn-sm ms-2 btn-light"
                 :class="{ active: selectionMode }"
@@ -338,6 +415,12 @@ watch(
               </button>
             </div>
           </div>
+          <div>
+            <div class="alert alert-success py-1" v-for="message in messages">
+              <span v-html="message.text"></span>
+            </div>
+          </div>
+
           <div class="list-group" v-cloak>
             <a
               class="list-group-item list-group-item-action px-2 py-1 flex-column"
@@ -379,6 +462,13 @@ watch(
                 >
                   <button
                     class="btn btn-sm btn-outline-secondary py-0 ms-1"
+                    title="Export plan"
+                    v-on:click.stop="exportPlans([plan])"
+                  >
+                    <FontAwesomeIcon :icon="faUpload"></FontAwesomeIcon>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-secondary py-0 ms-1"
                     title="Remove plan from list"
                     v-on:click.stop="deletePlan(plan)"
                   >
@@ -396,6 +486,11 @@ watch(
             </a>
           </div>
           <div v-if="selectionMode" class="mt-2 d-flex">
+            <button class="btn btn-sm btn-primary" @click="exportPlans()">
+              <FontAwesomeIcon :icon="faUpload" class="me-2"></FontAwesomeIcon>
+              Export<template v-if="selection.length < 1"> all</template
+              ><template v-else> ({{ selection.length }})</template>
+            </button>
             <button class="btn btn-sm ms-auto btn-danger" @click="deletePlans">
               <FontAwesomeIcon :icon="faTrash" class="me-2"></FontAwesomeIcon>
               Delete<template v-if="selection.length < 1"> all</template
