@@ -6,7 +6,12 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { time_ago } from "../utils"
 import MainLayout from "../layouts/MainLayout.vue"
 import Plan from "@/components/Plan.vue"
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons"
+import {
+  faEdit,
+  faTrash,
+  faDownload,
+  faUpload,
+} from "@fortawesome/free-solid-svg-icons"
 import samples from "../samples.ts"
 
 import idb from "../idb"
@@ -199,6 +204,45 @@ watch(
     selection.value = []
   },
 )
+
+const fileInput = ref<HTMLInputElement | null>(null)
+
+function triggerImport() {
+  fileInput.value?.click()
+}
+
+async function handleImportFile(event: Event) {
+  const input = event.target as HTMLInputElement
+  if (!input.files?.length) return
+  const file = input.files[0]
+  const reader = new FileReader()
+  reader.onload = async () => {
+    try {
+      const plans = JSON.parse(reader.result as string)
+      await idb.importPlans(plans)
+      loadPlans()
+    } catch (error: unknown) {
+      console.error("Invalid file format", error)
+      alert("Invalid file format")
+    }
+  }
+  reader.readAsText(file)
+}
+
+async function triggerExport() {
+  const plans = plansFromSelection()
+  const blob = new Blob([JSON.stringify(plans, null, 2)], {
+    type: "application/json",
+  })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = "plans.json"
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
 </script>
 
 <template>
@@ -441,11 +485,32 @@ watch(
             </a>
           </div>
           <div v-if="selectionMode" class="mt-2 d-flex">
+            <button class="btn btn-sm btn-primary" @click="triggerExport">
+              <FontAwesomeIcon :icon="faUpload" class="me-2"></FontAwesomeIcon>
+              Export<template v-if="selection.length < 1"> all</template
+              ><template v-else> ({{ selection.length }})</template>
+            </button>
             <button class="btn btn-sm ms-auto btn-danger" @click="deletePlans">
               <FontAwesomeIcon :icon="faTrash" class="me-2"></FontAwesomeIcon>
               Delete<template v-if="selection.length < 1"> all</template
               ><template v-else> ({{ selection.length }})</template>
             </button>
+          </div>
+          <div v-else class="mt-2 d-flex">
+            <button class="btn btn-sm btn-primary" @click="triggerImport">
+              <FontAwesomeIcon
+                :icon="faDownload"
+                class="me-2"
+              ></FontAwesomeIcon>
+              Import
+            </button>
+            <input
+              type="file"
+              accept=".json"
+              ref="fileInput"
+              class="d-none"
+              @change="handleImportFile"
+            />
           </div>
           <p
             class="text-secondary text-center"
