@@ -2,6 +2,13 @@ const DB_NAME = "pev2"
 const DB_VERSION = 1
 let DB
 
+type StoredPlan = Record<string, unknown> & { id?: unknown }
+type ImportablePlan = StoredPlan | unknown[]
+
+function deepEqual<T>(a: T, b: T): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 export default {
   async getDb() {
     return new Promise((resolve, reject) => {
@@ -75,6 +82,57 @@ export default {
 
       const store = trans.objectStore("plans")
       store.put(plan)
+    })
+  },
+
+  async importPlans(plans: ImportablePlan[]) {
+    const db = await this.getDb()
+
+    return new Promise<number[]>((resolve, reject) => {
+      const trans = db.transaction(["plans"], "readwrite")
+      const store = trans.objectStore("plans")
+
+      let count = 0;
+      let duplicates = 0;
+
+      trans.oncomplete = () => {
+        resolve([count, duplicates])
+      }
+
+      trans.onerror = () => {
+        reject(trans.error)
+      }
+
+      for (const plan of plans) {
+        if ("id" in plan) delete plan.id;
+
+        const cursorReq = store.openCursor();
+        let exists = false;
+
+        cursorReq.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (!cursor) {
+            // reached end → no duplicate found
+            if (!exists) {
+              store.add(plan);
+              count++;
+            }
+            return;
+          }
+
+          const existing = cursor.value;
+          delete existing.id;
+
+          if (deepEqual(existing, plan)) {
+            exists = true; // duplicate found
+            duplicates++;
+            return;        // stop scanning
+          }
+
+          cursor.continue();
+        };
+      }
+
     })
   },
 }
