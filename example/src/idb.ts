@@ -77,4 +77,30 @@ export default {
       store.put(plan)
     })
   },
+
+  async exportPlans() {
+    return await this.getPlans()
+  },
+
+  async importPlans(plans) {
+    const db = await this.getDb()
+
+    return new Promise<void>((resolve) => {
+      const trans = db.transaction(["plans"], "readwrite")
+      trans.oncomplete = () => {
+        resolve()
+      }
+
+      const store = trans.objectStore("plans")
+      for (const p of plans) {
+        console.log("IMPORTING", p)
+        // Clone and strip `id` to avoid key collisions; let IndexedDB assign one
+        const copy: any = Array.isArray(p) ? [...p] : { ...p }
+        if (copy && typeof copy === "object" && "id" in copy) {
+          delete copy.id
+        }
+        store.put(copy)
+      }
+    })
+  },
 }

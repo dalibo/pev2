@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { time_ago } from "../utils"
 import MainLayout from "../layouts/MainLayout.vue"
 import Plan from "@/components/Plan.vue"
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faEdit, faTrash, faDownload, faUpload } from "@fortawesome/free-solid-svg-icons"
 import samples from "../samples.ts"
 
 import idb from "../idb"
@@ -99,6 +99,42 @@ function handleDrop(event: DragEvent) {
     input.dispatchEvent(new Event("input"))
   }
   reader.readAsText(file)
+}
+
+const fileInput = ref<HTMLInputElement | null>(null)
+
+function triggerImport() {
+  fileInput.value?.click()
+}
+
+async function handleImportFile(event: Event) {
+  const input = event.target as HTMLInputElement
+  if (!input.files?.length) return
+  const file = input.files[0]
+  const reader = new FileReader()
+  reader.onload = async () => {
+    try {
+      const plans = JSON.parse(reader.result as string)
+      await idb.importPlans(plans)
+      loadPlans()
+    } catch (e) {
+      alert("Invalid file format")
+    }
+  }
+  reader.readAsText(file)
+}
+
+async function exportPlans() {
+  const plans = await idb.exportPlans()
+  const blob = new Blob([JSON.stringify(plans, null, 2)], { type: "application/json" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = "plans.json"
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
 }
 </script>
 
@@ -201,7 +237,24 @@ function handleDrop(event: DragEvent) {
           </form>
         </div>
         <div class="col-sm-5 mb-4 mt-4 mt-md-0">
-          <div class="mb-2">Saved Plans</div>
+          <div class="d-flex mb-2 justify-content-between">
+            <div class="mb-2">Saved Plans</div>
+            <div>
+              <button @click="exportPlans">
+                <FontAwesomeIcon :icon="faDownload" /> Export
+              </button>
+              <button @click="triggerImport">
+                <FontAwesomeIcon :icon="faUpload" /> Import
+              </button>
+              <input
+                type="file"
+                accept=".json"
+                ref="fileInput"
+                style="display: none"
+                @change="handleImportFile"
+              />
+            </div>
+          </div>
           <ul class="list-group" v-cloak>
             <li
               class="list-group-item px-2 py-1"
