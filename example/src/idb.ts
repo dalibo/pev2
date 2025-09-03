@@ -93,8 +93,6 @@ export default {
 
       const store = trans.objectStore("plans")
       for (const p of plans) {
-        console.log("IMPORTING", p)
-        // Clone and strip `id` to avoid key collisions; let IndexedDB assign one
         const copy: any = Array.isArray(p) ? [...p] : { ...p }
         if (copy && typeof copy === "object" && "id" in copy) {
           delete copy.id
