@@ -124,7 +124,7 @@ async function handleImportFile(event: Event) {
   reader.readAsText(file)
 }
 
-async function exportPlans() {
+async function triggerExport() {
   const plans = await idb.exportPlans()
   const blob = new Blob([JSON.stringify(plans, null, 2)], { type: "application/json" })
   const url = URL.createObjectURL(blob)
@@ -237,21 +237,21 @@ async function exportPlans() {
           </form>
         </div>
         <div class="col-sm-5 mb-4 mt-4 mt-md-0">
-          <div class="d-flex mb-2 justify-content-between">
-            <div class="mb-2">Saved Plans</div>
-            <div>
-              <button @click="exportPlans">
-                <FontAwesomeIcon :icon="faDownload" /> Export
+            <div class="d-flex mb-2 justify-content-between align-items-center">
+            <div>Saved Plans</div>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <button @click="triggerExport" class="btn btn-secondary">
+              <FontAwesomeIcon :icon="faDownload" /> Export
               </button>
-              <button @click="triggerImport">
-                <FontAwesomeIcon :icon="faUpload" /> Import
+              <button @click="triggerImport" class="btn btn-secondary">
+              <FontAwesomeIcon :icon="faUpload" /> Import
               </button>
               <input
-                type="file"
-                accept=".json"
-                ref="fileInput"
-                style="display: none"
-                @change="handleImportFile"
+              type="file"
+              accept=".json"
+              ref="fileInput"
+              style="display: none"
+              @change="handleImportFile"
               />
             </div>
           </div>
