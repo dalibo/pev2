@@ -71,7 +71,6 @@
         "Plan Width": 19,
         "Actual Loops": 0,
         "Actual Rows": 0,
-        "Actual Total Time": 0,
         "Parent Relationship": "SubPlan",
         "Subplan Name": "SubPlan",
         "Plans": [
@@ -83,7 +82,6 @@
             "Plan Width": 19,
             "Actual Loops": 0,
             "Actual Rows": 0,
-            "Actual Total Time": 0,
             "Sort Key": [
               "status",
               "date_registration",
@@ -101,7 +99,6 @@
                 "Plan Width": 19,
                 "Actual Loops": 0,
                 "Actual Rows": 0,
-                "Actual Total Time": 0,
                 "Index Cond": "(id_contact_client = $0)",
                 "Filter": "(id_contact_event < $1)"
               }

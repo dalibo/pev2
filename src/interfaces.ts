@@ -78,7 +78,7 @@ export class Node {
   [NodeProp.ACTUAL_ROWS]!: number;
   [NodeProp.ACTUAL_ROWS_REVISED]!: number;
   [NodeProp.ACTUAL_STARTUP_TIME]?: number;
-  [NodeProp.ACTUAL_TOTAL_TIME]!: number;
+  [NodeProp.ACTUAL_TOTAL_TIME]?: number;
   [NodeProp.EXCLUSIVE_COST]!: number;
   [NodeProp.EXCLUSIVE_DURATION]!: number;
   [NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]!: number;

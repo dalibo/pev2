@@ -13,7 +13,7 @@ hljs.registerLanguage("json", json)
 
 export function duration(value: number | undefined): string {
   if (value === undefined) {
-    return "N/A"
+    return "-"
   }
   const result: string[] = []
   let denominator: number = 1000 * 60 * 60 * 24

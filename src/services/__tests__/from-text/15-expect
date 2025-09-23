@@ -32,7 +32,6 @@
         "Plan Width": 1346,
         "Actual Loops": 0,
         "Actual Rows": 0,
-        "Actual Total Time": 0,
         "Plans": [
           {
             "Node Type": "Seq Scan",
@@ -43,8 +42,7 @@
             "Plan Rows": 212,
             "Plan Width": 1346,
             "Actual Loops": 0,
-            "Actual Rows": 0,
-            "Actual Total Time": 0
+            "Actual Rows": 0
           }
         ]
       }
