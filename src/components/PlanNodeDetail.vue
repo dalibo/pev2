@@ -201,7 +201,9 @@ watch(activeTab, () => {
           :class="durationClass"
           v-html="formattedProp('EXCLUSIVE_DURATION')"
         ></span>
-        <template v-if="executionTimePercent !== Infinity">
+        <template
+          v-if="executionTimePercent && executionTimePercent !== Infinity"
+        >
           |
           <strong>{{ executionTimePercent }}</strong
           ><span class="text-secondary">%</span>

@@ -268,4 +268,15 @@ Seq Scan on foo  (cost=0.00..18334.00 rows=1000000 width=37)
     const seqscan = findNodeById(plan, 1)
     expect(seqscan?.["*Plan Rows Revised"]).toBe(1000000)
   })
+
+  test("never executed node time is undefined", () => {
+    const planService = new PlanService()
+    const source = `
+Hash  (cost=6.12..6.12 rows=212 width=1346) (never executed)
+`
+    const r = planService.fromSource(source) as IPlanContent
+    const plan: IPlan = planService.createPlan("", r, "")
+    const hash = findNodeById(plan, 1)
+    expect(hash?.["Actual Total Time"]).toBe(undefined)
+  })
 })

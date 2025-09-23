@@ -281,7 +281,7 @@ export class PlanService {
     // Iterate over the CTEs
     _.each(plan.ctes, (cte) => {
       // Time spent in the CTE itself
-      const cteDuration = cte[NodeProp.ACTUAL_TOTAL_TIME]
+      const cteDuration = cte[NodeProp.ACTUAL_TOTAL_TIME] || 0
 
       // Find all nodes that are "CTE Scan" for the given CTE
       const cteScans = _.filter(
@@ -300,7 +300,7 @@ export class PlanService {
       _.each(cteScans, (node) => {
         node[NodeProp.EXCLUSIVE_DURATION] =
           node[NodeProp.EXCLUSIVE_DURATION] -
-          (cteDuration * node[NodeProp.ACTUAL_TOTAL_TIME]) / sumScansDuration
+          (cteDuration * (node[NodeProp.ACTUAL_TOTAL_TIME] || 0)) / sumScansDuration
       })
     })
   }
@@ -352,7 +352,7 @@ export class PlanService {
             ).exec(value)
             if (matches) {
               node[NodeProp.EXCLUSIVE_DURATION] -=
-                subPlan[NodeProp.ACTUAL_TOTAL_TIME]
+                subPlan[NodeProp.ACTUAL_TOTAL_TIME] || 0
               // Stop iterating for this node
               return false
             }
@@ -772,7 +772,7 @@ export class PlanService {
         if (neverExecuted) {
           newNode[NodeProp.ACTUAL_LOOPS] = 0
           newNode[NodeProp.ACTUAL_ROWS] = 0
-          newNode[NodeProp.ACTUAL_TOTAL_TIME] = 0
+          newNode[NodeProp.ACTUAL_TOTAL_TIME] = undefined
         }
         const element = {
           node: newNode,

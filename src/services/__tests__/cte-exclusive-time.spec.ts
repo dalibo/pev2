@@ -34,8 +34,8 @@ tests.forEach((planTest: string) => {
 
       // Excpect the sum of exclusives to be approvimatively equal to the
       // duration of the root node
-      const min = plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] * 0.99
-      const max = plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] * 1.01
+      const min = (plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] || 0) * 0.99
+      const max = (plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] || 0) * 1.01
       expect(
         sumExclusiveDuration([plan.content.Plan].concat(plan.ctes)),
       ).toBeGreaterThan(min)

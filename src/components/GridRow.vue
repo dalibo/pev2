@@ -106,14 +106,16 @@ const showDetails = ref<boolean>(false)
         :percentage="
           (node[NodeProp.EXCLUSIVE_DURATION] /
             (plan.planStats.executionTime ||
-              plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
+              plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
+              0)) *
           100
         "
         :percentage2="
-          ((node[NodeProp.ACTUAL_TOTAL_TIME] -
-            node[NodeProp.EXCLUSIVE_DURATION]) /
+          ((node[NodeProp.ACTUAL_TOTAL_TIME] ||
+            0 - node[NodeProp.EXCLUSIVE_DURATION]) /
             (plan.planStats.executionTime ||
-              plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME])) *
+              plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
+              0)) *
           100
         "
       ></GridProgressBar>
@@ -125,9 +127,9 @@ const showDetails = ref<boolean>(false)
         ></SeverityBullet>
         <span class="flex-grow-1">
           {{
-            node[NodeProp.EXCLUSIVE_DURATION].toLocaleString(undefined, {
+            node[NodeProp.EXCLUSIVE_DURATION]?.toLocaleString(undefined, {
               minimumFractionDigits: 3,
-            })
+            }) || "-"
           }}
         </span>
       </div>
