@@ -134,10 +134,6 @@ $bg-color: #fff;
     }
   }
 
-  &.never-executed .plan-node-body {
-    @extend %bg-hatched;
-  }
-
   .workers {
     position: absolute;
     left: -1px;

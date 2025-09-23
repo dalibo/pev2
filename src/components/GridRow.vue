@@ -57,6 +57,7 @@ const {
   formattedProp,
   heapFetchesClass,
   heapFetchesTooltip,
+  isNeverExecuted,
   localDirtiedPercent,
   localHitPercent,
   localReadPercent,
@@ -80,7 +81,13 @@ const {
 const showDetails = ref<boolean>(false)
 </script>
 <template>
-  <tr @click="showDetails = !showDetails" class="node">
+  <tr
+    @click="showDetails = !showDetails"
+    class="node"
+    :class="{
+      'never-executed': isNeverExecuted,
+    }"
+  >
     <td class="node-index text-secondary">
       <!-- node id -->
       <a :href="`#plan/node/${node.nodeId}`" @click.stop>
@@ -274,10 +281,7 @@ const showDetails = ref<boolean>(false)
         class="position-relative d-flex"
         v-tippy="{ content: costTooltip, allowHTML: true }"
       >
-        <SeverityBullet
-          :severity="costClass"
-          v-if="costClass"
-        ></SeverityBullet>
+        <SeverityBullet :severity="costClass" v-if="costClass"></SeverityBullet>
         <span class="flex-grow-1">
           {{ cost(node[NodeProp.EXCLUSIVE_COST]) }}
         </span>
