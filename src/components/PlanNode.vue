@@ -278,6 +278,9 @@ function centerCte() {
           </div>
         </div>
         <PlanNodeDetail :node="node" v-if="showDetails"></PlanNodeDetail>
+        <div v-if="isNeverExecuted" class="text-end">
+          <span class="text-secondary bg-white px-1"> Never executed </span>
+        </div>
       </div>
     </div>
   </div>
