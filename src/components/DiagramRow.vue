@@ -48,6 +48,7 @@ const {
   costTooltip,
   estimateFactorPercent,
   estimateFactorTooltip,
+  isNeverExecuted,
   nodeName,
   rowsTooltip,
 } = useNode(plan, node, _viewOptions)
@@ -70,6 +71,7 @@ watch(
     :class="{
       selected: node.nodeId === selectedNodeId,
       highlight: node.nodeId === highlightedNodeId,
+      'never-executed': isNeverExecuted,
     }"
     tag="tr"
     @mouseenter="highlightedNodeId = node.nodeId"

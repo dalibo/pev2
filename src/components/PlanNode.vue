@@ -106,7 +106,6 @@ function centerCte() {
         'text-start plan-node',
         {
           detailed: showDetails,
-          'never-executed': isNeverExecuted,
           parallel: workersPlannedCount,
           selected: selectedNodeId == node.nodeId,
           highlight: highlightedNodeId == node.nodeId,
@@ -133,6 +132,9 @@ function centerCte() {
       </div>
       <div
         class="plan-node-body card"
+        :class="{
+          'never-executed': isNeverExecuted,
+        }"
         @mouseenter="highlightedNodeId = node.nodeId"
         @mouseleave="highlightedNodeId = undefined"
       >
