@@ -42,6 +42,9 @@ tests.forEach((planTest: string) => {
       expect(
         sumExclusiveDuration([plan.content.Plan].concat(plan.ctes)),
       ).toBeLessThan(max)
+
+      // Expect the exclusive time for the root node not to be negative
+      expect(plan.content.Plan[NodeProp.EXCLUSIVE_DURATION]).toBeGreaterThan(0)
     })
   })
 })
