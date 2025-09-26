@@ -332,33 +332,39 @@ export class PlanService {
         return
       }
       const name = matches[2] || matches[1]
+      const nameRegexp = new RegExp(
+        `.*${name.replace(/[^a-zA-Z0-9]/g, "\\$&")}[0-9]?`,
+      )
 
-      // Find all nodes that are using data from this InitPlan
-      // There should be the name of the sub plan somewhere in the extra info
-      _.each(
-        _.filter(
-          this.flat,
-          (node) => node[NodeProp.PARENT_RELATIONSHIP] != "InitPlan",
-        ),
-        (node) => {
-          _.each(node, (value) => {
+      // List of nodes that have used data from this init plan and are not
+      // init plans themselves
+      const affectedNodes = _.filter(this.flat, (node) => {
+        return (
+          node[NodeProp.PARENT_RELATIONSHIP] != "InitPlan" &&
+          _.some(node, (value) => {
             if (typeof value != "string") {
-              return
+              return false
             }
             // Value for node property should contain sub plan name (with a number
             // matching exactly)
-            const matches = new RegExp(
-              `.*${name.replace(/[^a-zA-Z0-9]/g, "\\$&")}[0-9]?`,
-            ).exec(value)
-            if (matches) {
-              node[NodeProp.EXCLUSIVE_DURATION] -=
-                subPlan[NodeProp.ACTUAL_TOTAL_TIME]
-              // Stop iterating for this node
-              return false
-            }
+            return nameRegexp.exec(value) !== null
           })
-        },
+        )
+      })
+
+      // Sum of exclusive time for nodes using init plan
+      const sumScansDuration = _.sumBy(
+        affectedNodes,
+        (node) => node[NodeProp.ACTUAL_TOTAL_TIME],
       )
+
+      // Subtract exclusive time proportionally
+      _.each(affectedNodes, (node) => {
+        node[NodeProp.EXCLUSIVE_DURATION] -=
+          (node[NodeProp.EXCLUSIVE_DURATION] *
+            subPlan[NodeProp.ACTUAL_TOTAL_TIME]) /
+          sumScansDuration
+      })
     })
   }
 

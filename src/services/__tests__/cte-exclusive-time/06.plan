@@ -1,0 +1,234 @@
+Nested Loop  (cost=182690.99..182691.06 rows=1 width=32) (actual time=275655.038..275655.215 rows=1 loops=1)
+  Output: convert_to((row_to_json(ROW(((sum(req_principal_n.alpha_five) - sum(req_principal_n.alpha_one))), ($12), ((sum(req_principal_n_1.alpha_five) - sum(req_principal_n_1.alpha_one))), ($13))))::text, 'UTF8'::name)
+  Buffers: shared hit=236836686 read=1476, temp read=4362364 written=4362364
+  I/O Timings: shared read=89.209, temp read=83573.462 write=60491.338
+  CTE req_principal_n_1
+    ->  GroupAggregate  (cost=1310.32..1310.35 rows=1 width=128) (actual time=0.023..0.027 rows=0 loops=1)
+          Output: (COALESCE(NULLIF((c.romeo_two)::text, ''::text), (c.quebec)::text)), string_agg(COALESCE(NULLIF(c.zulu_label, ''::text), c.lima_co), '#~#'::text), sum(le.whiskey), sum(le.romeo)
+          Group Key: (COALESCE(NULLIF((c.romeo_two)::text, ''::text), (c.quebec)::text))
+          Buffers: shared hit=4
+          ->  Sort  (cost=1310.32..1310.32 rows=1 width=64) (actual time=0.023..0.026 rows=0 loops=1)
+                Output: (COALESCE(NULLIF((c.romeo_two)::text, ''::text), (c.quebec)::text)), c.zulu_label, c.lima_co, le.whiskey, le.romeo
+                Sort Key: (COALESCE(NULLIF((c.romeo_two)::text, ''::text), (c.quebec)::text))
+                Sort Method: quicksort  Memory: 25kB
+                Buffers: shared hit=4
+                ->  Nested Loop  (cost=2.56..1310.31 rows=1 width=64) (actual time=0.019..0.021 rows=0 loops=1)
+                      Output: COALESCE(NULLIF((c.romeo_two)::text, ''::text), (c.quebec)::text), c.zulu_label, c.lima_co, le.whiskey, le.romeo
+                      Buffers: shared hit=4
+                      ->  Nested Loop  (cost=1.99..919.93 rows=150 width=63) (actual time=0.018..0.020 rows=0 loops=1)
+                            Output: c.romeo_two, c.quebec, c.zulu_label, c.lima_co, c.id_sierra, ec.id_oscar
+                            Buffers: shared hit=4
+                            ->  Nested Loop  (cost=1.55..5.64 rows=1 width=8) (actual time=0.018..0.020 rows=0 loops=1)
+                                  Output: ec.id_oscar
+                                  Inner Unique: true
+                                  Buffers: shared hit=4
+                                  ->  Nested Loop  (cost=1.42..5.48 rows=1 width=12) (actual time=0.017..0.018 rows=0 loops=1)
+                                        Output: ec.id_oscar, j.id_type_xray
+                                        Inner Unique: true
+                                        Buffers: shared hit=4
+                                        ->  Nested Loop  (cost=1.00..5.04 rows=1 width=16) (actual time=0.017..0.018 rows=0 loops=1)
+                                              Output: ec.id_oscar, uniform.diary_id
+                                              Inner Unique: true
+                                              Buffers: shared hit=4
+                                              ->  Index Scan using ndx_oscar_8 on golf24.oscar ec  (cost=0.57..2.59 rows=1 width=16) (actual time=0.017..0.017 rows=0 loops=1)
+                                                    Output: ec.id_oscar, ec.id_four, ec.ligne, ec.commentaires, ec.tango_comptabilisation, ec.tango_hotel, ec.tango_five, ec.papa_id, ec.periode_du, ec.periode_au, ec.id_import, ec.id_transaction_qonto, ec.foxtrot, ec.id_source, ec.seq_society, ec.id_entry_origin_partner, ec.id_ligne_rb, ec.closed_by, ec.id_action_type, ec.created_at, ec.uptangod_at, ec.third_party_id, ec.last_param_applied
+                                                    Index Cond: ((ec.id_four = 15429) AND (ec.tango_hotel >= '1799-12-31'::tango) AND (ec.tango_hotel <= '1799-12-31'::tango))
+                                                    Buffers: shared hit=4
+                                              ->  Index Only Scan using ndx_papa_papa_id_diary_id on golf24.papa uniform  (cost=0.43..2.45 rows=1 width=16) (never executed)
+                                                    Output: uniform.papa_id, uniform.diary_id
+                                                    Index Cond: (uniform.papa_id = ec.papa_id)
+                                                    Heap Fetches: 0
+                                        ->  Index Scan using golf_xray_pkey on golf24.xray j  (cost=0.42..0.44 rows=1 width=12) (never executed)
+                                              Output: j.id_xray, j.id_societe, j.code, j.lima, j.id_type_xray, j.id_sierra, j.closed
+                                              Index Cond: (j.id_xray = uniform.diary_id)
+                                  ->  Index Only Scan using ndx_type_xray_id_type_xray_code on golf_global.type_xray tj  (cost=0.14..0.16 rows=1 width=8) (never executed)
+                                        Output: tj.id_type_xray, tj.code
+                                        Index Cond: (tj.id_type_xray = j.id_type_xray)
+                                        Filter: ((tj.code <> 'OD_EXC'::text) OR (tj.code IS NULL))
+                                        Heap Fetches: 0
+                            ->  Index Scan using ndx_sierra_2 on golf24.sierra c  (cost=0.43..912.68 rows=161 width=55) (never executed)
+                                  Output: c.id_sierra, c.id_societe, c.quebec, c.lima_co, c.commentaires, c.sierra_intraco, c.presta, c.das_2, c.id_tva, c.id_sierra_contrepart, c.id_info_sierra_tiers, c.param_vat_id, c.btp_autoliquidation, c.exoneration, c.closed, c.romeo_two, c.zulu_label, c.ocr_autofive, c.ocr_threshold, c.analytics, c.asierra_ht, c.dotation_account_id
+                                  Index Cond: (c.id_societe = 15429)
+                                  Filter: (COALESCE(NULLIF((c.romeo_two)::text, ''::text), (c.quebec)::text) ~ '^(?:(?:1|2|3|4|5).*)$'::text)
+                      ->  Index Scan using ndx_ligne_oscar_7 on golf24.ligne_oscar le  (cost=0.57..2.59 rows=1 width=24) (never executed)
+                            Output: le.id_ligne_oscar, le.id_oscar, le.id_type_reglement, le.id_sierra, le.id_createur, le.hotel, le.hotel_2, le.hotel_3, le.lettrage, le.lima, le.whiskey, le.romeo, le.qte_titre, le.tango_echeance, le.five_tango, le.currency, le.value_currency, le.external_ref, le.tango_pointage, le.created_at, le.uptangod_at, le.id_ligne_origine
+                            Index Cond: ((le.id_oscar = ec.id_oscar) AND (le.id_sierra = c.id_sierra))
+  CTE req_principal_n
+    ->  GroupAggregate  (cost=181380.41..181380.44 rows=1 width=128) (actual time=275630.459..275647.109 rows=3292 loops=1)
+          Output: (COALESCE(NULLIF((c_1.romeo_two)::text, ''::text), (c_1.quebec)::text)), string_agg(COALESCE(NULLIF(c_1.zulu_label, ''::text), c_1.lima_co), '#~#'::text), sum(le_1.whiskey), sum(le_1.romeo)
+          Group Key: (COALESCE(NULLIF((c_1.romeo_two)::text, ''::text), (c_1.quebec)::text))
+          Buffers: shared hit=236836682 read=1476, temp read=4362364 written=4362364
+          I/O Timings: shared read=89.209, temp read=83573.462 write=60491.338
+          ->  Sort  (cost=181380.41..181380.41 rows=1 width=64) (actual time=275630.445..275633.919 rows=41409 loops=1)
+                Output: (COALESCE(NULLIF((c_1.romeo_two)::text, ''::text), (c_1.quebec)::text)), c_1.zulu_label, c_1.lima_co, le_1.whiskey, le_1.romeo
+                Sort Key: (COALESCE(NULLIF((c_1.romeo_two)::text, ''::text), (c_1.quebec)::text))
+                Sort Method: quicksort  Memory: 4838kB
+                Buffers: shared hit=236836682 read=1476, temp read=4362364 written=4362364
+                I/O Timings: shared read=89.209, temp read=83573.462 write=60491.338
+                ->  Nested Loop  (cost=8651.65..181380.40 rows=1 width=64) (actual time=42747.158..275586.330 rows=41409 loops=1)
+                      Output: COALESCE(NULLIF((c_1.romeo_two)::text, ''::text), (c_1.quebec)::text), c_1.zulu_label, c_1.lima_co, le_1.whiskey, le_1.romeo
+                      Inner Unique: true
+                      Buffers: shared hit=236836679 read=1476, temp read=4362364 written=4362364
+                      I/O Timings: shared read=89.209, temp read=83573.462 write=60491.338
+                      ->  Gather  (cost=8651.52..181380.24 rows=1 width=59) (actual time=42747.147..275532.945 rows=41439 loops=1)
+                            Output: c_1.romeo_two, c_1.quebec, c_1.zulu_label, c_1.lima_co, le_1.whiskey, le_1.romeo, j_1.id_type_xray
+                            Workers Planned: 2
+                            Workers Launched: 2
+                            Buffers: shared hit=236753801 read=1476, temp read=4362364 written=4362364
+                            I/O Timings: shared read=89.209, temp read=83573.462 write=60491.338
+                            ->  Nested Loop  (cost=7651.52..180380.14 rows=1 width=59) (actual time=46250.686..124653.812 rows=13813 loops=3)
+                                  Output: c_1.romeo_two, c_1.quebec, c_1.zulu_label, c_1.lima_co, le_1.whiskey, le_1.romeo, j_1.id_type_xray
+                                  Buffers: shared hit=236753801 read=1476, temp read=4362364 written=4362364
+                                  I/O Timings: shared read=89.209, temp read=83573.462 write=60491.338
+                                  Worker 0:  actual time=72715.373..72715.386 rows=0 loops=1
+                                    Buffers: shared hit=69086 read=2, temp read=1453240 written=1453240
+                                    I/O Timings: shared read=0.100, temp read=27118.995 write=19890.663
+                                  Worker 1:  actual time=23290.748..228884.968 rows=41409 loops=1
+                                    Buffers: shared hit=236140584 read=1407, temp read=1455845 written=1455845
+                                    I/O Timings: shared read=83.239, temp read=29308.043 write=20615.537
+                                  ->  Hash Join  (cost=7650.95..18715.44 rows=62119 width=67) (actual time=46242.605..76778.819 rows=19708670 loops=3)
+                                        Output: c_1.romeo_two, c_1.quebec, c_1.zulu_label, c_1.lima_co, c_1.id_sierra, ec_1.id_oscar, j_1.id_type_xray
+                                        Hash Cond: (j_1.id_xray = uniform_1.diary_id)
+                                        Buffers: shared hit=210339 read=126, temp read=4362364 written=4362364
+                                        I/O Timings: shared read=6.539, temp read=83573.462 write=60491.338
+                                        Worker 0:  actual time=72715.371..72715.384 rows=0 loops=1
+                                          Buffers: shared hit=69086 read=2, temp read=1453240 written=1453240
+                                          I/O Timings: shared read=0.100, temp read=27118.995 write=19890.663
+                                        Worker 1:  actual time=23287.070..85409.305 rows=59007249 loops=1
+                                          Buffers: shared hit=72184 read=73, temp read=1455845 written=1455845
+                                          I/O Timings: shared read=3.255, temp read=29308.043 write=20615.537
+                                        ->  Parallel Seq Scan on golf24.xray j_1  (cost=0.00..4666.26 rows=144426 width=12) (actual time=0.019..10.821 rows=115502 loops=3)
+                                              Output: j_1.id_xray, j_1.id_societe, j_1.code, j_1.lima, j_1.id_type_xray, j_1.id_sierra, j_1.closed
+                                              Buffers: shared hit=3222
+                                              Worker 0:  actual time=0.029..0.041 rows=108 loops=1
+                                                Buffers: shared hit=1
+                                              Worker 1:  actual time=0.024..31.571 rows=341120 loops=1
+                                                Buffers: shared hit=3170
+                                        ->  Hash  (cost=5787.37..5787.37 rows=149086 width=71) (actual time=23635.130..23635.144 rows=59126011 loops=3)
+                                              Output: c_1.romeo_two, c_1.quebec, c_1.zulu_label, c_1.lima_co, c_1.id_sierra, ec_1.id_oscar, uniform_1.diary_id
+                                              Buckets: 8388608 (originally 262144)  Batches: 16 (originally 1)  Memory Usage: 4188075kB
+                                              Buffers: shared hit=207087 read=126, temp written=1549722
+                                              I/O Timings: shared read=6.539, temp write=22304.976
+                                              Worker 0:  actual time=23904.119..23904.128 rows=59126011 loops=1
+                                                Buffers: shared hit=69070 read=2, temp written=516574
+                                                I/O Timings: shared read=0.100, temp write=7475.825
+                                              Worker 1:  actual time=23203.281..23203.311 rows=59126011 loops=1
+                                                Buffers: shared hit=68999 read=73, temp written=516574
+                                                I/O Timings: shared read=3.255, temp write=7361.102
+                                              ->  Nested Loop  (cost=1.43..5787.37 rows=149086 width=71) (actual time=0.818..7727.119 rows=59126011 loops=3)
+                                                    Output: c_1.romeo_two, c_1.quebec, c_1.zulu_label, c_1.lima_co, c_1.id_sierra, ec_1.id_oscar, uniform_1.diary_id
+                                                    Buffers: shared hit=207087 read=126
+                                                    I/O Timings: shared read=6.539
+                                                    Worker 0:  actual time=0.443..7832.212 rows=59126011 loops=1
+                                                      Buffers: shared hit=69070 read=2
+                                                      I/O Timings: shared read=0.100
+                                                    Worker 1:  actual time=0.408..7574.638 rows=59126011 loops=1
+                                                      Buffers: shared hit=68999 read=73
+                                                      I/O Timings: shared read=3.255
+                                                    ->  Nested Loop  (cost=1.00..3010.71 rows=926 width=16) (actual time=0.438..68.285 rows=16927 loops=3)
+                                                          Output: ec_1.id_oscar, uniform_1.diary_id
+                                                          Inner Unique: true
+                                                          Buffers: shared hit=206936 read=86
+                                                          I/O Timings: shared read=4.452
+                                                          Worker 0:  actual time=0.271..68.180 rows=16927 loops=1
+                                                            Buffers: shared hit=69006 read=2
+                                                            I/O Timings: shared read=0.100
+                                                          Worker 1:  actual time=0.246..68.366 rows=16927 loops=1
+                                                            Buffers: shared hit=68935 read=73
+                                                            I/O Timings: shared read=3.255
+                                                          ->  Index Scan using ndx_oscar_8 on golf24.oscar ec_1  (cost=0.57..808.33 rows=926 width=16) (actual time=0.345..16.899 rows=16927 loops=3)
+                                                                Output: ec_1.id_oscar, ec_1.id_four, ec_1.ligne, ec_1.commentaires, ec_1.tango_comptabilisation, ec_1.tango_hotel, ec_1.tango_five, ec_1.papa_id, ec_1.periode_du, ec_1.periode_au, ec_1.id_import, ec_1.id_transaction_qonto, ec_1.foxtrot, ec_1.id_source, ec_1.seq_society, ec_1.id_entry_origin_partner, ec_1.id_ligne_rb, ec_1.closed_by, ec_1.id_action_type, ec_1.created_at, ec_1.uptangod_at, ec_1.third_party_id, ec_1.last_param_applied
+                                                                Index Cond: ((ec_1.id_four = 15429) AND (ec_1.tango_hotel >= '2024-12-19'::tango) AND (ec_1.tango_hotel <= '2025-09-30'::tango))
+                                                                Buffers: shared hit=3811 read=85
+                                                                I/O Timings: shared read=4.182
+                                                                Worker 0:  actual time=0.157..15.603 rows=16927 loops=1
+                                                                  Buffers: shared hit=1297 read=2
+                                                                  I/O Timings: shared read=0.100
+                                                                Worker 1:  actual time=0.146..18.697 rows=16927 loops=1
+                                                                  Buffers: shared hit=1226 read=73
+                                                                  I/O Timings: shared read=3.255
+                                                          ->  Index Scan using golf_papa_pkey on golf24.papa uniform_1  (cost=0.43..2.38 rows=1 width=16) (actual time=0.002..0.002 rows=1 loops=50781)
+                                                                Output: uniform_1.papa_id, uniform_1.diary_id, uniform_1.month, uniform_1.year, uniform_1.closed_at, uniform_1.closed_by, uniform_1.id_action_type
+                                                                Index Cond: (uniform_1.papa_id = ec_1.papa_id)
+                                                                Buffers: shared hit=203125 read=1
+                                                                I/O Timings: shared read=0.270
+                                                                Worker 0:  actual time=0.002..0.002 rows=1 loops=16927
+                                                                  Buffers: shared hit=67709
+                                                                Worker 1:  actual time=0.002..0.002 rows=1 loops=16927
+                                                                  Buffers: shared hit=67709
+                                                    ->  Materialize  (cost=0.43..913.49 rows=161 width=55) (actual time=0.000..0.121 rows=3493 loops=50781)
+                                                          Output: c_1.romeo_two, c_1.quebec, c_1.zulu_label, c_1.lima_co, c_1.id_sierra
+                                                          Buffers: shared hit=151 read=40
+                                                          I/O Timings: shared read=2.086
+                                                          Worker 0:  actual time=0.000..0.124 rows=3493 loops=16927
+                                                            Buffers: shared hit=64
+                                                          Worker 1:  actual time=0.000..0.118 rows=3493 loops=16927
+                                                            Buffers: shared hit=64
+                                                          ->  Index Scan using ndx_sierra_2 on golf24.sierra c_1  (cost=0.43..912.68 rows=161 width=55) (actual time=0.374..4.291 rows=3493 loops=3)
+                                                                Output: c_1.romeo_two, c_1.quebec, c_1.zulu_label, c_1.lima_co, c_1.id_sierra
+                                                                Index Cond: (c_1.id_societe = 15429)
+                                                                Filter: (COALESCE(NULLIF((c_1.romeo_two)::text, ''::text), (c_1.quebec)::text) ~ '^(?:(?:1|2|3|4|5).*)$'::text)
+                                                                Rows Removed by Filter: 403
+                                                                Buffers: shared hit=151 read=40
+                                                                I/O Timings: shared read=2.086
+                                                                Worker 0:  actual time=0.165..4.134 rows=3493 loops=1
+                                                                  Buffers: shared hit=64
+                                                                Worker 1:  actual time=0.156..3.808 rows=3493 loops=1
+                                                                  Buffers: shared hit=64
+                                  ->  Index Scan using ndx_ligne_oscar_7 on golf24.ligne_oscar le_1  (cost=0.57..2.59 rows=1 width=24) (actual time=0.002..0.002 rows=0 loops=59126011)
+                                        Output: le_1.id_ligne_oscar, le_1.id_oscar, le_1.id_type_reglement, le_1.id_sierra, le_1.id_createur, le_1.hotel, le_1.hotel_2, le_1.hotel_3, le_1.lettrage, le_1.lima, le_1.whiskey, le_1.romeo, le_1.qte_titre, le_1.tango_echeance, le_1.five_tango, le_1.currency, le_1.value_currency, le_1.external_ref, le_1.tango_pointage, le_1.created_at, le_1.uptangod_at, le_1.id_ligne_origine
+                                        Index Cond: ((le_1.id_oscar = ec_1.id_oscar) AND (le_1.id_sierra = c_1.id_sierra))
+                                        Buffers: shared hit=236543462 read=1350
+                                        I/O Timings: shared read=82.670
+                                        Worker 1:  actual time=0.002..0.002 rows=0 loops=59007249
+                                          Buffers: shared hit=236068400 read=1334
+                                          I/O Timings: shared read=79.984
+                      ->  Index Only Scan using ndx_type_xray_id_type_xray_code on golf_global.type_xray tj_1  (cost=0.14..0.16 rows=1 width=8) (actual time=0.001..0.001 rows=1 loops=41439)
+                            Output: tj_1.id_type_xray, tj_1.code
+                            Index Cond: (tj_1.id_type_xray = j_1.id_type_xray)
+                            Filter: ((tj_1.code <> 'OD_EXC'::text) OR (tj_1.code IS NULL))
+                            Rows Removed by Filter: 0
+                            Heap Fetches: 41439
+                            Buffers: shared hit=82878
+  ->  Aggregate  (cost=0.10..0.11 rows=1 width=64) (actual time=275654.836..275654.838 rows=1 loops=1)
+        Output: (sum(req_principal_n.alpha_five) - sum(req_principal_n.alpha_one)), $12
+        Buffers: shared hit=236836682 read=1476, temp read=4362364 written=4362364
+        I/O Timings: shared read=89.209, temp read=83573.462 write=60491.338
+        InitPlan 3 (returns $12)
+          ->  Aggregate  (cost=0.06..0.07 rows=1 width=32) (actual time=5.736..5.738 rows=1 loops=1)
+                Output: array_to_json(array_agg(tot.*))
+                ->  Subquery Scan on tot  (cost=0.04..0.05 rows=1 width=56) (actual time=2.242..3.129 rows=3292 loops=1)
+                      Output: tot.*
+                      ->  Sort  (cost=0.04..0.04 rows=1 width=96) (actual time=2.170..2.335 rows=3292 loops=1)
+                            Output: req_principal_n_2.quebec, (split_part(req_principal_n_2.lima_co, '#~#'::text, 1)), ((req_principal_n_2.alpha_five - req_principal_n_2.alpha_one))
+                            Sort Key: req_principal_n_2.quebec
+                            Sort Method: quicksort  Memory: 333kB
+                            ->  CTE Scan on req_principal_n req_principal_n_2  (cost=0.00..0.03 rows=1 width=96) (actual time=0.002..1.106 rows=3292 loops=1)
+                                  Output: req_principal_n_2.quebec, split_part(req_principal_n_2.lima_co, '#~#'::text, 1), (req_principal_n_2.alpha_five - req_principal_n_2.alpha_one)
+        ->  CTE Scan on req_principal_n  (cost=0.00..0.02 rows=1 width=64) (actual time=275630.461..275648.422 rows=3292 loops=1)
+              Output: req_principal_n.quebec, req_principal_n.lima_co, req_principal_n.alpha_five, req_principal_n.alpha_one
+              Buffers: shared hit=236836682 read=1476, temp read=4362364 written=4362364
+              I/O Timings: shared read=89.209, temp read=83573.462 write=60491.338
+  ->  Aggregate  (cost=0.10..0.11 rows=1 width=64) (actual time=0.030..0.032 rows=1 loops=1)
+        Output: (sum(req_principal_n_1.alpha_five) - sum(req_principal_n_1.alpha_one)), $13
+        Buffers: shared hit=4
+        InitPlan 4 (returns $13)
+          ->  Aggregate  (cost=0.06..0.07 rows=1 width=32) (actual time=0.004..0.005 rows=1 loops=1)
+                Output: array_to_json(array_agg(tot_1.*))
+                ->  Subquery Scan on tot_1  (cost=0.04..0.05 rows=1 width=56) (actual time=0.003..0.003 rows=0 loops=1)
+                      Output: tot_1.*
+                      ->  Sort  (cost=0.04..0.04 rows=1 width=96) (actual time=0.002..0.003 rows=0 loops=1)
+                            Output: req_principal_n_1_1.quebec, (split_part(req_principal_n_1_1.lima_co, '#~#'::text, 1)), ((req_principal_n_1_1.alpha_five - req_principal_n_1_1.alpha_one))
+                            Sort Key: req_principal_n_1_1.quebec
+                            Sort Method: quicksort  Memory: 25kB
+                            ->  CTE Scan on req_principal_n_1 req_principal_n_1_1  (cost=0.00..0.03 rows=1 width=96) (actual time=0.001..0.001 rows=0 loops=1)
+                                  Output: req_principal_n_1_1.quebec, split_part(req_principal_n_1_1.lima_co, '#~#'::text, 1), (req_principal_n_1_1.alpha_five - req_principal_n_1_1.alpha_one)
+        ->  CTE Scan on req_principal_n_1  (cost=0.00..0.02 rows=1 width=64) (actual time=0.024..0.024 rows=0 loops=1)
+              Output: req_principal_n_1.quebec, req_principal_n_1.lima_co, req_principal_n_1.alpha_five, req_principal_n_1.alpha_one
+              Buffers: shared hit=4
+Settings: effective_cache_size = '180GB', effective_io_concurrency = '500', hash_mem_multiplier = '1.5', jit = 'off', maintenance_io_concurrency = '600', max_parallel_workers = '64', max_parallel_workers_per_gather = '8', random_page_cost = '1', work_mem = '256MB'
+Query Identifier: -487334731101310751
+Planning:
+  Buffers: shared hit=1643
+Planning Time: 8.181 ms
+Execution Time: 275673.126 ms
