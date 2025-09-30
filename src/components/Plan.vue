@@ -532,7 +532,11 @@ function updateNodeSize(node: Node, size: [number, number]) {
       >
         <!-- Plan tab -->
         <div class="d-flex flex-column flex-grow-1 overflow-hidden">
-          <PlanStats></PlanStats>
+          <PlanStats
+            :planStats="planStats"
+            :rootNode="rootNode!"
+            :jitDetails="plan.content.JIT"
+          />
           <div class="flex-grow-1 d-flex overflow-hidden">
             <div class="flex-grow-1 overflow-hidden">
               <Splitpanes
@@ -547,6 +551,9 @@ function updateNodeSize(node: Node, size: [number, number]) {
                   <Diagram
                     ref="diagram"
                     class="d-flex flex-column flex-grow-1 overflow-hidden plan-diagram"
+                    :ctes="plan.ctes"
+                    :planStats="planStats"
+                    :rootNode="rootNode!"
                   />
                 </Pane>
                 <Pane ref="planEl" class="plan grab-bing position-relative">
@@ -718,8 +725,16 @@ function updateNodeSize(node: Node, size: [number, number]) {
         v-if="activeTab === 'grid'"
       >
         <div class="overflow-hidden d-flex w-100 h-100 flex-column">
-          <PlanStats />
-          <Grid class="flex-grow-1 overflow-auto plan-grid" />
+          <PlanStats
+            :planStats="planStats"
+            :rootNode="rootNode!"
+            :jitDetails="plan.content.JIT"
+          />
+          <Grid
+            class="flex-grow-1 overflow-auto plan-grid"
+            :ctes="plan.ctes"
+            :rootNode="rootNode!"
+          />
         </div>
       </div>
       <div
@@ -753,7 +768,12 @@ function updateNodeSize(node: Node, size: [number, number]) {
         class="tab-pane flex-grow-1 overflow-auto"
         :class="{ 'show active': activeTab === 'stats' }"
       >
-        <Stats v-if="plan" />
+        <Stats
+          v-if="plan"
+          :ctes="plan.ctes"
+          :planStats="planStats"
+          :rootNode="rootNode"
+        />
       </div>
     </div>
   </div>
