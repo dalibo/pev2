@@ -117,7 +117,8 @@ async function handleImportFile(event: Event) {
       const plans = JSON.parse(reader.result as string)
       await idb.importPlans(plans)
       loadPlans()
-    } catch (e) {
+    } catch (error: unknown) {
+      console.error("Invalid file format", error)
       alert("Invalid file format")
     }
   }
