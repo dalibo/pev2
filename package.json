@@ -39,7 +39,7 @@
     "humanize-duration": "^3.33.0",
     "lodash": "^4.17.21",
     "splitpanes": "^3.1.8",
-    "vue": "^3.5.17",
+    "vue": "^3.5.22",
     "vue-clipboard3": "^2.0.0",
     "vue-tippy": "^6.7.1"
   },
@@ -49,6 +49,7 @@
     "@types/d3": "^7.4.3",
     "@types/humanize-duration": "^3.27.1",
     "@types/lodash": "^4.14.202",
+    "@types/node": "^24.7.1",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.4.0",
