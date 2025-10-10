@@ -15,6 +15,12 @@ export function duration(value: number | undefined): string {
   if (value === undefined) {
     return "-"
   }
+  if (value < 0) {
+    console.error(`
+      Duration is negative. This is probably a bug.
+      Please report it at https://github.com/dalibo/pev2.
+    `)
+  }
   const result: string[] = []
   let denominator: number = 1000 * 60 * 60 * 24
   const days = Math.floor(value / denominator)
