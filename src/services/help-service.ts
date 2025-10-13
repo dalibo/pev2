@@ -399,6 +399,7 @@ const notMiscProperties: string[] = [
   NodeProp.FUNCTION_NAME,
   NodeProp.STRATEGY,
   NodeProp.PARTIAL_MODE,
+  NodeProp.SCAN_DIRECTION,
 ]
 
 export function shouldShowProp(key: string, value: unknown): boolean {

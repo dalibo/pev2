@@ -91,6 +91,9 @@ export default function useNode(
       ? node[NodeProp.PARTIAL_MODE] + " "
       : ""
     nodeName += node[NodeProp.NODE_TYPE]
+    if (node[NodeProp.SCAN_DIRECTION] && node[NodeProp.SCAN_DIRECTION] !== "Forward") {
+      nodeName += " " + node[NodeProp.SCAN_DIRECTION]
+    }
     return nodeName
   })
 
