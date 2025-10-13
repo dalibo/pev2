@@ -1,6 +1,7 @@
 {
   "Plan": {
     "Node Type": "Index Scan",
+    "Scan Direction": "Forward",
     "Index Name": "pg_class_oid_index",
     "Relation Name": "pg_class",
     "Startup Cost": 0.17,
@@ -41,6 +42,7 @@
             "Plans": [
               {
                 "Node Type": "Index Scan",
+                "Scan Direction": "Forward",
                 "Index Name": "pg_class_oid_index",
                 "Relation Name": "pg_class",
                 "Startup Cost": 0,

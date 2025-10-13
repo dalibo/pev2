@@ -33,7 +33,8 @@
             "Actual Loops": 1,
             "Plans": [
               {
-                "Node Type": "Index Scan Backward",
+                "Node Type": "Index Scan",
+                "Scan Direction": "Backward",
                 "Index Name": "index_stories_on_published_at",
                 "Relation Name": "stories",
                 "Startup Cost": 0,

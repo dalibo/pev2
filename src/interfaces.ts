@@ -176,13 +176,14 @@ export class Node {
     const bitmapRegex = /^(Bitmap\s+Index\s+Scan)\son\s(\S+)$/.exec(type)
     enum IndexMatch {
       NodeType = 1,
+      ScanDirection,
       IndexName,
       RelationName,
       Alias,
     }
     // tslint:disable-next-line:max-line-length
     const indexRegex =
-      /^((?:Parallel\s+)?Index(?:\sOnly)?\sScan(?:\sBackward)?)\susing\s(\S+)\son\s(\S+)(?:\s+(\S+))?$/.exec(
+      /^((?:Parallel\s+)?Index(?:\sOnly)?\sScan)(\sBackward)?\susing\s(\S+)\son\s(\S+)(?:\s+(\S+))?$/.exec(
         type,
       )
 
@@ -221,6 +222,7 @@ export class Node {
     } else if (indexRegex) {
       this[NodeProp.NODE_TYPE] = indexRegex[IndexMatch.NodeType]
       this[NodeProp.INDEX_NAME] = indexRegex[IndexMatch.IndexName]
+      this[NodeProp.SCAN_DIRECTION] = indexRegex[IndexMatch.ScanDirection] ? "Backward" : "Forward"
       this[NodeProp.RELATION_NAME] = indexRegex[IndexMatch.RelationName]
       if (indexRegex[IndexMatch.Alias]) {
         this[NodeProp.ALIAS] = indexRegex[IndexMatch.Alias]

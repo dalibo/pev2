@@ -7,7 +7,8 @@
     "Plan Width": 36,
     "Plans": [
       {
-        "Node Type": "Index Scan Backward",
+        "Node Type": "Index Scan",
+        "Scan Direction": "Backward",
         "Index Name": "w",
         "Relation Name": "x",
         "Startup Cost": 0,

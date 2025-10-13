@@ -175,6 +175,7 @@
                           },
                           {
                             "Node Type": "Index Scan",
+                            "Scan Direction": "Forward",
                             "Index Name": "s_gabinety_godziny_pracy_idx",
                             "Relation Name": "s_gabinety_godziny_pracy",
                             "Alias": "gp",
@@ -269,6 +270,7 @@
           },
           {
             "Node Type": "Index Scan",
+            "Scan Direction": "Forward",
             "Index Name": "s_lokalizacje_placowki_upr_graf_ukr_pkey",
             "Relation Name": "s_lokalizacje_placowki_upr_graf_ukr",
             "Alias": "gu",
