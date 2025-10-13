@@ -157,71 +157,118 @@ export class Node {
       return
     }
     this[NodeProp.NODE_TYPE] = type
+
+    enum ScanAndOperationMatch {
+      NodeType = 1,
+      RelationName,
+      Alias,
+    }
     // tslint:disable-next-line:max-line-length
-    const scanAndOperationMatches =
+    const scanAndOperationsRegex =
       /^((?:Parallel\s+)?(?:Seq|Tid.*|Bitmap\s+Heap|WorkTable|(?:Async\s+)?Foreign)\s+Scan|Update|Insert|Delete|Merge)\son\s(\S+)(?:\s+(\S+))?$/.exec(
         type,
       )
-    const bitmapMatches = /^(Bitmap\s+Index\s+Scan)\son\s(\S+)$/.exec(type)
+
+    enum BitmapMatch {
+      NodeType = 1,
+      IndexName,
+    }
+    const bitmapRegex = /^(Bitmap\s+Index\s+Scan)\son\s(\S+)$/.exec(type)
+    enum IndexMatch {
+      NodeType = 1,
+      IndexName,
+      RelationName,
+      Alias,
+    }
     // tslint:disable-next-line:max-line-length
-    const indexMatches =
+    const indexRegex =
       /^((?:Parallel\s+)?Index(?:\sOnly)?\sScan(?:\sBackward)?)\susing\s(\S+)\son\s(\S+)(?:\s+(\S+))?$/.exec(
         type,
       )
-    const cteMatches = /^(CTE\sScan)\son\s(\S+)(?:\s+(\S+))?$/.exec(type)
-    const functionMatches = /^(Function\sScan)\son\s(\S+)(?:\s+(\S+))?$/.exec(
+
+    enum CteMatch {
+      NodeType = 1,
+      CteName,
+      Alias,
+    }
+    const cteRegex = /^(CTE\sScan)\son\s(\S+)(?:\s+(\S+))?$/.exec(type)
+
+    enum FunctionMatch {
+      NodeType = 1,
+      FunctionName,
+      Alias,
+    }
+    const functionRegex = /^(Function\sScan)\son\s(\S+)(?:\s+(\S+))?$/.exec(
       type,
     )
-    const subqueryMatches = /^(Subquery\sScan)\son\s(.+)$/.exec(type)
-    if (scanAndOperationMatches) {
-      this[NodeProp.NODE_TYPE] = scanAndOperationMatches[1]
-      this[NodeProp.RELATION_NAME] = scanAndOperationMatches[2]
-      if (scanAndOperationMatches[3]) {
-        this[NodeProp.ALIAS] = scanAndOperationMatches[3]
-      }
-    } else if (bitmapMatches) {
-      this[NodeProp.NODE_TYPE] = bitmapMatches[1]
-      this[NodeProp.INDEX_NAME] = bitmapMatches[2]
-    } else if (indexMatches) {
-      this[NodeProp.NODE_TYPE] = indexMatches[1]
-      this[NodeProp.INDEX_NAME] = indexMatches[2]
-      this[NodeProp.RELATION_NAME] = indexMatches[3]
-      if (indexMatches[4]) {
-        this[NodeProp.ALIAS] = indexMatches[4]
-      }
-    } else if (cteMatches) {
-      this[NodeProp.NODE_TYPE] = cteMatches[1]
-      this[NodeProp.CTE_NAME] = cteMatches[2]
-      if (cteMatches[3]) {
-        this[NodeProp.ALIAS] = cteMatches[3]
-      }
-    } else if (functionMatches) {
-      this[NodeProp.NODE_TYPE] = functionMatches[1]
-      this[NodeProp.FUNCTION_NAME] = functionMatches[2]
-      if (functionMatches[3]) {
-        this[NodeProp.ALIAS] = functionMatches[3]
-      }
-    } else if (subqueryMatches) {
-      this[NodeProp.NODE_TYPE] = subqueryMatches[1]
-      this[NodeProp.ALIAS] = subqueryMatches[2]
+    enum SubqueryMatch {
+      NodeType = 1,
+      Alias,
     }
-    const parallelMatches = /^(Parallel\s+)(.*)/.exec(
+    const subqueryRegex = /^(Subquery\sScan)\son\s(.+)$/.exec(type)
+    if (scanAndOperationsRegex) {
+      this[NodeProp.NODE_TYPE] =
+        scanAndOperationsRegex[ScanAndOperationMatch.NodeType]
+      this[NodeProp.RELATION_NAME] =
+        scanAndOperationsRegex[ScanAndOperationMatch.RelationName]
+      if (scanAndOperationsRegex[ScanAndOperationMatch.Alias]) {
+        this[NodeProp.ALIAS] =
+          scanAndOperationsRegex[ScanAndOperationMatch.Alias]
+      }
+    } else if (bitmapRegex) {
+      this[NodeProp.NODE_TYPE] = bitmapRegex[BitmapMatch.NodeType]
+      this[NodeProp.INDEX_NAME] = bitmapRegex[BitmapMatch.IndexName]
+    } else if (indexRegex) {
+      this[NodeProp.NODE_TYPE] = indexRegex[IndexMatch.NodeType]
+      this[NodeProp.INDEX_NAME] = indexRegex[IndexMatch.IndexName]
+      this[NodeProp.RELATION_NAME] = indexRegex[IndexMatch.RelationName]
+      if (indexRegex[IndexMatch.Alias]) {
+        this[NodeProp.ALIAS] = indexRegex[IndexMatch.Alias]
+      }
+    } else if (cteRegex) {
+      this[NodeProp.NODE_TYPE] = cteRegex[CteMatch.NodeType]
+      this[NodeProp.CTE_NAME] = cteRegex[CteMatch.CteName]
+      if (cteRegex[CteMatch.Alias]) {
+        this[NodeProp.ALIAS] = cteRegex[CteMatch.Alias]
+      }
+    } else if (functionRegex) {
+      this[NodeProp.NODE_TYPE] = functionRegex[FunctionMatch.NodeType]
+      this[NodeProp.FUNCTION_NAME] = functionRegex[FunctionMatch.FunctionName]
+      if (functionRegex[FunctionMatch.Alias]) {
+        this[NodeProp.ALIAS] = functionRegex[FunctionMatch.Alias]
+      }
+    } else if (subqueryRegex) {
+      this[NodeProp.NODE_TYPE] = subqueryRegex[SubqueryMatch.NodeType]
+      this[NodeProp.ALIAS] = subqueryRegex[SubqueryMatch.Alias]
+    }
+    enum ParallelMatch {
+      NodeType = 2,
+    }
+    const parallelRegex = /^(Parallel\s+)(.*)/.exec(
       <string>this[NodeProp.NODE_TYPE],
     )
-    if (parallelMatches) {
-      this[NodeProp.NODE_TYPE] = parallelMatches[2]
+    if (parallelRegex) {
+      this[NodeProp.NODE_TYPE] = parallelRegex[ParallelMatch.NodeType]
       this[NodeProp.PARALLEL_AWARE] = true
     }
 
-    const joinMatches = /(.*)\sJoin$/.exec(<string>this[NodeProp.NODE_TYPE])
-    const joinModifierMatches = /(.*)\s+(Full|Left|Right|Anti)/.exec(
+    enum JoinMatch {
+      NodeType = 1,
+    }
+    const joinRegex = /(.*)\sJoin$/.exec(<string>this[NodeProp.NODE_TYPE])
+
+    enum JoinModifierMatch {
+      NodeType = 1,
+      JoinType,
+    }
+    const joinModifierRegex = /(.*)\s+(Full|Left|Right|Anti)/.exec(
       <string>this[NodeProp.NODE_TYPE],
     )
-    if (joinMatches) {
-      this[NodeProp.NODE_TYPE] = joinMatches[1]
-      if (joinModifierMatches) {
-        this[NodeProp.NODE_TYPE] = joinModifierMatches[1]
-        this[NodeProp.JOIN_TYPE] = joinModifierMatches[2]
+    if (joinRegex) {
+      this[NodeProp.NODE_TYPE] = joinRegex[JoinMatch.NodeType]
+      if (joinModifierRegex) {
+        this[NodeProp.NODE_TYPE] = joinModifierRegex[JoinModifierMatch.NodeType]
+        this[NodeProp.JOIN_TYPE] = joinModifierRegex[JoinModifierMatch.JoinType]
       }
       this[NodeProp.NODE_TYPE] += " Join"
     }
