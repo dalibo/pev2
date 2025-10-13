@@ -107,6 +107,7 @@ export enum NodeProp {
   PARTIAL_MODE = "Partial Mode",
   OPERATION = "Operation",
   RECHECK_COND = "Recheck Cond",
+  SCAN_DIRECTION = "Scan Direction",
 
   // computed by pev
   NODE_ID = "nodeId",
