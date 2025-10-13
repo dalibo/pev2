@@ -121,6 +121,7 @@
                       },
                       {
                         "Node Type": "Index Scan",
+                        "Scan Direction": "Forward",
                         "Index Name": "listing_search_keys_centroid",
                         "Relation Name": "listing_search_keys",
                         "Alias": "s",
@@ -139,6 +140,7 @@
                   },
                   {
                     "Node Type": "Index Scan",
+                    "Scan Direction": "Forward",
                     "Index Name": "mls_updates_listing_id_and_field",
                     "Relation Name": "mls_updates",
                     "Alias": "mu",
@@ -185,6 +187,7 @@
                         "Plans": [
                           {
                             "Node Type": "Index Scan",
+                            "Scan Direction": "Forward",
                             "Index Name": "mls_updates_listing_id_and_field",
                             "Relation Name": "mls_updates",
                             "Alias": "mu2",
@@ -207,6 +210,7 @@
               },
               {
                 "Node Type": "Index Scan",
+                "Scan Direction": "Forward",
                 "Index Name": "markets_pkey",
                 "Relation Name": "markets",
                 "Alias": "m",

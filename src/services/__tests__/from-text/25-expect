@@ -111,6 +111,7 @@
                   },
                   {
                     "Node Type": "Index Scan",
+                    "Scan Direction": "Forward",
                     "Index Name": "ix_sbscaccntacl_usrid",
                     "Relation Name": "sbsc_account_acl",
                     "Alias": "acl",

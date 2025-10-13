@@ -10,6 +10,7 @@
     "Plans": [
       {
         "Node Type": "Index Scan",
+        "Scan Direction": "Forward",
         "Index Name": "pg_class_relname_nsp_index",
         "Relation Name": "pg_class",
         "Alias": "c2",

@@ -1,6 +1,7 @@
 {
   "Plan": {
     "Node Type": "Index Scan",
+    "Scan Direction": "Forward",
     "Index Name": "id_contact_event_idx",
     "Relation Name": "of_contact_event",
     "Alias": "e",
@@ -45,6 +46,7 @@
             "Plans": [
               {
                 "Node Type": "Index Scan",
+                "Scan Direction": "Forward",
                 "Index Name": "idx_of_contact_event_id_contact_client",
                 "Relation Name": "of_contact_event",
                 "Alias": "ev2",
@@ -90,6 +92,7 @@
             "Plans": [
               {
                 "Node Type": "Index Scan",
+                "Scan Direction": "Forward",
                 "Index Name": "idx_of_contact_event_id_contact_client",
                 "Relation Name": "of_contact_event",
                 "Alias": "ev2",

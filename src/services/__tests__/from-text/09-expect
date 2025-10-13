@@ -24,6 +24,7 @@
           },
           {
             "Node Type": "Index Scan",
+            "Scan Direction": "Forward",
             "Index Name": "test_pkey",
             "Relation Name": "test",
             "Alias": "t1",
