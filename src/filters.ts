@@ -174,7 +174,7 @@ export function transferRate(value: number): string {
   if (!value) {
     return ""
   }
-  return formatBytes(value * 8 * 1024) + "/s"
+  return blocksAsBytes(value) + "/s"
 }
 
 function jit(value: JIT): string {
