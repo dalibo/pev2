@@ -1382,7 +1382,7 @@ export class PlanService {
     if (_.isUndefined(node[NodeProp.TEMP_IO_READ_TIME])) {
       // pre Pg15
       scopesMatrix = {
-        "": ["shared", "local"],
+        "": ["shared", "local", "temp"],
       }
     } else if (!_.isUndefined(node[NodeProp.IO_READ_TIME])) {
       // pg15-16
