@@ -4,5 +4,7 @@
   "Temp I/O Read Time": 2.049,
   "Temp I/O Write Time": 54.951,
   "*I/O Read Time (all scopes)": 2.049,
-  "*I/O Write Time (all scopes)": 54.951
+  "*I/O Write Time (all scopes)": 54.951,
+  "*I/O Read Time speed (all scopes)": 382625.671,
+  "*I/O Write Time speed (all scopes)": 14321.85
 }

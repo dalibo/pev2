@@ -2,5 +2,6 @@
   "I/O Read Time": 0.011,
   "I/O Write Time": 0,
   "*I/O Read Time (all scopes)": 0.011,
-  "*I/O Write Time (all scopes)": 0
+  "*I/O Write Time (all scopes)": 0,
+  "*I/O Read Time speed (all scopes)": 181818.182
 }

@@ -1,0 +1,75 @@
+Nested Loop  (cost=8233.30..15152.13 rows=1 width=240) (actual time=368.424..991.981 rows=515 loops=1)
+   Buffers: shared hit=428719 read=71403 written=8, temp read=2838 written=2808
+   I/O Timings: read=119.161 write=0.083
+   ->  Hash Join  (cost=8232.87..14726.61 rows=60 width=24) (actual time=248.728..597.909 rows=116704 loops=1)
+         Hash Cond: (events_event_categories.event_id = events_event_tags.event_id)
+         Buffers: shared hit=237 read=32165 written=3, temp read=2838 written=2808
+         I/O Timings: read=52.565 write=0.049
+         ->  Nested Loop  (cost=2510.28..8896.20 rows=28574 width=12) (actual time=45.984..134.837 rows=349707 loops=1)
+               Buffers: shared hit=8 read=12538
+               I/O Timings: read=21.392
+               ->  HashAggregate  (cost=9.94..9.95 rows=1 width=8) (actual time=0.030..0.030 rows=1 loops=1)
+                     Buffers: shared hit=6
+                     ->  Hash Join  (cost=8.46..9.93 rows=1 width=8) (actual time=0.021..0.028 rows=1 loops=1)
+                           Hash Cond: (events_category.id = events_event_categories_1.category_id)
+                           Buffers: shared hit=6
+                           ->  Seq Scan on events_category  (cost=0.00..1.34 rows=34 width=4) (actual time=0.004..0.007 rows=34 loops=1)
+                                 Buffers: shared hit=1
+                           ->  Hash  (cost=8.44..8.44 rows=1 width=4) (actual time=0.010..0.010 rows=1 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 1kB
+                                 Buffers: shared hit=5
+                                 ->  Index Only Scan using events_event_categories_event_id_1876fbdb72d815d7_uniq on events_event_categories events_event_categories_1  (cost=0.42..8.44 rows=1 width=4) (actual time=0.008..0.008 rows=1 loops=1)
+                                       Index Cond: (event_id = 868525)
+                                       Heap Fetches: 1
+                                       Buffers: shared hit=5
+               ->  Bitmap Heap Scan on events_event_categories  (cost=2500.34..8600.52 rows=28574 width=12) (actual time=45.951..92.892 rows=349707 loops=1)
+                     Recheck Cond: (category_id = events_category.id)
+                     Buffers: shared hit=2 read=12538
+                     I/O Timings: read=21.392
+                     ->  Bitmap Index Scan on events_event_categories_category_id  (cost=0.00..2493.20 rows=28574 width=0) (actual time=45.049..45.049 rows=362761 loops=1)
+                           Index Cond: (category_id = events_category.id)
+                           Buffers: shared hit=1 read=6973
+                           I/O Timings: read=12.796
+         ->  Hash  (cost=5697.57..5697.57 rows=2002 width=12) (actual time=202.265..202.265 rows=302414 loops=1)
+               Buckets: 1024  Batches: 16 (originally 1)  Memory Usage: 1025kB
+               Buffers: shared hit=229 read=19627 written=3, temp written=1100
+               I/O Timings: read=31.173 write=0.049
+               ->  Nested Loop  (cost=113.86..5697.57 rows=2002 width=12) (actual time=0.863..146.421 rows=302414 loops=1)
+                     Buffers: shared hit=229 read=19627 written=3
+                     I/O Timings: read=31.173 write=0.049
+                     ->  Unique  (cost=25.27..25.28 rows=2 width=8) (actual time=0.035..0.038 rows=2 loops=1)
+                           Buffers: shared hit=8 read=2
+                           I/O Timings: read=0.006
+                           ->  Sort  (cost=25.27..25.28 rows=2 width=8) (actual time=0.034..0.035 rows=2 loops=1)
+                                 Sort Key: events_tag.id
+                                 Sort Method: quicksort  Memory: 25kB
+                                 Buffers: shared hit=8 read=2
+                                 I/O Timings: read=0.006
+                                 ->  Nested Loop  (cost=0.71..25.26 rows=2 width=8) (actual time=0.023..0.029 rows=2 loops=1)
+                                       Buffers: shared hit=8 read=2
+                                       I/O Timings: read=0.006
+                                       ->  Index Scan using events_event_tags_event_id on events_event_tags events_event_tags_1  (cost=0.43..8.64 rows=2 width=4) (actual time=0.014..0.015 rows=2 loops=1)
+                                             Index Cond: (event_id = 868525)
+                                             Buffers: shared hit=2 read=2
+                                             I/O Timings: read=0.006
+                                       ->  Index Only Scan using events_tag_pkey on events_tag  (cost=0.28..8.30 rows=1 width=4) (actual time=0.005..0.005 rows=1 loops=2)
+                                             Index Cond: (id = events_event_tags_1.tag_id)
+                                             Heap Fetches: 2
+                                             Buffers: shared hit=6
+                     ->  Bitmap Heap Scan on events_event_tags  (cost=88.59..2826.13 rows=1001 width=12) (actual time=24.622..54.545 rows=151207 loops=2)
+                           Recheck Cond: (tag_id = events_tag.id)
+                           Buffers: shared hit=221 read=19625 written=3
+                           I/O Timings: read=31.167 write=0.049
+                           ->  Bitmap Index Scan on events_event_tags_tag_id  (cost=0.00..88.34 rows=1001 width=0) (actual time=23.815..23.815 rows=181878 loops=2)
+                                 Index Cond: (tag_id = events_tag.id)
+                                 Buffers: shared hit=2 read=9298 written=3
+                                 I/O Timings: read=15.720 write=0.049
+   ->  Index Scan using events_event_pkey on events_event  (cost=0.42..7.08 rows=1 width=216) (actual time=0.003..0.003 rows=0 loops=116704)
+         Index Cond: (id = events_event_categories.event_id)
+         Filter: ((id <> 868525) AND (status = 1))
+         Rows Removed by Filter: 1
+         Buffers: shared hit=428482 read=39238 written=5
+         I/O Timings: read=66.596 write=0.034
+ Total runtime: 992.144 ms
+(73 rows)
+
