@@ -1406,6 +1406,8 @@ export class PlanService {
               `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof NodeProp
             return (node[NodeProp[bufferProp]] as number) || 0
           })
+          const buffersProp = `${prefix}${buffersOperation}_blocks`.toUpperCase() as keyof typeof NodeProp;
+          node[NodeProp[buffersProp] as unknown as keyof typeof Node] = buffers;
           if (time) {
             node[NodeProp[speedProp] as unknown as keyof typeof Node] = Number(
               (buffers / (time / 1000)).toFixed(3),

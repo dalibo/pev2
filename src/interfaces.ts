@@ -89,6 +89,8 @@ export class Node {
   [NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]!: number;
   [NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]!: number;
   [NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]!: number;
+  [NodeProp.EXCLUSIVE_READ_BLOCKS]!: number;
+  [NodeProp.EXCLUSIVE_WRITTEN_BLOCKS]!: number;
   [NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]!: number;
   [NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]!: number;
   [NodeProp.FILTER]!: string;
