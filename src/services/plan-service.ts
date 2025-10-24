@@ -1368,15 +1368,6 @@ export class PlanService {
   }
 
   private calculateIoTimingsAverage(node: Node) {
-    const ioReadTime = (node[NodeProp["EXCLUSIVE_IO_READ_TIME"]] as number) || 0
-    if (ioReadTime) {
-      const sharedReadBlocks =
-        (node[NodeProp["EXCLUSIVE_SHARED_READ_BLOCKS"]] as number) || 0
-      const localReadBlocks =
-        (node[NodeProp["EXCLUSIVE_LOCAL_READ_BLOCKS"]] as number) || 0
-      node[NodeProp["AVERAGE_IO_READ_SPEED"]] =
-        (sharedReadBlocks + localReadBlocks) / (ioReadTime / 1000)
-    }
     // The matrix to match I/O Timings with Buffers
     let scopesMatrix
     if (_.isUndefined(node[NodeProp.TEMP_IO_READ_TIME])) {
