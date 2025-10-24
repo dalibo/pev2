@@ -390,10 +390,6 @@ const showDetails = ref<boolean>(false)
               "
             ></span>
           </template>
-          <template v-if="node[NodeProp.JOIN_TYPE]">
-            {{ node[NodeProp.JOIN_TYPE] }}
-            <span class="text-secondary">join</span>
-          </template>
           <template v-if="node[NodeProp.INDEX_NAME]">
             <span class="text-secondary">using</span>
             <span

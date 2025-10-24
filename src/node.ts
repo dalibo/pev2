@@ -97,6 +97,9 @@ export default function useNode(
     ) {
       nodeName += " " + node[NodeProp.SCAN_DIRECTION]
     }
+    if (node[NodeProp.JOIN_TYPE]) {
+      nodeName = nodeName.replace("Join", `${node[NodeProp.JOIN_TYPE]} Join`);
+    }
     return nodeName
   })
 
