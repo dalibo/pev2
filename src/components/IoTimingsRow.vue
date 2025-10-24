@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { directive as vTippy } from "vue-tippy"
 import { HelpService } from "@/services/help-service"
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
+import { blocksAsBytes } from "@/filters"
 import useNode from "@/node"
 
 interface Props {
@@ -38,6 +39,9 @@ const readSpeedProp = (exclusivePrefix +
   "AVERAGE_" +
   scope +
   "IO_READ_SPEED") as keyof typeof NodeProp
+const readBlocksProp = (exclusivePrefix +
+  scope +
+  "READ_BLOCKS") as keyof typeof NodeProp
 const writeTimeProp = (exclusivePrefix +
   scope +
   "IO_WRITE_TIME") as keyof typeof NodeProp
@@ -45,6 +49,9 @@ const writeSpeedProp = (exclusivePrefix +
   "AVERAGE_" +
   scope +
   "IO_WRITE_SPEED") as keyof typeof NodeProp
+const writtenBlocksProp = (exclusivePrefix +
+  scope +
+  "WRITTEN_BLOCKS") as keyof typeof NodeProp
 </script>
 
 <template>
@@ -52,6 +59,10 @@ const writeSpeedProp = (exclusivePrefix +
     <td>{{ name }}</td>
     <td class="text-end" v-if="node[NodeProp[readTimeProp]]">
       {{ formattedProp(readTimeProp) }}
+      <br />
+      <small>{{
+        blocksAsBytes(node[NodeProp[readBlocksProp]] as number)
+      }}</small>
       <br />
       <small>~{{ formattedProp(readSpeedProp) }}</small>
       <FontAwesomeIcon
@@ -69,6 +80,10 @@ const writeSpeedProp = (exclusivePrefix +
     <td class="text-end" v-else>-</td>
     <td class="text-end" v-if="node[NodeProp[writeTimeProp]]">
       {{ formattedProp(writeTimeProp) }}
+      <br />
+      <small>{{
+        blocksAsBytes(node[NodeProp[writtenBlocksProp]] as number)
+      }}</small>
       <br />
       <small>~{{ formattedProp(writeSpeedProp) }}</small>
     </td>
