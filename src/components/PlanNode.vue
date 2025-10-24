@@ -218,10 +218,6 @@ function centerCte() {
                 "
               ></span>
             </div>
-            <div v-if="node[NodeProp.JOIN_TYPE]">
-              {{ node[NodeProp.JOIN_TYPE] }}
-              <span class="text-secondary">join</span>
-            </div>
             <div
               v-if="node[NodeProp.INDEX_NAME]"
               :class="{ 'line-clamp-2': !showDetails }"
