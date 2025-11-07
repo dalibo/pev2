@@ -39,6 +39,9 @@ import { PlanService } from "@/services/plan-service"
 import { findNodeById } from "@/services/help-service"
 import { HighlightType, NodeProp } from "@/enums"
 import { json_, pgsql_ } from "@/filters"
+import { setDefaultProps } from "vue-tippy"
+
+setDefaultProps({ theme: "light" })
 
 import "tippy.js/dist/tippy.css"
 import "tippy.js/themes/light.css"
