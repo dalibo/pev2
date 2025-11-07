@@ -27,10 +27,10 @@ open it in your favorite internet browser.
 ### Without building tools
 
 ```html
-<script src="https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script src="https://unpkg.com/pev2/dist/pev2.umd.js"></script>
 <link
-  href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+  href="https://unpkg.com/bootstrap@5/dist/css/bootstrap.min.css"
   rel="stylesheet"
 />
 <link rel="stylesheet" href="https://unpkg.com/pev2/dist/pev2.css" />
@@ -104,7 +104,7 @@ add the following in you header (or load them with your favorite bundler).
 
 ```html
 <link
-  href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+  href="https://unpkg.com/bootstrap@5/dist/css/bootstrap.min.css"
   rel="stylesheet"
 />
 ```
