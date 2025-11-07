@@ -15,6 +15,7 @@ import type { IPlanStats, Node } from "@/interfaces"
 import { HighlightedNodeIdKey, SelectNodeKey } from "@/symbols"
 import DiagramRow from "@/components/DiagramRow.vue"
 import LevelDivider from "@/components/LevelDivider.vue"
+import { Tippy } from "vue-tippy"
 
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
@@ -162,7 +163,9 @@ provide("scrollTo", scrollTo)
           </button>
           <tippy
             :content="
-              !planStats.maxIo ? getHelpMessage('hint track_io_timing') : null
+              !planStats.maxIo
+                ? getHelpMessage('hint track_io_timing')
+                : undefined
             "
             :allowHTML="true"
             class="btn-tooltip-wrapper"
