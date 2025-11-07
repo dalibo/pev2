@@ -42,7 +42,10 @@ open it in your favorite internet browser.
 <script>
   const { createApp } = Vue
 
-  const plan = "Seq Scan on foo  (cost=0.00..155.00 rows=10000 width=4)"
+  const plan = `
+    Aggregate  (cost=12.50..12.51 rows=1 width=8)
+      ->  Seq Scan on employees  (cost=0.00..10.00 rows=1000 width=0)
+  `;
 
   const app = createApp({
     data() {
