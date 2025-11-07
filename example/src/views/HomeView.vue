@@ -69,7 +69,10 @@ onMounted(() => {
 
 async function loadPlans() {
   const plans = await idb.getPlans()
-  savedPlans.value = plans.slice().reverse()
+  savedPlans.value = plans
+    .slice()
+    .sort((a, b) => new Date(a[3]) - new Date(b[3]))
+    .reverse()
 }
 
 function loadPlan(plan?: Plan) {
