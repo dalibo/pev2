@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, inject, ref, onMounted } from "vue"
+import { computed, inject, ref, onMounted, watch } from "vue"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { Tippy } from "vue-tippy"
@@ -23,31 +23,24 @@ const queryInput = ref<string>("")
 const queryName = ref<string>("")
 const draggingPlan = ref<boolean>(false)
 const draggingQuery = ref<boolean>(false)
-const savedPlans = ref<Plan[]>()
+const savedPlans = ref<Plan[]>([])
 const pageSize = 11
 const maxVisiblePages = 5
 const currentPage = ref<number>(1)
 const totalPages = computed(() => {
-  if (!savedPlans.value) {
-    return 0
-  }
   return Math.ceil(savedPlans.value.length / pageSize)
 })
 const hovered = ref(null)
+const selectionMode = ref(false)
+const selection = ref<Plan[]>([])
 
 const paginatedPlans = computed(() => {
-  if (!savedPlans.value) {
-    return []
-  }
   const start = (currentPage.value - 1) * pageSize
   const end = start + pageSize
   return savedPlans.value.slice(start, end)
 })
 
 const visiblePages = computed(() => {
-  if (!savedPlans.value) {
-    return []
-  }
   const total = totalPages.value
   const half = Math.floor(maxVisiblePages / 2)
   let start = currentPage.value - half
@@ -116,12 +109,52 @@ function loadPlan(plan?: Plan) {
   queryInput.value = plan[2]
 }
 
+function openOrSelectPlan(plan: Plan) {
+  if (!selectionMode.value) {
+    openPlan(plan)
+  } else {
+    togglePlanSelection(plan)
+  }
+}
+
 function openPlan(plan: Plan) {
   setPlanData(plan[0], plan[1], plan[2])
 }
 
+function isSelected(id: integer) {
+  return selection.value.includes(id)
+}
+
+function togglePlanSelection(plan) {
+  const index = selection.value.indexOf(plan.id)
+  if (index === -1) {
+    selection.value.push(plan.id)
+  } else {
+    selection.value.splice(index, 1)
+  }
+}
+
 function editPlan(plan: Plan) {
   loadPlan(plan)
+}
+
+function plansFromSelection() {
+  return selection.value.length > 0
+    ? savedPlans.value.filter((p) => selection.value.includes(p.id))
+    : savedPlans.value
+}
+
+function deletePlans() {
+  if (confirm("Are you sure you want to delete plans?")) {
+    const plans = plansFromSelection()
+    plans.forEach(async (plan) => {
+      await idb.deletePlan(plan)
+    })
+    loadPlans()
+    selectionMode.value = false
+  }
+  // reset page
+  currentPage.value = 1
 }
 
 async function deletePlan(plan: Plan) {
@@ -164,6 +197,13 @@ function prevPage() {
 function goToPage(page) {
   currentPage.value = page
 }
+
+watch(
+  () => selectionMode.value,
+  () => {
+    selection.value = []
+  },
+)
 </script>
 
 <template>
@@ -271,42 +311,69 @@ function goToPage(page) {
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
         </div>
-        <div class="col-sm-5 mb-4 mt-4 mt-md-0">
-          <div class="mb-2">
-            Saved Plans
-            <Tippy>
-              <FontAwesomeIcon
-                :icon="faInfoCircle"
-                class="text-body-tertiary"
-              ></FontAwesomeIcon>
-              <template #content
-                >Plans are saved locally in your browser storage.</template
+        <div class="col-sm-5">
+          <div class="d-flex flex-row align-items-center">
+            <div>
+              Saved Plans
+              <Tippy>
+                <FontAwesomeIcon
+                  :icon="faInfoCircle"
+                  class="text-body-tertiary"
+                ></FontAwesomeIcon>
+                <template #content
+                  >Plans are saved locally in your browser storage.</template
+                >
+              </Tippy>
+            </div>
+            <div class="d-flex align-items-center mb-2 ms-auto">
+              <button
+                class="btn btn-sm ms-2 btn-light"
+                :class="{ active: selectionMode }"
+                @click="selectionMode = !selectionMode"
               >
-            </Tippy>
+                Select
+              </button>
+            </div>
           </div>
           <div class="list-group" v-cloak>
             <a
               class="list-group-item list-group-item-action px-2 py-1 flex-column"
+              :class="{ active: isSelected(plan.id) }"
               v-for="(plan, index) in paginatedPlans"
               :key="plan.id"
               href="#"
-              @click.prevent="openPlan(plan)"
+              @click.prevent="openOrSelectPlan(plan)"
               @mouseenter="hovered = index"
               @mouseleave="hovered = null"
             >
               <div class="d-flex w-100 align-items-center">
+                <input
+                  class="form-check-input me-3"
+                  type="checkbox"
+                  v-if="selectionMode"
+                  :value="plan.id"
+                  v-model="selection"
+                  @click.stop
+                />
                 <div>
                   <p class="mb-0">
                     {{ plan[0] }}
                   </p>
-                  <small class="text-secondary">
+                  <small
+                    :class="{
+                      'text-secondary': !isSelected(plan.id),
+                    }"
+                  >
                     created
                     <span :title="plan[3]?.toString()">
                       {{ time_ago(plan[3]) }}
                     </span>
                   </small>
                 </div>
-                <div class="ms-auto text-nowrap" v-if="hovered === index">
+                <div
+                  class="ms-auto text-nowrap"
+                  v-if="hovered === index && !selectionMode"
+                >
                   <button
                     class="btn btn-sm btn-outline-secondary py-0 ms-1"
                     title="Remove plan from list"
@@ -324,6 +391,13 @@ function goToPage(page) {
                 </div>
               </div>
             </a>
+          </div>
+          <div v-if="selectionMode" class="mt-2 d-flex">
+            <button class="btn btn-sm ms-auto btn-danger" @click="deletePlans">
+              <FontAwesomeIcon :icon="faTrash" class="me-2"></FontAwesomeIcon>
+              Delete<template v-if="selection.length < 1"> all</template
+              ><template v-else> ({{ selection.length }})</template>
+            </button>
           </div>
           <nav class="mt-2">
             <ul class="pagination pagination-sm justify-content-end">
