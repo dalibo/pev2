@@ -17,6 +17,8 @@ import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
 import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 import useNode from "@/node"
 
+import { Tippy } from "vue-tippy"
+
 interface Props {
   node: Node
   level: number
