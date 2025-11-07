@@ -9,16 +9,12 @@ import {
   ref,
   watch,
 } from "vue"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 import { BufferLocation, NodeProp, Metric } from "../enums"
 import { HelpService, scrollChildIntoParentView } from "@/services/help-service"
 import type { IPlanStats, Node } from "@/interfaces"
 import { HighlightedNodeIdKey, SelectNodeKey } from "@/symbols"
 import DiagramRow from "@/components/DiagramRow.vue"
 import LevelDivider from "@/components/LevelDivider.vue"
-
-import { directive as vTippy } from "vue-tippy"
 
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
@@ -164,14 +160,22 @@ provide("scrollTo", scrollTo)
           >
             buffers
           </button>
-          <button
-            class="btn btn-outline-secondary"
-            :class="{ active: viewOptions.metric === Metric.io }"
-            v-on:click="viewOptions.metric = Metric.io"
-            :disabled="!planStats.maxIo"
+          <tippy
+            :content="
+              !planStats.maxIo ? getHelpMessage('hint track_io_timing') : null
+            "
+            :allowHTML="true"
+            class="btn-tooltip-wrapper"
           >
-            IO
-          </button>
+            <button
+              class="btn btn-outline-secondary"
+              :class="{ active: viewOptions.metric === Metric.io }"
+              v-on:click="viewOptions.metric = Metric.io"
+              :disabled="!planStats.maxIo"
+            >
+              IO
+            </button>
+          </tippy>
         </div>
       </div>
       <div class="text-center my-1" v-if="viewOptions.metric == Metric.buffers">
@@ -247,14 +251,6 @@ provide("scrollTo", scrollTo)
               Write
             </li>
           </ul>
-          <FontAwesomeIcon
-            :icon="faInfoCircle"
-            class="cursor-help d-inline-block text-secondary"
-            v-tippy="{
-              content: getHelpMessage('hint track_io_timing'),
-              allowHTML: true,
-            }"
-          ></FontAwesomeIcon>
         </template>
       </div>
     </div>
@@ -311,3 +307,25 @@ provide("scrollTo", scrollTo)
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+/* Ensure wrapper looks and behaves like a button for layout consistency */
+.btn-group > .btn-tooltip-wrapper {
+  &:not(:last-child) {
+    margin-right: -1px;
+  }
+
+  & > .btn {
+    border-radius: 0;
+  }
+
+  &:first-child > .btn {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+  }
+  &:last-child > .btn {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+  }
+}
+</style>
