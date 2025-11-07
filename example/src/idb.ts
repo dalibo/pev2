@@ -2,6 +2,9 @@ const DB_NAME = "pev2"
 const DB_VERSION = 1
 let DB
 
+type StoredPlan = Record<string, unknown> & { id?: unknown }
+type ImportablePlan = StoredPlan | unknown[]
+
 export default {
   async getDb() {
     return new Promise((resolve, reject) => {
@@ -75,6 +78,35 @@ export default {
 
       const store = trans.objectStore("plans")
       store.put(plan)
+    })
+  },
+
+  async exportPlans() {
+    return await this.getPlans()
+  },
+
+  async importPlans(plans: ImportablePlan[]) {
+    const db = await this.getDb()
+
+    return new Promise<void>((resolve) => {
+      const trans = db.transaction(["plans"], "readwrite")
+      trans.oncomplete = () => {
+        resolve()
+      }
+
+      const store = trans.objectStore("plans")
+      for (const p of plans) {
+        if (Array.isArray(p)) {
+          store.put([...p])
+          continue
+        }
+
+        const record = { ...p }
+        if ("id" in record) {
+          delete record.id
+        }
+        store.put(record)
+      }
     })
   },
 }
