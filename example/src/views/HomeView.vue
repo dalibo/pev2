@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, useTemplateRef, ref, onMounted } from "vue"
+import { computed, inject, useTemplateRef, ref, onMounted } from "vue"
 import type { Ref } from "vue"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
@@ -24,6 +24,47 @@ const planInput = ref<string>("")
 const queryInput = ref<string>("")
 const planName = ref<string>("")
 const savedPlans = ref<Plan[]>()
+const pageSize = 11
+const maxVisiblePages = 5
+const currentPage = ref<number>(1)
+const totalPages = computed(() => {
+  if (!savedPlans.value) {
+    return 0
+  }
+  return Math.ceil(savedPlans.value.length / pageSize)
+})
+
+const paginatedPlans = computed(() => {
+  if (!savedPlans.value) {
+    return []
+  }
+  const start = (currentPage.value - 1) * pageSize
+  const end = start + pageSize
+  return savedPlans.value.slice(start, end)
+})
+
+const visiblePages = computed(() => {
+  if (!savedPlans.value) {
+    return []
+  }
+  const total = totalPages.value
+  const half = Math.floor(maxVisiblePages / 2)
+  let start = currentPage.value - half
+  let end = currentPage.value + half
+
+  if (start < 1) {
+    start = 1
+    end = Math.min(maxVisiblePages, total)
+  }
+  if (end > total) {
+    end = total
+    start = Math.max(1, total - maxVisiblePages + 1)
+  }
+
+  const pages = []
+  for (let i = start; i <= end; i++) pages.push(i)
+  return pages
+})
 
 const planDropZoneRef = useTemplateRef("planDropZoneRef")
 const { isOverDropZone: isOverPlanDropZone } = useDropZone(
@@ -109,6 +150,20 @@ function onDrop(files: File[] | null, input: Ref) {
     }
     reader.readAsText(files[0])
   }
+}
+
+function nextPage() {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
+function prevPage() {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+function goToPage(page) {
+  currentPage.value = page
 }
 </script>
 
@@ -213,7 +268,7 @@ function onDrop(files: File[] | null, input: Ref) {
           </form>
         </div>
         <div class="col-sm-5 mb-4 mt-4 mt-md-0">
-          <div class="mb-2">
+          <div>
             Saved Plans
             <Tippy>
               <FontAwesomeIcon
@@ -225,10 +280,71 @@ function onDrop(files: File[] | null, input: Ref) {
               >
             </Tippy>
           </div>
+          <nav>
+            <ul class="pagination pagination-sm justify-content-end mb-2">
+              <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                <a
+                  class="page-link"
+                  href="#"
+                  @click="prevPage"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li
+                class="page-item"
+                v-if="visiblePages[0] > 1"
+                @click="goToPage(1)"
+              >
+                <a class="page-link" href="#">1</a>
+              </li>
+              <li class="page-item" v-if="visiblePages[0] > 2">
+                <a class="page-link"> … </a>
+              </li>
+              <li
+                class="page-item"
+                v-for="page in visiblePages"
+                :key="page"
+                @click="goToPage(page)"
+                :class="{ active: page === currentPage }"
+              >
+                <a class="page-link" href="#">{{ page }}</a>
+              </li>
+              <li
+                class="page-item"
+                v-if="visiblePages[visiblePages.length - 1] < totalPages - 1"
+              >
+                <a class="page-link"> … </a>
+              </li>
+              <li
+                class="page-item"
+                v-if="visiblePages[visiblePages.length - 1] < totalPages"
+                @click="goToPage(totalPages)"
+              >
+                <a class="page-link" href="#">{{ totalPages }}</a>
+              </li>
+              <li
+                class="page-item"
+                :class="{ disabled: currentPage === totalPages }"
+              >
+                <a
+                  class="page-link"
+                  href="#"
+                  @click="nextPage"
+                  aria-labal="Next"
+                >
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
           <ul class="list-group" v-cloak>
             <li
               class="list-group-item px-2 py-1"
-              v-for="plan in savedPlans"
+              v-for="plan in paginatedPlans"
               :key="plan.id"
             >
               <div class="row">
