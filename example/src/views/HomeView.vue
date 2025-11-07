@@ -28,6 +28,7 @@ const totalPages = computed(() => {
   }
   return Math.ceil(savedPlans.value.length / pageSize)
 })
+const hovered = ref(null)
 
 const paginatedPlans = computed(() => {
   if (!savedPlans.value) {
@@ -260,39 +261,21 @@ function goToPage(page) {
         </div>
         <div class="col-sm-5 mb-4 mt-4 mt-md-0">
           <div class="mb-2">Saved Plans</div>
-          <ul class="list-group" v-cloak>
-            <li
-              class="list-group-item px-2 py-1"
-              v-for="plan in paginatedPlans"
+          <div class="list-group" v-cloak>
+            <a
+              class="list-group-item list-group-item-action px-2 py-1 flex-column"
+              v-for="(plan, index) in paginatedPlans"
               :key="plan.id"
+              href="#"
+              @click.prevent="openPlan(plan)"
+              @mouseenter="hovered = index"
+              @mouseleave="hovered = null"
             >
-              <div class="row">
-                <div class="col">
-                  <button
-                    class="btn btn-sm btn-outline-secondary py-0 ms-1 float-end"
-                    title="Remove plan from list"
-                    v-on:click.prevent="deletePlan(plan)"
-                  >
-                    <FontAwesomeIcon :icon="faTrash"></FontAwesomeIcon>
-                  </button>
-                  <button
-                    class="btn btn-sm btn-outline-secondary py-0 float-end"
-                    title="Edit plan details"
-                    v-on:click.prevent="editPlan(plan)"
-                  >
-                    <FontAwesomeIcon :icon="faEdit"></FontAwesomeIcon>
-                  </button>
-                  <a
-                    v-on:click.prevent="openPlan(plan)"
-                    href=""
-                    title="Open the plan details"
-                  >
+              <div class="d-flex w-100 align-items-center">
+                <div>
+                  <p class="mb-0">
                     {{ plan[0] }}
-                  </a>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
+                  </p>
                   <small class="text-secondary">
                     created
                     <span :title="plan[3]?.toString()">
@@ -300,10 +283,25 @@ function goToPage(page) {
                     </span>
                   </small>
                 </div>
-                <div class="col-6 text-end"></div>
+                <div class="ms-auto text-nowrap" v-if="hovered === index">
+                  <button
+                    class="btn btn-sm btn-outline-secondary py-0 ms-1"
+                    title="Remove plan from list"
+                    v-on:click.stop="deletePlan(plan)"
+                  >
+                    <FontAwesomeIcon :icon="faTrash"></FontAwesomeIcon>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-secondary py-0"
+                    title="Edit plan details"
+                    v-on:click.stop="editPlan(plan)"
+                  >
+                    <FontAwesomeIcon :icon="faEdit"></FontAwesomeIcon>
+                  </button>
+                </div>
               </div>
-            </li>
-          </ul>
+            </a>
+          </div>
           <nav class="mt-2">
             <ul class="pagination pagination-sm justify-content-end">
               <li class="page-item" :class="{ disabled: currentPage === 1 }">
