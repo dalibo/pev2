@@ -22,7 +22,7 @@ import SeverityBullet from "@/components/SeverityBullet.vue"
 import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
 import useNode from "@/node"
-import { directive as vTippy } from "vue-tippy"
+import { Tippy, directive as vTippy } from "vue-tippy"
 import { HelpService } from "@/services/help-service"
 const helpService = new HelpService()
 const getNodeTypeDescription = helpService.getNodeTypeDescription
