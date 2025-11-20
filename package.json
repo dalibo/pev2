@@ -1,6 +1,6 @@
 {
   "name": "pev2",
-  "version": "1.18.0",
+  "version": "1.18.1",
   "homepage": "https://github.com/dalibo/pev2",
   "license": "PostgreSQL license",
   "type": "module",
