@@ -35,6 +35,7 @@ import LogoImage from "@/components/LogoImage.vue"
 import PlanNode from "@/components/PlanNode.vue"
 import PlanStats from "@/components/PlanStats.vue"
 import Stats from "@/components/Stats.vue"
+import AnimatedEdge from "@/components/AnimatedEdge.vue"
 import { PlanService } from "@/services/plan-service"
 import { findNodeById } from "@/services/help-service"
 import { HighlightType, NodeProp } from "@/enums"
@@ -71,6 +72,7 @@ const selectedNodeId = ref<number>(NaN)
 const selectedNode = ref<Node | undefined>(undefined)
 const highlightedNodeId = ref<number>(NaN)
 const gridIsNotNew = localStorage.getItem("gridIsNotNew")
+const ready = ref(false)
 
 const viewOptions = reactive({
   showHighlightBar: false,
@@ -164,6 +166,9 @@ onBeforeMount(() => {
     ctes.value.push(tree)
   })
   doLayout()
+  nextTick(() => {
+    ready.value = true
+  })
 })
 
 function doLayout() {
@@ -616,36 +621,33 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       </button>
                     </div>
                   </div>
-                  <svg width="100%" height="100%">
+                  <svg width="100%" height="100%" :class="{ ready }">
                     <g :transform="transform">
                       <!-- Links -->
-                      <path
+                      <AnimatedEdge
                         v-for="(link, index) in toCteLinks"
                         :key="`linkcte${index}`"
                         :d="lineGen(link)"
-                        stroke="#B3D7D7"
+                        stroke-color="#B3D7D7"
                         :stroke-width="
                           edgeWeight(
                             link.target.data[NodeProp.ACTUAL_ROWS_REVISED],
                           )
                         "
-                        fill="none"
                       />
-                      <path
+                      <AnimatedEdge
                         v-for="(link, index) in layoutRootNode?.links()"
                         :key="`link${index}`"
                         :d="lineGen(link)"
                         :class="{
                           'never-executed': isNeverExecuted(link.target.data),
                         }"
-                        stroke="grey"
+                        stroke-color="grey"
                         :stroke-width="
                           edgeWeight(
                             link.target.data[NodeProp.ACTUAL_ROWS_REVISED],
                           )
                         "
-                        stroke-linecap="square"
-                        fill="none"
                       />
                       <foreignObject
                         v-for="(item, index) in layoutRootNode?.descendants()"
@@ -680,18 +682,16 @@ function updateNodeSize(node: Node, size: [number, number]) {
                           rx="5"
                           ry="5"
                         ></rect>
-                        <path
+                        <AnimatedEdge
                           v-for="(link, index) in cte.links()"
                           :key="`link${index}`"
                           :d="lineGen(link)"
-                          stroke="grey"
+                          stroke-color="grey"
                           :stroke-width="
                             edgeWeight(
                               link.target.data[NodeProp.ACTUAL_ROWS_REVISED],
                             )
                           "
-                          stroke-linecap="square"
-                          fill="none"
                         />
                         <foreignObject
                           v-for="(item, index) in cte.descendants()"
@@ -783,11 +783,10 @@ function updateNodeSize(node: Node, size: [number, number]) {
 @import "splitpanes/dist/splitpanes.css";
 @import "highlight.js/scss/stackoverflow-light.scss";
 
-path {
-  stroke-linecap: butt;
-  &.never-executed {
-    stroke-dasharray: 0.5em;
-    stroke-opacity: 0.5;
+.ready {
+  rect,
+  foreignObject {
+    transition: all 0.2s ease-in-out;
   }
 }
 </style>
