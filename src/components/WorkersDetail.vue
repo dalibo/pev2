@@ -5,7 +5,7 @@ import type { Ref } from "vue"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
 import { NodeProp, WorkerProp } from "@/enums"
 import { PlanKey, ViewOptionsKey } from "@/symbols"
-import { HelpService, shouldShowProp } from "@/services/help-service"
+import { HelpService } from "@/services/help-service"
 import useNode from "@/node"
 import { formatNodeProp } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
@@ -83,7 +83,6 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(
           <template v-for="(value, key) in worker" :key="key">
             <li
               class="list-group-item d-flex flex-row"
-              v-if="shouldShowProp(key as string, value)"
             >
               <div class="col-6">
                 {{ key }}
