@@ -239,24 +239,21 @@ onMounted(() => {
       const y1 = extent[3]
       const rect = planEl.value.$el.getBoundingClientRect()
 
-      d3.select(planEl.value.$el)
-        .transition()
-        .call(
-          zoomListener.transform,
-          d3.zoomIdentity
-            .translate(rect.width / 2, 10)
-            .scale(
-              Math.min(
-                1,
-                Math.max(
-                  minScale,
-                  0.8 /
-                    Math.max((x1 - x0) / rect.width, (y1 - y0) / rect.height),
-                ),
+      d3.select(planEl.value.$el).call(
+        zoomListener.transform,
+        d3.zoomIdentity
+          .translate(rect.width / 2, 10)
+          .scale(
+            Math.min(
+              1,
+              Math.max(
+                minScale,
+                0.8 / Math.max((x1 - x0) / rect.width, (y1 - y0) / rect.height),
               ),
-            )
-            .translate(-(x0 + x1) / 2, 10),
-        )
+            ),
+          )
+          .translate(-(x0 + x1) / 2, 10),
+      )
     }
   })
 })
