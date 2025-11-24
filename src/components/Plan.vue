@@ -277,25 +277,23 @@ function onSelectedNode(v: number) {
   }
 }
 
-const lineGen = computed(() => {
-  return function (link: FlexHierarchyPointLink<object>) {
-    const source = link.source
-    const target = link.target
-    const k = Math.abs(target.y - (source.y + source.ySize) - padding)
-    const path = d3.path()
-    path.moveTo(source.x, source.y)
-    path.lineTo(source.x, source.y + source.ySize - padding)
-    path.bezierCurveTo(
-      source.x,
-      source.y + source.ySize - padding + k / 2,
-      target.x,
-      target.y - k / 2,
-      target.x,
-      target.y,
-    )
-    return path.toString()
-  }
-})
+function lineGen(link: FlexHierarchyPointLink<object>) {
+  const source = link.source
+  const target = link.target
+  const k = Math.abs(target.y - (source.y + source.ySize) - padding)
+  const path = d3.path()
+  path.moveTo(source.x, source.y)
+  path.lineTo(source.x, source.y + source.ySize - padding)
+  path.bezierCurveTo(
+    source.x,
+    source.y + source.ySize - padding + k / 2,
+    target.x,
+    target.y - k / 2,
+    target.x,
+    target.y,
+  )
+  return path.toString()
+}
 
 function onHashChange(): void {
   const reg = /#([a-zA-Z]*)(\/node\/([0-9]*))*/
