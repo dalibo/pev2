@@ -126,9 +126,7 @@ function centerCte() {
             left: 1 + (index + 1) * 3 + 'px',
           }"
           :class="{ 'border-dashed': index >= workersLaunchedCount }"
-        >
-          {{ index }}
-        </div>
+        ></div>
       </div>
       <div
         class="plan-node-body card"
