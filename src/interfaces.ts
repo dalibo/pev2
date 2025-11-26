@@ -107,6 +107,7 @@ export class Node {
   [NodeProp.WORKERS]?: Worker[];
   [NodeProp.WORKERS_LAUNCHED]?: number;
   [NodeProp.WORKERS_PLANNED]?: number;
+  [NodeProp.WORKERS_LAUNCHED_BY_GATHER]?: number;
   [NodeProp.WORKERS_PLANNED_BY_GATHER]?: number;
   [NodeProp.EXCLUSIVE_IO_READ_TIME]!: number;
   [NodeProp.EXCLUSIVE_IO_WRITE_TIME]!: number;

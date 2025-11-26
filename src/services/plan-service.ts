@@ -220,7 +220,7 @@ export class PlanService {
     if (!_.isUndefined(node[NodeProp.ACTUAL_TOTAL_TIME])) {
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
       // number of workers is also taken into account
-      const workers = (node[NodeProp.WORKERS_PLANNED_BY_GATHER] || 0) + 1
+      const workers = (node[NodeProp.WORKERS_LAUNCHED_BY_GATHER] || 0) + 1
       node[NodeProp.ACTUAL_TOTAL_TIME] =
         ((node[NodeProp.ACTUAL_TOTAL_TIME] as number) *
           (node[NodeProp.ACTUAL_LOOPS] as number)) /
