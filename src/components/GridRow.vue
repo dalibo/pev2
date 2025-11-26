@@ -94,7 +94,7 @@ const showDetails = ref<boolean>(false)
         <span class="font-weight-normal">#{{ node.nodeId }} </span>
       </a>
     </td>
-    <tippy
+    <Tippy
       class="text-end grid-progress-cell text-nowrap"
       tag="td"
       v-if="columns.includes('time')"
@@ -140,8 +140,8 @@ const showDetails = ref<boolean>(false)
           {{ executionTimePercent }}%
         </template>
       </div>
-    </tippy>
-    <tippy
+    </Tippy>
+    <Tippy
       class="text-end grid-progress-cell text-nowrap"
       tag="td"
       v-if="columns.includes('ioread')"
@@ -169,8 +169,8 @@ const showDetails = ref<boolean>(false)
           {{ transferRate(node[NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_READ_SPEED]) }}
         </div>
       </template>
-    </tippy>
-    <tippy
+    </Tippy>
+    <Tippy
       class="text-end grid-progress-cell text-nowrap"
       tag="td"
       v-if="columns.includes('iowrite')"
@@ -200,7 +200,7 @@ const showDetails = ref<boolean>(false)
           }}
         </div>
       </template>
-    </tippy>
+    </Tippy>
     <td
       class="text-end grid-progress-cell text-nowrap"
       v-if="columns.includes('rows')"

@@ -161,7 +161,7 @@ provide("scrollTo", scrollTo)
           >
             buffers
           </button>
-          <tippy
+          <Tippy
             :content="
               !planStats.maxIo
                 ? getHelpMessage('hint track_io_timing')
@@ -178,7 +178,7 @@ provide("scrollTo", scrollTo)
             >
               IO
             </button>
-          </tippy>
+          </Tippy>
         </div>
       </div>
       <div class="text-center my-1" v-if="viewOptions.metric == Metric.buffers">

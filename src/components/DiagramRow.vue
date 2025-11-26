@@ -68,7 +68,7 @@ watch(
 </script>
 
 <template>
-  <tippy
+  <Tippy
     class="no-focus-outline node"
     :class="{
       selected: node.nodeId === selectedNodeId,
@@ -537,5 +537,5 @@ watch(
         ></div>
       </div>
     </td>
-  </tippy>
+  </Tippy>
 </template>
