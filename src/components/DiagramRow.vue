@@ -159,8 +159,8 @@ watch(
           style="height: 5px"
           :style="{
             width:
-              ((node[NodeProp.ACTUAL_TOTAL_TIME] ||
-                0 - node[NodeProp.EXCLUSIVE_DURATION]) /
+              (((node[NodeProp.ACTUAL_TOTAL_TIME] || 0) -
+                node[NodeProp.EXCLUSIVE_DURATION]) /
                 (plan.planStats.executionTime ||
                   plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
                   0)) *
