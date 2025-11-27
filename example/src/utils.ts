@@ -12,8 +12,7 @@ export function time_ago(time) {
       time = +new Date()
   }
   const time_formats = [
-    [2, "1 second ago", "1 second from now"],
-    [60, "seconds", 1], // 60
+    [60, "less than 1 minute ago", ""], // 60
     [120, "1 minute ago", "1 minute from now"], // 60*2
     [3600, "minutes", 60], // 60*60, 60
     [7200, "1 hour ago", "1 hour from now"], // 60*60*2
