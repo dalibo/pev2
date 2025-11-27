@@ -2,11 +2,16 @@
 import { inject, ref, onMounted } from "vue"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { Tippy } from "vue-tippy"
 
 import { time_ago } from "../utils"
 import MainLayout from "../layouts/MainLayout.vue"
 import Plan from "@/components/Plan.vue"
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons"
+import {
+  faEdit,
+  faInfoCircle,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons"
 import samples from "../samples.ts"
 
 import idb from "../idb"
@@ -108,7 +113,7 @@ function handleDrop(event: DragEvent) {
       <div class="alert alert-warning">
         This is the demo application for
         <a href="https://github.com/dalibo/pev2">PEV2</a>. It is serverless and
-        doesn't store your plans.
+        doesn't send your plans over the internet.
         <br />
         Please consider using
         <a href="https://explain.dalibo.com">explain.dalibo.com</a> instead if
@@ -201,7 +206,18 @@ function handleDrop(event: DragEvent) {
           </form>
         </div>
         <div class="col-sm-5 mb-4 mt-4 mt-md-0">
-          <div class="mb-2">Saved Plans</div>
+          <div class="mb-2">
+            Saved Plans
+            <Tippy>
+              <FontAwesomeIcon
+                :icon="faInfoCircle"
+                class="text-body-tertiary"
+              ></FontAwesomeIcon>
+              <template #content
+                >Plans are saved locally in your browser storage.</template
+              >
+            </Tippy>
+          </div>
           <ul class="list-group" v-cloak>
             <li
               class="list-group-item px-2 py-1"
