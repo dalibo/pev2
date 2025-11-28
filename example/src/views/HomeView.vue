@@ -319,6 +319,9 @@ watch(
           <div class="d-flex flex-row align-items-center mb-2">
             <div>
               Saved Plans
+              <div class="badge text-bg-light">
+                {{ savedPlans?.length }}
+              </div>
               <Tippy>
                 <FontAwesomeIcon
                   :icon="faInfoCircle"
