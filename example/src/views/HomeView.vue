@@ -180,49 +180,56 @@ function goToPage(page) {
         <a href="https://explain.dalibo.com">explain.dalibo.com</a> instead if
         you want to save or share your plans.
       </div>
-      <div class="row mb-3">
-        <div class="col d-flex">
-          <div class="text-secondary">
-            For best results, use
-            <code>
-              EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)
-            </code>
-            <br />
-            <em>psql</em> users can export the plan to a file using
-            <code>psql -XqAt -f explain.sql > analyze.json</code>
-          </div>
-          <div class="dropdown ms-auto">
-            <button
-              class="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Sample Plans
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a
-                v-for="(sample, index) in samples"
-                :key="index"
-                class="dropdown-item"
-                v-on:click.prevent="loadPlan(sample)"
-                href=""
-              >
-                {{ sample[0] }}
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="row">
         <div class="col-sm-7">
+          <div class="row mb-3">
+            <div class="col d-flex">
+              <div class="text-secondary">
+                For best results, use
+                <code>
+                  EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)
+                </code>
+                <br />
+                <em>psql</em> users can export the plan to a file using
+                <code class="text-nowrap"
+                  >psql -XqAt -f explain.sql > analyze.json</code
+                >
+              </div>
+            </div>
+          </div>
           <form v-on:submit.prevent="submitPlan">
             <div class="mb-3">
-              <label for="planInput" class="form-label">
-                Plan <span class="small text-secondary">(text or JSON)</span>
-              </label>
+              <div class="d-flex align-items-center mb-2">
+                <label for="planInput" class="form-label">
+                  Plan <span class="small text-secondary">(text or JSON)</span>
+                </label>
+                <div class="dropdown ms-auto">
+                  <button
+                    class="btn btn-secondary dropdown-toggle btn-sm"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Sample Plans
+                  </button>
+                  <div
+                    class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                  >
+                    <a
+                      v-for="(sample, index) in samples"
+                      :key="index"
+                      class="dropdown-item"
+                      v-on:click.prevent="loadPlan(sample)"
+                      href=""
+                    >
+                      {{ sample[0] }}
+                    </a>
+                  </div>
+                </div>
+              </div>
               <textarea
                 ref="planDropZoneRef"
                 :class="[
