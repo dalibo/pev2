@@ -22,7 +22,7 @@ const setPlanData = inject("setPlanData")
 
 const planInput = ref<string>("")
 const queryInput = ref<string>("")
-const queryName = ref<string>("")
+const planName = ref<string>("")
 const savedPlans = ref<Plan[]>()
 
 const planDropZoneRef = useTemplateRef("planDropZoneRef")
@@ -39,7 +39,7 @@ const { isOverDropZone: isOverQueryDropZone } = useDropZone(
 function submitPlan() {
   const newPlan: Plan = ["", "", ""]
   newPlan[0] =
-    queryName.value ||
+    planName.value ||
     "New Plan - " +
       new Date().toLocaleString("en-US", {
         dateStyle: "medium",
@@ -77,7 +77,7 @@ function loadPlan(plan?: Plan) {
     return
   }
 
-  queryName.value = plan[0]
+  planName.value = plan[0]
   planInput.value = plan[1]
   queryInput.value = plan[2]
 }
@@ -195,14 +195,14 @@ function onDrop(files: File[] | null, input: Ref) {
               </textarea>
             </div>
             <div class="mb-3">
-              <label for="queryName" class="form-label">
+              <label for="planName" class="form-label">
                 Plan Name <span class="small text-secondary">(optional)</span>
               </label>
               <input
                 type="text"
                 class="form-control"
-                id="queryName"
-                v-model="queryName"
+                id="planName"
+                v-model="planName"
                 placeholder="Name for the plan"
               />
             </div>
