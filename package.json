@@ -32,6 +32,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.1.1",
+    "@vueuse/core": "^14.1.0",
     "bootstrap": "^5.3.8",
     "d3": "^7.9.0",
     "d3-flextree": "^2.1.2",
