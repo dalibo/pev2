@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { inject, ref, onMounted } from "vue"
+import { inject, useTemplateRef, ref, onMounted } from "vue"
+import type { Ref } from "vue"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { Tippy } from "vue-tippy"
+import { useDropZone } from "@vueuse/core"
 
 import { time_ago } from "../utils"
 import MainLayout from "../layouts/MainLayout.vue"
@@ -21,9 +23,18 @@ const setPlanData = inject("setPlanData")
 const planInput = ref<string>("")
 const queryInput = ref<string>("")
 const queryName = ref<string>("")
-const draggingPlan = ref<boolean>(false)
-const draggingQuery = ref<boolean>(false)
 const savedPlans = ref<Plan[]>()
+
+const planDropZoneRef = useTemplateRef("planDropZoneRef")
+const { isOverDropZone: isOverPlanDropZone } = useDropZone(
+  planDropZoneRef,
+  (files) => onDrop(files, planInput),
+)
+const queryDropZoneRef = useTemplateRef("queryDropZoneRef")
+const { isOverDropZone: isOverQueryDropZone } = useDropZone(
+  queryDropZoneRef,
+  (files) => onDrop(files, queryInput),
+)
 
 function submitPlan() {
   const newPlan: Plan = ["", "", ""]
@@ -84,26 +95,17 @@ async function deletePlan(plan: Plan) {
   loadPlans()
 }
 
-function handleDrop(event: DragEvent) {
-  const input = event.srcElement
-  if (!(input instanceof HTMLTextAreaElement)) {
-    return
-  }
-  draggingPlan.value = false
-  draggingQuery.value = false
-  if (!event.dataTransfer) {
-    return
-  }
-  const file = event.dataTransfer.files[0]
-  const reader = new FileReader()
-  reader.onload = () => {
-    if (reader.result instanceof ArrayBuffer) {
-      return
+function onDrop(files: File[] | null, input: Ref) {
+  if (files) {
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (reader.result instanceof ArrayBuffer) {
+        return
+      }
+      input.value = reader.result || ""
     }
-    input.value = reader.result || ""
-    input.dispatchEvent(new Event("input"))
+    reader.readAsText(files[0])
   }
-  reader.readAsText(file)
 }
 </script>
 
@@ -163,13 +165,14 @@ function handleDrop(event: DragEvent) {
                 Plan <span class="small text-secondary">(text or JSON)</span>
               </label>
               <textarea
-                :class="['form-control', draggingPlan ? 'dropzone-over' : '']"
+                ref="planDropZoneRef"
+                :class="[
+                  'form-control',
+                  isOverPlanDropZone ? 'dropzone-over' : '',
+                ]"
                 id="planInput"
                 rows="8"
                 v-model="planInput"
-                @dragenter="draggingPlan = true"
-                @dragleave="draggingPlan = false"
-                @drop.prevent="handleDrop"
                 placeholder="Paste execution plan\nOr drop a file"
               >
               </textarea>
@@ -179,13 +182,14 @@ function handleDrop(event: DragEvent) {
                 Query <span class="small text-secondary">(optional)</span>
               </label>
               <textarea
-                :class="['form-control', draggingQuery ? 'dropzone-over' : '']"
+                ref="queryDropZoneRef"
+                :class="[
+                  'form-control',
+                  isOverQueryDropZone ? 'dropzone-over' : '',
+                ]"
                 id="queryInput"
                 rows="8"
                 v-model="queryInput"
-                @dragenter="draggingQuery = true"
-                @dragleave="draggingQuery = false"
-                @drop.prevent="handleDrop"
                 placeholder="Paste corresponding SQL query\nOr drop a file"
               >
               </textarea>
