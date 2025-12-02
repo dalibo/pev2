@@ -4,6 +4,7 @@ import type { Ref } from "vue"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { Tippy } from "vue-tippy"
+import { directive as vTippy } from "vue-tippy"
 import { useDropZone } from "@vueuse/core"
 
 import { time_ago } from "../utils"
@@ -549,21 +550,21 @@ function addMessage(text) {
                 >
                   <button
                     class="btn btn-sm btn-outline-secondary py-0 me-1"
-                    title="Export plan"
+                    v-tippy="'Export plan'"
                     v-on:click.stop="exportPlans([plan])"
                   >
                     <FontAwesomeIcon :icon="faUpload"></FontAwesomeIcon>
                   </button>
                   <button
                     class="btn btn-sm btn-outline-secondary py-0 me-1"
-                    title="Remove plan from list"
+                    v-tippy="'Delete plan'"
                     v-on:click.stop="deletePlan(plan)"
                   >
                     <FontAwesomeIcon :icon="faTrash"></FontAwesomeIcon>
                   </button>
                   <button
                     class="btn btn-sm btn-outline-secondary py-0"
-                    title="Edit plan details"
+                    v-tippy="'Edit plan details'"
                     v-on:click.stop="editPlan(plan)"
                   >
                     <FontAwesomeIcon :icon="faEdit"></FontAwesomeIcon>
