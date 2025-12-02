@@ -10,6 +10,7 @@ import { useDropZone } from "@vueuse/core"
 import { time_ago } from "../utils"
 import MainLayout from "../layouts/MainLayout.vue"
 import Plan from "@/components/Plan.vue"
+import VersionCheck from "../components/VersionCheck.vue"
 import {
   faEdit,
   faInfoCircle,
@@ -286,6 +287,7 @@ function addMessage(text) {
 <template>
   <MainLayout>
     <div class="container">
+      <VersionCheck />
       <div class="alert alert-warning">
         This is the demo application for
         <a href="https://github.com/dalibo/pev2">PEV2</a>. It is serverless and
