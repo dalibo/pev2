@@ -63,6 +63,7 @@ export class PlanService {
     }
 
     this.nodeId = 1
+    this.flat = []
     this.processNode(planContent.Plan, plan)
 
     this.flat = this.flat.concat(
