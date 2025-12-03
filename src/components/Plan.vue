@@ -171,7 +171,6 @@ function parseAndShow() {
     const tree = layout.hierarchy(cte, (v: Node) => v.Plans)
     ctes.value.push(tree)
   })
-  doLayout()
   nextTick(() => {
     initZoom()
     ready.value = true
