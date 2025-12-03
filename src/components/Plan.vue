@@ -632,7 +632,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       <!-- Links -->
                       <AnimatedEdge
                         v-for="(link, index) in toCteLinks"
-                        :key="`linkcte${index}`"
+                        :key="`${plan.id}_linkcte${index}`"
                         :d="lineGen(link)"
                         stroke-color="#B3D7D7"
                         :stroke-width="
@@ -643,7 +643,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       />
                       <AnimatedEdge
                         v-for="(link, index) in layoutRootNode?.links()"
-                        :key="`link${index}`"
+                        :key="`${plan.id}_link${index}`"
                         :d="lineGen(link)"
                         :class="{
                           'never-executed': isNeverExecuted(link.target.data),
@@ -657,7 +657,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       />
                       <foreignObject
                         v-for="(item, index) in layoutRootNode?.descendants()"
-                        :key="index"
+                        :key="`${plan.id}_${index}`"
                         :x="item.x - item.xSize / 2"
                         :y="item.y"
                         :width="item.xSize"
@@ -690,7 +690,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         ></rect>
                         <AnimatedEdge
                           v-for="(link, index) in cte.links()"
-                          :key="`link${index}`"
+                          :key="`${plan.id}_link${index}`"
                           :d="lineGen(link)"
                           stroke-color="grey"
                           :stroke-width="
@@ -701,7 +701,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         />
                         <foreignObject
                           v-for="(item, index) in cte.descendants()"
-                          :key="index"
+                          :key="`${plan.id}_${index}`"
                           :x="item.x - item.xSize / 2"
                           :y="item.y"
                           :width="item.xSize"
