@@ -127,6 +127,7 @@ onMounted(() => {
 })
 
 function parseAndShow() {
+  ready.value = false
   const savedOptions = localStorage.getItem("viewOptions")
   if (savedOptions) {
     _.assignIn(viewOptions, JSON.parse(savedOptions))
