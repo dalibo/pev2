@@ -5,7 +5,6 @@ import {
   reactive,
   ref,
   nextTick,
-  onBeforeMount,
   onBeforeUnmount,
   onMounted,
   provide,
