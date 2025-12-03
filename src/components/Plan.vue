@@ -120,7 +120,13 @@ const layout = flextree({
 
 const tree = ref(layout.hierarchy({}))
 
-onBeforeMount(() => {
+onMounted(() => {
+  watch(() => [props.planSource, props.planQuery], parseAndShow, {
+    immediate: true,
+  })
+})
+
+function parseAndShow() {
   const savedOptions = localStorage.getItem("viewOptions")
   if (savedOptions) {
     _.assignIn(viewOptions, JSON.parse(savedOptions))
@@ -167,9 +173,10 @@ onBeforeMount(() => {
   })
   doLayout()
   nextTick(() => {
+    initZoom()
     ready.value = true
   })
-})
+}
 
 function doLayout() {
   layoutRootNode.value = layout(tree.value)
@@ -230,7 +237,7 @@ function doLayout() {
   })
 }
 
-onMounted(() => {
+function initZoom() {
   if (!planEl.value) {
     return
   }
@@ -261,7 +268,7 @@ onMounted(() => {
       )
     }
   })
-})
+}
 
 onBeforeUnmount(() => {
   window.removeEventListener("hashchange", onHashChange)
