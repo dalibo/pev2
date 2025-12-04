@@ -238,7 +238,7 @@ const showDetails = ref<boolean>(false)
           ></SeverityBullet>
           <span class="flex-grow-1">
             <span
-              v-html="factor(node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0)"
+              v-safe-html="factor(node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0)"
             ></span>
             <span
               v-if="
@@ -371,18 +371,18 @@ const showDetails = ref<boolean>(false)
           </template>
           <template v-else-if="node[NodeProp.ALIAS]">
             <span class="text-secondary">on</span>
-            <span v-html="keysToString(node[NodeProp.ALIAS] as string)"></span>
+            <span v-safe-html="keysToString(node[NodeProp.ALIAS] as string)"></span>
           </template>
           <template v-if="node[NodeProp.GROUP_KEY]">
             <span class="text-secondary">by</span>
             <span
-              v-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
+              v-safe-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
             ></span>
           </template>
           <template v-if="node[NodeProp.SORT_KEY]">
             <span class="text-secondary">by</span>
             <span
-              v-html="
+              v-safe-html="
                 sortKeys(
                   node[NodeProp.SORT_KEY] as string[],
                   node[NodeProp.PRESORTED_KEY] as string[],
@@ -393,13 +393,13 @@ const showDetails = ref<boolean>(false)
           <template v-if="node[NodeProp.INDEX_NAME]">
             <span class="text-secondary">using</span>
             <span
-              v-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
+              v-safe-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
             ></span>
           </template>
           <template v-if="node[NodeProp.HASH_CONDITION]">
             <span class="text-secondary">on</span>
             <span
-              v-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
+              v-safe-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
             ></span>
           </template>
           <template v-if="node[NodeProp.CTE_NAME]">
@@ -424,7 +424,7 @@ const showDetails = ref<boolean>(false)
           >
             <span class="node-type">{{ node[NodeProp.NODE_TYPE] }} Node</span>
             <span
-              v-html="getNodeTypeDescription(node[NodeProp.NODE_TYPE])"
+              v-safe-html="getNodeTypeDescription(node[NodeProp.NODE_TYPE])"
             ></span>
           </div>
           <ul class="nav nav-tabs mt-1">
@@ -476,7 +476,7 @@ const showDetails = ref<boolean>(false)
             <div
               class="tab-pane p-1 border border-top-0 overflow-auto font-monospace"
               :class="{ 'show active': activeTab === 'output' }"
-              v-html="formattedProp('OUTPUT')"
+              v-safe-html="formattedProp('OUTPUT')"
               style="max-height: 200px"
               @mousewheel.stop
             ></div>

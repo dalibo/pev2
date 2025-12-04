@@ -449,7 +449,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
             <pre
               class="small p-2 mb-0"
               style="max-height: 200px"
-            ><code v-html="planSource"></code></pre>
+            ><code v-safe-html="planSource"></code></pre>
           </div>
           <Copy :content="planSource" />
         </div>
@@ -749,7 +749,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
           <div class="overflow-auto flex-grow-1">
             <pre
               class="small p-2 mb-0"
-            ><code v-html="json_(planSource)"></code></pre>
+            ><code v-safe-html="json_(planSource)"></code></pre>
           </div>
           <Copy :content="planSource" />
         </div>
@@ -763,7 +763,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
           <div class="overflow-auto flex-grow-1">
             <pre
               class="small p-2 mb-0"
-            ><code v-html="pgsql_(queryText)"></code></pre>
+            ><code v-safe-html="pgsql_(queryText)"></code></pre>
           </div>
         </div>
         <Copy :content="queryText" />

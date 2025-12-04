@@ -124,7 +124,7 @@ watch(activeTab, () => {
       class="node-description"
     >
       <span class="node-type">{{ node[NodeProp.NODE_TYPE] }} Node</span>
-      <span v-html="getNodeTypeDescription(node[NodeProp.NODE_TYPE])"></span>
+      <span v-safe-html="getNodeTypeDescription(node[NodeProp.NODE_TYPE])"></span>
     </div>
     <ul class="nav nav-tabs card-header-tabs">
       <li class="nav-item">
@@ -199,7 +199,7 @@ watch(activeTab, () => {
         <span
           class="p-0 px-1 rounded alert"
           :class="durationClass"
-          v-html="formattedProp('EXCLUSIVE_DURATION')"
+          v-safe-html="formattedProp('EXCLUSIVE_DURATION')"
         ></span>
         <template
           v-if="executionTimePercent && executionTimePercent !== Infinity"
@@ -241,7 +241,7 @@ watch(activeTab, () => {
             <span
               class="p-0 px-1 alert"
               :class="estimationClass"
-              v-html="formattedProp('PLANNER_ESTIMATE_FACTOR')"
+              v-safe-html="formattedProp('PLANNER_ESTIMATE_FACTOR')"
             ></span>
           </span>
         </span>
@@ -285,7 +285,7 @@ watch(activeTab, () => {
         <span
           class="p-0 px-1 rounded alert"
           :class="heapFetchesClass"
-          v-html="formattedProp('HEAP_FETCHES')"
+          v-safe-html="formattedProp('HEAP_FETCHES')"
         ></span>
         <FontAwesomeIcon
           :icon="faInfoCircle"
@@ -342,19 +342,19 @@ watch(activeTab, () => {
             <td>Shared</td>
             <td
               class="text-end"
-              v-html="formattedProp('EXCLUSIVE_SHARED_HIT_BLOCKS') || '-'"
+              v-safe-html="formattedProp('EXCLUSIVE_SHARED_HIT_BLOCKS') || '-'"
             ></td>
             <td
               class="text-end"
-              v-html="formattedProp('EXCLUSIVE_SHARED_READ_BLOCKS') || '-'"
+              v-safe-html="formattedProp('EXCLUSIVE_SHARED_READ_BLOCKS') || '-'"
             ></td>
             <td
               class="text-end"
-              v-html="formattedProp('EXCLUSIVE_SHARED_DIRTIED_BLOCKS') || '-'"
+              v-safe-html="formattedProp('EXCLUSIVE_SHARED_DIRTIED_BLOCKS') || '-'"
             ></td>
             <td
               class="text-end"
-              v-html="formattedProp('EXCLUSIVE_SHARED_WRITTEN_BLOCKS') || '-'"
+              v-safe-html="formattedProp('EXCLUSIVE_SHARED_WRITTEN_BLOCKS') || '-'"
             ></td>
           </tr>
           <tr>
@@ -362,31 +362,31 @@ watch(activeTab, () => {
             <td class="text-end bg-hatched"></td>
             <td
               class="text-end"
-              v-html="formattedProp('EXCLUSIVE_TEMP_READ_BLOCKS') || '-'"
+              v-safe-html="formattedProp('EXCLUSIVE_TEMP_READ_BLOCKS') || '-'"
             ></td>
             <td class="text-end bg-hatched"></td>
             <td
               class="text-end"
-              v-html="formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'"
+              v-safe-html="formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'"
             ></td>
           </tr>
           <tr>
             <td>Local</td>
             <td
               class="text-end"
-              v-html="formattedProp('EXCLUSIVE_LOCAL_HIT_BLOCKS') || '-'"
+              v-safe-html="formattedProp('EXCLUSIVE_LOCAL_HIT_BLOCKS') || '-'"
             ></td>
             <td
               class="text-end"
-              v-html="formattedProp('EXCLUSIVE_LOCAL_READ_BLOCKS') || '-'"
+              v-safe-html="formattedProp('EXCLUSIVE_LOCAL_READ_BLOCKS') || '-'"
             ></td>
             <td
               class="text-end"
-              v-html="formattedProp('EXCLUSIVE_LOCAL_DIRTIED_BLOCKS') || '-'"
+              v-safe-html="formattedProp('EXCLUSIVE_LOCAL_DIRTIED_BLOCKS') || '-'"
             ></td>
             <td
               class="text-end"
-              v-html="formattedProp('EXCLUSIVE_LOCAL_WRITTEN_BLOCKS') || '-'"
+              v-safe-html="formattedProp('EXCLUSIVE_LOCAL_WRITTEN_BLOCKS') || '-'"
             ></td>
           </tr>
         </tbody>
@@ -411,7 +411,7 @@ watch(activeTab, () => {
     <div
       class="tab-pane overflow-auto font-monospace"
       :class="{ 'show active': activeTab === 'output' }"
-      v-html="formattedProp('OUTPUT')"
+      v-safe-html="formattedProp('OUTPUT')"
       style="max-height: 200px"
       @mousewheel.stop
     ></div>

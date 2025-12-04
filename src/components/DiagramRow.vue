@@ -97,17 +97,17 @@ watch(
         class="mb-0"
       />
       <template v-else-if="diagramViewOptions.metric == Metric.rows">
-        <div v-html="rowsTooltip"></div>
+        <div v-safe-html="rowsTooltip"></div>
       </template>
       <template v-else-if="diagramViewOptions.metric == Metric.estimate_factor">
-        <div v-html="estimateFactorTooltip"></div>
+        <div v-safe-html="estimateFactorTooltip"></div>
       </template>
       <template v-else-if="diagramViewOptions.metric == Metric.cost">
-        <div v-html="costTooltip"></div>
+        <div v-safe-html="costTooltip"></div>
       </template>
       <template v-else-if="diagramViewOptions.metric == Metric.buffers">
         <div
-          v-html="buffersByLocationTooltip(diagramViewOptions.buffersMetric)"
+          v-safe-html="buffersByLocationTooltip(diagramViewOptions.buffersMetric)"
         ></div
       ></template>
     </template>

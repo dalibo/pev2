@@ -89,7 +89,7 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(
               </div>
               <div
                 class="col-6"
-                v-html="formatNodeProp(key as string, value)"
+                v-safe-html="formatNodeProp(key as string, value)"
               ></div>
             </li>
           </template>

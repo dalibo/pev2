@@ -190,7 +190,7 @@ function centerCte() {
             >
               <span class="text-secondary">on</span>
               <span
-                v-html="keysToString(node[NodeProp.ALIAS] as string)"
+                v-safe-html="keysToString(node[NodeProp.ALIAS] as string)"
               ></span>
             </div>
             <div
@@ -199,7 +199,7 @@ function centerCte() {
             >
               <span class="text-secondary">by</span>
               <span
-                v-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
+                v-safe-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
               ></span>
             </div>
             <div
@@ -208,7 +208,7 @@ function centerCte() {
             >
               <span class="text-secondary">by</span>
               <span
-                v-html="
+                v-safe-html="
                   sortKeys(
                     node[NodeProp.SORT_KEY] as string[],
                     node[NodeProp.PRESORTED_KEY] as string[],
@@ -222,7 +222,7 @@ function centerCte() {
             >
               <span class="text-secondary">using</span>
               <span
-                v-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
+                v-safe-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
               ></span>
             </div>
             <div
@@ -231,7 +231,7 @@ function centerCte() {
             >
               <span class="text-secondary">on</span>
               <span
-                v-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
+                v-safe-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
               ></span>
             </div>
             <div v-if="node[NodeProp.CTE_NAME]">
@@ -269,7 +269,7 @@ function centerCte() {
               <span class="text-secondary"
                 >{{ viewOptions.highlightType }}:</span
               >
-              <span v-html="highlightValue"></span>
+              <span v-safe-html="highlightValue"></span>
             </span>
           </div>
         </div>

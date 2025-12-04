@@ -103,7 +103,7 @@ function hasParallelChildren(node: Node) {
       <template v-else>
         <span
           class="stat-value"
-          v-html="duration(planStats.executionTime)"
+          v-safe-html="duration(planStats.executionTime)"
         ></span>
       </template>
     </div>
@@ -129,7 +129,7 @@ function hasParallelChildren(node: Node) {
                   100,
               )
             "
-            v-html="duration(planStats.planningTime)"
+            v-safe-html="duration(planStats.planningTime)"
           ></span>
         </span>
       </template>
@@ -147,7 +147,7 @@ function hasParallelChildren(node: Node) {
               (planStats.jitTime / planStats.executionTime) * 100,
             )
           "
-          v-html="duration(planStats.jitTime)"
+          v-safe-html="duration(planStats.jitTime)"
         ></span>
         <button
           @click.prevent="showJitDetails = !showJitDetails"
@@ -175,7 +175,7 @@ function hasParallelChildren(node: Node) {
           :class="
             'mb-0 p-0 px-1 alert ' + durationClass(totalTriggerDurationPercent)
           "
-          v-html="duration(triggersTotalDuration)"
+          v-safe-html="duration(triggersTotalDuration)"
         ></span>
       </span>
       <button
@@ -204,7 +204,7 @@ function hasParallelChildren(node: Node) {
                 'p-0 px-1 alert ' +
                 durationClass(triggerDurationPercent(trigger))
               "
-              v-html="duration(trigger.Time)"
+              v-safe-html="duration(trigger.Time)"
             ></span>
             | {{ triggerDurationPercent(trigger)
             }}<span class="text-secondary">%</span>
@@ -264,7 +264,7 @@ function hasParallelChildren(node: Node) {
       v-if="averageIO(rootNode)"
     >
       <span class="stat-label">
-        IO: <span v-html="averageIO(rootNode)"></span>
+        IO: <span v-safe-html="averageIO(rootNode)"></span>
       </span>
       <FontAwesomeIcon
         :icon="faInfoCircle"
