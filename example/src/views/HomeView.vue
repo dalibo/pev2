@@ -547,7 +547,7 @@ function addMessage(text) {
                   </small>
                 </div>
                 <div
-                  class="end-0 text-nowrap position-absolute z-1 bg-light p-2"
+                  class="end-0 text-nowrap position-absolute z-1 p-2"
                   v-if="hovered === index && !selectionMode"
                 >
                   <button
