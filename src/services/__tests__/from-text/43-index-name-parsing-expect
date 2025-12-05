@@ -8,5 +8,18 @@
         "Relation Name": "public.\"mytable:2020-12-09\""
       }
     ]
+  },
+  "Settings": {
+    "constraint_exclusion": "on",
+    "effective_cache_size": "30GB",
+    "enable_partitionwise_aggregate": "on",
+    "enable_partitionwise_join": "on",
+    "geqo_effort": "10",
+    "jit": "off",
+    "max_parallel_workers": "1",
+    "max_parallel_workers_per_gather": "0",
+    "random_page_cost": "1.1",
+    "temp_buffers": "80MB",
+    "work_mem": "32MB"
   }
 }
