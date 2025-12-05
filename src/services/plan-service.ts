@@ -577,7 +577,7 @@ export class PlanService {
 
     const prefixPattern = "^(\\s*->\\s*|\\s*)"
     const partialPattern = "(Finalize|Simple|Partial)*"
-    const typePattern = "([^\\r\\n\\t\\f\\v\\:\\(]*?)"
+    const typePattern = "([^\\r\\n\\t\\f\\v\\(]*?)"
     // tslint:disable-next-line:max-line-length
     const estimationPattern =
       "\\(cost=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\s+rows=(\\d+)\\s+width=(\\d+)\\)"
