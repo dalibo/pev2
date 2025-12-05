@@ -1,0 +1,12 @@
+{
+  "Plan": {
+    "Node Type": "Aggregate",
+    "Plans": [
+      {
+        "Node Type": "Index Only Scan",
+        "Index Name": "\"mytable:2020-12-09_coalesce_coalesce1_col1_col2_idx\"",
+        "Relation Name": "public.\"mytable:2020-12-09\""
+      }
+    ]
+  }
+}

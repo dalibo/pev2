@@ -1,0 +1,10 @@
+Aggregate  (cost=87342.28..87342.29 rows=1 width=64) (actual time=683.349..683.350 rows=1 loops=1)
+  Output: sum((COALESCE(((((col1).a + (col1).b) + (col1).c) + (col1).d), '0'::numeric))), sum((COALESCE((col2).y, '0'::numeric)))
+  Buffers: shared hit=1673369
+  ->  Index Only Scan using "mytable:2020-12-09_coalesce_coalesce1_col1_col2_idx" on public."mytable:2020-12-09"  (cost=0.43..65531.43 rows=1744867 width=115) (actual time=0.012..400.547 rows=1749995 loops=1)
+        Output: (COALESCE(((((col1).a + (col1).b) + (col1).c) + (col1).d), '0'::numeric)), (COALESCE((col2).y, '0'::numeric)), col1, col2
+        Heap Fetches: 0
+        Buffers: shared hit=1673369
+Settings: constraint_exclusion = 'on', effective_cache_size = '30GB', enable_partitionwise_aggregate = 'on', enable_partitionwise_join = 'on', geqo_effort = '10', jit = 'off', max_parallel_workers = '1', max_parallel_workers_per_gather = '0', random_page_cost = '1.1', temp_buffers = '80MB', work_mem = '32MB'
+Planning Time: 0.103 ms
+Execution Time: 683.367 ms
