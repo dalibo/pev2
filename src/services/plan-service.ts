@@ -531,7 +531,7 @@ export class PlanService {
         out[out.length - 1] += line
       } else if (
         line.match(
-          /^(?:Total\s+runtime|Planning(\s+time)?|Execution\s+time|Time|Filter|Output|JIT|Trigger)/i,
+          /^(?:Total\s+runtime|Planning(\s+time)?|Execution\s+time|Time|Filter|Output|JIT|Trigger|Settings)/i,
         )
       ) {
         out.push(line)
@@ -577,7 +577,7 @@ export class PlanService {
 
     const prefixPattern = "^(\\s*->\\s*|\\s*)"
     const partialPattern = "(Finalize|Simple|Partial)*"
-    const typePattern = "([^\\r\\n\\t\\f\\v\\:\\(]*?)"
+    const typePattern = "([^\\r\\n\\t\\f\\v\\(]*?)"
     // tslint:disable-next-line:max-line-length
     const estimationPattern =
       "\\(cost=(\\d+\\.\\d+)\\.\\.(\\d+\\.\\d+)\\s+rows=(\\d+)\\s+width=(\\d+)\\)"
@@ -1266,7 +1266,7 @@ export class PlanService {
 
   private parseSettings(text: string, el: Node): boolean {
     // Parses a settings block
-    // eg. Timing: Generation 0.340 ms, Inlining 0.000 ms, Optimization 0.168 ms, Emission 1.907 ms, Total 2.414 ms
+    // eg. Settings: constraint_exclusion = 'on', effective_cache_size = '30GB'
 
     const settingsRegex = /^(\s*)Settings:\s*(.*)$/g
     const settingsMatches = settingsRegex.exec(text)
