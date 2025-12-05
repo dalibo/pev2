@@ -1266,7 +1266,7 @@ export class PlanService {
 
   private parseSettings(text: string, el: Node): boolean {
     // Parses a settings block
-    // eg. Timing: Generation 0.340 ms, Inlining 0.000 ms, Optimization 0.168 ms, Emission 1.907 ms, Total 2.414 ms
+    // eg. Settings: constraint_exclusion = 'on', effective_cache_size = '30GB'
 
     const settingsRegex = /^(\s*)Settings:\s*(.*)$/g
     const settingsMatches = settingsRegex.exec(text)
