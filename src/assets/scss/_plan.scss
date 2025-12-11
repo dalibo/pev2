@@ -56,7 +56,7 @@ $connector-line: 2px solid darken($line-color, 10%);
   .stat-dropdown-container {
     border: 1px solid $line-color;
     padding: $padding-lg;
-    background-color: #fff;
+    background-color: $white;
     position: absolute;
     box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
     border-radius: $border-radius-base;
