@@ -797,11 +797,11 @@ function updateNodeSize(node: Node, size: [number, number]) {
 
 // CTE diagram elements
 .cte-link {
-  stroke: $cte-color;
+  stroke: var(--color-cte);
 }
 
 .cte-rect {
-  stroke: $cte-border-color;
-  fill: $cte-border-color;
+  stroke: var(--color-cte-border);
+  fill: var(--color-cte-border);
 }
 </style>

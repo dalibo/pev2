@@ -1,0 +1,35 @@
+// CSS Custom Properties (variables CSS natives)
+// Ces variables peuvent être modifiées dynamiquement pour le dark mode
+
+:root {
+  // Background colors
+  --color-bg: #{$bg-color};
+  --color-bg-white: #{$white};
+  --color-bg-node: #{$plan-node-bg};
+
+  // Text colors
+  --color-text: #{$text-color};
+  --color-text-light: #{$text-color-light};
+  --color-text-muted: #{$gray};
+
+  // Border/line colors
+  --color-line: #{$line-color};
+  --color-line-light: #{$line-color-light};
+
+  // Gray scale
+  --color-gray-lightest: #{$gray-lightest};
+  --color-gray-light: #{$gray-light};
+  --color-gray: #{$gray};
+  --color-gray-dark: #{$gray-dark};
+  --color-gray-darkest: #{$gray-darkest};
+
+  // CTE colors
+  --color-cte: #{$cte-color};
+  --color-cte-border: #{$cte-border-color};
+
+  // Accent colors (unchanged between themes)
+  --color-highlight: #{$highlight-color};
+  --color-highlight-dark: #{$highlight-color-dark};
+  --color-link: #{$link-color};
+  --color-alert: #{$alert-color};
+}

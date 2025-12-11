@@ -424,13 +424,11 @@ const columns = computed(() => {
   </div>
 </template>
 
-<style scoped lang="scss">
-@import "@/assets/scss/variables";
-
+<style scoped>
 table {
   thead tr.table-group {
     th {
-      border-left: 1px solid $gray;
+      border-left: 1px solid var(--color-gray);
       border-bottom: 0;
     }
     /*
