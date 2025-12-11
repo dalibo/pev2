@@ -26,7 +26,9 @@
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-pattern .gitignore",
     "prepare": "husky",
-    "test": "vitest --run"
+    "test": "vitest --run",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -48,6 +50,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
     "@eslint/js": "^9.21.0",
+    "@playwright/test": "^1.57.0",
     "@types/d3": "^7.4.3",
     "@types/humanize-duration": "^3.27.1",
     "@types/lodash": "^4.14.202",
