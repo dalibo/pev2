@@ -634,7 +634,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         v-for="(link, index) in toCteLinks"
                         :key="`${plan.id}_linkcte${index}`"
                         :d="lineGen(link)"
-                        stroke-color="#B3D7D7"
+                        class="cte-link"
                         :stroke-width="
                           edgeWeight(
                             link.target.data[NodeProp.ACTUAL_ROWS_REVISED],
@@ -681,9 +681,8 @@ function updateNodeSize(node: Node, size: [number, number]) {
                           :height="
                             getLayoutExtent(cte)[3] - getLayoutExtent(cte)[2]
                           "
-                          stroke="#cfcfcf"
+                          class="cte-rect"
                           stroke-width="2"
-                          fill="#cfcfcf"
                           fill-opacity="10%"
                           rx="5"
                           ry="5"
@@ -794,5 +793,15 @@ function updateNodeSize(node: Node, size: [number, number]) {
   foreignObject {
     transition: all 0.2s ease-in-out;
   }
+}
+
+// CTE diagram elements
+.cte-link {
+  stroke: $cte-color;
+}
+
+.cte-rect {
+  stroke: $cte-border-color;
+  fill: $cte-border-color;
 }
 </style>
