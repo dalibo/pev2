@@ -39,7 +39,7 @@ function calculateProps() {
     <template v-for="(prop, key) in nodeProps" :key="key">
       <tr v-if="shouldShowProp(prop.key, prop.value)">
         <td width="40%">{{ prop.key }}</td>
-        <td v-html="formatNodeProp(prop.key, prop.value)"></td>
+        <td v-safe-html="formatNodeProp(prop.key, prop.value)"></td>
       </tr>
     </template>
   </table>
