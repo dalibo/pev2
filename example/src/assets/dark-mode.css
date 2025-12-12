@@ -41,6 +41,16 @@
     background-color: #1a1a2e !important;
   }
 
+  /* Splitpanes divider */
+  .splitpanes__splitter {
+    background-color: #2d2d44 !important;
+    border-color: #404055 !important;
+  }
+  .splitpanes__splitter:before,
+  .splitpanes__splitter:after {
+    background-color: #606080 !important;
+  }
+
   /* CTE rectangle */
   .cte-rect {
     stroke: #4a4a60 !important;
