@@ -1,5 +1,12 @@
 import { test, expect } from "@playwright/test"
 
+// Extend Window interface for our custom function
+declare global {
+  interface Window {
+    setPlanData: (name: string, plan: string, query: string) => void
+  }
+}
+
 // Sample plans for visual testing
 const testPlans = [
   {
@@ -86,7 +93,7 @@ test.describe("Visual regression tests", () => {
         // Load the plan via the exposed function
         await page.evaluate(
           ({ plan, query, name }) => {
-            ;(window as any).setPlanData(name, plan, query)
+            window.setPlanData(name, plan, query)
           },
           { plan: testPlan.plan, query: testPlan.query, name: testPlan.name }
         )
@@ -133,7 +140,7 @@ test.describe("Visual regression tests", () => {
 
       await page.evaluate(
         ({ plan, query, name }) => {
-          ;(window as any).setPlanData(name, plan, query)
+          window.setPlanData(name, plan, query)
         },
         { plan: testPlan.plan, query: testPlan.query, name: testPlan.name }
       )
