@@ -78,11 +78,25 @@ $connector-line: 2px solid darken($line-color, 10%);
   }
 }
 
-.tippy-popper .tippy-tooltip {
+// Tippy.js tooltip styles
+.tippy-box {
   text-align: left;
 }
-.tippy-popper .text-secondary {
+
+.tippy-box .text-secondary {
   color: inherit !important;
+}
+
+// Dark mode tooltips - tippy boxes are in body but we check html attribute
+:root[data-theme="dark"] {
+  .tippy-box {
+    background-color: #3a3a50;
+    color: #e0e0e0;
+
+    .tippy-arrow {
+      color: #3a3a50;
+    }
+  }
 }
 
 .splitpanes {

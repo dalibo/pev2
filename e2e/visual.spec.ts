@@ -51,12 +51,29 @@ Execution Time: 9.998 ms`,
   },
 ]
 
+// Helper to enable dark mode
+async function enableDarkMode(page) {
+  await page.evaluate(() => {
+    document.documentElement.setAttribute("data-theme", "dark")
+    document.documentElement.setAttribute("data-bs-theme", "dark")
+  })
+  // Let styles apply
+  await page.waitForTimeout(100)
+}
+
 test.describe("Visual regression tests", () => {
   test("Home page", async ({ page }) => {
     await page.goto("/")
     // Wait for the form to be ready
     await page.waitForSelector("#planInput")
     await expect(page).toHaveScreenshot("home.png")
+  })
+
+  test("Home page (dark)", async ({ page }) => {
+    await page.goto("/")
+    await page.waitForSelector("#planInput")
+    await enableDarkMode(page)
+    await expect(page).toHaveScreenshot("home-dark.png")
   })
 
   for (const testPlan of testPlans) {
@@ -105,4 +122,49 @@ test.describe("Visual regression tests", () => {
       })
     })
   }
+
+  // Dark mode tests for a representative plan
+  test.describe("Dark mode: simple-join", () => {
+    const testPlan = testPlans[0] // simple-join
+
+    test.beforeEach(async ({ page }) => {
+      await page.goto("/")
+      await page.waitForSelector("#planInput")
+
+      await page.evaluate(
+        ({ plan, query, name }) => {
+          ;(window as any).setPlanData(name, plan, query)
+        },
+        { plan: testPlan.plan, query: testPlan.query, name: testPlan.name }
+      )
+
+      await page.waitForSelector(".plan-container")
+      await page.waitForTimeout(500)
+      await enableDarkMode(page)
+    })
+
+    test("Plan tab (dark)", async ({ page }) => {
+      await page.click('a[href="#plan"]')
+      await page.waitForTimeout(300)
+      await expect(page).toHaveScreenshot("simple-join-plan-dark.png")
+    })
+
+    test("Grid tab (dark)", async ({ page }) => {
+      await page.click('a[href="#grid"]')
+      await page.waitForTimeout(300)
+      await expect(page).toHaveScreenshot("simple-join-grid-dark.png")
+    })
+
+    test("Raw tab (dark)", async ({ page }) => {
+      await page.click('a[href="#raw"]')
+      await page.waitForTimeout(300)
+      await expect(page).toHaveScreenshot("simple-join-raw-dark.png")
+    })
+
+    test("Stats tab (dark)", async ({ page }) => {
+      await page.click('a[href="#stats"]')
+      await page.waitForTimeout(300)
+      await expect(page).toHaveScreenshot("simple-join-stats-dark.png")
+    })
+  })
 })

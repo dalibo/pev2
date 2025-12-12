@@ -1,0 +1,254 @@
+/* Dark mode overrides for Bootstrap - loaded after Bootstrap CSS */
+
+[data-theme="dark"] {
+  /* Override Bootstrap backgrounds */
+  .bg-light,
+  .plan-container.bg-light {
+    background-color: #1a1a2e !important;
+  }
+  .bg-white,
+  .plan-container .bg-white {
+    background-color: #252538 !important;
+  }
+
+  /* Plan view specific */
+  .plan-container {
+    background-color: #1a1a2e !important;
+  }
+
+  /* Plan diagram sidebar */
+  .plan-diagram {
+    background-color: #1a1a2e !important;
+    color: #e0e0e0 !important;
+  }
+  .plan-diagram th,
+  .plan-diagram td {
+    color: #e0e0e0 !important;
+  }
+  .plan-diagram .subplan {
+    color: #b0b0b0 !important;
+  }
+
+  /* Plan grid */
+  .plan-grid {
+    background-color: #1a1a2e !important;
+  }
+
+  /* Splitpanes (main diagram area) */
+  .splitpanes__pane,
+  .plan.grab-bing,
+  .tab-pane {
+    background-color: #1a1a2e !important;
+  }
+
+  /* CTE rectangle */
+  .cte-rect {
+    stroke: #4a4a60 !important;
+    fill: #252540 !important;
+    fill-opacity: 60% !important;
+  }
+
+  /* Never executed nodes (hatched pattern) */
+  .never-executed,
+  .bg-hatched {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 5px,
+      #3a3a50 5px,
+      #3a3a50 10px
+    ) !important;
+    background-color: #252538 !important;
+  }
+
+  /* Node labels (btn-light in plan nodes) */
+  .plan-node .btn-light {
+    background-color: #3a3a50 !important;
+    border-color: #4a4a60 !important;
+    color: #e0e0e0 !important;
+  }
+  .plan-node .btn-light:hover {
+    background-color: #4a4a60 !important;
+  }
+
+  /* Syntax highlighting - make colors more readable on dark background */
+  /* Strings (like "ANY_subquery") */
+  .hljs-string {
+    color: #7ec87e !important;
+  }
+
+  /* Brown/orange (costs, numbers) */
+  .hljs-number {
+    color: #d4a76a !important;
+  }
+
+  /* Blue (SQL keywords) */
+  .text-primary,
+  .hljs-keyword,
+  .hljs-built_in {
+    color: #6eb5ff !important;
+  }
+
+  /* Comments */
+  .hljs-comment {
+    color: #8a8a9a !important;
+  }
+
+  /* Table headers */
+  .table-secondary {
+    --bs-table-bg: #3a3a50 !important;
+    --bs-table-color: #e0e0e0 !important;
+  }
+
+  /* Tables */
+  .table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #e0e0e0;
+    --bs-table-hover-bg: #2d2d44;
+    --bs-table-hover-color: #e0e0e0;
+    --bs-table-striped-bg: #252538;
+    color: #e0e0e0;
+  }
+  .table > :not(caption) > * > * {
+    background-color: transparent;
+    color: #e0e0e0;
+  }
+  .table-hover > tbody > tr:hover > * {
+    background-color: #2d2d44 !important;
+  }
+
+  /* Grid specific - ensure cells are transparent */
+  .plan-grid td,
+  .plan-grid th {
+    background-color: transparent !important;
+  }
+
+  /* Stats tables (cards) */
+  .card {
+    background-color: #252538 !important;
+    border-color: #404055 !important;
+  }
+  .card-body {
+    background-color: #252538 !important;
+  }
+
+  /* Navbar */
+  .navbar {
+    background-color: #252538 !important;
+  }
+
+  /* Nav pills/tabs */
+  .nav-pills .nav-link {
+    color: #b0b0b0;
+  }
+  .nav-pills .nav-link.active {
+    background-color: #404055;
+    color: #e0e0e0;
+  }
+  .nav-pills .nav-link:hover:not(.active) {
+    color: #e0e0e0;
+  }
+
+  /* Buttons */
+  .btn-outline-secondary {
+    color: #b0b0b0;
+    border-color: #555;
+  }
+  .btn-outline-secondary:hover,
+  .btn-outline-secondary.active {
+    background-color: #404055;
+    border-color: #666;
+    color: #e0e0e0;
+  }
+
+  .btn-secondary {
+    background-color: #404055;
+    border-color: #505065;
+    color: #e0e0e0;
+  }
+
+  .btn-link {
+    color: #5a9fff;
+  }
+
+  /* Form inputs */
+  .form-control {
+    background-color: #2d2d44;
+    border-color: #404055;
+    color: #e0e0e0;
+  }
+  .form-control:focus {
+    background-color: #353548;
+    border-color: #5a9fff;
+    color: #e0e0e0;
+  }
+  .form-control::placeholder {
+    color: #888;
+  }
+
+  /* Alerts */
+  .alert-warning {
+    background-color: #3d3a20;
+    border-color: #5a5530;
+    color: #e0d080;
+  }
+
+  /* List groups */
+  .list-group-item {
+    background-color: #252538;
+    border-color: #404055;
+    color: #e0e0e0;
+  }
+  .list-group-item-action:hover {
+    background-color: #2d2d44;
+  }
+  .list-group-item.active {
+    background-color: #404055;
+    border-color: #505065;
+  }
+
+  /* Dropdowns */
+  .dropdown-menu {
+    background-color: #252538;
+    border-color: #404055;
+  }
+  .dropdown-item {
+    color: #e0e0e0;
+  }
+  .dropdown-item:hover {
+    background-color: #2d2d44;
+  }
+
+  /* Badges */
+  .text-bg-light {
+    background-color: #404055 !important;
+    color: #e0e0e0 !important;
+  }
+
+  /* Text utilities */
+  .text-secondary {
+    color: #888 !important;
+  }
+  .text-body-tertiary {
+    color: #888 !important;
+  }
+
+  /* Pagination */
+  .page-link {
+    background-color: #252538;
+    border-color: #404055;
+    color: #b0b0b0;
+  }
+  .page-link:hover {
+    background-color: #2d2d44;
+    color: #e0e0e0;
+  }
+  .page-item.active .page-link {
+    background-color: #404055;
+    border-color: #505065;
+  }
+  .page-item.disabled .page-link {
+    background-color: #1a1a2e;
+    color: #555;
+  }
+}

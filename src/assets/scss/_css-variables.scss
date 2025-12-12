@@ -33,3 +33,45 @@
   --color-link: #{$link-color};
   --color-alert: #{$alert-color};
 }
+
+// Dark theme palette
+[data-theme="dark"] {
+  // Background colors - inverted from light
+  --color-bg: #1a1a2e;
+  --color-bg-white: #252538;
+  --color-bg-node: #2d2d44;
+
+  // Text colors - light text on dark background
+  --color-text: #e0e0e0;
+  --color-text-light: #b0b0b0;
+  --color-text-muted: #888888;
+
+  // Border/line colors - subtle on dark
+  --color-line: #404055;
+  --color-line-light: #353548;
+
+  // Gray scale - inverted
+  --color-gray-lightest: #3a3a50;
+  --color-gray-light: #4a4a60;
+  --color-gray: #888888;
+  --color-gray-dark: #aaaaaa;
+  --color-gray-darkest: #cccccc;
+
+  // CTE colors - adjusted for dark background
+  --color-cte: #5a9a9a;
+  --color-cte-border: #6a6a80;
+
+  // Accent colors - adjusted for better contrast on dark
+  --color-link: #5a9fff;
+
+  // Override Bootstrap utility classes for dark mode
+  .bg-light {
+    background-color: var(--color-bg) !important;
+  }
+  .bg-white {
+    background-color: var(--color-bg-white) !important;
+  }
+  .table-secondary {
+    --bs-table-bg: var(--color-gray-lightest);
+  }
+}
