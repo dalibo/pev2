@@ -1,50 +1,51 @@
 /* Dark mode overrides for Bootstrap - loaded after Bootstrap CSS */
+/* Uses CSS variables from pev2 library (_css-variables.scss) */
 
 [data-theme="dark"] {
   /* Override Bootstrap backgrounds */
   .bg-light,
   .plan-container.bg-light {
-    background-color: #1a1a2e !important;
+    background-color: var(--color-bg) !important;
   }
   .bg-white,
   .plan-container .bg-white {
-    background-color: #252538 !important;
+    background-color: var(--color-bg-white) !important;
   }
 
   /* Plan view specific */
   .plan-container {
-    background-color: #1a1a2e !important;
+    background-color: var(--color-bg) !important;
   }
 
   /* Plan diagram sidebar */
   .plan-diagram {
-    background-color: #1a1a2e !important;
-    color: #e0e0e0 !important;
+    background-color: var(--color-bg) !important;
+    color: var(--color-text) !important;
   }
   .plan-diagram th,
   .plan-diagram td {
-    color: #e0e0e0 !important;
+    color: var(--color-text) !important;
   }
   .plan-diagram .subplan {
-    color: #b0b0b0 !important;
+    color: var(--color-text-light) !important;
   }
 
   /* Plan grid */
   .plan-grid {
-    background-color: #1a1a2e !important;
+    background-color: var(--color-bg) !important;
   }
 
   /* Splitpanes (main diagram area) */
   .splitpanes__pane,
   .plan.grab-bing,
   .tab-pane {
-    background-color: #1a1a2e !important;
+    background-color: var(--color-bg) !important;
   }
 
   /* Splitpanes divider */
   .splitpanes__splitter {
-    background-color: #2d2d44 !important;
-    border-color: #404055 !important;
+    background-color: var(--color-bg-node) !important;
+    border-color: var(--color-line) !important;
   }
   .splitpanes__splitter:before,
   .splitpanes__splitter:after {
@@ -53,8 +54,8 @@
 
   /* CTE rectangle */
   .cte-rect {
-    stroke: #4a4a60 !important;
-    fill: #252540 !important;
+    stroke: var(--color-gray-light) !important;
+    fill: var(--color-bg-white) !important;
     fill-opacity: 60% !important;
   }
 
@@ -65,20 +66,20 @@
       45deg,
       transparent,
       transparent 5px,
-      #3a3a50 5px,
-      #3a3a50 10px
+      var(--color-gray-lightest) 5px,
+      var(--color-gray-lightest) 10px
     ) !important;
-    background-color: #252538 !important;
+    background-color: var(--color-bg-white) !important;
   }
 
   /* Node labels (btn-light in plan nodes) */
   .plan-node .btn-light {
-    background-color: #3a3a50 !important;
-    border-color: #4a4a60 !important;
-    color: #e0e0e0 !important;
+    background-color: var(--color-gray-lightest) !important;
+    border-color: var(--color-gray-light) !important;
+    color: var(--color-text) !important;
   }
   .plan-node .btn-light:hover {
-    background-color: #4a4a60 !important;
+    background-color: var(--color-gray-light) !important;
   }
 
   /* Syntax highlighting - make colors more readable on dark background */
@@ -106,25 +107,25 @@
 
   /* Table headers */
   .table-secondary {
-    --bs-table-bg: #3a3a50 !important;
-    --bs-table-color: #e0e0e0 !important;
+    --bs-table-bg: var(--color-gray-lightest) !important;
+    --bs-table-color: var(--color-text) !important;
   }
 
   /* Tables */
   .table {
     --bs-table-bg: transparent;
-    --bs-table-color: #e0e0e0;
-    --bs-table-hover-bg: #2d2d44;
-    --bs-table-hover-color: #e0e0e0;
-    --bs-table-striped-bg: #252538;
-    color: #e0e0e0;
+    --bs-table-color: var(--color-text);
+    --bs-table-hover-bg: var(--color-bg-node);
+    --bs-table-hover-color: var(--color-text);
+    --bs-table-striped-bg: var(--color-bg-white);
+    color: var(--color-text);
   }
   .table > :not(caption) > * > * {
     background-color: transparent;
-    color: #e0e0e0;
+    color: var(--color-text);
   }
   .table-hover > tbody > tr:hover > * {
-    background-color: #2d2d44 !important;
+    background-color: var(--color-bg-node) !important;
   }
 
   /* Grid specific - ensure cells are transparent */
@@ -135,65 +136,65 @@
 
   /* Stats tables (cards) */
   .card {
-    background-color: #252538 !important;
-    border-color: #404055 !important;
+    background-color: var(--color-bg-white) !important;
+    border-color: var(--color-line) !important;
   }
   .card-body {
-    background-color: #252538 !important;
+    background-color: var(--color-bg-white) !important;
   }
 
   /* Navbar */
   .navbar {
-    background-color: #252538 !important;
+    background-color: var(--color-bg-white) !important;
   }
 
   /* Nav pills/tabs */
   .nav-pills .nav-link {
-    color: #b0b0b0;
+    color: var(--color-text-light);
   }
   .nav-pills .nav-link.active {
-    background-color: #404055;
-    color: #e0e0e0;
+    background-color: var(--color-line);
+    color: var(--color-text);
   }
   .nav-pills .nav-link:hover:not(.active) {
-    color: #e0e0e0;
+    color: var(--color-text);
   }
 
   /* Buttons */
   .btn-outline-secondary {
-    color: #b0b0b0;
+    color: var(--color-text-light);
     border-color: #555;
   }
   .btn-outline-secondary:hover,
   .btn-outline-secondary.active {
-    background-color: #404055;
+    background-color: var(--color-line);
     border-color: #666;
-    color: #e0e0e0;
+    color: var(--color-text);
   }
 
   .btn-secondary {
-    background-color: #404055;
+    background-color: var(--color-line);
     border-color: #505065;
-    color: #e0e0e0;
+    color: var(--color-text);
   }
 
   .btn-link {
-    color: #5a9fff;
+    color: var(--color-link);
   }
 
   /* Form inputs */
   .form-control {
-    background-color: #2d2d44;
-    border-color: #404055;
-    color: #e0e0e0;
+    background-color: var(--color-bg-node);
+    border-color: var(--color-line);
+    color: var(--color-text);
   }
   .form-control:focus {
-    background-color: #353548;
-    border-color: #5a9fff;
-    color: #e0e0e0;
+    background-color: var(--color-line-light);
+    border-color: var(--color-link);
+    color: var(--color-text);
   }
   .form-control::placeholder {
-    color: #888;
+    color: var(--color-text-muted);
   }
 
   /* Alerts */
@@ -205,60 +206,60 @@
 
   /* List groups */
   .list-group-item {
-    background-color: #252538;
-    border-color: #404055;
-    color: #e0e0e0;
+    background-color: var(--color-bg-white);
+    border-color: var(--color-line);
+    color: var(--color-text);
   }
   .list-group-item-action:hover {
-    background-color: #2d2d44;
+    background-color: var(--color-bg-node);
   }
   .list-group-item.active {
-    background-color: #404055;
+    background-color: var(--color-line);
     border-color: #505065;
   }
 
   /* Dropdowns */
   .dropdown-menu {
-    background-color: #252538;
-    border-color: #404055;
+    background-color: var(--color-bg-white);
+    border-color: var(--color-line);
   }
   .dropdown-item {
-    color: #e0e0e0;
+    color: var(--color-text);
   }
   .dropdown-item:hover {
-    background-color: #2d2d44;
+    background-color: var(--color-bg-node);
   }
 
   /* Badges */
   .text-bg-light {
-    background-color: #404055 !important;
-    color: #e0e0e0 !important;
+    background-color: var(--color-line) !important;
+    color: var(--color-text) !important;
   }
 
   /* Text utilities */
   .text-secondary {
-    color: #888 !important;
+    color: var(--color-text-muted) !important;
   }
   .text-body-tertiary {
-    color: #888 !important;
+    color: var(--color-text-muted) !important;
   }
 
   /* Pagination */
   .page-link {
-    background-color: #252538;
-    border-color: #404055;
-    color: #b0b0b0;
+    background-color: var(--color-bg-white);
+    border-color: var(--color-line);
+    color: var(--color-text-light);
   }
   .page-link:hover {
-    background-color: #2d2d44;
-    color: #e0e0e0;
+    background-color: var(--color-bg-node);
+    color: var(--color-text);
   }
   .page-item.active .page-link {
-    background-color: #404055;
+    background-color: var(--color-line);
     border-color: #505065;
   }
   .page-item.disabled .page-link {
-    background-color: #1a1a2e;
+    background-color: var(--color-bg);
     color: #555;
   }
 }
