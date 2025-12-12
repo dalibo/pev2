@@ -4,7 +4,7 @@ import { animate } from "motion-v"
 
 interface Props {
   d: string
-  strokeColor: string
+  strokeColor?: string
   strokeWidth?: number
 }
 const props = defineProps<Props>()
@@ -32,7 +32,7 @@ watch(
   <path
     ref="path"
     :d="d"
-    :stroke="strokeColor"
+    :stroke="strokeColor || undefined"
     fill="none"
     :stroke-width="strokeWidth"
   />

@@ -428,7 +428,7 @@ const columns = computed(() => {
 table {
   thead tr.table-group {
     th {
-      border-left: 1px solid #b5b6b7;
+      border-left: 1px solid var(--color-gray);
       border-bottom: 0;
     }
     /*
