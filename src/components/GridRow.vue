@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { inject, reactive, ref } from "vue"
-import type { Ref } from "vue"
-import type { IPlan, Node, ViewOptions } from "@/interfaces"
+import { inject, ref } from "vue"
+import type { ViewOptions } from "@/interfaces"
 import { EstimateDirection, NodeProp } from "@/enums"
-import { PlanKey, ViewOptionsKey } from "@/symbols"
+import { ViewOptionsKey } from "@/symbols"
 import {
   blocks,
   blocksAsBytes,
@@ -24,22 +23,18 @@ import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
 import useNode from "@/node"
 import { Tippy, directive as vTippy } from "vue-tippy"
 import { HelpService } from "@/services/help-service"
+import { store } from "@/store"
+import type { FlattenedPlanNode } from "@/store"
 const helpService = new HelpService()
 const getNodeTypeDescription = helpService.getNodeTypeDescription
 
 interface Props {
-  node: Node
-  level: number
-  isSubplan: boolean
-  isLastChild: boolean
-  branches: number[]
-  index: number
+  row: FlattenedPlanNode
   columns: string[]
 }
 const props = defineProps<Props>()
+const node = props.row.node
 
-const node = reactive<Node>(props.node)
-const plan = inject(PlanKey) as Ref<IPlan>
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
 
 // UI flags
@@ -77,7 +72,7 @@ const {
   tempReadPercent,
   tempWrittenPercent,
   tilde,
-} = useNode(plan, node, viewOptions)
+} = useNode(node, viewOptions)
 const showDetails = ref<boolean>(false)
 </script>
 <template>
@@ -105,16 +100,16 @@ const showDetails = ref<boolean>(false)
       <GridProgressBar
         :percentage="
           (node[NodeProp.EXCLUSIVE_DURATION] /
-            (plan.planStats.executionTime ||
-              plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
+            (store.stats.executionTime ||
+              store.plan?.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
               0)) *
           100
         "
         :percentage2="
           (((node[NodeProp.ACTUAL_TOTAL_TIME] || 0) -
             node[NodeProp.EXCLUSIVE_DURATION]) /
-            (plan.planStats.executionTime ||
-              plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
+            (store.stats.executionTime ||
+              store.plan?.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
               0)) *
           100
         "
@@ -153,8 +148,8 @@ const showDetails = ref<boolean>(false)
         <GridProgressBar
           :percentage="
             (node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME] /
-              (plan.content.Plan[NodeProp.SUM_IO_READ_TIME] +
-                plan.content.Plan[NodeProp.SUM_IO_WRITE_TIME])) *
+              ((store.plan?.content.Plan[NodeProp.SUM_IO_READ_TIME] ?? 0) +
+                (store.plan?.content.Plan[NodeProp.SUM_IO_WRITE_TIME] ?? 0))) *
             100
           "
         ></GridProgressBar>
@@ -182,8 +177,8 @@ const showDetails = ref<boolean>(false)
         <GridProgressBar
           :percentage="
             (node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME] /
-              (plan.content.Plan[NodeProp.SUM_IO_READ_TIME] +
-                plan.content.Plan[NodeProp.SUM_IO_WRITE_TIME])) *
+              ((store.plan?.content.Plan[NodeProp.SUM_IO_READ_TIME] ?? 0) +
+                (store.plan?.content.Plan[NodeProp.SUM_IO_WRITE_TIME] ?? 0))) *
             100
           "
         ></GridProgressBar>
@@ -207,7 +202,7 @@ const showDetails = ref<boolean>(false)
     >
       <GridProgressBar
         :percentage="
-          (node[NodeProp.ACTUAL_ROWS_REVISED] / plan.planStats.maxRows) * 100
+          (node[NodeProp.ACTUAL_ROWS_REVISED] / store.stats.maxRows) * 100
         "
       ></GridProgressBar>
       <!-- rows -->
@@ -274,7 +269,7 @@ const showDetails = ref<boolean>(false)
       <GridProgressBar
         :percentage="
           Math.round(
-            (node[NodeProp.EXCLUSIVE_COST] / plan.planStats.maxCost) * 100,
+            (node[NodeProp.EXCLUSIVE_COST] / store.stats.maxCost) * 100,
           )
         "
       ></GridProgressBar>
@@ -340,12 +335,8 @@ const showDetails = ref<boolean>(false)
       style="max-width: 0"
     >
       <LevelDivider
-        :isSubplan="isSubplan"
-        isNode
-        :isLastChild="isLastChild"
-        :level="level"
-        :branches="branches"
-        :index="index"
+        :row="row"
+        :isSubplan="!!node[NodeProp.SUBPLAN_NAME]"
       ></LevelDivider>
       <div class="d-inline">
         <b

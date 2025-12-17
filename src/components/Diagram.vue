@@ -11,22 +11,15 @@ import {
 } from "vue"
 import { BufferLocation, NodeProp, Metric } from "../enums"
 import { HelpService, scrollChildIntoParentView } from "@/services/help-service"
-import type { IPlanStats, Node } from "@/interfaces"
+import type { Node } from "@/interfaces"
 import { HighlightedNodeIdKey, SelectNodeKey } from "@/symbols"
 import DiagramRow from "@/components/DiagramRow.vue"
 import LevelDivider from "@/components/LevelDivider.vue"
 import { Tippy } from "vue-tippy"
+import { store } from "@/store"
 
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
-
-type Row = [number, Node, boolean, number[]]
-
-const { ctes, planStats, rootNode } = defineProps<{
-  ctes: Node[]
-  planStats: IPlanStats
-  rootNode: Node
-}>()
 
 const container = ref(null) // The container element
 
@@ -35,9 +28,6 @@ if (!selectNode) {
   throw new Error(`Could not resolve ${SelectNodeKey.description}`)
 }
 const highlightedNodeId = inject(HighlightedNodeIdKey)
-
-// The main plan + init plans (all flatten)
-const plans: Row[][] = [[]]
 
 const viewOptions = reactive({
   metric: Metric.time,
@@ -49,17 +39,10 @@ onBeforeMount((): void => {
   if (savedOptions) {
     _.assignIn(viewOptions, JSON.parse(savedOptions))
   }
-  flatten(plans[0], 0, rootNode, true, [])
-
-  _.each(ctes, (cte) => {
-    const flat: Row[] = []
-    flatten(flat, 0, cte, true, [])
-    plans.push(flat)
-  })
 
   // switch to the first buffers tab if data not available for the currently
   // chosen one
-  const planBufferLocation = _.keys(planStats.maxBlocks)
+  const planBufferLocation = _.keys(store.stats.maxBlocks)
   if (_.indexOf(planBufferLocation, viewOptions.buffersMetric) === -1) {
     viewOptions.buffersMetric = _.min(planBufferLocation) as BufferLocation
   }
@@ -69,33 +52,6 @@ watch(viewOptions, onViewOptionsChanged)
 
 function onViewOptionsChanged() {
   localStorage.setItem("diagramViewOptions", JSON.stringify(viewOptions))
-}
-
-function flatten(
-  output: Row[],
-  level: number,
-  node: Node,
-  isLast: boolean,
-  branches: number[],
-) {
-  // [level, node, isLastSibbling, branches]
-  output.push([level, node, isLast, _.concat([], branches)])
-  if (!isLast) {
-    branches.push(level)
-  }
-
-  _.each(node.Plans, (subnode) => {
-    flatten(
-      output,
-      level + 1,
-      subnode,
-      subnode === _.last(node.Plans),
-      branches,
-    )
-  })
-  if (!isLast) {
-    branches.pop()
-  }
 }
 
 const dataAvailable = computed((): boolean => {
@@ -163,7 +119,7 @@ provide("scrollTo", scrollTo)
           </button>
           <Tippy
             :content="
-              !planStats.maxIo
+              !store.stats.maxIo
                 ? getHelpMessage('hint track_io_timing')
                 : undefined
             "
@@ -174,7 +130,7 @@ provide("scrollTo", scrollTo)
               class="btn btn-outline-secondary"
               :class="{ active: viewOptions.metric === Metric.io }"
               v-on:click="viewOptions.metric = Metric.io"
-              :disabled="!planStats.maxIo"
+              :disabled="!store.stats.maxIo"
             >
               IO
             </button>
@@ -189,7 +145,7 @@ provide("scrollTo", scrollTo)
               active: viewOptions.buffersMetric === BufferLocation.shared,
             }"
             v-on:click="viewOptions.buffersMetric = BufferLocation.shared"
-            :disabled="!planStats.maxBlocks?.[BufferLocation.shared]"
+            :disabled="!store.stats.maxBlocks?.[BufferLocation.shared]"
           >
             shared
           </button>
@@ -199,7 +155,7 @@ provide("scrollTo", scrollTo)
               active: viewOptions.buffersMetric === BufferLocation.temp,
             }"
             v-on:click="viewOptions.buffersMetric = BufferLocation.temp"
-            :disabled="!planStats.maxBlocks?.[BufferLocation.temp]"
+            :disabled="!store.stats.maxBlocks?.[BufferLocation.temp]"
           >
             temp
           </button>
@@ -209,7 +165,7 @@ provide("scrollTo", scrollTo)
               active: viewOptions.buffersMetric === BufferLocation.local,
             }"
             v-on:click="viewOptions.buffersMetric = BufferLocation.local"
-            :disabled="!planStats.maxBlocks?.[BufferLocation.local]"
+            :disabled="!store.stats.maxBlocks?.[BufferLocation.local]"
           >
             local
           </button>
@@ -263,44 +219,29 @@ provide("scrollTo", scrollTo)
         v-if="dataAvailable"
         :class="{ highlight: !!highlightedNodeId }"
       >
-        <tbody v-for="(flat, index) in plans" :key="index">
-          <tr v-if="index === 0 && plans.length > 1">
+        <tbody v-for="(flat, index) in store.flat" :key="index">
+          <tr v-if="index === 0 && store.flat.length > 1">
             <th colspan="3" class="subplan">Main Query Plan</th>
           </tr>
-          <template v-for="(row, index) in flat" :key="index">
-            <tr v-if="row[1][NodeProp.SUBPLAN_NAME]">
+          <template v-for="row in flat" :key="row">
+            <tr v-if="row.node[NodeProp.SUBPLAN_NAME]">
               <td></td>
               <td
-                class="subplan pe-2"
-                :class="{ 'fw-bold': isCTE(row[1]) }"
-                :colspan="isCTE(row[1]) ? 3 : 2"
+                class="subplan"
+                :class="{ 'fw-bold': isCTE(row.node) }"
+                :colspan="isCTE(row.node) ? 3 : 2"
               >
-                <LevelDivider
-                  :isSubplan="!!row[1][NodeProp.SUBPLAN_NAME]"
-                  :isLastChild="!!row[2]"
-                  :level="row[0]"
-                  :branches="row[3]"
-                  :index="index"
-                  dense
-                ></LevelDivider>
+                <LevelDivider :row="row" dense></LevelDivider>
                 <a
                   class="fst-italic text-reset"
                   href=""
-                  @click.prevent="selectNode(row[1].nodeId, true)"
+                  @click.prevent="selectNode(row.node.nodeId, true)"
                 >
-                  {{ row[1][NodeProp.SUBPLAN_NAME] }}
+                  {{ row.node[NodeProp.SUBPLAN_NAME] }}
                 </a>
               </td>
             </tr>
-            <DiagramRow
-              :node="row[1]"
-              :isSubplan="!!row[1][NodeProp.SUBPLAN_NAME]"
-              :isLastChild="!!row[2]"
-              :level="row[0]"
-              :branches="row[3]"
-              :index="index"
-              :viewOptions="viewOptions"
-            ></DiagramRow>
+            <DiagramRow :row="row" :viewOptions="viewOptions"></DiagramRow>
           </template>
         </tbody>
       </table>

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { inject, reactive } from "vue"
-import type { Ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
@@ -11,14 +10,13 @@ import {
   faExchangeAlt,
 } from "@fortawesome/free-solid-svg-icons"
 import useNode from "@/node"
-import type { IPlan, Node, ViewOptions } from "@/interfaces"
-import { PlanKey, ViewOptionsKey } from "@/symbols"
+import type { Node, ViewOptions } from "@/interfaces"
+import { ViewOptionsKey } from "@/symbols"
 interface Props {
   node: Node
 }
 const props = defineProps<Props>()
 const node = reactive<Node>(props.node)
-const plan = inject(PlanKey) as Ref<IPlan>
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
 
 const {
@@ -29,7 +27,7 @@ const {
   rowsRemovedClass,
   heapFetchesClass,
   filterTooltip,
-} = useNode(plan, node, viewOptions)
+} = useNode(node, viewOptions)
 </script>
 <template>
   <span

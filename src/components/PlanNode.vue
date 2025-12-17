@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 import { inject, nextTick, onMounted, provide, reactive, ref, watch } from "vue"
-import type { Ref } from "vue"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
 import NodeBadges from "@/components/NodeBadges.vue"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
 import {
   HighlightedNodeIdKey,
-  PlanKey,
   SelectedNodeIdKey,
   SelectNodeKey,
   ViewOptionsKey,
@@ -15,6 +13,7 @@ import { keysToString, sortKeys } from "@/filters"
 import { HighlightType, NodeProp } from "@/enums"
 import { findNodeBySubplanName } from "@/services/help-service"
 import useNode from "@/node"
+import { store } from "@/store"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
   faChevronDown,
@@ -43,7 +42,6 @@ const props = defineProps<Props>()
 const showDetails = ref<boolean>(false)
 
 const node = reactive<Node>(props.node)
-const plan = inject(PlanKey) as Ref<IPlan>
 const updateNodeSize =
   inject<(node: Node, size: [number, number]) => null>("updateNodeSize")
 
@@ -56,7 +54,7 @@ const {
   workersLaunchedCount,
   workersPlannedCount,
   workersPlannedCountReversed,
-} = useNode(plan, node, viewOptions)
+} = useNode(node, viewOptions)
 
 onMounted(async () => {
   updateSize(node)
@@ -90,7 +88,7 @@ watch(selectedNodeId, () => {
 
 function centerCte() {
   const cteNode = findNodeBySubplanName(
-    plan.value,
+    store.plan as IPlan,
     node[NodeProp.CTE_NAME] as string,
   )
   if (cteNode) {

@@ -12,17 +12,9 @@ import {
 } from "vue"
 import { Splitpanes, Pane } from "splitpanes"
 
-import type {
-  IBlocksStats,
-  IPlan,
-  IPlanContent,
-  IPlanStats,
-  Node,
-  Settings,
-} from "@/interfaces"
+import type { Node } from "@/interfaces"
 import {
   HighlightedNodeIdKey,
-  PlanKey,
   SelectedNodeIdKey,
   SelectNodeKey,
   ViewOptionsKey,
@@ -35,11 +27,11 @@ import PlanNode from "@/components/PlanNode.vue"
 import PlanStats from "@/components/PlanStats.vue"
 import Stats from "@/components/Stats.vue"
 import AnimatedEdge from "@/components/AnimatedEdge.vue"
-import { PlanService } from "@/services/plan-service"
 import { findNodeById } from "@/services/help-service"
 import { HighlightType, NodeProp } from "@/enums"
 import { json_, pgsql_ } from "@/filters"
 import { setDefaultProps } from "vue-tippy"
+import { store } from "@/store.ts"
 
 setDefaultProps({ theme: "light" })
 
@@ -62,11 +54,8 @@ const version = __APP_VERSION__
 
 const rootEl = ref(null) // The root Element of this instance
 const activeTab = ref<string>("")
-const queryText = ref<string>("")
-const plan = ref<IPlan>()
 const planEl = ref()
-const planStats = reactive<IPlanStats>({} as IPlanStats)
-const rootNode = computed(() => plan.value && plan.value.content.Plan)
+const rootNode = computed(() => store.plan && store.plan.content.Plan)
 const selectedNodeId = ref<number>(NaN)
 const selectedNode = ref<Node | undefined>(undefined)
 const highlightedNodeId = ref<number>(NaN)
@@ -80,8 +69,6 @@ const viewOptions = reactive({
   diagramWidth: 20,
 })
 
-const planService = new PlanService()
-
 // Vertical padding between 2 nodes in the tree layout
 const padding = 40
 const transform = ref("")
@@ -89,7 +76,7 @@ const scale = ref(1)
 const edgeWeight = computed(() => {
   return d3
     .scaleLinear()
-    .domain([0, planStats.maxRows])
+    .domain([0, store.stats.maxRows])
     .range([1, padding / 1.5])
 })
 const minScale = 0.2
@@ -127,47 +114,25 @@ onMounted(() => {
 
 function parseAndShow() {
   ready.value = false
+  store.parse(props.planSource, props.planQuery)
   const savedOptions = localStorage.getItem("viewOptions")
   if (savedOptions) {
     _.assignIn(viewOptions, JSON.parse(savedOptions))
   }
-  let planJson: IPlanContent
-  try {
-    planJson = planService.fromSource(props.planSource) as IPlanContent
-    setActiveTab("plan")
-  } catch {
-    plan.value = undefined
-    return
-  }
-  queryText.value = planJson["Query Text"] || props.planQuery
-  plan.value = planService.createPlan("", planJson, queryText.value)
-  const content = plan.value.content
-  planStats.executionTime =
-    (content["Execution Time"] as number) ||
-    (content["Total Runtime"] as number) ||
-    NaN
-  planStats.planningTime = (content["Planning Time"] as number) || NaN
-  planStats.maxRows = content.maxRows || NaN
-  planStats.maxCost = content.maxCost || NaN
-  planStats.maxDuration = content.maxDuration || NaN
-  planStats.maxBlocks = content.maxBlocks || ({} as IBlocksStats)
-  planStats.maxIo = content.maxIo || NaN
-  planStats.maxEstimateFactor = content.maxEstimateFactor || NaN
-  planStats.triggers = content.Triggers || []
-  planStats.jitTime =
-    (content.JIT && content.JIT.Timing && content.JIT.Timing.Total) || NaN
-  planStats.settings = content.Settings as Settings
-  plan.value.planStats = planStats
+  setActiveTab("plan")
 
   nextTick(() => {
     onHashChange()
   })
   window.addEventListener("hashchange", onHashChange)
-  if (rootNode.value) {
-    tree.value = layout.hierarchy(rootNode.value, (v: Node) => v.Plans)
+  if (store.plan?.content.Plan) {
+    tree.value = layout.hierarchy(
+      store.plan?.content.Plan,
+      (v: Node) => v.Plans,
+    )
   }
   ctes.value = []
-  _.each(plan.value?.ctes, (cte) => {
+  _.each(store.plan?.ctes, (cte) => {
     const tree = layout.hierarchy(cte, (v: Node) => v.Plans)
     ctes.value.push(tree)
   })
@@ -283,8 +248,8 @@ watch(selectedNodeId, onSelectedNode)
 
 function onSelectedNode(v: number) {
   window.location.hash = v ? "plan/node/" + v : ""
-  if (plan.value && v) {
-    selectedNode.value = findNodeById(plan.value, v)
+  if (store.plan && v) {
+    selectedNode.value = findNodeById(store.plan, v)
   }
 }
 
@@ -339,7 +304,6 @@ function selectNode(nodeId: number, center: boolean): void {
 }
 provide(SelectNodeKey, selectNode)
 provide(ViewOptionsKey, viewOptions)
-provide(PlanKey, plan)
 
 function centerNode(nodeId: number): void {
   const rect = planEl.value.$el.getBoundingClientRect()
@@ -406,7 +370,7 @@ function getLayoutExtent(
 }
 
 function isNeverExecuted(node: Node): boolean {
-  return !!planStats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
+  return !!store.stats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
 }
 
 watch(
@@ -437,7 +401,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
 </script>
 
 <template>
-  <div v-if="!plan" class="flex-grow-1 d-flex justify-content-center">
+  <div v-if="!store.plan" class="flex-grow-1 d-flex justify-content-center">
     <div class="card align-self-center border-danger w-50">
       <div class="card-body">
         <h5 class="card-title text-danger">Couldn't parse plan</h5>
@@ -513,7 +477,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
         <li class="nav-item p-1">
           <a
             class="nav-link px-2 py-0"
-            :class="{ active: activeTab === 'query', disabled: !queryText }"
+            :class="{ active: activeTab === 'query', disabled: !store.query }"
             href="#query"
             >Query</a
           >
@@ -541,11 +505,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
       >
         <!-- Plan tab -->
         <div class="d-flex flex-column flex-grow-1 overflow-hidden">
-          <PlanStats
-            :planStats="planStats"
-            :rootNode="rootNode!"
-            :jitDetails="plan.content.JIT"
-          />
+          <PlanStats />
           <div class="flex-grow-1 d-flex overflow-hidden">
             <div class="flex-grow-1 overflow-hidden">
               <Splitpanes
@@ -555,20 +515,17 @@ function updateNodeSize(node: Node, size: [number, number]) {
                 <Pane
                   :size="viewOptions.diagramWidth"
                   class="d-flex flex-column"
-                  v-if="plan"
+                  v-if="store.plan"
                 >
                   <Diagram
                     ref="diagram"
                     class="d-flex flex-column flex-grow-1 overflow-hidden plan-diagram"
-                    :ctes="plan.ctes"
-                    :planStats="planStats"
-                    :rootNode="rootNode!"
                   />
                 </Pane>
                 <Pane ref="planEl" class="plan grab-bing position-relative">
                   <div
                     class="position-absolute m-1 p-1 bottom-0 end-0 rounded bg-white d-flex"
-                    v-if="plan"
+                    v-if="store.plan"
                   >
                     <div class="btn-group btn-group-xs">
                       <button
@@ -593,7 +550,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         v-on:click="
                           viewOptions.highlightType = HighlightType.DURATION
                         "
-                        :disabled="!plan.isAnalyze"
+                        :disabled="!store.plan?.isAnalyze"
                       >
                         duration
                       </button>
@@ -632,7 +589,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       <!-- Links -->
                       <AnimatedEdge
                         v-for="(link, index) in toCteLinks"
-                        :key="`${plan.id}_linkcte${index}`"
+                        :key="`${store.plan?.id}_linkcte${index}`"
                         :d="lineGen(link)"
                         stroke-color="#B3D7D7"
                         :stroke-width="
@@ -643,7 +600,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       />
                       <AnimatedEdge
                         v-for="(link, index) in layoutRootNode?.links()"
-                        :key="`${plan.id}_link${index}`"
+                        :key="`${store.plan?.id}_link${index}`"
                         :d="lineGen(link)"
                         :class="{
                           'never-executed': isNeverExecuted(link.target.data),
@@ -657,7 +614,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                       />
                       <foreignObject
                         v-for="(item, index) in layoutRootNode?.descendants()"
-                        :key="`${plan.id}_${index}`"
+                        :key="`${store.plan?.id}_${index}`"
                         :x="item.x - item.xSize / 2"
                         :y="item.y"
                         :width="item.xSize"
@@ -690,7 +647,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         ></rect>
                         <AnimatedEdge
                           v-for="(link, index) in cte.links()"
-                          :key="`${plan.id}_link${index}`"
+                          :key="`${store.plan?.id}_link${index}`"
                           :d="lineGen(link)"
                           stroke-color="grey"
                           :stroke-width="
@@ -701,7 +658,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         />
                         <foreignObject
                           v-for="(item, index) in cte.descendants()"
-                          :key="`${plan.id}_${index}`"
+                          :key="`${store.plan?.id}_${index}`"
                           :x="item.x - item.xSize / 2"
                           :y="item.y"
                           :width="item.xSize"
@@ -729,16 +686,8 @@ function updateNodeSize(node: Node, size: [number, number]) {
         v-if="activeTab === 'grid'"
       >
         <div class="overflow-hidden d-flex w-100 h-100 flex-column">
-          <PlanStats
-            :planStats="planStats"
-            :rootNode="rootNode!"
-            :jitDetails="plan.content.JIT"
-          />
-          <Grid
-            class="flex-grow-1 overflow-auto plan-grid"
-            :ctes="plan.ctes"
-            :rootNode="rootNode!"
-          />
+          <PlanStats />
+          <Grid class="flex-grow-1 overflow-auto plan-grid" />
         </div>
       </div>
       <div
@@ -757,27 +706,22 @@ function updateNodeSize(node: Node, size: [number, number]) {
       <div
         class="tab-pane flex-grow-1 overflow-hidden position-relative"
         :class="{ 'show active': activeTab === 'query' }"
-        v-if="queryText"
+        v-if="store.query"
       >
         <div class="overflow-hidden d-flex w-100 h-100">
           <div class="overflow-auto flex-grow-1">
             <pre
               class="small p-2 mb-0"
-            ><code v-html="pgsql_(queryText)"></code></pre>
+            ><code v-html="pgsql_(store.query)"></code></pre>
           </div>
         </div>
-        <Copy :content="queryText" />
+        <Copy :content="store.query" />
       </div>
       <div
         class="tab-pane flex-grow-1 overflow-auto"
         :class="{ 'show active': activeTab === 'stats' }"
       >
-        <Stats
-          v-if="plan"
-          :ctes="plan.ctes"
-          :planStats="planStats"
-          :rootNode="rootNode"
-        />
+        <Stats v-if="store.plan" />
       </div>
     </div>
   </div>

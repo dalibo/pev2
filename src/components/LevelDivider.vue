@@ -1,32 +1,43 @@
 <script lang="ts" setup>
-import _ from "lodash"
+import type { FlattenedPlanNode } from "@/store"
 interface Props {
-  level: number
-  isSubplan: boolean
-  isNode?: boolean
-  isLastChild: boolean
-  branches: number[]
-  index: number
+  row: FlattenedPlanNode
+  isSubplan?: boolean
   dense?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
+  isSubplan: false,
   dense: false,
 })
 
-const spacer = props.dense ? "" : " "
+const SPACE = props.dense ? "" : " "
+
+const VERTICAL = `${SPACE}│`
+const BRANCH = `${SPACE}├`
+const LAST = `${SPACE}└`
+
+const branches = props.row.branches
+const count = branches.length
+const isBranch = branches[count - 1] === false
+const connector = props.isSubplan
+  ? isBranch
+    ? `${SPACE} `
+    : VERTICAL
+  : isBranch
+    ? LAST
+    : BRANCH
 </script>
 <template>
-  <span class="tree-lines">
-    <template v-for="i in _.range(level)">
-      <template v-if="_.indexOf(branches, i) != -1">{{ spacer }}│</template
-      ><template v-else-if="i !== 0">{{ spacer }}&emsp;</template></template
-    ><template v-if="index !== 0">
-      <template v-if="!(isSubplan && isNode)"
-        >{{ spacer }}{{ isLastChild ? "└" : "├" }}</template
-      ><template v-else>
-        <template v-if="!isLastChild">{{ spacer }}│</template
-        ><template v-else>{{ spacer }}&emsp;</template>
-      </template>
-    </template>
+  <span v-if="branches.length" class="plan-tree">
+    <span v-for="(hasBranch, i) in row.branches.slice(0, -1)" :key="i">{{
+      hasBranch ? VERTICAL : ` ${SPACE}`
+    }}</span
+    ><span>{{ connector }}</span>
   </span>
 </template>
+
+<style scoped>
+.plan-tree {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+</style>
