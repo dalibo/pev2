@@ -1,33 +1,28 @@
 <script lang="ts" setup>
 import { inject, reactive } from "vue"
 import _ from "lodash"
-import type { Ref } from "vue"
-import type { IPlan, Node, ViewOptions } from "@/interfaces"
+import type { Node, ViewOptions } from "@/interfaces"
 import { NodeProp, WorkerProp } from "@/enums"
-import { PlanKey, ViewOptionsKey } from "@/symbols"
+import { ViewOptionsKey } from "@/symbols"
 import { HelpService } from "@/services/help-service"
 import useNode from "@/node"
 import { formatNodeProp } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons"
+import { store } from "@/store"
 
 interface Props {
   node: Node
 }
 const props = defineProps<Props>()
 const node = reactive<Node>(props.node)
-const plan = inject(PlanKey) as Ref<IPlan>
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
 
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
 
-const { workersLaunchedCount, workersPlannedCount } = useNode(
-  plan,
-  node,
-  viewOptions,
-)
+const { workersLaunchedCount, workersPlannedCount } = useNode(node, viewOptions)
 </script>
 <template>
   <!-- workers tab -->
@@ -38,7 +33,7 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(
       v-if="
         !node[NodeProp.WORKERS_PLANNED] &&
         !node[NodeProp.WORKERS] &&
-        (!plan.isVerbose || !plan.isAnalyze)
+        (!store.plan?.isVerbose || !store.plan?.isAnalyze)
       "
       class="text-warning"
     >
@@ -56,7 +51,7 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(
       v-if="
         !node[NodeProp.WORKERS_LAUNCHED] &&
         !node[NodeProp.WORKERS] &&
-        (!plan.isVerbose || !plan.isAnalyze)
+        (!store.plan?.isVerbose || !store.plan?.isAnalyze)
       "
       class="text-warning"
     >
@@ -81,9 +76,7 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(
         </div>
         <ul class="list-group list-group-flush">
           <template v-for="(value, key) in worker" :key="key">
-            <li
-              class="list-group-item d-flex flex-row"
-            >
+            <li class="list-group-item d-flex flex-row">
               <div class="col-6">
                 {{ key }}
               </div>

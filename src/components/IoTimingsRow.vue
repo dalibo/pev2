@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { inject, reactive } from "vue"
-import type { Ref } from "vue"
 import * as _ from "lodash"
-import type { IPlan, Node, ViewOptions } from "@/interfaces"
+import type { Node, ViewOptions } from "@/interfaces"
 import { NodeProp, Scope } from "@/enums"
-import { PlanKey, ViewOptionsKey } from "@/symbols"
+import { ViewOptionsKey } from "@/symbols"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { directive as vTippy } from "vue-tippy"
 import { HelpService } from "@/services/help-service"
@@ -27,9 +26,8 @@ const getHelpMessage = helpService.getHelpMessage
 const exclusivePrefix = props.exclusive ? "EXCLUSIVE_" : ""
 
 const node = reactive<Node>(props.node)
-const plan = inject(PlanKey) as Ref<IPlan>
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
-const { formattedProp } = useNode(plan, node, viewOptions)
+const { formattedProp } = useNode(node, viewOptions)
 const scope = props.scope ? `${props.scope}_`.toUpperCase() : ""
 const name = props.scope ? _.capitalize(props.scope) : "Shared/Local"
 const readTimeProp = (exclusivePrefix +

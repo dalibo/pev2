@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import _ from "lodash"
 import { computed, ref } from "vue"
-import type { IPlanStats, ITrigger, JIT, Node } from "@/interfaces"
+import type { ITrigger, Node } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
 import { duration, durationClass } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
@@ -9,15 +9,11 @@ import { NodeProp } from "../enums"
 import { formatNodeProp } from "@/filters"
 import JitDetails from "@/components/JitDetails.vue"
 import IoTooltip from "@/components/tooltip/IoTooltip.vue"
+import { store } from "@/store"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 
-const { planStats, jitDetails, rootNode } = defineProps<{
-  planStats: IPlanStats
-  rootNode: Node
-  jitDetails?: JIT
-}>()
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
 const showSettings = ref<boolean>(false)
@@ -41,19 +37,19 @@ const planningTimeClass = (percent: number) => {
 }
 
 const totalTriggerDurationPercent = computed(() => {
-  const executionTime = planStats.executionTime || 0
+  const executionTime = store.stats.executionTime || 0
   const totalDuration = triggersTotalDuration.value || 0
   return _.round((totalDuration / executionTime) * 100)
 })
 
 function triggerDurationPercent(trigger: ITrigger) {
-  const executionTime = planStats.executionTime || 0
+  const executionTime = store.stats.executionTime || 0
   const time = trigger.Time
   return _.round((time / executionTime) * 100)
 }
 
 const triggersTotalDuration = computed(() => {
-  return _.sumBy(planStats.triggers, (o) => o.Time)
+  return _.sumBy(store.stats.triggers, (o) => o.Time)
 })
 
 function averageIO(node: Node) {
@@ -86,11 +82,11 @@ function hasParallelChildren(node: Node) {
 <template>
   <div
     class="plan-stats flex-shrink-0 d-flex border-bottom border-top align-items-center"
-    v-if="planStats"
+    v-if="store.stats"
   >
     <div class="d-inline-block px-2">
       Execution time:
-      <template v-if="!planStats.executionTime">
+      <template v-if="!store.stats.executionTime">
         <span class="text-secondary">
           N/A
           <FontAwesomeIcon
@@ -103,13 +99,13 @@ function hasParallelChildren(node: Node) {
       <template v-else>
         <span
           class="stat-value"
-          v-html="duration(planStats.executionTime)"
+          v-html="duration(store.stats.executionTime)"
         ></span>
       </template>
     </div>
     <div class="d-inline-block border-start px-2">
       Planning time:
-      <template v-if="!planStats.planningTime">
+      <template v-if="!store.stats.planningTime">
         <span class="text-secondary">
           N/A
           <FontAwesomeIcon
@@ -125,18 +121,19 @@ function hasParallelChildren(node: Node) {
             :class="
               'mb-0 p-0 px-1 alert ' +
               planningTimeClass(
-                (planStats.planningTime / (planStats.executionTime as number)) *
+                (store.stats.planningTime /
+                  (store.stats.executionTime as number)) *
                   100,
               )
             "
-            v-html="duration(planStats.planningTime)"
+            v-html="duration(store.stats.planningTime)"
           ></span>
         </span>
       </template>
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
-      v-if="planStats.jitTime && planStats.executionTime"
+      v-if="store.stats.jitTime && store.stats.executionTime"
     >
       JIT:
       <span class="stat-value">
@@ -144,10 +141,10 @@ function hasParallelChildren(node: Node) {
           :class="
             'mb-0 p-0 px-1 alert ' +
             planningTimeClass(
-              (planStats.jitTime / planStats.executionTime) * 100,
+              (store.stats.jitTime / store.stats.executionTime) * 100,
             )
           "
-          v-html="duration(planStats.jitTime)"
+          v-html="duration(store.stats.jitTime)"
         ></span>
         <button
           @click.prevent="showJitDetails = !showJitDetails"
@@ -160,14 +157,17 @@ function hasParallelChildren(node: Node) {
         </button>
         <div class="stat-dropdown-container text-start" v-if="showJitDetails">
           <div>
-            <JitDetails :jit="jitDetails" v-if="jitDetails" />
+            <JitDetails
+              :jit="store.plan?.content.JIT"
+              v-if="store.plan?.content.JIT"
+            />
           </div>
         </div>
       </span>
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
-      v-if="planStats.triggers && planStats.triggers.length"
+      v-if="store.stats.triggers && store.stats.triggers.length"
     >
       <span class="stat-label">Triggers: </span>
       <span class="stat-value">
@@ -193,7 +193,7 @@ function hasParallelChildren(node: Node) {
           v-on:click="showTriggers = false"
         ></button>
         <h3>Triggers</h3>
-        <div v-for="(trigger, index) in planStats.triggers" :key="index">
+        <div v-for="(trigger, index) in store.stats.triggers" :key="index">
           {{ trigger["Trigger Name"] }}
           <br />
           <span class="text-secondary">Called</span> {{ trigger["Calls"]
@@ -214,7 +214,9 @@ function hasParallelChildren(node: Node) {
           {{ trigger.Relation }}
           <div class="clearfix"></div>
           <hr
-            v-if="planStats.triggers && index != planStats.triggers.length - 1"
+            v-if="
+              store.stats.triggers && index != store.stats.triggers.length - 1
+            "
             class="my-2"
           />
         </div>
@@ -222,12 +224,12 @@ function hasParallelChildren(node: Node) {
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
-      v-if="planStats.settings"
+      v-if="store.stats.settings"
     >
       <span class="stat-label"
         >Settings:
         <span class="badge bg-secondary">{{
-          _.keys(planStats.settings).length
+          _.keys(store.stats.settings).length
         }}</span></span
       >
       <button
@@ -251,7 +253,7 @@ function hasParallelChildren(node: Node) {
         </em>
         <table class="table table-sm table-striped mb-0">
           <tbody>
-            <tr v-for="(value, key) in planStats.settings" :key="key">
+            <tr v-for="(value, key) in store.stats.settings" :key="key">
               <td>{{ key }}</td>
               <td>{{ value }}</td>
             </tr>
@@ -261,10 +263,10 @@ function hasParallelChildren(node: Node) {
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
-      v-if="averageIO(rootNode)"
+      v-if="store.plan?.content.Plan && averageIO(store.plan?.content.Plan)"
     >
       <span class="stat-label">
-        IO: <span v-html="averageIO(rootNode)"></span>
+        IO: <span v-html="averageIO(store.plan?.content.Plan)"></span>
       </span>
       <FontAwesomeIcon
         :icon="faInfoCircle"
@@ -272,7 +274,7 @@ function hasParallelChildren(node: Node) {
         v-tippy="{
           content: getHelpMessage('io timings parallel'),
         }"
-        v-if="hasParallelChildren(rootNode)"
+        v-if="hasParallelChildren(store.plan?.content.Plan)"
       ></FontAwesomeIcon>
       <button
         @click.prevent="showIO = !showIO"
@@ -288,7 +290,7 @@ function hasParallelChildren(node: Node) {
           class="btn btn-xs btn-close float-end"
           v-on:click="showIO = false"
         ></button>
-        <IoTooltip :node="rootNode" class="mb-0" />
+        <IoTooltip :node="store.plan?.content.Plan" class="mb-0" />
       </div>
     </div>
   </div>

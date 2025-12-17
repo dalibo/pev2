@@ -1,39 +1,20 @@
 <script lang="ts" setup>
 import _ from "lodash"
-import { computed, onBeforeMount, ref } from "vue"
-import type { IPlanStats, Node, StatsTableItemType } from "@/interfaces"
+import { computed } from "vue"
+import type { Node, StatsTableItemType } from "@/interfaces"
 import { NodeProp, SortDirection } from "@/enums"
 import SortedTable from "@/components/SortedTable.vue"
 import SortLink from "@/components/SortLink.vue"
 import StatsTableItem from "@/components/StatsTableItem.vue"
+import { store } from "@/store"
 
-const { ctes, planStats, rootNode } = defineProps<{
-  ctes: Node[]
-  planStats: IPlanStats
-  rootNode?: Node
-}>()
-const nodes: Node[] = []
-const executionTime = ref<number>(0)
+const executionTime = computed(
+  () =>
+    store.stats.executionTime ||
+    (store.plan?.content.Plan?.[NodeProp.ACTUAL_TOTAL_TIME] as number),
+)
 
-onBeforeMount(() => {
-  executionTime.value =
-    planStats.executionTime ||
-    (rootNode?.[NodeProp.ACTUAL_TOTAL_TIME] as number)
-  if (rootNode) {
-    flatten(nodes, rootNode)
-    _.each(ctes, (cte) => {
-      flatten(nodes, cte)
-    })
-  }
-})
-
-function flatten(output: Node[], node: Node) {
-  // [level, node, isLastSibbling, branches]
-  output.push(node)
-  _.each(node.Plans, (subnode) => {
-    flatten(output, subnode)
-  })
-}
+const nodes = computed(() => _.flatten(store.flat).map((row) => row.node))
 
 function durationPercent(nodes: Node[]) {
   return _.sumBy(nodes, NodeProp.EXCLUSIVE_DURATION) / executionTime.value
@@ -41,7 +22,7 @@ function durationPercent(nodes: Node[]) {
 
 const perTable = computed(() => {
   const tables: { [key: string]: Node[] } = _.groupBy(
-    _.filter(nodes, (n) => n[NodeProp.RELATION_NAME] !== undefined),
+    _.filter(nodes.value, (n) => n[NodeProp.RELATION_NAME] !== undefined),
     NodeProp.RELATION_NAME,
   )
   const values: StatsTableItemType[] = []
@@ -59,7 +40,7 @@ const perTable = computed(() => {
 
 const perFunction = computed(() => {
   const functions: { [key: string]: Node[] } = _.groupBy(
-    _.filter(nodes, (n) => n[NodeProp.FUNCTION_NAME] !== undefined),
+    _.filter(nodes.value, (n) => n[NodeProp.FUNCTION_NAME] !== undefined),
     NodeProp.FUNCTION_NAME,
   )
   const values: StatsTableItemType[] = []
@@ -77,7 +58,7 @@ const perFunction = computed(() => {
 
 const perNodeType = computed(() => {
   const nodeTypes: { [key: string]: Node[] } = _.groupBy(
-    nodes,
+    nodes.value,
     NodeProp.NODE_TYPE,
   )
   const values: StatsTableItemType[] = []
@@ -95,7 +76,7 @@ const perNodeType = computed(() => {
 
 const perIndex = computed(() => {
   const indexes: { [key: string]: Node[] } = _.groupBy(
-    _.filter(nodes, (n) => n[NodeProp.INDEX_NAME] !== undefined),
+    _.filter(nodes.value, (n) => n[NodeProp.INDEX_NAME] !== undefined),
     NodeProp.INDEX_NAME,
   )
   const values: StatsTableItemType[] = []

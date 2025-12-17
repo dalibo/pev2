@@ -2,41 +2,35 @@
 import { inject, reactive, ref, watch } from "vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
-import type { Ref } from "vue"
 import {
   HighlightedNodeIdKey,
-  PlanKey,
   SelectedNodeIdKey,
   SelectNodeKey,
   ViewOptionsKey,
 } from "@/symbols"
-import type { IPlan, Node, ViewOptions } from "@/interfaces"
+import type { ViewOptions } from "@/interfaces"
 import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
 import LevelDivider from "@/components/LevelDivider.vue"
 import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
 import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 import useNode from "@/node"
+import { store } from "@/store"
+import type { FlattenedPlanNode } from "@/store"
 
 import { Tippy } from "vue-tippy"
 
 interface Props {
-  node: Node
-  level: number
-  isSubplan: boolean
-  isLastChild: boolean
-  branches: number[]
-  index: number
+  row: FlattenedPlanNode
   viewOptions: {
     metric: Metric
     buffersMetric: BufferLocation
   }
 }
 const props = defineProps<Props>()
-const node = reactive<Node>(props.node)
+const node = props.row.node
 const diagramViewOptions = reactive(props.viewOptions)
 const rootEl = ref(null)
 
-const plan = inject(PlanKey) as Ref<IPlan>
 const selectedNodeId = inject(SelectedNodeIdKey)
 const selectNode = inject(SelectNodeKey)
 if (!selectNode) {
@@ -53,7 +47,7 @@ const {
   isNeverExecuted,
   nodeName,
   rowsTooltip,
-} = useNode(plan, node, _viewOptions)
+} = useNode(node, _viewOptions)
 
 const scrollTo = inject<(el: Element) => null>("scrollTo")
 
@@ -114,14 +108,10 @@ watch(
     <td class="node-index" ref="rootEl">
       <span class="fw-normal small">#{{ node.nodeId }} </span>
     </td>
-    <td class="node-type pe-2">
+    <td class="node-type">
       <LevelDivider
-        :isSubplan="isSubplan"
-        isNode
-        :isLastChild="!!isLastChild"
-        :level="level"
-        :branches="branches"
-        :index="index"
+        :row="row"
+        :isSubplan="!!node[NodeProp.SUBPLAN_NAME]"
         dense
       ></LevelDivider>
       {{ nodeName }}
@@ -143,8 +133,8 @@ watch(
           :style="{
             width:
               (node[NodeProp.EXCLUSIVE_DURATION] /
-                (plan.planStats.executionTime ||
-                  plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
+                (store.stats.executionTime ||
+                  store.plan?.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
                   0)) *
                 100 +
               '%',
@@ -161,8 +151,8 @@ watch(
             width:
               (((node[NodeProp.ACTUAL_TOTAL_TIME] || 0) -
                 node[NodeProp.EXCLUSIVE_DURATION]) /
-                (plan.planStats.executionTime ||
-                  plan.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
+                (store.stats.executionTime ||
+                  store.plan?.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
                   0)) *
                 100 +
               '%',
@@ -185,7 +175,7 @@ watch(
           :style="{
             width:
               Math.round(
-                (node[NodeProp.ACTUAL_ROWS_REVISED] / plan.planStats.maxRows) *
+                (node[NodeProp.ACTUAL_ROWS_REVISED] / store.stats.maxRows) *
                   100,
               ) + '%',
           }"
@@ -276,7 +266,7 @@ watch(
           :style="{
             width:
               Math.round(
-                (node[NodeProp.EXCLUSIVE_COST] / plan.planStats.maxCost) * 100,
+                (node[NodeProp.EXCLUSIVE_COST] / store.stats.maxCost) * 100,
               ) + '%',
           }"
           aria-valuenow="15"
@@ -291,7 +281,7 @@ watch(
         v-else-if="
           diagramViewOptions.metric == Metric.buffers &&
           diagramViewOptions.buffersMetric == BufferLocation.shared &&
-          plan.planStats.maxBlocks?.[BufferLocation.shared]
+          store.stats.maxBlocks?.[BufferLocation.shared]
         "
       >
         <div
@@ -306,7 +296,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] /
-                  plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                  store.stats.maxBlocks?.[BufferLocation.shared]) *
                   100,
               ) || 0) + '%',
           }"
@@ -326,7 +316,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] /
-                  plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                  store.stats.maxBlocks?.[BufferLocation.shared]) *
                   100,
               ) || 0) + '%',
           }"
@@ -346,7 +336,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
-                  plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                  store.stats.maxBlocks?.[BufferLocation.shared]) *
                   100,
               ) || 0) + '%',
           }"
@@ -366,7 +356,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
-                  plan.planStats.maxBlocks?.[BufferLocation.shared]) *
+                  store.stats.maxBlocks?.[BufferLocation.shared]) *
                   100,
               ) || 0) + '%',
           }"
@@ -382,7 +372,7 @@ watch(
         v-else-if="
           diagramViewOptions.metric == Metric.buffers &&
           diagramViewOptions.buffersMetric == BufferLocation.temp &&
-          plan.planStats.maxBlocks?.[BufferLocation.temp]
+          store.stats.maxBlocks?.[BufferLocation.temp]
         "
       >
         <div
@@ -393,7 +383,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] /
-                  plan.planStats.maxBlocks?.[BufferLocation.temp]) *
+                  store.stats.maxBlocks?.[BufferLocation.temp]) *
                   100,
               ) || 0) + '%',
           }"
@@ -408,7 +398,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
-                  plan.planStats.maxBlocks?.[BufferLocation.temp]) *
+                  store.stats.maxBlocks?.[BufferLocation.temp]) *
                   100,
               ) || 0) + '%',
           }"
@@ -425,7 +415,7 @@ watch(
         v-else-if="
           diagramViewOptions.metric == Metric.buffers &&
           diagramViewOptions.buffersMetric == BufferLocation.local &&
-          plan.planStats.maxBlocks?.[BufferLocation.local]
+          store.stats.maxBlocks?.[BufferLocation.local]
         "
       >
         <div
@@ -436,7 +426,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
-                  plan.planStats.maxBlocks?.[BufferLocation.local]) *
+                  store.stats.maxBlocks?.[BufferLocation.local]) *
                   100,
               ) || 0) + '%',
           }"
@@ -451,7 +441,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] /
-                  plan.planStats.maxBlocks?.[BufferLocation.local]) *
+                  store.stats.maxBlocks?.[BufferLocation.local]) *
                   100,
               ) || 0) + '%',
           }"
@@ -468,7 +458,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
-                  plan.planStats.maxBlocks?.[BufferLocation.local]) *
+                  store.stats.maxBlocks?.[BufferLocation.local]) *
                   100,
               ) || 0) + '%',
           }"
@@ -484,7 +474,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
-                  plan.planStats?.maxBlocks?.[BufferLocation.local]) *
+                  store.stats.maxBlocks?.[BufferLocation.local]) *
                   100,
               ) || 0) + '%',
           }"
@@ -499,8 +489,8 @@ watch(
         style="height: 5px"
         v-else-if="
           diagramViewOptions.metric == Metric.io &&
-          (plan.content.Plan[NodeProp.SUM_IO_READ_TIME] ||
-            plan.content.Plan[NodeProp.SUM_IO_WRITE_TIME])
+          (store.plan?.content.Plan[NodeProp.SUM_IO_READ_TIME] ||
+            store.plan?.content.Plan[NodeProp.SUM_IO_WRITE_TIME])
         "
       >
         <div
@@ -511,7 +501,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME] /
-                  plan.planStats?.maxIo) *
+                  store.stats.maxIo) *
                   100,
               ) || 0) + '%',
           }"
@@ -527,7 +517,7 @@ watch(
             width:
               (Math.round(
                 (node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME] /
-                  plan.planStats?.maxIo) *
+                  store.stats.maxIo) *
                   100,
               ) || 0) + '%',
           }"

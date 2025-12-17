@@ -1,8 +1,7 @@
 // Composable for PlanNode and PlanNodeDetail components
 import _ from "lodash"
 import { computed, onBeforeMount, ref, watch } from "vue"
-import type { Ref } from "vue"
-import type { IPlan, Node, Worker, ViewOptions } from "@/interfaces"
+import type { Node, Worker, ViewOptions } from "@/interfaces"
 import {
   BufferLocation,
   NodeProp,
@@ -11,9 +10,9 @@ import {
 } from "@/enums"
 import { blocks, cost, duration, factor, formatNodeProp, rows } from "@/filters"
 import { numberToColorHsl } from "@/services/color-service"
+import { store } from "@/store"
 
 export default function useNode(
-  plan: Ref<IPlan>,
   node: Node,
   viewOptions: ViewOptions,
 ) {
@@ -51,7 +50,7 @@ export default function useNode(
           break
         }
         barWidth.value = Math.round(
-          (value / (plan.value.planStats.maxDuration as number)) * 100,
+          value / store.stats.maxDuration * 100
         )
         highlightValue.value = duration(value)
         break
@@ -63,7 +62,7 @@ export default function useNode(
         }
         barWidth.value =
           Math.round(
-            (value / (plan.value.planStats.maxRows as number)) * 100,
+            value / store.stats.maxRows * 100
           ) || 0
         highlightValue.value = rows(value)
         break
@@ -74,7 +73,7 @@ export default function useNode(
           break
         }
         barWidth.value = Math.round(
-          (value / (plan.value.planStats.maxCost as number)) * 100,
+          value / store.stats.maxCost * 100
         )
         highlightValue.value = cost(value)
         break
@@ -106,14 +105,14 @@ export default function useNode(
   function calculateDuration() {
     // use the first node total time if plan execution time is not available
     const executionTime =
-      (plan.value.planStats.executionTime as number) ||
-      (plan.value.content?.Plan?.[NodeProp.ACTUAL_TOTAL_TIME] as number)
+      store.stats.executionTime ||
+      (store.plan?.content?.Plan?.[NodeProp.ACTUAL_TOTAL_TIME] as number)
     const duration = node[NodeProp.EXCLUSIVE_DURATION] as number
     executionTimePercent.value = _.round((duration / executionTime) * 100)
   }
 
   function calculateCost() {
-    const maxTotalCost = plan.value.content.maxTotalCost as number
+    const maxTotalCost = store.plan?.content.maxTotalCost as number
     const cost = node[NodeProp.EXCLUSIVE_COST] as number
     costPercent.value = _.round((cost / maxTotalCost) * 100)
   }
@@ -245,7 +244,7 @@ export default function useNode(
   })
 
   const isNeverExecuted = computed((): boolean => {
-    return !!plan.value.planStats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
+    return !!store.stats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
   })
 
   const isParallelAware = computed((): boolean => {
@@ -285,7 +284,7 @@ export default function useNode(
       default:
         return (
           ((node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0) /
-            plan.value.planStats.maxEstimateFactor) *
+            store.stats.maxEstimateFactor) *
           100
         )
     }
@@ -294,7 +293,7 @@ export default function useNode(
   const sharedHitPercent = computed((): number => {
     return (
       (node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] /
-        plan.value.planStats.maxBlocks?.[BufferLocation.shared]) *
+        store.stats.maxBlocks?.[BufferLocation.shared]) *
       100
     )
   })
@@ -302,7 +301,7 @@ export default function useNode(
   const sharedReadPercent = computed((): number => {
     return (
       (node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] /
-        plan.value.planStats.maxBlocks?.[BufferLocation.shared]) *
+        store.stats.maxBlocks?.[BufferLocation.shared]) *
       100
     )
   })
@@ -310,7 +309,7 @@ export default function useNode(
   const sharedDirtiedPercent = computed((): number => {
     return (
       (node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
-        plan.value.planStats.maxBlocks?.[BufferLocation.shared]) *
+        store.stats.maxBlocks?.[BufferLocation.shared]) *
       100
     )
   })
@@ -318,7 +317,7 @@ export default function useNode(
   const sharedWrittenPercent = computed((): number => {
     return (
       (node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
-        plan.value.planStats.maxBlocks?.[BufferLocation.shared]) *
+        store.stats.maxBlocks?.[BufferLocation.shared]) *
       100
     )
   })
@@ -326,7 +325,7 @@ export default function useNode(
   const tempReadPercent = computed((): number => {
     return (
       (node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] /
-        plan.value.planStats.maxBlocks?.[BufferLocation.temp]) *
+        store.stats.maxBlocks?.[BufferLocation.temp]) *
       100
     )
   })
@@ -334,7 +333,7 @@ export default function useNode(
   const tempWrittenPercent = computed((): number => {
     return (
       (node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
-        plan.value.planStats.maxBlocks?.[BufferLocation.temp]) *
+        store.stats.maxBlocks?.[BufferLocation.temp]) *
       100
     )
   })
@@ -342,7 +341,7 @@ export default function useNode(
   const localHitPercent = computed((): number => {
     return (
       (node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
-        plan.value.planStats.maxBlocks?.[BufferLocation.local]) *
+        store.stats.maxBlocks?.[BufferLocation.local]) *
       100
     )
   })
@@ -350,7 +349,7 @@ export default function useNode(
   const localReadPercent = computed((): number => {
     return (
       (node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] /
-        plan.value.planStats.maxBlocks?.[BufferLocation.local]) *
+        store.stats.maxBlocks?.[BufferLocation.local]) *
       100
     )
   })
@@ -358,7 +357,7 @@ export default function useNode(
   const localDirtiedPercent = computed((): number => {
     return (
       (node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
-        plan.value.planStats.maxBlocks?.[BufferLocation.local]) *
+        store.stats.maxBlocks?.[BufferLocation.local]) *
       100
     )
   })
@@ -366,7 +365,7 @@ export default function useNode(
   const localWrittenPercent = computed((): number => {
     return (
       (node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
-        plan.value.planStats.maxBlocks?.[BufferLocation.local]) *
+        store.stats.maxBlocks?.[BufferLocation.local]) *
       100
     )
   })

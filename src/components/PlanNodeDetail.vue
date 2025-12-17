@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
-import type { Ref } from "vue"
 import { directive as vTippy } from "vue-tippy"
-import type { IPlan, Node, ViewOptions } from "@/interfaces"
+import type { Node, ViewOptions } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
 import { EstimateDirection, NodeProp } from "@/enums"
 import useNode from "@/node"
+import { store } from "@/store"
 import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 import WorkersDetail from "@/components/WorkersDetail.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
-import { PlanKey, ViewOptionsKey } from "@/symbols"
+import { ViewOptionsKey } from "@/symbols"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
@@ -34,7 +34,6 @@ const props = defineProps<Props>()
 const updateSize = inject<(node: Node) => null>("updateSize")
 
 const node = reactive<Node>(props.node)
-const plan = inject(PlanKey) as Ref<IPlan>
 const nodeProps = ref<
   {
     key: keyof typeof NodeProp
@@ -64,7 +63,7 @@ const {
   rowsRemovedPercentString,
   rowsRemovedProp,
   tilde,
-} = useNode(plan, node, viewOptions)
+} = useNode(node, viewOptions)
 
 onBeforeMount(() => {
   calculateProps()
@@ -189,7 +188,7 @@ watch(activeTab, () => {
   <div class="card-body tab-content">
     <div class="tab-pane" :class="{ 'show active': activeTab === 'general' }">
       <!-- general -->
-      <div v-if="plan.isAnalyze">
+      <div v-if="store.plan?.isAnalyze">
         <FontAwesomeIcon
           fixed-width
           :icon="faClock"
