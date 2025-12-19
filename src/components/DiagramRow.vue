@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, reactive, ref, watch } from "vue"
+import { computed, inject, reactive, ref, watch } from "vue"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 import {
@@ -59,6 +59,13 @@ watch(
     }
   },
 )
+
+const isHighlighted = computed(
+  () =>
+    highlightedNodeId?.value &&
+    (highlightedNodeId?.value == props.row.node.nodeId ||
+      props.row.path[props.row.path.length - 2] == highlightedNodeId?.value),
+)
 </script>
 
 <template>
@@ -66,7 +73,6 @@ watch(
     class="no-focus-outline node"
     :class="{
       selected: node.nodeId === selectedNodeId,
-      highlight: node.nodeId === highlightedNodeId,
       'never-executed': isNeverExecuted,
     }"
     tag="tr"
@@ -114,7 +120,13 @@ watch(
         :isSubplan="!!node[NodeProp.SUBPLAN_NAME]"
         dense
       ></LevelDivider>
-      {{ nodeName }}
+      <span
+        :class="{
+          'text-primary': isHighlighted,
+        }"
+      >
+        {{ nodeName }}
+      </span>
     </td>
     <td>
       <!-- time -->
