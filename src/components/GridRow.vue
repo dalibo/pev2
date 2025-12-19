@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { inject, ref } from "vue"
+import { computed, inject, ref } from "vue"
 import type { ViewOptions } from "@/interfaces"
 import { EstimateDirection, NodeProp } from "@/enums"
-import { ViewOptionsKey } from "@/symbols"
+import { HighlightedNodeIdKey, ViewOptionsKey } from "@/symbols"
 import {
   blocks,
   blocksAsBytes,
@@ -36,6 +36,7 @@ const props = defineProps<Props>()
 const node = props.row.node
 
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
+const highlightedNodeId = inject(HighlightedNodeIdKey)
 
 // UI flags
 const activeTab = ref<string>("misc")
@@ -74,6 +75,13 @@ const {
   tilde,
 } = useNode(node, viewOptions)
 const showDetails = ref<boolean>(false)
+
+const isHighlighted = computed(
+  () =>
+    highlightedNodeId?.value &&
+    (highlightedNodeId?.value == props.row.node.nodeId ||
+      props.row.path[props.row.path.length - 2] == highlightedNodeId?.value),
+)
 </script>
 <template>
   <tr
@@ -333,6 +341,8 @@ const showDetails = ref<boolean>(false)
       class="node-type"
       :class="showDetails ? '' : 'text-nowrap text-truncate overflow-hidden'"
       style="max-width: 0"
+      @mouseenter="highlightedNodeId = node.nodeId"
+      @mouseleave="highlightedNodeId = undefined"
     >
       <LevelDivider
         :row="row"
@@ -340,8 +350,8 @@ const showDetails = ref<boolean>(false)
       ></LevelDivider>
       <div class="d-inline">
         <b
-          class="border border-secondary px-1 bg-light"
-          style="--bs-border-opacity: 0.5"
+          class="border px-1 bg-light"
+          :class="{ 'text-primary': isHighlighted }"
         >
           {{ nodeName }}
         </b>
