@@ -12,7 +12,7 @@ import {
 import { BufferLocation, NodeProp, Metric } from "../enums"
 import { HelpService, scrollChildIntoParentView } from "@/services/help-service"
 import type { Node } from "@/interfaces"
-import { HighlightedNodeIdKey, SelectNodeKey } from "@/symbols"
+import { SelectNodeKey } from "@/symbols"
 import DiagramRow from "@/components/DiagramRow.vue"
 import LevelDivider from "@/components/LevelDivider.vue"
 import { Tippy } from "vue-tippy"
@@ -27,7 +27,6 @@ const selectNode = inject(SelectNodeKey)
 if (!selectNode) {
   throw new Error(`Could not resolve ${SelectNodeKey.description}`)
 }
-const highlightedNodeId = inject(HighlightedNodeIdKey)
 
 const viewOptions = reactive({
   metric: Metric.time,
@@ -214,11 +213,7 @@ provide("scrollTo", scrollTo)
       </div>
     </div>
     <div class="overflow-auto flex-grow-1" ref="container">
-      <table
-        class="m-1"
-        v-if="dataAvailable"
-        :class="{ highlight: !!highlightedNodeId }"
-      >
+      <table class="m-1" v-if="dataAvailable">
         <tbody v-for="(flat, index) in store.flat" :key="index">
           <tr v-if="index === 0 && store.flat.length > 1">
             <th colspan="3" class="subplan">Main Query Plan</th>
