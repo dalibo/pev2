@@ -29,13 +29,18 @@ const sampleTestNames = [
   "partitions",
 ]
 
-const themes = ["light", "dark"] as const
+// Themes to test - add "dark", "high-contrast" when those features are merged
+const themes = ["light"] as const
+type Theme = (typeof themes)[number]
 
 // Helper to set theme
-async function setTheme(page: Page, theme: "light" | "dark") {
+async function setTheme(page: Page, theme: Theme) {
   await page.evaluate((t) => {
     document.documentElement.setAttribute("data-theme", t)
-    document.documentElement.setAttribute("data-bs-theme", t)
+    document.documentElement.setAttribute(
+      "data-bs-theme",
+      t === "high-contrast" ? "dark" : t
+    )
   }, theme)
   await page.waitForTimeout(100)
 }
@@ -50,14 +55,19 @@ async function loadSampleByIndex(page: Page, index: number) {
   await page.waitForTimeout(500)
 }
 
+// Generate snapshot filename with theme suffix (omit suffix if only one theme)
+function snapshotName(base: string, theme: Theme): string {
+  return themes.length === 1 ? `${base}.png` : `${base}-${theme}.png`
+}
+
 test.describe("Visual regression tests", () => {
-  // Home page tests
+  // Home page tests for each theme
   for (const theme of themes) {
-    test(`Home page (${theme})`, async ({ page }) => {
+    test(`Home page${themes.length > 1 ? ` (${theme})` : ""}`, async ({ page }) => {
       await page.goto("/")
       await page.waitForSelector("#planInput")
       await setTheme(page, theme)
-      await expect(page).toHaveScreenshot(`home-${theme}.png`)
+      await expect(page).toHaveScreenshot(snapshotName("home", theme))
     })
   }
 
@@ -66,7 +76,9 @@ test.describe("Visual regression tests", () => {
     const testName = sampleTestNames[i]
 
     for (const theme of themes) {
-      test.describe(`${testName} (${theme})`, () => {
+      const describeName = themes.length > 1 ? `${testName} (${theme})` : testName
+
+      test.describe(describeName, () => {
         test.beforeEach(async ({ page }) => {
           await page.goto("/")
           await page.waitForSelector("#planInput")
@@ -77,25 +89,25 @@ test.describe("Visual regression tests", () => {
         test("Plan tab", async ({ page }) => {
           await page.click('a[href="#plan"]')
           await page.waitForTimeout(300)
-          await expect(page).toHaveScreenshot(`${testName}-plan-${theme}.png`)
+          await expect(page).toHaveScreenshot(snapshotName(`${testName}-plan`, theme))
         })
 
         test("Grid tab", async ({ page }) => {
           await page.click('a[href="#grid"]')
           await page.waitForTimeout(300)
-          await expect(page).toHaveScreenshot(`${testName}-grid-${theme}.png`)
+          await expect(page).toHaveScreenshot(snapshotName(`${testName}-grid`, theme))
         })
 
         test("Raw tab", async ({ page }) => {
           await page.click('a[href="#raw"]')
           await page.waitForTimeout(300)
-          await expect(page).toHaveScreenshot(`${testName}-raw-${theme}.png`)
+          await expect(page).toHaveScreenshot(snapshotName(`${testName}-raw`, theme))
         })
 
         test("Stats tab", async ({ page }) => {
           await page.click('a[href="#stats"]')
           await page.waitForTimeout(300)
-          await expect(page).toHaveScreenshot(`${testName}-stats-${theme}.png`)
+          await expect(page).toHaveScreenshot(snapshotName(`${testName}-stats`, theme))
         })
       })
     }
