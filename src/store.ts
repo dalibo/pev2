@@ -10,12 +10,15 @@ import type {
   Settings,
 } from "@/interfaces"
 
+type FlattenedNodeMap = Map<number, FlattenedPlanNode>;
+
 interface Store {
   plan?: IPlan
   query?: string
   stats: IPlanStats
   parse(source: string, query: string): void
   flat: FlattenedPlanNode[][]
+  nodeById?: FlattenedNodeMap
 }
 
 export interface FlattenedPlanNode {
@@ -32,7 +35,8 @@ export interface FlattenedPlanNode {
 
 const planService = new PlanService()
 
-function flattenPlan(root: Node): FlattenedPlanNode[] {
+
+function flattenPlan(root: Node, nodeById: FlattenedNodeMap): FlattenedPlanNode[] {
   const result: FlattenedPlanNode[] = [];
 
   const visit = (
@@ -43,12 +47,14 @@ function flattenPlan(root: Node): FlattenedPlanNode[] {
   ): void => {
     const currentPath = [...path, node.nodeId];
 
-    result.push({
+    const flattenedNode = {
       node,
       path: currentPath,
       branches,
       level,
-    });
+    }
+    result.push(flattenedNode);
+    nodeById.set(node.nodeId, flattenedNode)
 
     const children = node.Plans ?? [];
     children.forEach((child, index) => {
@@ -90,9 +96,11 @@ function initStats(): IPlanStats {
 export const store = reactive<Store>({
   flat: [],
   stats: initStats(),
+  nodeById: new Map(),
   parse(source: string, query: string) {
     store.stats = initStats()
     store.flat = []
+    const nodeById = new Map();
     let planJson: IPlanContent
     try {
       planJson = planService.fromSource(source) as IPlanContent
@@ -119,10 +127,12 @@ export const store = reactive<Store>({
     }
 
     const flatPlans = []
-    flatPlans.push(flattenPlan(store.plan.content.Plan))
+    flatPlans.push(flattenPlan(store.plan.content.Plan, nodeById))
     _.each(store.plan.ctes, (cte) => {
-        flatPlans.push(flattenPlan(cte))
+        flatPlans.push(flattenPlan(cte, nodeById))
     })
     store.flat = flatPlans
+
+    store.nodeById = nodeById
   }
 })
