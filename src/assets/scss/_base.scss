@@ -73,18 +73,18 @@ $buffers-colors: (
  * Used with @extend in .plan-node.never-executed
  */
 %bg-hatched {
-  $color: $gray-lightest;
+  --hatched-color: var(--bs-tertiary-bg);
   $angle: 45deg;
   $progress-height: 1rem !default;
   background-image: linear-gradient(
     $angle,
-    $color 25%,
-    transparent 25%,
-    transparent 50%,
-    $color 50%,
-    $color 75%,
-    transparent 75%,
-    transparent
+    var(--hatched-color) 25%,
+    var(--bs-body-bg) 25%,
+    var(--bs-body-bg) 50%,
+    var(--hatched-color) 50%,
+    var(--hatched-color) 75%,
+    var(--bs-body-bg) 75%,
+    var(--bs-body-bg)
   );
   background-size: $progress-height $progress-height;
 }

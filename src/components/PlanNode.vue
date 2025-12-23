@@ -142,7 +142,7 @@ function centerCte() {
         <div class="card-body header no-focus-outline">
           <header class="mb-0 d-flex justify-content-between">
             <h4
-              class="text-body overflow-hidden btn btn-light text-start py-0 px-1"
+              class="text-body overflow-hidden btn btn-outline-secondary text-start py-0 px-1"
               @click.prevent.stop="showDetails = !showDetails"
             >
               <span class="text-body-tertiary">
@@ -278,7 +278,7 @@ function centerCte() {
         </div>
         <PlanNodeDetail :node="node" v-if="showDetails"></PlanNodeDetail>
         <div v-if="isNeverExecuted" class="text-end">
-          <span class="text-body-tertiary bg-white px-1"> Never executed </span>
+          <span class="text-body-tertiary bg-body px-1"> Never executed </span>
         </div>
       </div>
     </div>

@@ -349,8 +349,9 @@ const isHighlighted = computed(
       ></LevelDivider>
       <div class="d-inline">
         <b
-          class="border px-1 bg-light"
+          class="border px-1 bg-body-tertiary"
           :class="{ 'text-primary': isHighlighted }"
+          style="--bs-border-opacity: 0.5"
         >
           {{ nodeName }}
         </b>
@@ -465,7 +466,7 @@ const isHighlighted = computed(
               >
             </li>
           </ul>
-          <div class="tab-content bg-white">
+          <div class="tab-content bg-body">
             <div
               class="tab-pane p-1 border border-top-0"
               :class="{ 'show active': activeTab === 'misc' }"
