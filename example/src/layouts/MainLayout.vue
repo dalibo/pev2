@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { inject } from "vue"
 import VLink from "../components/VLink.vue"
+import { useTheme } from "../composables/useTheme"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons"
 
 interface Props {
   title?: string
@@ -8,6 +11,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const currentPath = inject("currentPath")
+const { theme, toggleTheme } = useTheme()
 </script>
 
 <template>
@@ -21,6 +25,13 @@ const currentPath = inject("currentPath")
           {{ props?.title }}
         </div>
         <VLink class="btn btn-secondary ms-auto" to="/">New Plan</VLink>
+        <button
+          class="btn btn-link"
+          @click="toggleTheme"
+          :title="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+        >
+          <FontAwesomeIcon :icon="theme === 'dark' ? faMoon : faSun" />
+        </button>
         <VLink class="btn btn-link" to="/about">About</VLink>
       </div>
     </nav>
