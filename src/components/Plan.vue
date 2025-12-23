@@ -733,6 +733,10 @@ function updateNodeSize(node: Node, size: [number, number]) {
 @import "splitpanes/dist/splitpanes.css";
 @import "highlight.js/scss/stackoverflow-light.scss";
 
+[data-bs-theme="dark"] {
+  @import "highlight.js/scss/stackoverflow-dark.scss";
+}
+
 .ready {
   rect,
   foreignObject {
