@@ -340,7 +340,7 @@ const showDetails = ref<boolean>(false)
       ></LevelDivider>
       <div class="d-inline">
         <b
-          class="border border-secondary px-1 bg-light"
+          class="border border-secondary px-1 bg-body-tertiary"
           style="--bs-border-opacity: 0.5"
         >
           {{ nodeName }}
@@ -456,7 +456,7 @@ const showDetails = ref<boolean>(false)
               >
             </li>
           </ul>
-          <div class="tab-content bg-white">
+          <div class="tab-content bg-body">
             <div
               class="tab-pane p-1 border border-top-0"
               :class="{ 'show active': activeTab === 'misc' }"

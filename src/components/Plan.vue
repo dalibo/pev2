@@ -437,7 +437,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
     </div>
   </div>
   <div
-    class="plan-container d-flex flex-column overflow-hidden flex-grow-1 bg-light"
+    class="plan-container d-flex flex-column overflow-hidden flex-grow-1 bg-body-tertiary"
     v-else
     ref="rootEl"
   >
@@ -524,7 +524,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                 </Pane>
                 <Pane ref="planEl" class="plan grab-bing position-relative">
                   <div
-                    class="position-absolute m-1 p-1 bottom-0 end-0 rounded bg-white d-flex"
+                    class="position-absolute m-1 p-1 bottom-0 end-0 rounded bg-body d-flex"
                     v-if="store.plan"
                   >
                     <div class="btn-group btn-group-xs">

@@ -25,14 +25,14 @@ function copyRaw() {
   <div class="copy position-absolute" style="top: 0; right: 0">
     <button
       name="copyRawButton"
-      class="btn btn-outline-secondary bg-light btn-sm m-2"
+      class="btn btn-outline-secondary bg-body-tertiary btn-sm m-2"
       :class="copied ? 'd-none' : 'd-block'"
       @click="copyRaw"
     >
       <FontAwesomeIcon fixed-width :icon="faClipboard" />
     </button>
     <button
-      class="btn btn-outline-secondary bg-light btn-sm m-2"
+      class="btn btn-outline-secondary bg-body-tertiary btn-sm m-2"
       :class="copied ? 'd-block' : 'd-none'"
       @click="copyRaw"
       v-tippy="{ placement: 'left', arrow: true, content: 'copied' }"

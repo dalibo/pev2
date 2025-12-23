@@ -293,7 +293,7 @@ const columns = computed(() => {
 <template>
   <div>
     <table class="table table-sm table-hover">
-      <thead class="table-secondary sticky-top" style="z-index: 2">
+      <thead class="sticky-top" style="z-index: 2">
         <tr v-if="hasIO || columnsRight.length > 0" class="table-group">
           <th colspan="2">
             <!-- id & time -->
@@ -349,9 +349,9 @@ const columns = computed(() => {
       <tbody v-for="(flat, index) in store.flat" :key="index">
         <template v-for="row in flat" :key="row">
           <tr v-if="row.node[NodeProp.SUBPLAN_NAME]">
-            <td class="bg-light" :colspan="1 + columnsLeft.length"></td>
+            <td class="bg-body-tertiary" :colspan="1 + columnsLeft.length"></td>
             <td
-              class="plan pr-2 bg-light"
+              class="plan pr-2 bg-body-tertiary"
               :class="{ 'font-weight-bold': isCTE(row.node) }"
               :colspan="columns.length + columnsRight.length"
             >
