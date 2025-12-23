@@ -1,7 +1,6 @@
 @use "sass:math";
 
 $compact-width: 50px;
-$bg-color: #fff;
 .plan-node {
   cursor: default;
   text-decoration: none;
@@ -50,7 +49,6 @@ $bg-color: #fff;
       font-weight: 600;
       margin: 0;
       line-height: inherit;
-      color: black !important;
     }
 
     .node-duration {
@@ -107,9 +105,9 @@ $bg-color: #fff;
   }
 
   .plan-query-container {
-    border: 1px solid $line-color;
+    border: 1px solid var(--bs-border-color);
     padding: $padding-xl;
-    background-color: #fff;
+    background-color: var(--bs-body-bg);
     position: absolute;
     box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
     border-radius: $border-radius-base;
@@ -121,7 +119,7 @@ $bg-color: #fff;
       font-size: $font-size-lg;
       width: 93%;
       text-align: left;
-      border-bottom: 1px solid $line-color;
+      border-bottom: 1px solid var(--bs-border-color);
       padding-bottom: $padding-base;
       margin-bottom: $padding-lg;
     }
@@ -135,7 +133,7 @@ $bg-color: #fff;
   }
 
   .subplan-name {
-    background-color: #b3d7d7;
+    background-color: var(--bs-info-bg-subtle);
     border-radius: $border-radius-base;
   }
 

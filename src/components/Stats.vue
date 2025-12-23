@@ -105,7 +105,7 @@ const perIndex = computed(() => {
               sort="time"
               :dir="SortDirection.desc"
             >
-              <thead class="table-secondary">
+              <thead>
                 <tr>
                   <th scope="col">
                     <SortLink name="name">Table</SortLink>
@@ -146,7 +146,7 @@ const perIndex = computed(() => {
               sort="time"
               :dir="SortDirection.desc"
             >
-              <thead class="table-secondary">
+              <thead>
                 <tr>
                   <th scope="col">
                     <SortLink name="name">Function</SortLink>
@@ -187,7 +187,7 @@ const perIndex = computed(() => {
               sort="time"
               :dir="SortDirection.desc"
             >
-              <thead class="table-secondary">
+              <thead>
                 <tr>
                   <th scope="col">
                     <SortLink name="name">Node Type</SortLink>
@@ -221,7 +221,7 @@ const perIndex = computed(() => {
               sort="time"
               :dir="SortDirection.desc"
             >
-              <thead class="table-secondary">
+              <thead>
                 <tr>
                   <th scope="col">
                     <SortLink name="name">Index</SortLink>
