@@ -30,7 +30,7 @@ const { theme, toggleTheme } = useTheme()
           @click="toggleTheme"
           :title="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
         >
-          <FontAwesomeIcon :icon="theme === 'dark' ? faSun : faMoon" />
+          <FontAwesomeIcon :icon="theme === 'dark' ? faMoon : faSun" />
         </button>
         <VLink class="btn btn-link" to="/about">About</VLink>
       </div>
