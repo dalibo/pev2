@@ -137,10 +137,10 @@ function centerCte() {
         <div class="card-body header no-focus-outline">
           <header class="mb-0 d-flex justify-content-between">
             <h4
-              class="text-body overflow-hidden btn btn-outline-secondary text-start py-0 px-1"
+              class="bg-body-tertiary overflow-hidden btn text-start py-0 px-1"
               @click.prevent.stop="showDetails = !showDetails"
             >
-              <span class="text-secondary">
+              <span class="text-body-tertiary">
                 <FontAwesomeIcon
                   fixed-width
                   :icon="faChevronUp"
@@ -172,13 +172,13 @@ function centerCte() {
               "
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-secondary">on</span>
+              <span class="text-body-tertiary">on</span>
               <span v-if="node[NodeProp.SCHEMA]"
                 >{{ node[NodeProp.SCHEMA] }}.</span
               >{{ node[NodeProp.RELATION_NAME] }}
               {{ node[NodeProp.FUNCTION_NAME] }}
               <span v-if="node[NodeProp.ALIAS]">
-                <span class="text-secondary">as</span>
+                <span class="text-body-tertiary">as</span>
                 {{ node[NodeProp.ALIAS] }}
               </span>
             </div>
@@ -186,7 +186,7 @@ function centerCte() {
               v-else-if="node[NodeProp.ALIAS]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-secondary">on</span>
+              <span class="text-body-tertiary">on</span>
               <span
                 v-html="keysToString(node[NodeProp.ALIAS] as string)"
               ></span>
@@ -195,7 +195,7 @@ function centerCte() {
               v-if="node[NodeProp.GROUP_KEY]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-secondary">by</span>
+              <span class="text-body-tertiary">by</span>
               <span
                 v-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
               ></span>
@@ -204,7 +204,7 @@ function centerCte() {
               v-if="node[NodeProp.SORT_KEY]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-secondary">by</span>
+              <span class="text-body-tertiary">by</span>
               <span
                 v-html="
                   sortKeys(
@@ -218,7 +218,7 @@ function centerCte() {
               v-if="node[NodeProp.INDEX_NAME]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-secondary">using</span>
+              <span class="text-body-tertiary">using</span>
               <span
                 v-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
               ></span>
@@ -227,7 +227,7 @@ function centerCte() {
               v-if="node[NodeProp.HASH_CONDITION]"
               :class="{ 'line-clamp-2': !showDetails }"
             >
-              <span class="text-secondary">on</span>
+              <span class="text-body-tertiary">on</span>
               <span
                 v-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
               ></span>
@@ -238,7 +238,7 @@ function centerCte() {
                   :icon="faSearch"
                   class="text-secondary"
                 ></FontAwesomeIcon>
-                <span class="text-secondary">CTE</span>
+                <span class="text-body-tertiary">CTE</span>
                 {{ node[NodeProp.CTE_NAME] }}
               </a>
             </div>
