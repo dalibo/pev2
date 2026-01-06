@@ -47,7 +47,7 @@ $border-radius-lg: 6px;
 $main-color: $blue;
 $main-color-dark: $blue;
 
-$plan-node-bg: $white;
+$plan-node-bg: var(--bs-body-bg);
 $highlight-color: $blue;
 $highlight-color-dark: $dark-blue;
 

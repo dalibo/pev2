@@ -36,7 +36,7 @@
   th,
   td {
     margin: 0;
-    color: $text-color;
+    color: var(--bs-body-color);
     white-space: nowrap;
 
     &.node-index,
@@ -62,7 +62,7 @@
   }
   tr.highlight,
   tr.selected {
-    background-color: white;
+    background-color: var(--bs-body-bg);
   }
 
   table.highlight {
