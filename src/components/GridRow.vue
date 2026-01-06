@@ -350,28 +350,28 @@ const showDetails = ref<boolean>(false)
           <template
             v-if="node[NodeProp.RELATION_NAME] || node[NodeProp.FUNCTION_NAME]"
           >
-            <span class="text-secondary">on</span>
+            <span class="text-body-tertiary">on</span>
             <span v-if="node[NodeProp.SCHEMA]"
               >{{ node[NodeProp.SCHEMA] }}.</span
             >{{ node[NodeProp.RELATION_NAME]
             }}{{ node[NodeProp.FUNCTION_NAME] }}
             <span v-if="node[NodeProp.ALIAS]">
-              <span class="text-secondary">as</span>
+              <span class="text-body-tertiary">as</span>
               {{ node[NodeProp.ALIAS] }}
             </span>
           </template>
           <template v-else-if="node[NodeProp.ALIAS]">
-            <span class="text-secondary">on</span>
+            <span class="text-body-tertiary">on</span>
             <span v-html="keysToString(node[NodeProp.ALIAS] as string)"></span>
           </template>
           <template v-if="node[NodeProp.GROUP_KEY]">
-            <span class="text-secondary">by</span>
+            <span class="text-body-tertiary">by</span>
             <span
               v-html="keysToString(node[NodeProp.GROUP_KEY] as string)"
             ></span>
           </template>
           <template v-if="node[NodeProp.SORT_KEY]">
-            <span class="text-secondary">by</span>
+            <span class="text-body-tertiary">by</span>
             <span
               v-html="
                 sortKeys(
@@ -382,20 +382,20 @@ const showDetails = ref<boolean>(false)
             ></span>
           </template>
           <template v-if="node[NodeProp.INDEX_NAME]">
-            <span class="text-secondary">using</span>
+            <span class="text-body-tertiary">using</span>
             <span
               v-html="keysToString(node[NodeProp.INDEX_NAME] as string)"
             ></span>
           </template>
           <template v-if="node[NodeProp.HASH_CONDITION]">
-            <span class="text-secondary">on</span>
+            <span class="text-body-tertiary">on</span>
             <span
               v-html="keysToString(node[NodeProp.HASH_CONDITION] as string)"
             ></span>
           </template>
           <template v-if="node[NodeProp.CTE_NAME]">
             <span class="text-reset">
-              <span class="text-secondary">CTE</span>
+              <span class="text-body-tertiary">CTE</span>
               {{ node[NodeProp.CTE_NAME] }}
             </span>
           </template>
