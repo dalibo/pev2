@@ -4,6 +4,7 @@ import AboutView from "./views/AboutView.vue"
 import HomeView from "./views/HomeView.vue"
 import NotFoundView from "./views/NotFoundView.vue"
 import PlanView from "./views/PlanView.vue"
+import samples from "./samples"
 
 const routes = {
   "/": HomeView,
@@ -29,6 +30,7 @@ function setPlanData(name, plan, query) {
 }
 provide("setPlanData", setPlanData)
 window.setPlanData = setPlanData
+window.samples = samples
 </script>
 
 <template>
