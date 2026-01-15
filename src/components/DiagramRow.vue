@@ -125,7 +125,7 @@ const isHighlighted = computed(
           'text-primary': isHighlighted,
         }"
       >
-        {{ nodeName }}
+        <b>{{ nodeName }}</b>
       </span>
     </td>
     <td>
