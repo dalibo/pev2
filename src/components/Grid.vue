@@ -293,7 +293,7 @@ const columns = computed(() => {
 <template>
   <div>
     <table class="table table-sm table-hover">
-      <thead class="table-secondary sticky-top" style="z-index: 2">
+      <thead class="sticky-top" style="z-index: 2">
         <tr v-if="hasIO || columnsRight.length > 0" class="table-group">
           <th colspan="2">
             <!-- id & time -->
