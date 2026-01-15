@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue"
-import { animate } from "motion-v"
+import { animate } from "motion"
 
 interface Props {
   d: string
