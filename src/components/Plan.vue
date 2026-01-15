@@ -422,7 +422,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
           help us fix it by opening a new issue.
         </p>
         <div class="d-flex align-items-center">
-          <span class="text-secondary">
+          <span class="text-body-tertiary">
             <LogoImage />
             PEV2 <i>version {{ version }}</i>
           </span>

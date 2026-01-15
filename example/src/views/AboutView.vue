@@ -48,7 +48,7 @@ import MainLayout from "../layouts/MainLayout.vue"
       </p>
 
       <hr />
-      <div class="text-center text-secondary">
+      <div class="text-center text-body-tertiary">
         <b>pev2</b> is brought to you by
         <a href="https://dalibo.com">Dalibo</a>
       </div>

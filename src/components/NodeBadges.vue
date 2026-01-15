@@ -79,7 +79,7 @@ const {
     <FontAwesomeIcon
       fixed-width
       :icon="faFilter"
-      class="text-secondary"
+      class="text-body-tertiary"
     ></FontAwesomeIcon>
   </span>
 </template>

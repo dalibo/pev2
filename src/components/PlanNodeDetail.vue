@@ -192,7 +192,7 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           fixed-width
           :icon="faClock"
-          class="text-secondary"
+          class="text-body-tertiary"
         ></FontAwesomeIcon>
         <b>Timing:</b>
         <span
@@ -205,20 +205,20 @@ watch(activeTab, () => {
         >
           |
           <strong>{{ executionTimePercent }}</strong
-          ><span class="text-secondary">%</span>
+          ><span class="text-body-tertiary">%</span>
         </template>
       </div>
       <div>
         <FontAwesomeIcon
           fixed-width
           :icon="faAlignJustify"
-          class="text-secondary"
+          class="text-body-tertiary"
         ></FontAwesomeIcon>
         <b>Rows:</b>
         <span class="px-1">{{
           tilde + formattedProp("ACTUAL_ROWS_REVISED")
         }}</span>
-        <span class="text-secondary" v-if="node[NodeProp.PLAN_ROWS]"
+        <span class="text-body-tertiary" v-if="node[NodeProp.PLAN_ROWS]"
           >(Planned: {{ tilde + formattedProp("PLAN_ROWS_REVISED") }})</span
         >
         <span
@@ -249,7 +249,7 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           fixed-width
           :icon="faFilter"
-          class="text-secondary"
+          class="text-body-tertiary"
         ></FontAwesomeIcon>
         <b> {{ NodeProp[rowsRemovedProp] }}: </b>
         <span>
@@ -278,7 +278,7 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           fixed-width
           :icon="faExchangeAlt"
-          class="text-secondary"
+          class="text-body-tertiary"
         ></FontAwesomeIcon>
         <b>Heap Fetches:</b>
         <span
@@ -289,7 +289,7 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           :icon="faInfoCircle"
           fixed-width
-          class="text-secondary"
+          class="text-body-tertiary"
           v-if="heapFetchesClass"
           v-tippy="{
             arrow: true,
@@ -302,13 +302,13 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           fixed-width
           :icon="faDollarSign"
-          class="text-secondary"
+          class="text-body-tertiary"
         ></FontAwesomeIcon>
         <b>Cost:</b>
         <span class="p-0 px-1 me-1 alert" :class="costClass">{{
           formattedProp("EXCLUSIVE_COST")
         }}</span>
-        <span class="text-secondary"
+        <span class="text-body-tertiary"
           >(Total: {{ formattedProp("TOTAL_COST") }})</span
         >
       </div>
@@ -316,7 +316,7 @@ watch(activeTab, () => {
         <FontAwesomeIcon
           fixed-width
           :icon="faUndo"
-          class="text-secondary"
+          class="text-body-tertiary"
         ></FontAwesomeIcon>
         <b>Loops:</b>
         <span class="px-1">{{ formattedProp("ACTUAL_LOOPS") }} </span>

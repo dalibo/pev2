@@ -202,7 +202,7 @@ const isHighlighted = computed(
         style="height: 10px"
         v-else-if="diagramViewOptions.metric == Metric.estimate_factor"
       >
-        <span class="text-secondary small">
+        <span class="text-body-tertiary small">
           <FontAwesomeIcon
             fixed-width
             :icon="faArrowDown"
@@ -250,7 +250,7 @@ const isHighlighted = computed(
           aria-valuemin="0"
           aria-valuemax="100"
         ></div>
-        <span class="text-secondary small">
+        <span class="text-body-tertiary small">
           <FontAwesomeIcon
             fixed-width
             :icon="faArrowUp"

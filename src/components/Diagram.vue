@@ -240,7 +240,7 @@ provide("scrollTo", scrollTo)
           </template>
         </tbody>
       </table>
-      <div class="p-2 text-center text-secondary" v-else>
+      <div class="p-2 text-center text-body-tertiary" v-else>
         <em> No data available </em>
       </div>
     </div>

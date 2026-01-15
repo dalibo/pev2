@@ -87,7 +87,7 @@ function hasParallelChildren(node: Node) {
     <div class="d-inline-block px-2">
       Execution time:
       <template v-if="!store.stats.executionTime">
-        <span class="text-secondary">
+        <span class="text-body-tertiary">
           N/A
           <FontAwesomeIcon
             :icon="faInfoCircle"
@@ -106,7 +106,7 @@ function hasParallelChildren(node: Node) {
     <div class="d-inline-block border-start px-2">
       Planning time:
       <template v-if="!store.stats.planningTime">
-        <span class="text-secondary">
+        <span class="text-body-tertiary">
           N/A
           <FontAwesomeIcon
             :icon="faInfoCircle"
@@ -152,7 +152,7 @@ function hasParallelChildren(node: Node) {
         >
           <FontAwesomeIcon
             :icon="faCaretDown"
-            class="text-secondary"
+            class="text-body-tertiary"
           ></FontAwesomeIcon>
         </button>
         <div class="stat-dropdown-container text-start" v-if="showJitDetails">
@@ -184,7 +184,7 @@ function hasParallelChildren(node: Node) {
       >
         <FontAwesomeIcon
           :icon="faCaretDown"
-          class="text-secondary"
+          class="text-body-tertiary"
         ></FontAwesomeIcon>
       </button>
       <div class="stat-dropdown-container text-start" v-if="showTriggers">
@@ -196,8 +196,8 @@ function hasParallelChildren(node: Node) {
         <div v-for="(trigger, index) in store.stats.triggers" :key="index">
           {{ trigger["Trigger Name"] }}
           <br />
-          <span class="text-secondary">Called</span> {{ trigger["Calls"]
-          }}<span class="text-secondary">&times;</span>
+          <span class="text-body-tertiary">Called</span> {{ trigger["Calls"]
+          }}<span class="text-body-tertiary">&times;</span>
           <span class="float-end">
             <span
               :class="
@@ -207,10 +207,10 @@ function hasParallelChildren(node: Node) {
               v-html="duration(trigger.Time)"
             ></span>
             | {{ triggerDurationPercent(trigger)
-            }}<span class="text-secondary">%</span>
+            }}<span class="text-body-tertiary">%</span>
           </span>
           <br />
-          <span class="text-secondary" v-if="trigger.Relation">on</span>
+          <span class="text-body-tertiary" v-if="trigger.Relation">on</span>
           {{ trigger.Relation }}
           <div class="clearfix"></div>
           <hr
@@ -238,7 +238,7 @@ function hasParallelChildren(node: Node) {
       >
         <FontAwesomeIcon
           :icon="faCaretDown"
-          class="text-secondary"
+          class="text-body-tertiary"
         ></FontAwesomeIcon>
       </button>
       <div class="stat-dropdown-container text-start" v-if="showSettings">
@@ -247,7 +247,7 @@ function hasParallelChildren(node: Node) {
           v-on:click="showSettings = false"
         ></button>
         <h3>PG Settings</h3>
-        <em class="text-secondary d-block pb-2">
+        <em class="text-body-tertiary d-block pb-2">
           Configuration parameters affecting query planning with value different
           from the built-in default value.
         </em>
@@ -270,7 +270,7 @@ function hasParallelChildren(node: Node) {
       </span>
       <FontAwesomeIcon
         :icon="faInfoCircle"
-        class="cursor-help d-inline-block text-secondary"
+        class="cursor-help d-inline-block text-body-tertiary"
         v-tippy="{
           content: getHelpMessage('io timings parallel'),
         }"
@@ -282,7 +282,7 @@ function hasParallelChildren(node: Node) {
       >
         <FontAwesomeIcon
           :icon="faCaretDown"
-          class="text-secondary"
+          class="text-body-tertiary"
         ></FontAwesomeIcon>
       </button>
       <div class="stat-dropdown-container text-start" v-if="showIO">

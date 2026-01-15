@@ -22,11 +22,6 @@
     background-color: $value;
     color: color-yiq($value);
     font-weight: bold;
-
-    .text-secondary {
-      color: color-yiq($value) !important;
-      font-weight: normal;
-    }
   }
 
   .progress-bar.c-#{$color} {

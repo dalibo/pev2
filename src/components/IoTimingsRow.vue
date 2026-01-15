@@ -65,7 +65,7 @@ const writtenBlocksProp = (exclusivePrefix +
       <small>~{{ formattedProp(readSpeedProp) }}</small>
       <FontAwesomeIcon
         :icon="faInfoCircle"
-        class="cursor-help d-inline-block text-secondary"
+        class="cursor-help d-inline-block text-body-tertiary"
         v-tippy="{
           content: getHelpMessage('io timings parallel'),
         }"

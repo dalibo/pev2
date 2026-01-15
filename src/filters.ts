@@ -96,7 +96,7 @@ export function sortKeys(
     if (presort) {
       result +=
         presort.indexOf(v) !== -1
-          ? '&nbsp;<span class="text-secondary">(presort)</span>'
+          ? '&nbsp;<span class="text-body-tertiary">(presort)</span>'
           : ""
     }
     return result

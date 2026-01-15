@@ -37,10 +37,6 @@ $connector-line: 2px solid darken($line-color, 10%);
     cursor: grabbing;
   }
 
-  .text-secondary {
-    color: $gray !important;
-  }
-
   .cursor-help {
     cursor: help;
   }
@@ -80,9 +76,6 @@ $connector-line: 2px solid darken($line-color, 10%);
 
 .tippy-popper .tippy-tooltip {
   text-align: left;
-}
-.tippy-popper .text-secondary {
-  color: inherit !important;
 }
 
 .splitpanes {
