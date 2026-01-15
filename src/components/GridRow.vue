@@ -338,7 +338,6 @@ const isHighlighted = computed(
       </div>
     </td>
     <td
-      class="node-type"
       :class="showDetails ? '' : 'text-nowrap text-truncate overflow-hidden'"
       style="max-width: 0"
       @mouseenter="highlightedNodeId = node.nodeId"
