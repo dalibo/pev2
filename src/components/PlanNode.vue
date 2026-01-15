@@ -115,7 +115,7 @@ function centerCte() {
           {{ node[NodeProp.SUBPLAN_NAME] }}
         </b>
       </div>
-      <div class="workers text-secondary py-0 px-1" v-if="workersPlannedCount">
+      <div class="workers py-0 px-1" v-if="workersPlannedCount">
         <div
           v-for="index in workersPlannedCountReversed"
           :key="index"
