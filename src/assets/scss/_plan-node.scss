@@ -147,25 +147,6 @@ $bg-color: #fff;
     }
   }
 
-  .workers-handle {
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    right: -5px;
-    > div {
-      position: absolute;
-      top: 0;
-      background-color: white;
-      border: 1px solid darken($gray-lightest, 3);
-      border-radius: $border-radius-base;
-
-      &:hover {
-        background-color: $gray-lightest;
-        border-color: $gray-light;
-      }
-    }
-  }
-
   .subplan-name {
     background-color: #b3d7d7;
     border-radius: $border-radius-base;
