@@ -2,8 +2,6 @@ $grid-progress-padding-x: 0.5rem;
 $grid-progress-padding-y: 0.25rem;
 $grid-progress-margin: 1px;
 .plan-grid {
-  // To compensate the transparent background-color for grid-progress-cell
-  background-color: white;
   line-height: 0.85em;
   > table {
     // Truly attach borders to th even when collapsed when using sticky
