@@ -37,14 +37,6 @@
   td {
     margin: 0;
     white-space: nowrap;
-
-    &.node-index,
-    &.node-type,
-    &.subplan {
-      font-size: $font-size-base;
-    }
-  }
-  th {
     font-size: $font-size-base;
   }
 
