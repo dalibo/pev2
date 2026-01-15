@@ -1,0 +1,12 @@
+/* tippy-bootstrap.css */
+
+.tippy-box[data-theme~='bootstrap'] {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border: 1px solid var(--bs-border-color);
+  box-shadow: var(--bs-box-shadow);
+}
+
+.tippy-box[data-theme~='bootstrap'] > .tippy-arrow::before {
+  color: var(--bs-body-bg);
+}
