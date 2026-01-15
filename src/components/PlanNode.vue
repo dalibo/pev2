@@ -142,7 +142,7 @@ function centerCte() {
         <div class="card-body header no-focus-outline">
           <header class="mb-0 d-flex justify-content-between">
             <h4
-              class="text-body overflow-hidden btn btn-outline-secondary text-start py-0 px-1"
+              class="overflow-hidden rounded text-start py-0 px-1 node-detail-toggle"
               @click.prevent.stop="showDetails = !showDetails"
             >
               <span class="text-body-tertiary">
