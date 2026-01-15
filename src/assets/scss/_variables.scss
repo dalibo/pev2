@@ -3,48 +3,18 @@ $padding-lg: 10px;
 $padding-xl: 18px;
 
 $font-size-base: 13px;
-$font-size-xs: round($font-size-base * 0.7);
 $font-size-sm: round($font-size-base * 0.9);
 $font-size-lg: round($font-size-base * 1.3);
-$font-size-xl: round($font-size-base * 1.7);
 
 $font-family-sans-serif: "Noto Sans", sans-serif;
 
-$gray-lightest: #f7f7f7;
-$gray-light: darken($gray-lightest, 10%);
-$gray: darken(#f7f7f7, 30%);
-$gray-dark: darken(#f7f7f7, 50%);
-$gray-darkest: darken($gray-lightest, 70%);
-$white: white;
-
 $blue: #00b5e2;
 $dark-blue: #008caf;
-$light-blue: #65ddfb;
-
-$red: #af2f11;
-$dark-red: #7c210c;
-$light-red: #fb8165;
-
-$green: #279404;
-$yellow: #f8e400;
-
-$bg-color: $gray-lightest;
-
-$line-color: $gray-light;
-$line-color-light: lighten($gray-light, 10%);
-
-$link-color: $blue;
 
 $border-radius-base: 3px;
-$border-radius-lg: 6px;
-
-$main-color: $blue;
-$main-color-dark: $blue;
 
 $highlight-color: $blue;
 $highlight-color-dark: $dark-blue;
-
-$alert-color: #fb4418;
 
 $severity-colors: (
   1: #ccc,
@@ -52,10 +22,3 @@ $severity-colors: (
   3: #e80,
   4: #800,
 ) !default;
-
-// The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
-$yiq-contrasted-threshold: 150 !default;
-
-// Customize the light and dark text colors for use in our YIQ color contrast function.
-$yiq-text-dark: $gray-darkest !default;
-$yiq-text-light: $white !default;

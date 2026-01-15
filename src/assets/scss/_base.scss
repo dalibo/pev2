@@ -1,4 +1,12 @@
 @use "sass:math";
+
+// The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
+$yiq-contrasted-threshold: 150 !default;
+
+// Customize the light and dark text colors for use in our YIQ color contrast function.
+$yiq-text-dark: darken(#f7f7f7, 70%) !default;
+$yiq-text-light: white !default;
+
 // Color contrast
 @function color-yiq($color, $dark: $yiq-text-dark, $light: $yiq-text-light) {
   $r: red($color);
