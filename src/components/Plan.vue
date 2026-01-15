@@ -437,7 +437,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
     </div>
   </div>
   <div
-    class="plan-container d-flex flex-column overflow-hidden flex-grow-1 bg-light"
+    class="plan-container d-flex flex-column overflow-hidden flex-grow-1 bg-body-tertiary"
     v-else
     ref="rootEl"
   >
@@ -514,7 +514,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
               >
                 <Pane
                   :size="viewOptions.diagramWidth"
-                  class="d-flex flex-column"
+                  class="d-flex flex-column bg-body-tertiary"
                   v-if="store.plan"
                 >
                   <Diagram
@@ -522,9 +522,12 @@ function updateNodeSize(node: Node, size: [number, number]) {
                     class="d-flex flex-column flex-grow-1 overflow-hidden plan-diagram"
                   />
                 </Pane>
-                <Pane ref="planEl" class="plan grab-bing position-relative">
+                <Pane
+                  ref="planEl"
+                  class="plan grab-bing position-relative bg-body-tertiary"
+                >
                   <div
-                    class="position-absolute m-1 p-1 bottom-0 end-0 rounded bg-white d-flex"
+                    class="position-absolute m-1 p-1 bottom-0 end-0 rounded d-flex"
                     v-if="store.plan"
                   >
                     <div class="btn-group btn-group-xs">
