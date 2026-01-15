@@ -250,7 +250,7 @@ function centerCte() {
               highlightValue !== null
             "
           >
-            <div class="progress node-bar-container" style="height: 5px">
+            <div class="progress mt-2 mb-1" style="height: 5px">
               <div
                 class="progress-bar"
                 role="progressbar"

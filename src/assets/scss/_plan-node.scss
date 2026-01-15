@@ -195,24 +195,6 @@ $bg-color: #fff;
   }
 }
 
-.node-bar-container {
-  height: 5px;
-  margin-top: $padding-lg;
-  margin-bottom: $padding-sm;
-  border-radius: $border-radius-lg;
-  background-color: $gray-light;
-  position: relative;
-
-  .node-bar {
-    border-radius: $border-radius-lg;
-    height: 100%;
-    text-align: left;
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-}
-
 .node-bar-label {
   text-align: left;
   display: block;
