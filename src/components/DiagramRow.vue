@@ -111,7 +111,7 @@ const isHighlighted = computed(
         ></div
       ></template>
     </template>
-    <td class="node-index" ref="rootEl">
+    <td class="node-index text-body-secondary" ref="rootEl">
       <span class="fw-normal small">#{{ node.nodeId }} </span>
     </td>
     <td class="node-type">
