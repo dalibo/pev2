@@ -115,7 +115,11 @@ function centerCte() {
           {{ node[NodeProp.SUBPLAN_NAME] }}
         </b>
       </div>
-      <div class="workers py-0 px-1" v-if="workersPlannedCount">
+      <div
+        class="workers py-0 px-1 h-100 w-100 position-absolute"
+        style="left: -1px; top: 1px"
+        v-if="workersPlannedCount"
+      >
         <div
           v-for="index in workersPlannedCountReversed"
           :key="index"
@@ -123,11 +127,12 @@ function centerCte() {
             top: 1 + index * 2 + 'px',
             left: 1 + (index + 1) * 3 + 'px',
           }"
+          class="border bg-body position-absolute w-100 h-100"
           :class="{ 'border-dashed': index >= workersLaunchedCount }"
         ></div>
       </div>
       <div
-        class="plan-node-body card"
+        class="plan-node-body card border"
         :class="{
           'never-executed': isNeverExecuted,
         }"
