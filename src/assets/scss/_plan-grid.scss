@@ -38,8 +38,6 @@ $grid-progress-margin: 1px;
   }
   .grid-progress-cell {
     position: relative;
-    // Without this bottom border disappareas on Firefox
-    background-color: transparent;
 
     .grid-progress {
       margin-top: 1px;
