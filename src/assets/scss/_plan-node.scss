@@ -64,6 +64,13 @@ $compact-width: 50px;
     table-layout: fixed;
   }
 
+  .node-detail-toggle {
+    cursor: pointer;
+    &:hover {
+      background-color: var(--bs-secondary-bg);
+    }
+  }
+
   //hovers
   &:hover,
   &.highlight {
