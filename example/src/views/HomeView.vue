@@ -301,7 +301,7 @@ function addMessage(text) {
         <div class="col-sm-7">
           <div class="row mb-3">
             <div class="col d-flex">
-              <div class="text-secondary">
+              <div class="text-body-secondary">
                 For best results, use
                 <code>
                   EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)
@@ -318,7 +318,8 @@ function addMessage(text) {
             <div class="mb-3">
               <div class="d-flex align-items-center mb-2">
                 <label for="planInput" class="form-label">
-                  Plan <span class="small text-secondary">(text or JSON)</span>
+                  Plan
+                  <span class="small text-body-tertiary">(text or JSON)</span>
                 </label>
                 <div class="dropdown ms-auto">
                   <button
@@ -362,7 +363,7 @@ function addMessage(text) {
             </div>
             <div class="mb-3">
               <label for="queryInput" class="form-label">
-                Query <span class="small text-secondary">(optional)</span>
+                Query <span class="small text-body-tertiary">(optional)</span>
               </label>
               <textarea
                 ref="queryDropZoneRef"
@@ -379,7 +380,8 @@ function addMessage(text) {
             </div>
             <div class="mb-3">
               <label for="planName" class="form-label">
-                Plan Name <span class="small text-secondary">(optional)</span>
+                Plan Name
+                <span class="small text-body-tertiary">(optional)</span>
               </label>
               <input
                 type="text"
@@ -537,7 +539,7 @@ function addMessage(text) {
                   </p>
                   <small
                     :class="{
-                      'text-secondary': !isSelected(plan.id),
+                      'text-body-tertiary': !isSelected(plan.id),
                     }"
                   >
                     created
@@ -588,7 +590,7 @@ function addMessage(text) {
             </button>
           </div>
           <p
-            class="text-secondary text-center"
+            class="text-body-tertiary text-center"
             v-if="!savedPlans?.length"
             v-cloak
           >
