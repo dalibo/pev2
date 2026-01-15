@@ -156,7 +156,7 @@ const isHighlighted = computed(
           aria-valuemax="100"
         ></div>
         <div
-          class="progress-bar bg-secondary-light"
+          class="progress-bar bg-secondary opacity-20"
           role="progressbar"
           style="height: 5px"
           :style="{
