@@ -111,10 +111,10 @@ const isHighlighted = computed(
         ></div
       ></template>
     </template>
-    <td class="node-index text-body-secondary" ref="rootEl">
+    <td class="text-body-secondary" ref="rootEl">
       <span class="fw-normal small">#{{ node.nodeId }} </span>
     </td>
-    <td class="node-type">
+    <td>
       <LevelDivider
         :row="row"
         :isSubplan="!!node[NodeProp.SUBPLAN_NAME]"

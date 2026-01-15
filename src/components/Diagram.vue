@@ -222,7 +222,6 @@ provide("scrollTo", scrollTo)
             <tr v-if="row.node[NodeProp.SUBPLAN_NAME]">
               <td></td>
               <td
-                class="subplan"
                 :class="{ 'fw-bold': isCTE(row.node) }"
                 :colspan="isCTE(row.node) ? 3 : 2"
               >
