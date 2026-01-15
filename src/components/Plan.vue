@@ -33,10 +33,13 @@ import { json_, pgsql_ } from "@/filters"
 import { setDefaultProps } from "vue-tippy"
 import { store } from "@/store.ts"
 
-setDefaultProps({ theme: "light" })
+setDefaultProps({
+  theme: "bootstrap",
+})
 
 import "tippy.js/dist/tippy.css"
-import "tippy.js/themes/light.css"
+import "tippy.js/dist/border.css"
+import "@/assets/css/tippy-bootstrap.css"
 import * as d3 from "d3"
 import {
   flextree,
