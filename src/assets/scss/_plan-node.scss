@@ -16,7 +16,6 @@ $bg-color: #fff;
   .plan-node-body {
     position: relative;
     border-radius: $border-radius-base;
-    background-color: $plan-node-bg;
     box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.1);
 
     &.card {
