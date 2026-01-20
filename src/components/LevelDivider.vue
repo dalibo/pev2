@@ -55,10 +55,10 @@ const highlightedNodeLevel = computed((): number | undefined => {
       :key="i"
       :class="
         hasBranch && isDescendantOfHighlighted && highlightBranch(i)
-          ? 'text-primary'
+          ? 'text-body-emphasis'
           : highlightedNodeId
-            ? 'text-body text-opacity-25'
-            : ''
+            ? 'text-body-tertiary'
+            : 'text-body-secondary'
       "
       >{{ hasBranch ? VERTICAL : ` ${SPACE}` }}</span
     ><span
@@ -66,10 +66,10 @@ const highlightedNodeLevel = computed((): number | undefined => {
         isDescendantOfHighlighted &&
         (highlightedNodeId == row.node.nodeId ||
           highlightedNodeLevel == row.level - 1)
-          ? 'text-primary'
+          ? 'text-body-emphasis'
           : highlightedNodeId
-            ? 'text-body text-opacity-25'
-            : ''
+            ? 'text-body-tertiary'
+            : 'text-body-secondary'
       "
       >{{
         highlightedNodeId == row.node.nodeId ? `${SPACE}▶` : connector
