@@ -350,7 +350,13 @@ const isHighlighted = computed(
       <div class="d-inline">
         <b
           class="border px-1 bg-body-tertiary"
-          :class="{ 'text-primary': isHighlighted }"
+          :class="[
+            isHighlighted
+              ? 'text-body-emphasis'
+              : highlightedNodeId
+                ? 'text-body-tertiary'
+                : 'text-body-secondary',
+          ]"
           style="--bs-border-opacity: 0.5"
         >
           {{ nodeName }}

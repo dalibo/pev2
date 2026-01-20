@@ -121,9 +121,13 @@ const isHighlighted = computed(
         dense
       ></LevelDivider>
       <span
-        :class="{
-          'text-primary': isHighlighted,
-        }"
+        :class="[
+          isHighlighted
+            ? 'text-body-emphasis'
+            : highlightedNodeId
+              ? 'text-body-tertiary'
+              : 'text-body-secondary',
+        ]"
       >
         <b>{{ nodeName }}</b>
       </span>
