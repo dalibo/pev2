@@ -41,7 +41,7 @@
     "lodash": "^4.17.23",
     "motion": "^12.26.2",
     "splitpanes": "^3.2.0",
-    "vue": "^3.5.26",
+    "vue": "^3.5.27",
     "vue-clipboard3": "^2.0.0",
     "vue-tippy": "^6.7.1"
   },
