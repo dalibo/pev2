@@ -75,8 +75,7 @@ export function loops(value: number | undefined): string {
 
 export function factor(value: number): string {
   const f: string = parseFloat(value.toPrecision(2)).toLocaleString()
-  const compiled = _.template("${f}&nbsp;&times;")
-  return compiled({ f })
+  return `${f}&nbsp;&times;`
 }
 
 export function keysToString(value: string[] | string): string {
@@ -121,11 +120,10 @@ export function formatBytes(value: number, precision = 2) {
   const dm = precision < 0 ? 0 : precision
   const units = ["Bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
   const i = Math.floor(Math.log(value) / Math.log(k))
-  const compiled = _.template("${value} ${unit}")
   const valueString = parseFloat(
     (value / Math.pow(k, i)).toPrecision(dm),
   ).toLocaleString()
-  return compiled({ value: valueString, unit: units[i] })
+  return `${valueString} ${units[i]}`
 }
 
 export function blocksAsBytes(value: number): string {
@@ -152,15 +150,17 @@ export function percent(value: number): string {
 }
 
 export function list(value: string[] | string): string {
-  if (typeof value === "string") {
-    value = value.split(/\s*,\s*/)
+  if (value == undefined) {
+    return ''
   }
-  const compiled = _.template(
-    "<% _.forEach(lines, function(line) { %><li><%= line %></li><% }); %>",
-  )
-  return (
-    '<ul class="list-unstyled mb-0">' + compiled({ lines: value }) + "</ul>"
-  )
+  const lines =
+    typeof value === "string"
+    ? value.split(/\s*,\s*/)
+    : value
+
+  const items = lines.map(line => `<li>${line}</li>`).join("")
+
+  return `<ul class="list-unstyled mb-0">${items}</ul>`
 }
 
 function sortGroups(value: string): string {
