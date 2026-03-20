@@ -186,6 +186,7 @@ export enum NodePropBase {
 
   PEV_PLAN_TAG = "plan_",
   JIT = "JIT",
+  SERIALIZATION = "Serialization",
 }
 
 export const NodeProp = {

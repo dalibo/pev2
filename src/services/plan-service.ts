@@ -13,6 +13,7 @@ import type {
   IPlan,
   IPlanContent,
   IPlanStats,
+  ISerialization,
   JIT,
   SortGroups,
 } from "@/interfaces"
@@ -531,7 +532,7 @@ export class PlanService {
         out[out.length - 1] += line
       } else if (
         line.match(
-          /^(?:Total\s+runtime|Planning(\s+time)?|Execution\s+time|Time|Filter|Output|JIT|Trigger|Settings)/i,
+          /^(?:Total\s+runtime|Planning(\s+time)?|Execution\s+time|Time|Filter|Output|JIT|Trigger|Settings|Serialization)/i,
         )
       ) {
         out.push(line)
@@ -624,6 +625,14 @@ export class PlanService {
     )
 
     const jitRegex = /^(\s*)JIT:\s*$/
+
+    enum SerializationMatch {
+      Time = 2,
+      Output = 3
+    }
+    const serializationRegex =
+      /^(\s*)Serialization:\s+time=(\d+\.\d+) ms.*output=(\d+).*$/
+
     const extraRegex = /^(\s*)(\S.*\S)\s*$/
 
     enum NodeMatch {
@@ -699,6 +708,7 @@ export class PlanService {
       const triggerMatches = triggerRegex.exec(line)
       const workerMatches = workerRegex.exec(line)
       const jitMatches = jitRegex.exec(line)
+      const serializationMatches = serializationRegex.exec(line)
 
       const extraMatches = extraRegex.exec(line)
 
@@ -922,6 +932,15 @@ export class PlanService {
             elementsAtDepth.push([depth, element])
           }
         }
+      } else if (serializationMatches) {
+        root.Serialization = {
+          Time: parseFloat(serializationMatches[SerializationMatch.Time]),
+          "Output Volume": parseInt(serializationMatches[SerializationMatch.Output])
+        } as ISerialization
+        const element = {
+          node: root.Serialization
+        }
+        elementsAtDepth.push([1, element])
       } else if (extraMatches) {
         //const prefix = extraMatches[1]
 
