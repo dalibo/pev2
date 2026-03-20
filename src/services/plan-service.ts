@@ -230,7 +230,7 @@ export class PlanService {
         ((node[NodeProp.ACTUAL_STARTUP_TIME] as number) *
           (node[NodeProp.ACTUAL_LOOPS] as number)) /
         workers
-      node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME]
+      node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME] as number
 
       const duration =
         (node[NodeProp.EXCLUSIVE_DURATION] as number) -
@@ -330,7 +330,7 @@ export class PlanService {
         return
       }
       const matches = /(InitPlan\s+[1-9]+)(?:\s+\(returns (\$[0-9]+)\))*/m.exec(
-        subPlan[NodeProp.SUBPLAN_NAME],
+        subPlan[NodeProp.SUBPLAN_NAME] as string,
       )
       if (!matches) {
         return
