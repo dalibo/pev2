@@ -9,6 +9,7 @@ import { store } from "@/store"
 import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 import WorkersDetail from "@/components/WorkersDetail.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
+import BuffersDetail from "@/components/BuffersDetail.vue"
 import { ViewOptionsKey } from "@/symbols"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
@@ -326,70 +327,7 @@ watch(activeTab, () => {
     <div class="tab-pane" :class="{ 'show active': activeTab === 'iobuffer' }">
       <!-- iobuffer tab -->
       <IoTooltip :node="node" exclusive />
-      <table class="table table-sm">
-        <thead>
-          <tr>
-            <th>Blocks</th>
-            <td class="text-end" width="25%">Hit</td>
-            <td class="text-end" width="25%">Read</td>
-            <td class="text-end" width="25%">Dirtied</td>
-            <td class="text-end" width="25%">Written</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Shared</td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_SHARED_HIT_BLOCKS') || '-'"
-            ></td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_SHARED_READ_BLOCKS') || '-'"
-            ></td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_SHARED_DIRTIED_BLOCKS') || '-'"
-            ></td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_SHARED_WRITTEN_BLOCKS') || '-'"
-            ></td>
-          </tr>
-          <tr>
-            <td>Temp</td>
-            <td class="text-end bg-hatched"></td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_TEMP_READ_BLOCKS') || '-'"
-            ></td>
-            <td class="text-end bg-hatched"></td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_TEMP_WRITTEN_BLOCKS') || '-'"
-            ></td>
-          </tr>
-          <tr>
-            <td>Local</td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_LOCAL_HIT_BLOCKS') || '-'"
-            ></td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_LOCAL_READ_BLOCKS') || '-'"
-            ></td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_LOCAL_DIRTIED_BLOCKS') || '-'"
-            ></td>
-            <td
-              class="text-end"
-              v-html="formattedProp('EXCLUSIVE_LOCAL_WRITTEN_BLOCKS') || '-'"
-            ></td>
-          </tr>
-        </tbody>
-      </table>
+      <BuffersDetail :object="node" />
       <div
         v-if="node[NodeProp.WAL_RECORDS] || node[NodeProp.WAL_BYTES]"
         class="mb-2"

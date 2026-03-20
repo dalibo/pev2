@@ -44,7 +44,20 @@ export enum CenterMode {
   none,
 }
 
-export enum NodeProp {
+export enum BuffersProp {
+  SHARED_HIT_BLOCKS = "Shared Hit Blocks",
+  SHARED_READ_BLOCKS = "Shared Read Blocks",
+  SHARED_DIRTIED_BLOCKS = "Shared Dirtied Blocks",
+  SHARED_WRITTEN_BLOCKS = "Shared Written Blocks",
+  TEMP_READ_BLOCKS = "Temp Read Blocks",
+  TEMP_WRITTEN_BLOCKS = "Temp Written Blocks",
+  LOCAL_HIT_BLOCKS = "Local Hit Blocks",
+  LOCAL_READ_BLOCKS = "Local Read Blocks",
+  LOCAL_DIRTIED_BLOCKS = "Local Dirtied Blocks",
+  LOCAL_WRITTEN_BLOCKS = "Local Written Blocks",
+}
+
+export enum NodePropBase {
   // plan property keys
   NODE_TYPE = "Node Type",
   ACTUAL_ROWS = "Actual Rows",
@@ -76,18 +89,8 @@ export enum NodeProp {
   WORKERS = "Workers",
   WORKERS_PLANNED = "Workers Planned",
   WORKERS_LAUNCHED = "Workers Launched",
-  SHARED_HIT_BLOCKS = "Shared Hit Blocks",
-  SHARED_READ_BLOCKS = "Shared Read Blocks",
   READ_BLOCKS = "*Read Blocks",
-  SHARED_DIRTIED_BLOCKS = "Shared Dirtied Blocks",
-  SHARED_WRITTEN_BLOCKS = "Shared Written Blocks",
   WRITTEN_BLOCKS = "*Written Blocks",
-  TEMP_READ_BLOCKS = "Temp Read Blocks",
-  TEMP_WRITTEN_BLOCKS = "Temp Written Blocks",
-  LOCAL_HIT_BLOCKS = "Local Hit Blocks",
-  LOCAL_READ_BLOCKS = "Local Read Blocks",
-  LOCAL_DIRTIED_BLOCKS = "Local Dirtied Blocks",
-  LOCAL_WRITTEN_BLOCKS = "Local Written Blocks",
   IO_READ_TIME = "I/O Read Time",
   IO_WRITE_TIME = "I/O Write Time",
   SHARED_IO_READ_TIME = "Shared I/O Read Time",
@@ -184,6 +187,13 @@ export enum NodeProp {
   PEV_PLAN_TAG = "plan_",
   JIT = "JIT",
 }
+
+export const NodeProp = {
+  ...NodePropBase,
+  ...BuffersProp,
+} as const;
+
+export type NodeProp = typeof NodeProp[keyof typeof NodeProp]
 
 export enum PropType {
   blocks,
