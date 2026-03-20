@@ -3,11 +3,13 @@ import _ from "lodash"
 import { computed, ref } from "vue"
 import type { ITrigger, Node } from "@/interfaces"
 import { HelpService } from "@/services/help-service"
-import { duration, durationClass } from "@/filters"
+import { duration, durationClass, kilobytes } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
 import { NodeProp } from "../enums"
+import { BuffersProp } from "../enums"
 import { formatNodeProp } from "@/filters"
 import JitDetails from "@/components/JitDetails.vue"
+import BuffersDetail from "@/components/BuffersDetail.vue"
 import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 import { store } from "@/store"
 
@@ -19,6 +21,7 @@ const getHelpMessage = helpService.getHelpMessage
 const showSettings = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
 const showJitDetails = ref<boolean>(false)
+const showSerializationDetails = ref<boolean>(false)
 const showIO = ref<boolean>(false)
 
 const planningTimeClass = (percent: number) => {
@@ -77,6 +80,30 @@ function hasParallelChildren(node: Node) {
     return Array.isArray(a.Plans) && a.Plans.some(iter)
   })
 }
+
+const shouldShowSerializationBuffers = computed((): boolean => {
+  if (!store.stats.serialization) {
+    return false
+  }
+  const properties: Array<keyof typeof BuffersProp> = [
+    "SHARED_HIT_BLOCKS",
+    "SHARED_READ_BLOCKS",
+    "SHARED_DIRTIED_BLOCKS",
+    "SHARED_WRITTEN_BLOCKS",
+    "TEMP_READ_BLOCKS",
+    "TEMP_WRITTEN_BLOCKS",
+    "LOCAL_HIT_BLOCKS",
+    "LOCAL_READ_BLOCKS",
+    "LOCAL_DIRTIED_BLOCKS",
+    "LOCAL_WRITTEN_BLOCKS",
+  ]
+  const values = _.map(properties, (property) => {
+    const value = store.stats.serialization?.[BuffersProp[property]]
+    return _.isNaN(value) ? 0 : value
+  })
+  const sum = _.sum(values)
+  return sum > 0
+})
 </script>
 
 <template>
@@ -130,6 +157,58 @@ function hasParallelChildren(node: Node) {
           ></span>
         </span>
       </template>
+    </div>
+    <div
+      class="d-inline-block border-start px-2 position-relative"
+      v-if="store.stats.serialization"
+    >
+      Serialization:
+      <span class="stat-value">
+        <span
+          :class="
+            'mb-0 p-0 px-1 alert ' +
+            planningTimeClass(
+              (store.stats.serialization.Time /
+                (store.stats.executionTime as number)) *
+                100,
+            )
+          "
+          v-html="duration(store.stats.serialization.Time)"
+        ></span>
+      </span>
+      <button
+        @click.prevent="showSerializationDetails = !showSerializationDetails"
+        class="bg-transparent border-0 p-0 m-0 ps-1"
+      >
+        <FontAwesomeIcon
+          :icon="faCaretDown"
+          class="text-body-tertiary"
+        ></FontAwesomeIcon>
+      </button>
+      <div
+        class="stat-dropdown-container text-start"
+        v-if="showSerializationDetails"
+      >
+        <button
+          class="btn btn-xs btn-close float-end"
+          v-on:click="showSerializationDetails = false"
+        ></button>
+        <h3>Serialization</h3>
+        <div>
+          <b>Time:</b>
+          <span>{{ duration(store.stats.serialization.Time) }}</span>
+        </div>
+        <div>
+          <b>Output Volume: </b>
+          <span>
+            {{ kilobytes(store.stats.serialization["Output Volume"]) }}</span
+          >
+        </div>
+        <div v-if="shouldShowSerializationBuffers">
+          <b>Buffers: </b>
+          <BuffersDetail :object="store.stats.serialization" />
+        </div>
+      </div>
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
