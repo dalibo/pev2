@@ -116,6 +116,9 @@ export function bytes(value: number): string {
 }
 
 export function formatBytes(value: number, precision = 2) {
+  if (value === 0) {
+    return "0 kB"
+  }
   const k = 1024
   const dm = precision < 0 ? 0 : precision
   const units = ["Bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
