@@ -30,6 +30,7 @@ export interface IPlanContent {
   Triggers?: ITrigger[]
   JIT?: JIT
   Serialization?: ISerialization
+  Planning?: IPlanning
   "Query Text"?: string
   [k: string]:
     | Node
@@ -38,6 +39,7 @@ export interface IPlanContent {
     | IBlocksStats
     | ITrigger[]
     | JIT
+    | IPlanning
     | ISerialization
     | undefined
 }
@@ -60,6 +62,7 @@ export interface IPlanStats {
   maxEstimateFactor: number
   triggers?: ITrigger[]
   jitTime?: number
+  planning?: IPlanning
   serialization?: ISerialization
   settings?: Settings
 }
@@ -68,7 +71,7 @@ export type IBlocksStats = {
   [key in BufferLocation]: number
 }
 
-import { BuffersProp, EstimateDirection, NodeProp } from "@/enums"
+import { BuffersProp, EstimateDirection, NodeProp, NodePropBase } from "@/enums"
 
 // Class to create nodes when parsing text
 export class Node {
@@ -332,6 +335,32 @@ export type ViewOptions = {
 export interface JIT {
   ["Timing"]: Timing
   [key: string]: number | Timing
+}
+
+export interface IOBuffers {
+  [BuffersProp.LOCAL_DIRTIED_BLOCKS]: number
+  [BuffersProp.LOCAL_HIT_BLOCKS]: number
+  [BuffersProp.LOCAL_READ_BLOCKS]: number
+  [BuffersProp.LOCAL_WRITTEN_BLOCKS]: number
+  [BuffersProp.SHARED_DIRTIED_BLOCKS]: number
+  [BuffersProp.SHARED_HIT_BLOCKS]: number
+  [BuffersProp.SHARED_READ_BLOCKS]: number
+  [BuffersProp.SHARED_WRITTEN_BLOCKS]: number
+  [BuffersProp.TEMP_READ_BLOCKS]: number
+  [BuffersProp.TEMP_WRITTEN_BLOCKS]: number
+  [BuffersProp.READ_BLOCKS]: number
+  [BuffersProp.WRITTEN_BLOCKS]: number
+  [NodePropBase.IO_READ_TIME]: number
+  [NodePropBase.IO_WRITE_TIME]: number
+  [NodePropBase.TEMP_IO_READ_TIME]?: number
+  [NodePropBase.TEMP_IO_WRITE_TIME]?: number
+  [NodePropBase.AVERAGE_IO_READ_SPEED]?: number
+  [NodePropBase.AVERAGE_IO_WRITE_SPEED]?: number
+}
+
+export interface IPlanning extends IOBuffers {
+  ["Memory Used"]: number
+  ["Memory Allocated"]: number
 }
 
 export interface ISerialization {
