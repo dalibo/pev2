@@ -7,8 +7,10 @@ import {
 import { splitBalanced } from "@/services/help-service"
 import type {
   IBlocksStats,
+  IOBuffers,
   IPlan,
   IPlanContent,
+  IPlanning,
   IPlanStats,
   ISerialization,
   JIT,
@@ -65,6 +67,10 @@ export class PlanService {
     this.flat = []
     this.processNode(planContent.Plan, plan)
 
+    if (planContent.Planning) {
+      this.calculateIoTimingsAverage(planContent.Planning)
+    }
+
     this.flat = this.flat.concat(
       _.flattenDeep(this.recurse([plan.content.Plan as Node])),
     )
@@ -116,7 +122,7 @@ export class PlanService {
     // takes loops into account
     this.calculateActuals(node)
     this.calculateExclusives(node)
-    this.calculateIoTimingsAverage(node)
+    this.calculateIoTimingsAverage(node as unknown as IOBuffers)
     this.convertNodeType(node)
   }
 
@@ -624,6 +630,8 @@ export class PlanService {
 
     const jitRegex = /^(\s*)JIT:\s*$/
 
+    const planningRegex = /^(\s*)Planning:$/
+
     enum SerializationMatch {
       Time = 2,
       Output = 3
@@ -706,6 +714,7 @@ export class PlanService {
       const triggerMatches = triggerRegex.exec(line)
       const workerMatches = workerRegex.exec(line)
       const jitMatches = jitRegex.exec(line)
+      const planningMatches = planningRegex.exec(line)
       const serializationMatches = serializationRegex.exec(line)
 
       const extraMatches = extraRegex.exec(line)
@@ -930,6 +939,12 @@ export class PlanService {
             elementsAtDepth.push([depth, element])
           }
         }
+      } else if (planningMatches) {
+        root.Planning = {} as IPlanning
+        const element = {
+          node: root.Planning
+        }
+        elementsAtDepth.push([1, element])
       } else if (serializationMatches) {
         root.Serialization = {
           Time: parseFloat(serializationMatches[SerializationMatch.Time]),
@@ -1008,6 +1023,10 @@ export class PlanService {
         }
 
         if (this.parseDisabled(extraMatches[2], element as Node)) {
+          return
+        }
+
+        if (this.parseMemory(extraMatches[2], element as unknown as IPlanning)) {
           return
         }
 
@@ -1355,6 +1374,25 @@ export class PlanService {
     return false
   }
 
+  private parseMemory(text: string, el: IPlanning): boolean {
+    // Parses a memory block (for example in Planning block)
+    // eg. Memory: used=6kB  allocated=8kB
+    enum MemoryMatch {
+      Used = 2,
+      Allocated = 3
+    }
+    const memoryRegex =
+      /^(\s*)Memory:\s+used=(\d+)kB.*allocated=(\d+)kB.*$/
+    const memoryMatches = memoryRegex.exec(text)
+
+    if (memoryMatches) {
+      el[Property.MEMORY_USED] = parseInt(memoryMatches[MemoryMatch.Used], 0)
+      el[Property.MEMORY_ALLOCATED] = parseInt(memoryMatches[MemoryMatch.Allocated], 0)
+      return true
+    }
+    return false
+  }
+
   private calculateExclusives(node: Node) {
     // Caculate inclusive value for the current node for the given property
     const properties: Array<keyof typeof Property> = [
@@ -1400,7 +1438,7 @@ export class PlanService {
     })
   }
 
-  private calculateIoTimingsAverage(node: Node) {
+  private calculateIoTimingsAverage(node: IOBuffers) {
     // The matrix to match I/O Timings with Buffers
     let scopesMatrix
     if (_.isUndefined(node[Property.TEMP_IO_READ_TIME])) {
@@ -1432,17 +1470,17 @@ export class PlanService {
             `${prefix}${timingScope ? timingScope + "_" : ""}io_${operation}_time`.toUpperCase() as keyof typeof Property
           const speedProp =
             `${prefix}average_${timingScope ? timingScope + "_" : ""}io_${operation}_speed`.toUpperCase() as keyof typeof Property
-          const time = (node[Property[timeProp]] as number) || 0
+          const time = (node[Property[timeProp] as keyof IOBuffers]) || 0
           const buffersOperation = buffersOperations[index]
           const buffers = _.sumBy(buffersScopes, (bufferScope) => {
             const bufferProp =
               `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof Property
-            return (node[Property[bufferProp]] as number) || 0
+            return (node[Property[bufferProp] as keyof IOBuffers]) || 0
           })
           const buffersProp = `${prefix}${buffersOperation}_blocks`.toUpperCase() as keyof typeof Property;
-          node[Property[buffersProp] as unknown as keyof typeof Node] = buffers;
+          node[Property[buffersProp] as keyof IOBuffers] = buffers;
           if (time) {
-            node[Property[speedProp] as unknown as keyof typeof Node] = Number(
+            node[Property[speedProp] as keyof IOBuffers] = Number(
               (buffers / (time / 1000)).toFixed(3),
             )
           }
@@ -1462,19 +1500,19 @@ export class PlanService {
         _.forEach(scopesMatrix, (buffersScopes, timingScope) => {
           const timeProp =
             `${prefix}${timingScope ? timingScope + "_" : ""}io_${operation}_time`.toUpperCase() as keyof typeof Property
-          time += (node[Property[timeProp]] as number) || 0
+          time += (node[Property[timeProp] as keyof IOBuffers] as number) || 0
           const buffersOperation = buffersOperations[index]
           buffers += _.sumBy(buffersScopes, (bufferScope) => {
             const bufferProp =
               `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof Property
-            return (node[Property[bufferProp]] as number) || 0
+            return (node[Property[bufferProp] as keyof IOBuffers] as number) || 0
           })
         })
-        node[Property[sumTimeProp] as unknown as keyof typeof Node] = Number(
+        node[Property[sumTimeProp] as keyof IOBuffers] = Number(
           time.toFixed(3),
         )
         if (time) {
-          node[Property[speedProp] as unknown as keyof typeof Node] = Number(
+          node[Property[speedProp] as keyof IOBuffers] = Number(
             (buffers / (time / 1000)).toFixed(3),
           )
         }
