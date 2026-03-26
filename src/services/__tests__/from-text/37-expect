@@ -95,12 +95,14 @@
     "I/O Write Time": 0
   },
   "Query Identifier": -5424821330993577000,
-  "Shared Hit Blocks": 32,
-  "Shared Read Blocks": 8,
-  "Shared Written Blocks": 0,
-  "Shared Dirtied Blocks": 0,
-  "I/O Read Time": 0.073,
-  "I/O Write Time": 0,
+  "Planning": {
+    "I/O Read Time": 0.073,
+    "I/O Write Time": 0,
+    "Shared Dirtied Blocks": 0,
+    "Shared Hit Blocks": 32,
+    "Shared Read Blocks": 8,
+    "Shared Written Blocks": 0
+  },
   "Planning Time": 0.292,
   "Execution Time": 22103.138
 }

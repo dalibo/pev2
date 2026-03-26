@@ -32,6 +32,7 @@ export interface IPlanContent {
   Triggers?: ITrigger[]
   JIT?: JIT
   Serialization?: ISerialization
+  Planning?: IPlanning
   "Query Text"?: string
   [k: string]:
     | Node
@@ -40,6 +41,7 @@ export interface IPlanContent {
     | IBlocksStats
     | ITrigger[]
     | JIT
+    | IPlanning
     | ISerialization
     | undefined
 }
@@ -62,6 +64,7 @@ export interface IPlanStats {
   maxEstimateFactor: number
   triggers?: ITrigger[]
   jitTime?: number
+  planning?: IPlanning
   serialization?: ISerialization
   settings?: Settings
 }
@@ -69,6 +72,7 @@ export interface IPlanStats {
 export type IBlocksStats = {
   [key in BufferLocation]: number
 }
+
 
 // Class to create nodes when parsing text
 export class Node {
@@ -329,6 +333,32 @@ export type ViewOptions = {
 export interface JIT {
   ["Timing"]: Timing
   [key: string]: number | Timing
+}
+
+export interface IOBuffers {
+  [Property.LOCAL_DIRTIED_BLOCKS]: number
+  [Property.LOCAL_HIT_BLOCKS]: number
+  [Property.LOCAL_READ_BLOCKS]: number
+  [Property.LOCAL_WRITTEN_BLOCKS]: number
+  [Property.SHARED_DIRTIED_BLOCKS]: number
+  [Property.SHARED_HIT_BLOCKS]: number
+  [Property.SHARED_READ_BLOCKS]: number
+  [Property.SHARED_WRITTEN_BLOCKS]: number
+  [Property.TEMP_READ_BLOCKS]: number
+  [Property.TEMP_WRITTEN_BLOCKS]: number
+  [Property.READ_BLOCKS]: number
+  [Property.WRITTEN_BLOCKS]: number
+  [Property.IO_READ_TIME]: number
+  [Property.IO_WRITE_TIME]: number
+  [Property.TEMP_IO_READ_TIME]?: number
+  [Property.TEMP_IO_WRITE_TIME]?: number
+  [Property.AVERAGE_IO_READ_SPEED]?: number
+  [Property.AVERAGE_IO_WRITE_SPEED]?: number
+}
+
+export interface IPlanning extends IOBuffers {
+  ["Memory Used"]: number
+  ["Memory Allocated"]: number
 }
 
 export interface ISerialization {
