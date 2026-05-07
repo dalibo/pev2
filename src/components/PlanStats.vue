@@ -19,6 +19,7 @@ import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 const helpService = new HelpService()
 const getHelpMessage = helpService.getHelpMessage
 const showSettings = ref<boolean>(false)
+const showPlanningDetails = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
 const showJitDetails = ref<boolean>(false)
 const showSerializationDetails = ref<boolean>(false)
@@ -81,6 +82,34 @@ function hasParallelChildren(node: Node) {
   })
 }
 
+const hasPlanningDetails = computed(
+  (): boolean => store.stats.planning !== undefined,
+)
+
+const shouldShowPlanningBuffers = computed((): boolean => {
+  if (!store.stats.planning) {
+    return false
+  }
+  const properties: Array<keyof typeof BuffersProp> = [
+    "SHARED_HIT_BLOCKS",
+    "SHARED_READ_BLOCKS",
+    "SHARED_DIRTIED_BLOCKS",
+    "SHARED_WRITTEN_BLOCKS",
+    "TEMP_READ_BLOCKS",
+    "TEMP_WRITTEN_BLOCKS",
+    "LOCAL_HIT_BLOCKS",
+    "LOCAL_READ_BLOCKS",
+    "LOCAL_DIRTIED_BLOCKS",
+    "LOCAL_WRITTEN_BLOCKS",
+  ]
+  const values = _.map(properties, (property) => {
+    const value = store.stats.planning?.[BuffersProp[property]]
+    return _.isNaN(value) ? 0 : value
+  })
+  const sum = _.sum(values)
+  return sum > 0
+})
+
 const shouldShowSerializationBuffers = computed((): boolean => {
   if (!store.stats.serialization) {
     return false
@@ -130,8 +159,8 @@ const shouldShowSerializationBuffers = computed((): boolean => {
         ></span>
       </template>
     </div>
-    <div class="d-inline-block border-start px-2">
-      Planning time:
+    <div class="d-inline-block border-start px-2 position-relative">
+      Planning:
       <template v-if="!store.stats.planningTime">
         <span class="text-body-tertiary">
           N/A
@@ -157,6 +186,34 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           ></span>
         </span>
       </template>
+      <button
+        @click.prevent="showPlanningDetails = !showPlanningDetails"
+        v-if="hasPlanningDetails"
+        class="bg-transparent border-0 p-0 m-0 ps-1"
+      >
+        <FontAwesomeIcon
+          :icon="faCaretDown"
+          class="text-body-tertiary"
+        ></FontAwesomeIcon>
+      </button>
+      <div
+        class="stat-dropdown-container text-start"
+        v-if="showPlanningDetails && hasPlanningDetails"
+      >
+        <button
+          class="btn btn-xs btn-close float-end"
+          v-on:click="showPlanningDetails = false"
+        ></button>
+        <h3>Planning</h3>
+        <div>
+          <b>Time:</b>
+          <span>{{ duration(store.stats.planningTime) }}</span>
+        </div>
+        <div v-if="shouldShowPlanningBuffers">
+          <BuffersDetail :object="store.stats.planning" />
+        </div>
+        <IoTooltip :node="store.stats.planning" class="mb-0" />
+      </div>
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"
