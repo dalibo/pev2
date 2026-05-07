@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { formatBlocks } from "@/filters"
-import type { ISerialization, Node } from "@/interfaces"
+import type { IPlanning, ISerialization, Node } from "@/interfaces"
 import { Property } from "@/enums"
 
 interface Props {
-  object: Node | ISerialization
+  object: Node | ISerialization | IPlanning
 }
 const props = defineProps<Props>()
 
