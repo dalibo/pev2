@@ -7,6 +7,7 @@ import type {
   IPlanContent,
   IPlanStats,
   IBlocksStats,
+  IPlanning,
   ISerialization,
   Settings,
 } from "@/interfaces"
@@ -125,6 +126,7 @@ export const store = reactive<Store>({
       maxEstimateFactor:  content.maxEstimateFactor || NaN,
       triggers:  content.Triggers || [],
       jitTime:  (content.JIT && content.JIT.Timing && content.JIT.Timing.Total) || NaN,
+      planning: content.Planning as IPlanning,
       serialization: content.Serialization as ISerialization,
       settings:  content.Settings as Settings
     }

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import _ from "lodash"
 import { computed, ref } from "vue"
-import type { ISerialization, ITrigger, Node } from "@/interfaces"
+import type { IPlanning, ISerialization, ITrigger, Node } from "@/interfaces"
 import { getHelpMessage } from "@/services/help-service"
 import { formatDuration, durationClass, formatKilobytes } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 
 const showSettings = ref<boolean>(false)
+const showPlanningDetails = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
 const showJitDetails = ref<boolean>(false)
 const showSerializationDetails = ref<boolean>(false)
@@ -78,6 +79,34 @@ function hasParallelChildren(node: Node) {
   })
 }
 
+const hasPlanningDetails = computed(
+  (): boolean => store.stats.planning !== undefined,
+)
+
+const shouldShowPlanningBuffers = computed((): boolean => {
+  if (!store.stats.planning) {
+    return false
+  }
+  const properties: (keyof IPlanning)[] = [
+    Property.SHARED_HIT_BLOCKS,
+    Property.SHARED_READ_BLOCKS,
+    Property.SHARED_DIRTIED_BLOCKS,
+    Property.SHARED_WRITTEN_BLOCKS,
+    Property.TEMP_READ_BLOCKS,
+    Property.TEMP_WRITTEN_BLOCKS,
+    Property.LOCAL_HIT_BLOCKS,
+    Property.LOCAL_READ_BLOCKS,
+    Property.LOCAL_DIRTIED_BLOCKS,
+    Property.LOCAL_WRITTEN_BLOCKS,
+  ]
+  const values = _.map(properties, (property) => {
+    const value = store.stats.planning?.[property]
+    return _.isNaN(value) ? 0 : value
+  })
+  const sum = _.sum(values)
+  return sum > 0
+})
+
 const shouldShowSerializationBuffers = computed((): boolean => {
   if (!store.stats.serialization) {
     return false
@@ -127,8 +156,8 @@ const shouldShowSerializationBuffers = computed((): boolean => {
         ></span>
       </template>
     </div>
-    <div class="d-inline-block border-start px-2">
-      Planning time:
+    <div class="d-inline-block border-start px-2 position-relative">
+      Planning:
       <template v-if="!store.stats.planningTime">
         <span class="text-body-tertiary">
           N/A
@@ -154,6 +183,36 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           ></span>
         </span>
       </template>
+      <button
+        @click.prevent="showPlanningDetails = !showPlanningDetails"
+        v-if="hasPlanningDetails"
+        class="bg-transparent border-0 p-0 m-0 ps-1"
+      >
+        <FontAwesomeIcon
+          :icon="faCaretDown"
+          class="text-body-tertiary"
+        ></FontAwesomeIcon>
+      </button>
+      <div
+        class="stat-dropdown-container text-start"
+        v-if="showPlanningDetails && hasPlanningDetails"
+      >
+        <button
+          class="btn btn-xs btn-close float-end"
+          v-on:click="showPlanningDetails = false"
+        ></button>
+        <h3>Planning</h3>
+        <div>
+          <b>Time:</b>
+          <span>{{ formatDuration(store.stats.planningTime) }}</span>
+        </div>
+        <template v-if="store.stats.planning">
+          <div v-if="shouldShowPlanningBuffers">
+            <BuffersDetail :object="store.stats.planning" />
+          </div>
+          <IoTable :object="store.stats.planning" class="mb-0" />
+        </template>
+      </div>
     </div>
     <div
       class="d-inline-block border-start px-2 position-relative"

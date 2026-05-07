@@ -350,10 +350,12 @@ export interface IOBuffers {
   [Property.WRITTEN_BLOCKS]: number
   [Property.IO_READ_TIME]: number
   [Property.IO_WRITE_TIME]: number
-  [Property.TEMP_IO_READ_TIME]?: number
-  [Property.TEMP_IO_WRITE_TIME]?: number
-  [Property.AVERAGE_IO_READ_SPEED]?: number
-  [Property.AVERAGE_IO_WRITE_SPEED]?: number
+  [Property.SHARED_IO_READ_TIME]: number
+  [Property.SHARED_IO_WRITE_TIME]: number
+  [Property.TEMP_IO_READ_TIME]: number
+  [Property.TEMP_IO_WRITE_TIME]: number
+  [Property.AVERAGE_IO_READ_SPEED]: number
+  [Property.AVERAGE_IO_WRITE_SPEED]: number
 }
 
 export interface IPlanning extends IOBuffers {
