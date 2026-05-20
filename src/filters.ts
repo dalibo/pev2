@@ -161,7 +161,7 @@ export function list(value: string[] | string): string {
     ? value.split(/\s*,\s*/)
     : value
 
-  const items = lines.map(line => `<li>${line}</li>`).join("")
+  const items = lines.map(line => `<li>${_.escape(line)}</li>`).join("")
 
   return `<ul class="list-unstyled mb-0">${items}</ul>`
 }
