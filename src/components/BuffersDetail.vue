@@ -53,7 +53,7 @@ const tempWrittenBlocks =
   <table class="table table-sm">
     <thead>
       <tr>
-        <th>Blocks</th>
+        <th>Buffers</th>
         <td class="text-end" width="25%">Hit</td>
         <td class="text-end" width="25%">Read</td>
         <td class="text-end" width="25%">Dirtied</td>
