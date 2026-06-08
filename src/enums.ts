@@ -55,6 +55,8 @@ export enum BuffersProp {
   LOCAL_READ_BLOCKS = "Local Read Blocks",
   LOCAL_DIRTIED_BLOCKS = "Local Dirtied Blocks",
   LOCAL_WRITTEN_BLOCKS = "Local Written Blocks",
+  READ_BLOCKS = "*Read Blocks",
+  WRITTEN_BLOCKS = "*Written Blocks",
 }
 
 export enum NodePropBase {
@@ -89,8 +91,6 @@ export enum NodePropBase {
   WORKERS = "Workers",
   WORKERS_PLANNED = "Workers Planned",
   WORKERS_LAUNCHED = "Workers Launched",
-  READ_BLOCKS = "*Read Blocks",
-  WRITTEN_BLOCKS = "*Written Blocks",
   IO_READ_TIME = "I/O Read Time",
   IO_WRITE_TIME = "I/O Write Time",
   SHARED_IO_READ_TIME = "Shared I/O Read Time",
