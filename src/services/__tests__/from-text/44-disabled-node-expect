@@ -1,0 +1,16 @@
+{
+  "Plan": {
+    "Node Type": "Seq Scan",
+    "Parallel Aware": false,
+    "Relation Name": "t1",
+    "Startup Cost": 0.00,
+    "Total Cost": 21370.00,
+    "Plan Rows": 333333,
+    "Plan Width": 22,
+    "Disabled": true,
+    "Filter": "((c1 + 0) < 1000000)"
+  },
+  "Settings": {
+    "enable_seqscan": "off"
+  }
+}

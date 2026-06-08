@@ -146,6 +146,7 @@ export class Node {
   [NodeProp.SUM_IO_WRITE_TIME]!: number;
   [NodeProp.PARTIAL_MODE]!: string;
   [NodeProp.SCAN_DIRECTION]!: string;
+  [NodeProp.DISABLED]?: boolean;
   [k: string]:
     | Node[]
     | Options
