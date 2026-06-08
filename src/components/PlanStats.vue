@@ -205,7 +205,6 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           >
         </div>
         <div v-if="shouldShowSerializationBuffers">
-          <b>Buffers: </b>
           <BuffersDetail :object="store.stats.serialization" />
         </div>
       </div>
