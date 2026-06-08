@@ -113,6 +113,7 @@ export enum NodePropBase {
   OPERATION = "Operation",
   RECHECK_COND = "Recheck Cond",
   SCAN_DIRECTION = "Scan Direction",
+  DISABLED = "Disabled",
 
   // computed by pev
   NODE_ID = "nodeId",

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, inject, ref } from "vue"
+import DisabledBadge from "@/components/DisabledBadge.vue"
 import type { ViewOptions } from "@/interfaces"
 import { EstimateDirection, NodeProp } from "@/enums"
 import { HighlightedNodeIdKey, ViewOptionsKey } from "@/symbols"
@@ -365,6 +366,7 @@ const isHighlighted = computed(
         >
           {{ nodeName }}
         </b>
+        <DisabledBadge :node="node" />
 
         <span class="text-body-secondary">
           <template

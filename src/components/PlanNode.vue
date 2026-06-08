@@ -2,6 +2,7 @@
 import { inject, nextTick, onMounted, provide, reactive, ref, watch } from "vue"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
 import NodeBadges from "@/components/NodeBadges.vue"
+import DisabledBadge from "@/components/DisabledBadge.vue"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
 import {
   HighlightedNodeIdKey,
@@ -158,6 +159,7 @@ function centerCte() {
                 ></FontAwesomeIcon>
               </span>
               {{ nodeName }}
+              <DisabledBadge :node="node" />
             </h4>
             <div class="text-nowrap">
               <NodeBadges :node="node" />
