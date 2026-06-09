@@ -502,7 +502,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
         </li>
       </ul>
       <div class="ms-auto me-2 small">
-        <a href="https://github.com/dalibo/pev2" target="_blank">
+        <a href="https://github.com/dalibo/pev2" target="_blank" data-testid="version">
           <LogoImage />
           {{ version }}
         </a>

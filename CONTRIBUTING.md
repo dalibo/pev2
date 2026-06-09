@@ -37,3 +37,21 @@ npm run lint
 ```sh
 npm run test
 ```
+
+
+## Run E2E tests
+
+```sh
+npm run test:docker:build
+npm run test:docker
+```
+
+E2E tests are executed inside a Docker container using Playwright, ensuring consistent results between local and CI environments. The Docker image only needs to be built once before running the tests, unless dependencies change.
+
+### Update snapshots
+
+```sh
+npm run test:docker:update
+```
+
+Visual testing via snapshots is supported by Playwright. To update or create new snapshots, run this command.

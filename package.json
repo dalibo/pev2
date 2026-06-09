@@ -26,7 +26,10 @@
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-pattern .gitignore",
     "prepare": "husky",
-    "test": "LANG=en_US.UTF-8 vitest --run"
+    "test": "LANG=en_US.UTF-8 vitest --run",
+    "test:docker:build": "docker build -t playwright-tests .",
+    "test:docker": "docker run --rm --ipc=host -v $PWD:$PWD -w $PWD playwright-tests npx playwright test",
+    "test:docker:update": "docker run --rm --ipc=host -v $PWD:$PWD -w $PWD playwright-tests npx playwright test --update-snapshots"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
