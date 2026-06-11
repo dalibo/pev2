@@ -1,6 +1,7 @@
 {
   "Plan": {
     "Node Type": "Seq Scan",
+    "Parallel Aware": false,
     "Relation Name": "tenk1",
     "Startup Cost": 0,
     "Total Cost": 333,
