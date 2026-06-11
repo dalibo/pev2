@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { inject } from "vue"
 
-const props = defineProps({
-  to: {
-    type: String,
-    required: true,
-  },
-})
+interface Props {
+  to: string
+}
+
+const props = defineProps<Props>()
 
 const currentPath = inject("currentPath")
 

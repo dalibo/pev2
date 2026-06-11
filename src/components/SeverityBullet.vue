@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-defineProps(["severity"])
+interface Props {
+  severity: string
+}
+defineProps<Props>()
 </script>
 
 <template>
