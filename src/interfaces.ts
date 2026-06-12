@@ -284,12 +284,10 @@ export class Node {
 }
 
 import { WorkerProp } from "@/enums"
-// Class to create workers when parsing text
-export class Worker {
+
+export interface Worker {
+  [WorkerProp.WORKER_NUMBER]: number
   [k: string]: string | number | object
-  constructor(workerNumber: number) {
-    this[WorkerProp.WORKER_NUMBER] = workerNumber
-  }
 }
 
 export type Options = {

@@ -16,8 +16,9 @@ import type {
   ISerialization,
   JIT,
   SortGroups,
+  Worker,
 } from "@/interfaces"
-import { Node, Worker } from "@/interfaces"
+import { Node } from "@/interfaces"
 
 interface NodeElement {
   node: Node
@@ -861,7 +862,7 @@ export class PlanService {
         }
         let worker = this.getWorker(previousElement.node, workerNumber)
         if (!worker) {
-          worker = new Worker(workerNumber)
+          worker = {[WorkerProp.WORKER_NUMBER]: workerNumber}
           previousElement.node[NodeProp.WORKERS]?.push(worker)
         }
         if (
