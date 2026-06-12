@@ -4,7 +4,7 @@ import _ from "lodash"
 import type { Node, ViewOptions } from "@/interfaces"
 import { NodeProp, WorkerProp } from "@/enums"
 import { ViewOptionsKey } from "@/symbols"
-import { HelpService } from "@/services/help-service"
+import { getHelpMessage } from "@/services/help-service"
 import useNode from "@/node"
 import { formatNodeProp } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
@@ -18,9 +18,6 @@ interface Props {
 const props = defineProps<Props>()
 const node = reactive<Node>(props.node)
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
-
-const helpService = new HelpService()
-const getHelpMessage = helpService.getHelpMessage
 
 const { workersLaunchedCount, workersPlannedCount } = useNode(node, viewOptions)
 </script>

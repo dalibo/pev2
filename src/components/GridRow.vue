@@ -22,11 +22,9 @@ import IoTooltip from "@/components/tooltip/IoTooltip.vue"
 import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
 import useNode from "@/node"
 import { Tippy, directive as vTippy } from "vue-tippy"
-import { HelpService } from "@/services/help-service"
+import { getNodeTypeDescription } from "@/services/help-service"
 import { store } from "@/store"
 import type { FlattenedPlanNode } from "@/store"
-const helpService = new HelpService()
-const getNodeTypeDescription = helpService.getNodeTypeDescription
 
 interface Props {
   row: FlattenedPlanNode

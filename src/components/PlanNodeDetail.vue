@@ -2,7 +2,7 @@
 import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
 import { directive as vTippy } from "vue-tippy"
 import type { Node, ViewOptions } from "@/interfaces"
-import { HelpService } from "@/services/help-service"
+import { getNodeTypeDescription } from "@/services/help-service"
 import { EstimateDirection, NodeProp } from "@/enums"
 import useNode from "@/node"
 import { store } from "@/store"
@@ -44,9 +44,6 @@ const nodeProps = ref<
 
 // UI flags
 const activeTab = ref<string>("general")
-
-const helpService = new HelpService()
-const getNodeTypeDescription = helpService.getNodeTypeDescription
 
 const {
   costClass,

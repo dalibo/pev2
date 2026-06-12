@@ -10,16 +10,16 @@ import {
   watch,
 } from "vue"
 import { BufferLocation, NodeProp, Metric } from "../enums"
-import { HelpService, scrollChildIntoParentView } from "@/services/help-service"
+import {
+  getHelpMessage,
+  scrollChildIntoParentView,
+} from "@/services/help-service"
 import type { Node } from "@/interfaces"
 import { SelectNodeKey } from "@/symbols"
 import DiagramRow from "@/components/DiagramRow.vue"
 import LevelDivider from "@/components/LevelDivider.vue"
 import { Tippy } from "vue-tippy"
 import { store } from "@/store"
-
-const helpService = new HelpService()
-const getHelpMessage = helpService.getHelpMessage
 
 const container = ref(null) // The container element
 

@@ -2,7 +2,7 @@
 import _ from "lodash"
 import { computed, ref } from "vue"
 import type { ITrigger, Node } from "@/interfaces"
-import { HelpService } from "@/services/help-service"
+import { getHelpMessage } from "@/services/help-service"
 import { duration, durationClass, kilobytes } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
 import { NodeProp } from "../enums"
@@ -16,8 +16,6 @@ import { store } from "@/store"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 
-const helpService = new HelpService()
-const getHelpMessage = helpService.getHelpMessage
 const showSettings = ref<boolean>(false)
 const showTriggers = ref<boolean>(false)
 const showJitDetails = ref<boolean>(false)
