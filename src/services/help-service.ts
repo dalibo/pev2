@@ -3,23 +3,15 @@ import type { IPlan, Node } from "@/interfaces"
 import { NodeProp } from "@/enums"
 import { nodePropTypes, PropType } from "@/enums"
 
-export class HelpService {
-  public nodeId = 0
-
-  public getNodeTypeDescription(nodeType: string) {
-    return NODE_DESCRIPTIONS[nodeType.toUpperCase()]
-  }
-
-  public getHelpMessage(helpMessage: string) {
-    return HELP_MESSAGES[helpMessage.toUpperCase()]
-  }
+export function getNodeTypeDescription(nodeType: string): string | undefined {
+  return NODE_DESCRIPTIONS[nodeType.toUpperCase()]
 }
 
-interface INodeDescription {
-  [key: string]: string
+export function getHelpMessage(helpMessage: string): string | undefined {
+  return HELP_MESSAGES[helpMessage.toUpperCase()]
 }
 
-export const NODE_DESCRIPTIONS: INodeDescription = {
+export const NODE_DESCRIPTIONS: Record<string, string> = {
   LIMIT: "returns a specified number of rows from a record set.",
   SORT: "sorts a record set based on the specified sort key.",
   "NESTED LOOP": `merges two record sets by looping through every record in the first set and
@@ -51,11 +43,7 @@ export const NODE_DESCRIPTIONS: INodeDescription = {
   "GATHER MERGE": `reads the results of the parallel workers, preserving any ordering.`,
 }
 
-interface IHelpMessage {
-  [key: string]: string
-}
-
-export const HELP_MESSAGES: IHelpMessage = {
+export const HELP_MESSAGES: Record<string, string> = {
   "MISSING EXECUTION TIME": `Execution time (or Total runtime) not available for this plan. Make sure you
     use EXPLAIN ANALYZE.`,
   "MISSING PLANNING TIME": "Planning time not available for this plan.",
