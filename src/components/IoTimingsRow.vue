@@ -6,7 +6,7 @@ import { NodeProp, Scope } from "@/enums"
 import { ViewOptionsKey } from "@/symbols"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { directive as vTippy } from "vue-tippy"
-import { HelpService } from "@/services/help-service"
+import { getHelpMessage } from "@/services/help-service"
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 import { blocksAsBytes } from "@/filters"
 import useNode from "@/node"
@@ -19,9 +19,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   exclusive: () => false,
 })
-
-const helpService = new HelpService()
-const getHelpMessage = helpService.getHelpMessage
 
 const exclusivePrefix = props.exclusive ? "EXCLUSIVE_" : ""
 

@@ -20,11 +20,11 @@ export enum BufferType {
   dirtied = "Dirtied",
 }
 
-export class HighlightType {
-  public static NONE = "none"
-  public static DURATION = "duration"
-  public static ROWS = "rows"
-  public static COST = "cost"
+export enum HighlightType {
+  NONE = "none",
+  DURATION = "duration",
+  ROWS = "rows",
+  COST = "cost",
 }
 
 export enum SortDirection {
@@ -314,9 +314,9 @@ nodePropTypes[NodeProp.PRE_SORTED_GROUPS] = PropType.sortGroups
 
 nodePropTypes[NodeProp.JIT] = PropType.jit
 
-export class WorkerProp {
+export enum WorkerProp {
   // plan property keys
-  public static WORKER_NUMBER = "Worker Number"
+  WORKER_NUMBER = "Worker Number",
 }
 
 nodePropTypes[WorkerProp.WORKER_NUMBER] = PropType.increment
