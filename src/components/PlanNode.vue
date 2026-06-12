@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { inject, nextTick, onMounted, provide, reactive, ref, watch } from "vue"
+import { directive as vTippy } from "vue-tippy"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
 import NodeBadges from "@/components/NodeBadges.vue"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
@@ -18,6 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
   faChevronDown,
   faChevronUp,
+  faCircleXmark,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons"
 
@@ -158,6 +160,17 @@ function centerCte() {
                 ></FontAwesomeIcon>
               </span>
               {{ nodeName }}
+              <span
+                v-if="node[NodeProp.DISABLED] === true"
+                class="text-danger"
+                v-tippy="{
+                  content: `${nodeName} <b>is used</b> even though it has been disabled (see corresponding 'enable' parameter in <i>Settings</i>)`,
+                  allowHTML: true
+                }"
+              >
+                <FontAwesomeIcon fixed-width :icon="faCircleXmark"
+                ></FontAwesomeIcon>
+              </span>
             </h4>
             <div class="text-nowrap">
               <NodeBadges :node="node" />

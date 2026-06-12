@@ -1,0 +1,4 @@
+Seq Scan on t1 (cost=0.00..21370.00 rows=333333 width=22)
+   Disabled: true
+   Filter: ((c1 + 0) < 1000000)
+ Settings: enable_seqscan = 'off'

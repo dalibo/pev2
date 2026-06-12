@@ -113,6 +113,7 @@ export enum NodePropBase {
   OPERATION = "Operation",
   RECHECK_COND = "Recheck Cond",
   SCAN_DIRECTION = "Scan Direction",
+  DISABLED = "Disabled",
 
   // computed by pev
   NODE_ID = "nodeId",
@@ -244,6 +245,7 @@ nodePropTypes[NodeProp.PRESORTED_KEY] = PropType.list
 nodePropTypes[NodeProp.WAL_RECORDS] = PropType.rows
 nodePropTypes[NodeProp.WAL_BYTES] = PropType.bytes
 nodePropTypes[NodeProp.WAL_FPI] = PropType.rows
+nodePropTypes[NodeProp.DISABLED] = PropType.boolean
 
 nodePropTypes[NodeProp.EXCLUSIVE_DURATION] = PropType.duration
 nodePropTypes[NodeProp.EXCLUSIVE_COST] = PropType.cost

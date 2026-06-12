@@ -1009,6 +1009,10 @@ export class PlanService {
           return
         }
 
+        if (this.parseDisabled(extraMatches[2], element as Node)) {
+          return
+        }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, "")
         // try to convert to number
@@ -1335,6 +1339,23 @@ export class PlanService {
         el[NodeProp.PRE_SORTED_GROUPS] = groups
       } else {
         throw new Error("Unsupported sort groups method")
+      }
+      return true
+    }
+    return false
+  }
+
+  private parseDisabled(text: string, el:Node): boolean {
+    // Parse Disabled value into boolean
+    const booleanRegex = /^\s*(Disabled)\s*:\s*("?true"?|"?false"?)\S*$/
+    const matches = booleanRegex.exec(text)
+
+    if (matches && matches[1] === "Disabled") {
+      let value = matches[2].replace(/"/g, "")
+      if (value === "true") {
+        el[NodeProp.DISABLED] = true;
+      } else {
+        el[NodeProp.DISABLED] = false;
       }
       return true
     }
