@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { blocks } from "@/filters"
+import { formatBlocks } from "@/filters"
 import type { ISerialization, Node } from "@/interfaces"
 import { BuffersProp, NodeProp } from "@/enums"
 
@@ -63,41 +63,53 @@ const tempWrittenBlocks =
     <tbody>
       <tr>
         <td>Shared</td>
-        <td class="text-end" v-html="blocks(sharedHitBlocks, true) || '-'"></td>
         <td
           class="text-end"
-          v-html="blocks(sharedReadBlocks, true) || '-'"
+          v-html="formatBlocks(sharedHitBlocks, true) || '-'"
         ></td>
         <td
           class="text-end"
-          v-html="blocks(sharedDirtiedBlocks, true) || '-'"
+          v-html="formatBlocks(sharedReadBlocks, true) || '-'"
         ></td>
         <td
           class="text-end"
-          v-html="blocks(sharedWrittenBlocks, true) || '-'"
+          v-html="formatBlocks(sharedDirtiedBlocks, true) || '-'"
+        ></td>
+        <td
+          class="text-end"
+          v-html="formatBlocks(sharedWrittenBlocks, true) || '-'"
         ></td>
       </tr>
       <tr>
         <td>Temp</td>
         <td class="text-end bg-hatched"></td>
-        <td class="text-end" v-html="blocks(tempReadBlocks, true) || '-'"></td>
+        <td
+          class="text-end"
+          v-html="formatBlocks(tempReadBlocks, true) || '-'"
+        ></td>
         <td class="text-end bg-hatched"></td>
         <td
           class="text-end"
-          v-html="blocks(tempWrittenBlocks, true) || '-'"
+          v-html="formatBlocks(tempWrittenBlocks, true) || '-'"
         ></td>
       </tr>
       <tr>
         <td>Local</td>
-        <td class="text-end" v-html="blocks(localHitBlocks, true) || '-'"></td>
-        <td class="text-end" v-html="blocks(localReadBlocks, true) || '-'"></td>
         <td
           class="text-end"
-          v-html="blocks(localDirtiedBlocks, true) || '-'"
+          v-html="formatBlocks(localHitBlocks, true) || '-'"
         ></td>
         <td
           class="text-end"
-          v-html="blocks(localWrittenBlocks, true) || '-'"
+          v-html="formatBlocks(localReadBlocks, true) || '-'"
+        ></td>
+        <td
+          class="text-end"
+          v-html="formatBlocks(localDirtiedBlocks, true) || '-'"
+        ></td>
+        <td
+          class="text-end"
+          v-html="formatBlocks(localWrittenBlocks, true) || '-'"
         ></td>
       </tr>
     </tbody>

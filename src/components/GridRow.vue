@@ -4,14 +4,14 @@ import type { ViewOptions } from "@/interfaces"
 import { EstimateDirection, NodeProp } from "@/enums"
 import { HighlightedNodeIdKey, ViewOptionsKey } from "@/symbols"
 import {
-  blocks,
-  blocksAsBytes,
-  cost,
-  duration,
-  factor,
+  formatBlocks,
+  formatBlocksAsBytes,
+  formatCost,
+  formatDuration,
+  formatFactor,
   keysToString,
   sortKeys,
-  transferRate,
+  formatTransferRate,
 } from "@/filters"
 import LevelDivider from "@/components/LevelDivider.vue"
 import GridProgressBar from "@/components/GridProgressBar.vue"
@@ -135,7 +135,7 @@ const isHighlighted = computed(
         </span>
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ duration(node[NodeProp.EXCLUSIVE_DURATION]) }}
+        {{ formatDuration(node[NodeProp.EXCLUSIVE_DURATION]) }}
         <br />
         <template v-if="executionTimePercent !== Infinity">
           {{ executionTimePercent }}%
@@ -165,9 +165,13 @@ const isHighlighted = computed(
           })
         }}
         <div v-if="showDetails" class="text-body-secondary mt-1">
-          {{ duration(node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]) }}
+          {{ formatDuration(node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]) }}
           <br />
-          {{ transferRate(node[NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_READ_SPEED]) }}
+          {{
+            formatTransferRate(
+              node[NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_READ_SPEED],
+            )
+          }}
         </div>
       </template>
     </Tippy>
@@ -194,10 +198,12 @@ const isHighlighted = computed(
           })
         }}
         <div v-if="showDetails" class="text-body-secondary mt-1">
-          {{ duration(node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME]) }}
+          {{ formatDuration(node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME]) }}
           <br />
           {{
-            transferRate(node[NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_WRITE_SPEED])
+            formatTransferRate(
+              node[NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_WRITE_SPEED],
+            )
           }}
         </div>
       </template>
@@ -239,7 +245,7 @@ const isHighlighted = computed(
           ></SeverityBullet>
           <span class="flex-grow-1">
             <span
-              v-html="factor(node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0)"
+              v-html="formatFactor(node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0)"
             ></span>
             <span
               v-if="
@@ -286,7 +292,7 @@ const isHighlighted = computed(
       >
         <SeverityBullet :severity="costClass" v-if="costClass"></SeverityBullet>
         <span class="flex-grow-1">
-          {{ cost(node[NodeProp.EXCLUSIVE_COST]) }}
+          {{ formatCost(node[NodeProp.EXCLUSIVE_COST]) }}
         </span>
       </div>
     </td>
@@ -507,10 +513,10 @@ const isHighlighted = computed(
           allowHTML: true,
         }"
       >
-        {{ blocks(node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]) }}
+        {{ formatBlocks(node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]) }}
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]) }}
+        {{ formatBlocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]) }}
       </div>
     </td>
     <td
@@ -527,10 +533,10 @@ const isHighlighted = computed(
           allowHTML: true,
         }"
       >
-        {{ blocks(node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]) }}
+        {{ formatBlocks(node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]) }}
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]) }}
+        {{ formatBlocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]) }}
       </div>
     </td>
     <td
@@ -547,10 +553,12 @@ const isHighlighted = computed(
           allowHTML: true,
         }"
       >
-        {{ blocks(node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]) }}
+        {{ formatBlocks(node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]) }}
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]) }}
+        {{
+          formatBlocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS])
+        }}
       </div>
     </td>
     <td
@@ -567,10 +575,12 @@ const isHighlighted = computed(
           allowHTML: true,
         }"
       >
-        {{ blocks(node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]) }}
+        {{ formatBlocks(node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]) }}
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]) }}
+        {{
+          formatBlocksAsBytes(node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS])
+        }}
       </div>
     </td>
     <td
@@ -585,10 +595,10 @@ const isHighlighted = computed(
           allowHTML: true,
         }"
       >
-        {{ blocks(node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]) }}
+        {{ formatBlocks(node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]) }}
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]) }}
+        {{ formatBlocksAsBytes(node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]) }}
       </div>
     </td>
     <td
@@ -605,10 +615,10 @@ const isHighlighted = computed(
           allowHTML: true,
         }"
       >
-        {{ blocks(node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]) }}
+        {{ formatBlocks(node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]) }}
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]) }}
+        {{ formatBlocksAsBytes(node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]) }}
       </div>
     </td>
     <td
@@ -623,10 +633,10 @@ const isHighlighted = computed(
           allowHTML: true,
         }"
       >
-        {{ blocks(node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]) }}
+        {{ formatBlocks(node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]) }}
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]) }}
+        {{ formatBlocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]) }}
       </div>
     </td>
     <td
@@ -641,10 +651,10 @@ const isHighlighted = computed(
           allowHTML: true,
         }"
       >
-        {{ blocks(node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]) }}
+        {{ formatBlocks(node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]) }}
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]) }}
+        {{ formatBlocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]) }}
       </div>
     </td>
     <td
@@ -661,10 +671,10 @@ const isHighlighted = computed(
           allowHTML: true,
         }"
       >
-        {{ blocks(node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]) }}
+        {{ formatBlocks(node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]) }}
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]) }}
+        {{ formatBlocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]) }}
       </div>
     </td>
     <td
@@ -681,10 +691,10 @@ const isHighlighted = computed(
           allowHTML: true,
         }"
       >
-        {{ blocks(node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]) }}
+        {{ formatBlocks(node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]) }}
       </div>
       <div v-if="showDetails" class="text-body-secondary mt-1">
-        {{ blocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]) }}
+        {{ formatBlocksAsBytes(node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]) }}
       </div>
     </td>
   </tr>

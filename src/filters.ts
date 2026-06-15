@@ -11,7 +11,7 @@ hljs.registerLanguage("pgsql", pgsql)
 import json from "highlight.js/lib/languages/json"
 hljs.registerLanguage("json", json)
 
-export function duration(value: number | undefined): string {
+export function formatDuration(value: number | undefined): string {
   if (value === undefined) {
     return "-"
   }
@@ -58,30 +58,161 @@ export function duration(value: number | undefined): string {
   return result.slice(0, 2).join(" ")
 }
 
-export function cost(value: number | undefined): string {
+export function formatCost(value: number | undefined): string {
   if (value === undefined) {
     return "N/A"
   }
   return value.toLocaleString(undefined, { minimumFractionDigits: 2 })
 }
 
-export function rows(value: number | undefined): string {
+export function formatRows(value: number | undefined): string {
   if (value === undefined) {
     return "N/A"
   }
   return value.toLocaleString()
 }
 
-export function loops(value: number | undefined): string {
+export function formatLoops(value: number | undefined): string {
   if (value === undefined) {
     return "N/A"
   }
   return value.toLocaleString()
 }
 
-export function factor(value: number): string {
+export function formatFactor(value: number | undefined): string {
+  if (value === undefined) {
+    return "N/A"
+  }
   const f: string = parseFloat(value.toPrecision(2)).toLocaleString()
   return `${f}&nbsp;&times;`
+}
+
+export function formatKilobytes(value: number): string {
+  return formatBytes_(value * 1024)
+}
+
+function formatBytes(value: number): string {
+  return formatBytes_(value)
+}
+
+export function formatBytes_(value: number) {
+  if (value === 0) {
+    return "0 kB"
+  }
+  const k = 1024
+  const units = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+  const i = Math.floor(Math.log(value) / Math.log(k))
+  const raw = value / Math.pow(k, i)
+  const valueString = raw % 1 === 0
+    ? raw.toLocaleString()
+    : parseFloat(raw.toPrecision(2)).toLocaleString()
+  return `${valueString} ${units[i]}`
+}
+
+export function formatBlocksAsBytes(value: number): string {
+  return value ? formatBytes_(value * 8 * 1024) : ""
+}
+
+export function formatBlocks(value: number, asHtml = false): string {
+  asHtml = !!asHtml
+  if (!value) {
+    return ""
+  }
+  let r = value.toLocaleString()
+  if (asHtml) {
+    r += `<br><small>${formatBlocksAsBytes(value)}</small>`
+  }
+  return r
+}
+
+export function formatPercent(value: number): string {
+  if (isNaN(value)) {
+    return "-"
+  }
+  return _.round(value * 100) + "%"
+}
+
+export function formatList(value: string[] | string): string {
+  if (value == undefined) {
+    return ''
+  }
+  const lines =
+    typeof value === "string"
+    ? value.split(/\s*,\s*/)
+    : value
+
+  const items = lines.map(line => `<li>${_.escape(line)}</li>`).join("")
+
+  return `<ul class="list-unstyled mb-0">${items}</ul>`
+}
+
+function formatSortGroups(value: string): string {
+  const app = createApp(SortGroup, { sortGroup: value }).mount(
+    document.createElement("div"),
+  )
+  return app.$el.outerHTML
+}
+
+export function formatTransferRate(value: number): string {
+  if (!value) {
+    return ""
+  }
+  return formatBlocksAsBytes(value) + "/s"
+}
+
+function formatJit(value: JIT): string {
+  const app = createApp(JitDetails, { jit: value }).mount(
+    document.createElement("div"),
+  )
+  return app.$el.outerHTML
+}
+
+function formatBoolean(value: boolean): string {
+  return value ? "yes" : "no"
+}
+
+export function formatNodeProp(key: string, value: unknown): string {
+  if (_.has(nodePropTypes, key)) {
+    if (nodePropTypes[key] === PropType.duration) {
+      return formatDuration(value as number)
+    } else if (nodePropTypes[key] === PropType.boolean) {
+      return formatBoolean(value as boolean)
+    } else if (nodePropTypes[key] === PropType.cost) {
+      return formatCost(value as number)
+    } else if (nodePropTypes[key] === PropType.rows) {
+      return formatRows(value as number)
+    } else if (nodePropTypes[key] === PropType.loops) {
+      return formatLoops(value as number)
+    } else if (nodePropTypes[key] === PropType.factor) {
+      return formatFactor(value as number)
+    } else if (nodePropTypes[key] === PropType.estimateDirection) {
+      switch (value) {
+        case EstimateDirection.over:
+          return '<i class="fa fa-arrow-up"></i> over'
+        case EstimateDirection.under:
+          return '<i class="fa fa-arrow-down"></i> under'
+        default:
+          return "-"
+      }
+    } else if (nodePropTypes[key] === PropType.json) {
+      return JSON.stringify(value, null, 2)
+    } else if (nodePropTypes[key] === PropType.bytes) {
+      return formatBytes(value as number)
+    } else if (nodePropTypes[key] === PropType.kilobytes) {
+      return formatKilobytes(value as number)
+    } else if (nodePropTypes[key] === PropType.blocks) {
+      return formatBlocks(value as number, true)
+    } else if (nodePropTypes[key] === PropType.list) {
+      return formatList(value as string[])
+    } else if (nodePropTypes[key] === PropType.sortGroups) {
+      return formatSortGroups(value as string)
+    } else if (nodePropTypes[key] === PropType.transferRate) {
+      return formatTransferRate(value as number)
+    } else if (nodePropTypes[key] === PropType.jit) {
+      return formatJit(value as JIT)
+    }
+  }
+  return _.escape(value as unknown as string)
 }
 
 export function keysToString(value: string[] | string): string {
@@ -111,130 +242,6 @@ export function sortKeys(
 export function truncate(text: string, length: number, clamp: string): string {
   clamp = clamp || "..."
   return text.length > length ? text.slice(0, length) + clamp : text
-}
-
-export function kilobytes(value: number): string {
-  return formatBytes_(value * 1024)
-}
-
-export function bytes(value: number): string {
-  return formatBytes_(value)
-}
-
-export function formatBytes_(value: number) {
-  if (value === 0) {
-    return "0 kB"
-  }
-  const k = 1024
-  const units = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-  const i = Math.floor(Math.log(value) / Math.log(k))
-  const raw = value / Math.pow(k, i)
-  const valueString = raw % 1 === 0
-    ? raw.toLocaleString()
-    : parseFloat(raw.toPrecision(2)).toLocaleString()
-  return `${valueString} ${units[i]}`
-}
-
-export function blocksAsBytes(value: number): string {
-  return value ? formatBytes_(value * 8 * 1024) : ""
-}
-
-export function blocks(value: number, asHtml = false): string {
-  asHtml = !!asHtml
-  if (!value) {
-    return ""
-  }
-  let r = value.toLocaleString()
-  if (asHtml) {
-    r += `<br><small>${blocksAsBytes(value)}</small>`
-  }
-  return r
-}
-
-export function percent(value: number): string {
-  if (isNaN(value)) {
-    return "-"
-  }
-  return _.round(value * 100) + "%"
-}
-
-export function list(value: string[] | string): string {
-  if (value == undefined) {
-    return ''
-  }
-  const lines =
-    typeof value === "string"
-    ? value.split(/\s*,\s*/)
-    : value
-
-  const items = lines.map(line => `<li>${_.escape(line)}</li>`).join("")
-
-  return `<ul class="list-unstyled mb-0">${items}</ul>`
-}
-
-function sortGroups(value: string): string {
-  const app = createApp(SortGroup, { sortGroup: value }).mount(
-    document.createElement("div"),
-  )
-  return app.$el.outerHTML
-}
-
-export function transferRate(value: number): string {
-  if (!value) {
-    return ""
-  }
-  return blocksAsBytes(value) + "/s"
-}
-
-function jit(value: JIT): string {
-  const app = createApp(JitDetails, { jit: value }).mount(
-    document.createElement("div"),
-  )
-  return app.$el.outerHTML
-}
-
-export function formatNodeProp(key: string, value: unknown): string {
-  if (_.has(nodePropTypes, key)) {
-    if (nodePropTypes[key] === PropType.duration) {
-      return duration(value as number)
-    } else if (nodePropTypes[key] === PropType.boolean) {
-      return value ? "yes" : "no"
-    } else if (nodePropTypes[key] === PropType.cost) {
-      return cost(value as number)
-    } else if (nodePropTypes[key] === PropType.rows) {
-      return rows(value as number)
-    } else if (nodePropTypes[key] === PropType.loops) {
-      return loops(value as number)
-    } else if (nodePropTypes[key] === PropType.factor) {
-      return factor(value as number)
-    } else if (nodePropTypes[key] === PropType.estimateDirection) {
-      switch (value) {
-        case EstimateDirection.over:
-          return '<i class="fa fa-arrow-up"></i> over'
-        case EstimateDirection.under:
-          return '<i class="fa fa-arrow-down"></i> under'
-        default:
-          return "-"
-      }
-    } else if (nodePropTypes[key] === PropType.json) {
-      return JSON.stringify(value, null, 2)
-    } else if (nodePropTypes[key] === PropType.bytes) {
-      return bytes(value as number)
-    } else if (nodePropTypes[key] === PropType.kilobytes) {
-      return kilobytes(value as number)
-    } else if (nodePropTypes[key] === PropType.blocks) {
-      return blocks(value as number, true)
-    } else if (nodePropTypes[key] === PropType.list) {
-      return list(value as string[])
-    } else if (nodePropTypes[key] === PropType.sortGroups) {
-      return sortGroups(value as string)
-    } else if (nodePropTypes[key] === PropType.transferRate) {
-      return transferRate(value as number)
-    } else if (nodePropTypes[key] === PropType.jit) {
-      return jit(value as JIT)
-    }
-  }
-  return _.escape(value as unknown as string)
 }
 
 export function durationClass(i: number): string {

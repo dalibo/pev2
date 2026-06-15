@@ -294,6 +294,17 @@ export const nodePropTypes: { [key: string]: PropType } = {
   [NodeProp.EXCLUSIVE_AVERAGE_TEMP_IO_READ_SPEED]: PropType.transferRate,
   [NodeProp.EXCLUSIVE_AVERAGE_TEMP_IO_WRITE_SPEED]: PropType.transferRate,
 
+  [NodeProp.SHARED_HIT_BLOCKS]: PropType.blocks,
+  [NodeProp.SHARED_READ_BLOCKS]: PropType.blocks,
+  [NodeProp.SHARED_DIRTIED_BLOCKS]: PropType.blocks,
+  [NodeProp.SHARED_WRITTEN_BLOCKS]: PropType.blocks,
+  [NodeProp.TEMP_READ_BLOCKS]: PropType.blocks,
+  [NodeProp.TEMP_WRITTEN_BLOCKS]: PropType.blocks,
+  [NodeProp.LOCAL_HIT_BLOCKS]: PropType.blocks,
+  [NodeProp.LOCAL_READ_BLOCKS]: PropType.blocks,
+  [NodeProp.LOCAL_DIRTIED_BLOCKS]: PropType.blocks,
+  [NodeProp.LOCAL_WRITTEN_BLOCKS]: PropType.blocks,
+
   [NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]: PropType.blocks,
   [NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]: PropType.blocks,
   [NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]: PropType.blocks,
