@@ -108,29 +108,29 @@ export function truncate(text: string, length: number, clamp: string): string {
 }
 
 export function kilobytes(value: number): string {
-  return formatBytes(value * 1024)
+  return formatBytes_(value * 1024)
 }
 
 export function bytes(value: number): string {
-  return formatBytes(value)
+  return formatBytes_(value)
 }
 
-export function formatBytes(value: number, precision = 2) {
+export function formatBytes_(value: number) {
   if (value === 0) {
     return "0 kB"
   }
   const k = 1024
-  const dm = precision < 0 ? 0 : precision
-  const units = ["Bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+  const units = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
   const i = Math.floor(Math.log(value) / Math.log(k))
-  const valueString = parseFloat(
-    (value / Math.pow(k, i)).toPrecision(dm),
-  ).toLocaleString()
+  const raw = value / Math.pow(k, i)
+  const valueString = raw % 1 === 0
+    ? raw.toLocaleString()
+    : parseFloat(raw.toPrecision(2)).toLocaleString()
   return `${valueString} ${units[i]}`
 }
 
 export function blocksAsBytes(value: number): string {
-  return value ? formatBytes(value * 8 * 1024) : ""
+  return value ? formatBytes_(value * 8 * 1024) : ""
 }
 
 export function blocks(value: number, asHtml = false): string {
