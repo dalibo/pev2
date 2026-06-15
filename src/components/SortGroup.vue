@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { keysToString, kilobytes } from "@/filters"
+import { keysToString, formatKilobytes } from "@/filters"
 import type { SortGroups } from "@/interfaces"
 
 interface Props {
@@ -34,14 +34,16 @@ defineProps<Props>()
           <td class="p-0 ps-1">
             Average:
             {{
-              kilobytes(
+              formatKilobytes(
                 sortGroup["Sort Space Memory"]["Average Sort Space Used"],
               )
             }}
             <br />
             Peak:
             {{
-              kilobytes(sortGroup["Sort Space Memory"]["Peak Sort Space Used"])
+              formatKilobytes(
+                sortGroup["Sort Space Memory"]["Peak Sort Space Used"],
+              )
             }}
           </td>
         </tr>

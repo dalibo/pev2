@@ -8,7 +8,7 @@ import {
   EstimateDirection,
   HighlightType,
 } from "@/enums"
-import { blocks, cost, duration, factor, formatNodeProp, rows } from "@/filters"
+import { formatBlocks, formatCost, formatDuration, formatFactor, formatNodeProp, formatRows } from "@/filters"
 import { numberToColorHsl } from "@/services/color-service"
 import { store } from "@/store"
 
@@ -52,7 +52,7 @@ export default function useNode(
         barWidth.value = Math.round(
           value / store.stats.maxDuration * 100
         )
-        highlightValue.value = duration(value)
+        highlightValue.value = formatDuration(value)
         break
       case HighlightType.ROWS:
         value = node[NodeProp.ACTUAL_ROWS_REVISED]
@@ -64,7 +64,7 @@ export default function useNode(
           Math.round(
             value / store.stats.maxRows * 100
           ) || 0
-        highlightValue.value = rows(value)
+        highlightValue.value = formatRows(value)
         break
       case HighlightType.COST:
         value = node[NodeProp.EXCLUSIVE_COST]
@@ -75,7 +75,7 @@ export default function useNode(
         barWidth.value = Math.round(
           value / store.stats.maxCost * 100
         )
-        highlightValue.value = cost(value)
+        highlightValue.value = formatCost(value)
         break
     }
   }
@@ -371,7 +371,7 @@ export default function useNode(
   })
 
   const rowsTooltip = computed((): string => {
-    return ["Rows: ", rows(node[NodeProp.ACTUAL_ROWS_REVISED] as number)].join(
+    return ["Rows: ", formatRows(node[NodeProp.ACTUAL_ROWS_REVISED] as number)].join(
       "",
     )
   })
@@ -395,19 +395,19 @@ export default function useNode(
     }
     text += " estimated"
     text +=
-      estimateFactor !== 1 ? " by <b>" + factor(estimateFactor) + "</b>" : ""
+      estimateFactor !== 1 ? " by <b>" + formatFactor(estimateFactor) + "</b>" : ""
     text += "<br>"
-    text += `Rows: ${rows(node[NodeProp.ACTUAL_ROWS_REVISED])} `
-    text += `(${rows(node[NodeProp.PLAN_ROWS_REVISED] as number)} planned)`
+    text += `Rows: ${formatRows(node[NodeProp.ACTUAL_ROWS_REVISED])} `
+    text += `(${formatRows(node[NodeProp.PLAN_ROWS_REVISED] as number)} planned)`
     return text
   })
 
   const costTooltip = computed((): string => {
-    return ["Cost: ", rows(node[NodeProp.EXCLUSIVE_COST] as number)].join("")
+    return ["Cost: ", formatRows(node[NodeProp.EXCLUSIVE_COST] as number)].join("")
   })
 
   const rowsRemovedTooltip = computed((): string => {
-    return `${NodeProp[rowsRemovedProp]}: ${tilde.value}${rows(rowsRemoved.value)}`
+    return `${NodeProp[rowsRemovedProp]}: ${tilde.value}${formatRows(rowsRemoved.value)}`
   })
 
   const rowsIsFractional = computed((): boolean => {
@@ -451,22 +451,22 @@ export default function useNode(
         text += '<table class="table table-sm table-borderless mb-0">'
         text += hit
           ? '<tr><td>Hit:</td><td class="text-end">' +
-            blocks(hit, true) +
+            formatBlocks(hit, true) +
             "</td></tr>"
           : ""
         text += read
           ? '<tr><td>Read:</td><td class="text-end">' +
-            blocks(read, true) +
+            formatBlocks(read, true) +
             "</td></tr>"
           : ""
         text += dirtied
           ? '<tr><td>Dirtied:</td><td class="text-end">' +
-            blocks(dirtied, true) +
+            formatBlocks(dirtied, true) +
             "</td></tr>"
           : ""
         text += written
           ? '<tr><td>Written:</td><td class="text-end">' +
-            blocks(written, true) +
+            formatBlocks(written, true) +
             "</td></tr>"
           : ""
         text += "</table>"
@@ -494,7 +494,7 @@ export default function useNode(
     let text = '<table class="table table-sm table-borderless mb-0">'
     text += `<tr><td>${metric}:</td><td class="text-end">`
     if (node[metric]) {
-      text += `${blocks(node[metric] as number, true)}</td></tr>`
+      text += `${formatBlocks(node[metric] as number, true)}</td></tr>`
     }
     return text
   })

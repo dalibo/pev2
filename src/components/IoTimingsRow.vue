@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { directive as vTippy } from "vue-tippy"
 import { getHelpMessage } from "@/services/help-service"
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
-import { blocksAsBytes } from "@/filters"
+import { formatBlocksAsBytes } from "@/filters"
 import useNode from "@/node"
 
 interface Props {
@@ -56,7 +56,7 @@ const writtenBlocksProp = (exclusivePrefix +
       {{ formattedProp(readTimeProp) }}
       <br />
       <small>{{
-        blocksAsBytes(node[NodeProp[readBlocksProp]] as number)
+        formatBlocksAsBytes(node[NodeProp[readBlocksProp]] as number)
       }}</small>
       <br />
       <small>~{{ formattedProp(readSpeedProp) }}</small>
@@ -77,7 +77,7 @@ const writtenBlocksProp = (exclusivePrefix +
       {{ formattedProp(writeTimeProp) }}
       <br />
       <small>{{
-        blocksAsBytes(node[NodeProp[writtenBlocksProp]] as number)
+        formatBlocksAsBytes(node[NodeProp[writtenBlocksProp]] as number)
       }}</small>
       <br />
       <small>~{{ formattedProp(writeSpeedProp) }}</small>

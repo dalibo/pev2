@@ -3,7 +3,7 @@ import _ from "lodash"
 import { ref } from "vue"
 import type { Node, StatsTableItemType } from "@/interfaces"
 import { NodeProp } from "@/enums"
-import { duration, durationClass, percent } from "@/filters"
+import { formatDuration, durationClass, formatPercent } from "@/filters"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
   faChevronDown,
@@ -49,10 +49,10 @@ function durationPercent(node: Node) {
           class="alert p-0 px-1"
           :class="durationClass(props.value.timePercent * 100)"
         >
-          {{ duration(props.value.time) }}
+          {{ formatDuration(props.value.time) }}
         </span>
       </th>
-      <th class="text-end">{{ percent(props.value.timePercent) }}</th>
+      <th class="text-end">{{ formatPercent(props.value.timePercent) }}</th>
     </tr>
   </thead>
   <tbody :class="expanded ? '' : 'd-none'">
@@ -72,11 +72,11 @@ function durationPercent(node: Node) {
       <td class="text-end"></td>
       <td class="text-end">
         <span class="px-1">
-          {{ duration(node[NodeProp.EXCLUSIVE_DURATION]) }}
+          {{ formatDuration(node[NodeProp.EXCLUSIVE_DURATION]) }}
         </span>
       </td>
       <td class="text-end">
-        {{ percent(durationPercent(node)) }}
+        {{ formatPercent(durationPercent(node)) }}
       </td>
     </tr>
   </tbody>

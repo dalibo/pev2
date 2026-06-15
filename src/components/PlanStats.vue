@@ -3,7 +3,7 @@ import _ from "lodash"
 import { computed, ref } from "vue"
 import type { ITrigger, Node } from "@/interfaces"
 import { getHelpMessage } from "@/services/help-service"
-import { duration, durationClass, kilobytes } from "@/filters"
+import { formatDuration, durationClass, formatKilobytes } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
 import { NodeProp } from "../enums"
 import { BuffersProp } from "../enums"
@@ -124,7 +124,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
       <template v-else>
         <span
           class="stat-value"
-          v-html="duration(store.stats.executionTime)"
+          v-html="formatDuration(store.stats.executionTime)"
         ></span>
       </template>
     </div>
@@ -151,7 +151,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
                   100,
               )
             "
-            v-html="duration(store.stats.planningTime)"
+            v-html="formatDuration(store.stats.planningTime)"
           ></span>
         </span>
       </template>
@@ -171,7 +171,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
                 100,
             )
           "
-          v-html="duration(store.stats.serialization.Time)"
+          v-html="formatDuration(store.stats.serialization.Time)"
         ></span>
       </span>
       <button
@@ -194,12 +194,14 @@ const shouldShowSerializationBuffers = computed((): boolean => {
         <h3>Serialization</h3>
         <div>
           <b>Time:</b>
-          <span>{{ duration(store.stats.serialization.Time) }}</span>
+          <span>{{ formatDuration(store.stats.serialization.Time) }}</span>
         </div>
         <div>
           <b>Output Volume: </b>
           <span>
-            {{ kilobytes(store.stats.serialization["Output Volume"]) }}</span
+            {{
+              formatKilobytes(store.stats.serialization["Output Volume"])
+            }}</span
           >
         </div>
         <div v-if="shouldShowSerializationBuffers">
@@ -221,7 +223,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
               (store.stats.jitTime / store.stats.executionTime) * 100,
             )
           "
-          v-html="duration(store.stats.jitTime)"
+          v-html="formatDuration(store.stats.jitTime)"
         ></span>
         <button
           @click.prevent="showJitDetails = !showJitDetails"
@@ -252,7 +254,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           :class="
             'mb-0 p-0 px-1 alert ' + durationClass(totalTriggerDurationPercent)
           "
-          v-html="duration(triggersTotalDuration)"
+          v-html="formatDuration(triggersTotalDuration)"
         ></span>
       </span>
       <button
@@ -281,7 +283,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
                 'p-0 px-1 alert ' +
                 durationClass(triggerDurationPercent(trigger))
               "
-              v-html="duration(trigger.Time)"
+              v-html="formatDuration(trigger.Time)"
             ></span>
             | {{ triggerDurationPercent(trigger)
             }}<span class="text-body-tertiary">%</span>
