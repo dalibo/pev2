@@ -47,7 +47,13 @@ export function duration(value: number | undefined): string {
   }
   remainder = remainder % denominator
   const milliseconds = parseFloat(remainder.toPrecision(3))
-  result.push(milliseconds.toLocaleString() + "ms")
+  if (milliseconds) {
+    result.push(milliseconds.toLocaleString() + "ms")
+  }
+
+  if (result.length === 0) {
+    return "0ms"
+  }
 
   return result.slice(0, 2).join(" ")
 }
