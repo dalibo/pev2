@@ -1,9 +1,14 @@
 import type {
   BufferLocation,
+  BuffersProp,
+  EstimateDirection,
   HighlightType,
   SortGroupsProp,
   SortSpaceMemoryProp,
+  WorkerProp,
 } from "@/enums"
+
+import { NodeProp } from "@/enums"
 
 export interface IPlan {
   id: string
@@ -67,8 +72,6 @@ export interface IPlanStats {
 export type IBlocksStats = {
   [key in BufferLocation]: number
 }
-
-import { BuffersProp, EstimateDirection, NodeProp } from "@/enums"
 
 // Class to create nodes when parsing text
 export class Node {
@@ -282,8 +285,6 @@ export class Node {
     }
   }
 }
-
-import { WorkerProp } from "@/enums"
 
 export interface Worker {
   [WorkerProp.WORKER_NUMBER]: number
