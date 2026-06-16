@@ -172,20 +172,20 @@ function formatBoolean(value: boolean): string {
 }
 
 export function formatNodeProp(key: string, value: unknown): string {
-  if (_.has(nodePropTypes, key)) {
-    if (nodePropTypes[key] === PropType.duration) {
+  switch (nodePropTypes[key]) {
+    case PropType.duration:
       return formatDuration(value as number)
-    } else if (nodePropTypes[key] === PropType.boolean) {
+    case PropType.boolean:
       return formatBoolean(value as boolean)
-    } else if (nodePropTypes[key] === PropType.cost) {
+    case PropType.cost:
       return formatCost(value as number)
-    } else if (nodePropTypes[key] === PropType.rows) {
+    case PropType.rows:
       return formatRows(value as number)
-    } else if (nodePropTypes[key] === PropType.loops) {
+    case PropType.loops:
       return formatLoops(value as number)
-    } else if (nodePropTypes[key] === PropType.factor) {
+    case PropType.factor:
       return formatFactor(value as number)
-    } else if (nodePropTypes[key] === PropType.estimateDirection) {
+    case PropType.estimateDirection:
       switch (value) {
         case EstimateDirection.over:
           return '<i class="fa fa-arrow-up"></i> over'
@@ -194,25 +194,25 @@ export function formatNodeProp(key: string, value: unknown): string {
         default:
           return "-"
       }
-    } else if (nodePropTypes[key] === PropType.json) {
+    case PropType.json:
       return JSON.stringify(value, null, 2)
-    } else if (nodePropTypes[key] === PropType.bytes) {
+    case PropType.bytes:
       return formatBytes(value as number)
-    } else if (nodePropTypes[key] === PropType.kilobytes) {
+    case PropType.kilobytes:
       return formatKilobytes(value as number)
-    } else if (nodePropTypes[key] === PropType.blocks) {
+    case PropType.blocks:
       return formatBlocks(value as number, true)
-    } else if (nodePropTypes[key] === PropType.list) {
+    case PropType.list:
       return formatList(value as string[])
-    } else if (nodePropTypes[key] === PropType.sortGroups) {
+    case PropType.sortGroups:
       return formatSortGroups(value as string)
-    } else if (nodePropTypes[key] === PropType.transferRate) {
+    case PropType.transferRate:
       return formatTransferRate(value as number)
-    } else if (nodePropTypes[key] === PropType.jit) {
+    case PropType.jit:
       return formatJit(value as JIT)
-    }
+    default:
+      return _.escape(value as unknown as string)
   }
-  return _.escape(value as unknown as string)
 }
 
 export function keysToString(value: string[] | string): string {
