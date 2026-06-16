@@ -1,7 +1,6 @@
 import _ from "lodash"
 import type { IPlan, Node } from "@/interfaces"
-import { NodeProp } from "@/enums"
-import { nodePropTypes, PropType } from "@/enums"
+import { NodeProp, WorkerProp } from "@/enums"
 
 export function getNodeTypeDescription(nodeType: string): string | undefined {
   return NODE_DESCRIPTIONS[nodeType.toUpperCase()]
@@ -398,7 +397,7 @@ const notMiscProperties: string[] = [
 export function shouldShowProp(key: string, value: unknown): boolean {
   return (
     (!!value ||
-      nodePropTypes[key] === PropType.increment ||
+      key === WorkerProp.WORKER_NUMBER ||
       key === NodeProp.ACTUAL_ROWS) &&
     notMiscProperties.indexOf(key) === -1
   )
