@@ -84,4 +84,10 @@ describe("formatNodeProp", () => {
         expect(formatNodeProp(NodeProp.SHARED_HIT_BLOCKS, 1234)).toBe("1,234<br><small>9.6 MB</small>");
       });
     });
+
+  describe("no formatter provided", () => {
+    it("escapes ", () => {
+        expect(formatNodeProp(NodeProp.FILTER, "something")).toBe("something");
+      });
+    });
 });
