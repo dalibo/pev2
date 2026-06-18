@@ -26,7 +26,7 @@
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-pattern .gitignore",
     "prepare": "husky",
-    "test": "vitest --run"
+    "test": "LANG=en_US.UTF-8 vitest --run"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
