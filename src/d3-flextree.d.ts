@@ -44,11 +44,11 @@ declare module "d3-flextree" {
      *
      * @param root The specified root hierarchy.
      */
-    (root: FlexHierarchiePointNode<Datum>): FlexHierarchyPointNode<Datum>
+    (root: FlexHierarchyPointNode<Datum>): FlexHierarchyPointNode<Datum>
 
     hierarchy<Datum>(
       data: Datum,
       children?: (d: Datum) => Iterable<Datum> | null | undefined,
-    ): FlexHierarchiePointNode<Datum>
+    ): FlexHierarchyPointNode<Datum>
   }
 }
