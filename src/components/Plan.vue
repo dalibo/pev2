@@ -31,7 +31,7 @@ import { findNodeById } from "@/services/help-service"
 import { HighlightType, NodeProp } from "@/enums"
 import { json_, pgsql_ } from "@/filters"
 import { setDefaultProps } from "vue-tippy"
-import { store } from "@/store.ts"
+import { store } from "@/store"
 
 setDefaultProps({
   theme: "bootstrap",
