@@ -1,17 +1,21 @@
+@use "variables";
+@use "sass:color";
+@use "sass:map";
+@use "sass:meta";
 @use "sass:math";
 
 // The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
 $yiq-contrasted-threshold: 150 !default;
 
 // Customize the light and dark text colors for use in our YIQ color contrast function.
-$yiq-text-dark: darken(#f7f7f7, 70%) !default;
+$yiq-text-dark: color.adjust(#f7f7f7, $lightness: -70%) !default;
 $yiq-text-light: white !default;
 
 // Color contrast
 @function color-yiq($color, $dark: $yiq-text-dark, $light: $yiq-text-light) {
-  $r: red($color);
-  $g: green($color);
-  $b: blue($color);
+  $r: color.channel($color, "red", $space: rgb);
+  $g: color.channel($color, "green", $space: rgb);
+  $b: color.channel($color, "blue", $space: rgb);
 
   $yiq: math.div(($r * 299) + ($g * 587) + ($b * 114), 1000);
 
@@ -25,7 +29,7 @@ $yiq-text-light: white !default;
 /**
  * Severity classes
  */
-@each $color, $value in $severity-colors {
+@each $color, $value in variables.$severity-colors {
   .alert.c-#{$color} {
     background-color: $value;
     color: color-yiq($value);
@@ -47,10 +51,10 @@ $yiq-text-light: white !default;
 }
 
 $buffers-colors: (
-  hit: map-get($severity-colors, 1),
-  read: map-get($severity-colors, 2),
-  dirtied: map-get($severity-colors, 3),
-  written: map-get($severity-colors, 4),
+  hit: map.get(variables.$severity-colors, 1),
+  read: map.get(variables.$severity-colors, 2),
+  dirtied: map.get(variables.$severity-colors, 3),
+  written: map.get(variables.$severity-colors, 4),
 ) !default;
 
 /**
@@ -68,7 +72,7 @@ $buffers-colors: (
 .btn-group-xs .btn,
 .btn-xs {
   padding: 0.25rem 0.4rem;
-  font-size: $font-size-sm;
+  font-size: variables.$font-size-sm;
   border-radius: 0.2rem;
 
   &,
@@ -116,4 +120,10 @@ $buffers-colors: (
 
 .opacity-20 {
   opacity: 0.2 !important;
+}
+
+
+@include meta.load-css("highlight.js/styles/stackoverflow-light");
+[data-bs-theme="dark"] {
+  @include meta.load-css("highlight.js/styles/stackoverflow-dark");
 }

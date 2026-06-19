@@ -1,8 +1,10 @@
+@use "base";
+@use "variables";
 $connector-height: 12px;
 $connector-line: 2px solid var(--bs-border-color);
 
 .plan-container {
-  font-family: $font-family-sans-serif;
+  font-family: variables.$font-family-sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -43,16 +45,16 @@ $connector-line: 2px solid var(--bs-border-color);
 }
 
 .plan-stats {
-  font-size: $font-size-base;
+  font-size: variables.$font-size-base;
 
   .stat-dropdown-container {
     border: 1px solid var(--bs-border-color);
-    padding: $padding-lg;
+    padding: variables.$padding-lg;
     background-color: var(--bs-body-bg);
     position: absolute;
     box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
-    border-radius: $border-radius-base;
-    margin-bottom: $padding-xl;
+    border-radius: variables.$border-radius-base;
+    margin-bottom: variables.$padding-xl;
     z-index: 6;
     right: 0;
     width: 300px;
@@ -60,12 +62,12 @@ $connector-line: 2px solid var(--bs-border-color);
     overflow: auto;
 
     h3 {
-      font-size: $font-size-lg;
+      font-size: variables.$font-size-lg;
       width: 93%;
       text-align: left;
       border-bottom: 1px solid var(--bs-border-color);
-      padding-bottom: $padding-base;
-      margin-bottom: $padding-lg;
+      padding-bottom: variables.$padding-base;
+      margin-bottom: variables.$padding-lg;
     }
   }
 }

@@ -734,14 +734,8 @@ function updateNodeSize(node: Node, size: [number, number]) {
 </template>
 
 <style lang="scss">
-@import "../assets/scss/variables";
-@import "../assets/scss/pev2";
-@import "splitpanes/dist/splitpanes.css";
-@import "highlight.js/scss/stackoverflow-light.scss";
-
-[data-bs-theme="dark"] {
-  @import "highlight.js/scss/stackoverflow-dark.scss";
-}
+@use "../assets/scss/pev2";
+@use "splitpanes/dist/splitpanes.css";
 
 .ready {
   rect,
