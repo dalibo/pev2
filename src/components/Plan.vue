@@ -735,7 +735,6 @@ function updateNodeSize(node: Node, size: [number, number]) {
 
 <style lang="scss">
 @use "../assets/scss/pev2";
-@use "splitpanes/dist/splitpanes.css";
 
 .ready {
   rect,
