@@ -1,3 +1,5 @@
+@use "variables";
+
 $grid-progress-padding-x: 0.5rem;
 $grid-progress-padding-y: 0.25rem;
 $grid-progress-margin: 1px;
@@ -13,7 +15,7 @@ $grid-progress-margin: 1px;
       > tr {
         > th,
         > td {
-          font-size: $font-size-base * 0.9;
+          font-size: variables.$font-size-base * 0.9;
           min-width: 20px;
           padding-left: $grid-progress-padding-x;
           padding-right: $grid-progress-padding-x;

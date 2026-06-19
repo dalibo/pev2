@@ -1,3 +1,5 @@
+@use "variables";
+
 .plan-diagram {
   line-height: 0.85em;
   &.plan-diagram-top {
@@ -16,10 +18,10 @@
     white-space: nowrap;
   }
 
-  font-family: $font-family-sans-serif;
+  font-family: variables.$font-family-sans-serif;
 
   .legend ul li {
-    font-size: $font-size-base;
+    font-size: variables.$font-size-base;
     span {
       display: inline-block;
       width: 8px;
@@ -31,13 +33,13 @@
   tbody::after {
     content: "";
     display: block;
-    height: $padding-lg;
+    height: variables.$padding-lg;
   }
   th,
   td {
     margin: 0;
     white-space: nowrap;
-    font-size: $font-size-base;
+    font-size: variables.$font-size-base;
   }
 
   tr.node {
@@ -45,8 +47,8 @@
   }
 
   tr.selected {
-    outline: 1px solid $highlight-color;
-    box-shadow: 0px 0px 5px 2px rgba($highlight-color, 0.4);
+    outline: 1px solid variables.$highlight-color;
+    box-shadow: 0px 0px 5px 2px rgba(variables.$highlight-color, 0.4);
   }
   tr.selected {
     background-color: var(--bs-body-bg);
