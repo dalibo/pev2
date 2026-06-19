@@ -107,7 +107,7 @@ const layout = flextree({
   ) => Math.pow(nodeA.path(nodeB).length, 1.5),
 })
 
-const tree = ref(layout.hierarchy({}))
+const tree = ref<FlexHierarchyPointNode<Node>>()
 
 onMounted(() => {
   watch(() => [props.planSource, props.planQuery], parseAndShow, {
@@ -146,6 +146,10 @@ function parseAndShow() {
 }
 
 function doLayout() {
+  if (tree.value === undefined){
+    return
+  }
+
   layoutRootNode.value = layout(tree.value)
 
   const mainLayoutExtent = getLayoutExtent(layoutRootNode.value)
@@ -378,6 +382,9 @@ function isNeverExecuted(node: Node): boolean {
 
 watch(
   () => {
+    if (tree.value === undefined) {
+      return
+    }
     const data: [number, number][] = []
     data.concat(
       tree.value
