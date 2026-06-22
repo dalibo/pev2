@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest"
 import { PlanService } from "@/services/plan-service"
 import type { IPlan, IPlanContent } from "@/interfaces"
-import { NodeProp } from "@/enums"
+import { Property } from "@/enums"
 
 describe("Worker rows parsing", () => {
   const planService = new PlanService()
@@ -21,27 +21,27 @@ Execution Time: 60.0 ms
   const root = plan.content.Plan
 
   test("Node has workers", () => {
-    expect(root[NodeProp.WORKERS]).toBeDefined()
-    expect(root[NodeProp.WORKERS]).toHaveLength(2)
+    expect(root[Property.WORKERS]).toBeDefined()
+    expect(root[Property.WORKERS]).toHaveLength(2)
   })
 
   test("Worker 0 has all parsed properties", () => {
-    const worker0 = root[NodeProp.WORKERS]?.[0]
+    const worker0 = root[Property.WORKERS]?.[0]
     expect(worker0).toBeDefined()
     expect(worker0?.["Worker Number"]).toBe(0)
-    expect(worker0?.[NodeProp.ACTUAL_ROWS]).toBe(348636)
-    expect(worker0?.[NodeProp.ACTUAL_LOOPS]).toBe(1)
-    expect(worker0?.[NodeProp.ACTUAL_TOTAL_TIME]).toBeCloseTo(57.944, 3)
-    expect(worker0?.[NodeProp.ACTUAL_STARTUP_TIME]).toBeCloseTo(0.067, 3)
+    expect(worker0?.[Property.ACTUAL_ROWS]).toBe(348636)
+    expect(worker0?.[Property.ACTUAL_LOOPS]).toBe(1)
+    expect(worker0?.[Property.ACTUAL_TOTAL_TIME]).toBeCloseTo(57.944, 3)
+    expect(worker0?.[Property.ACTUAL_STARTUP_TIME]).toBeCloseTo(0.067, 3)
   })
 
   test("Worker 1 has all parsed properties", () => {
-    const worker1 = root[NodeProp.WORKERS]?.[1]
+    const worker1 = root[Property.WORKERS]?.[1]
     expect(worker1).toBeDefined()
     expect(worker1?.["Worker Number"]).toBe(1)
-    expect(worker1?.[NodeProp.ACTUAL_ROWS]).toBe(351339)
-    expect(worker1?.[NodeProp.ACTUAL_LOOPS]).toBe(1)
-    expect(worker1?.[NodeProp.ACTUAL_TOTAL_TIME]).toBeCloseTo(58.986, 3)
-    expect(worker1?.[NodeProp.ACTUAL_STARTUP_TIME]).toBeCloseTo(0.038, 3)
+    expect(worker1?.[Property.ACTUAL_ROWS]).toBe(351339)
+    expect(worker1?.[Property.ACTUAL_LOOPS]).toBe(1)
+    expect(worker1?.[Property.ACTUAL_TOTAL_TIME]).toBeCloseTo(58.986, 3)
+    expect(worker1?.[Property.ACTUAL_STARTUP_TIME]).toBeCloseTo(0.038, 3)
   })
 })
