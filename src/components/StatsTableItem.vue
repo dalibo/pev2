@@ -2,7 +2,7 @@
 import _ from "lodash"
 import { ref } from "vue"
 import type { Node, StatsTableItemType } from "@/interfaces"
-import { NodeProp } from "@/enums"
+import { Property } from "@/enums"
 import { formatDuration, durationClass, formatPercent } from "@/filters"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
@@ -21,7 +21,7 @@ const expanded = ref<boolean>(false)
 
 function durationPercent(node: Node) {
   return (
-    (node[NodeProp.EXCLUSIVE_DURATION] as number) /
+    (node[Property.EXCLUSIVE_DURATION] as number) /
     (props.executionTime as number)
   )
 }
@@ -58,7 +58,7 @@ function durationPercent(node: Node) {
   <tbody :class="expanded ? '' : 'd-none'">
     <tr
       v-for="node in _.reverse(
-        _.sortBy(props.value.nodes, NodeProp.EXCLUSIVE_DURATION),
+        _.sortBy(props.value.nodes, Property.EXCLUSIVE_DURATION),
       )"
       :key="node.nodeId"
       style="font-size: smaller"
@@ -67,12 +67,12 @@ function durationPercent(node: Node) {
         <a :href="`#plan/node/${node.nodeId}`" class="me-1"
           >#{{ node.nodeId }}</a
         >
-        {{ node[NodeProp.NODE_TYPE] }}
+        {{ node[Property.NODE_TYPE] }}
       </td>
       <td class="text-end"></td>
       <td class="text-end">
         <span class="px-1">
-          {{ formatDuration(node[NodeProp.EXCLUSIVE_DURATION]) }}
+          {{ formatDuration(node[Property.EXCLUSIVE_DURATION]) }}
         </span>
       </td>
       <td class="text-end">

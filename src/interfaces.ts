@@ -1,14 +1,11 @@
 import type {
   BufferLocation,
-  BuffersProp,
   EstimateDirection,
   HighlightType,
-  SortGroupsProp,
   SortSpaceMemoryProp,
-  WorkerProp,
 } from "@/enums"
 
-import { NodeProp } from "@/enums"
+import { Property } from "@/enums"
 
 export interface IPlan {
   id: string
@@ -80,76 +77,76 @@ export class Node {
   ["Options"]?: Options;
   ["Timing"]?: Timing;
   ["Settings"]?: Settings;
-  [NodeProp.ACTUAL_LOOPS]!: number;
-  [NodeProp.ACTUAL_ROWS]!: number;
-  [NodeProp.ACTUAL_ROWS_REVISED]!: number;
-  [NodeProp.ACTUAL_STARTUP_TIME]?: number;
-  [NodeProp.ACTUAL_TOTAL_TIME]?: number;
-  [NodeProp.EXCLUSIVE_COST]!: number;
-  [NodeProp.EXCLUSIVE_DURATION]!: number;
-  [NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_READ_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_WRITTEN_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]!: number;
-  [NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]!: number;
-  [NodeProp.FILTER]!: string;
-  [NodeProp.PLANNER_ESTIMATE_DIRECTION]?: EstimateDirection;
-  [NodeProp.PLANNER_ESTIMATE_FACTOR]?: number;
-  [NodeProp.INDEX_NAME]?: string;
-  [NodeProp.NODE_TYPE]!: string;
-  [NodeProp.PARALLEL_AWARE]: boolean = false;
-  [NodeProp.PLANS]!: Node[];
-  [NodeProp.PLAN_ROWS]!: number;
-  [NodeProp.PLAN_ROWS_REVISED]?: number;
-  [NodeProp.SUBPLAN_NAME]?: string;
-  [NodeProp.TOTAL_COST]!: number;
-  [NodeProp.WORKERS]?: Worker[];
-  [NodeProp.WORKERS_LAUNCHED]?: number;
-  [NodeProp.WORKERS_PLANNED]?: number;
-  [NodeProp.WORKERS_LAUNCHED_BY_GATHER]?: number;
-  [NodeProp.WORKERS_PLANNED_BY_GATHER]?: number;
-  [NodeProp.EXCLUSIVE_IO_READ_TIME]!: number;
-  [NodeProp.EXCLUSIVE_IO_WRITE_TIME]!: number;
-  [NodeProp.EXCLUSIVE_SHARED_IO_READ_TIME]!: number;
-  [NodeProp.EXCLUSIVE_SHARED_IO_WRITE_TIME]!: number;
-  [NodeProp.EXCLUSIVE_LOCAL_IO_READ_TIME]!: number;
-  [NodeProp.EXCLUSIVE_LOCAL_IO_WRITE_TIME]!: number;
-  [NodeProp.EXCLUSIVE_TEMP_IO_READ_TIME]!: number;
-  [NodeProp.EXCLUSIVE_TEMP_IO_WRITE_TIME]!: number;
-  [NodeProp.EXCLUSIVE_SUM_IO_READ_TIME]!: number;
-  [NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME]!: number;
-  [NodeProp.AVERAGE_IO_READ_SPEED]!: number;
-  [NodeProp.AVERAGE_IO_WRITE_SPEED]!: number;
-  [NodeProp.AVERAGE_SHARED_IO_READ_SPEED]!: number;
-  [NodeProp.AVERAGE_SHARED_IO_WRITE_SPEED]!: number;
-  [NodeProp.AVERAGE_LOCAL_IO_READ_SPEED]!: number;
-  [NodeProp.AVERAGE_LOCAL_IO_WRITE_SPEED]!: number;
-  [NodeProp.AVERAGE_TEMP_IO_READ_SPEED]!: number;
-  [NodeProp.AVERAGE_TEMP_IO_WRITE_SPEED]!: number;
-  [NodeProp.AVERAGE_SUM_IO_READ_SPEED]!: number;
-  [NodeProp.AVERAGE_SUM_IO_WRITE_SPEED]!: number;
-  [NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_READ_SPEED]!: number;
-  [NodeProp.EXCLUSIVE_AVERAGE_SUM_IO_WRITE_SPEED]!: number;
-  [NodeProp.IO_READ_TIME]!: number;
-  [NodeProp.IO_WRITE_TIME]!: number;
-  [NodeProp.SHARED_IO_READ_TIME]!: number;
-  [NodeProp.SHARED_IO_WRITE_TIME]!: number;
-  [NodeProp.LOCAL_IO_READ_TIME]!: number;
-  [NodeProp.LOCAL_IO_WRITE_TIME]!: number;
-  [NodeProp.TEMP_IO_READ_TIME]!: number;
-  [NodeProp.TEMP_IO_WRITE_TIME]!: number;
-  [NodeProp.SUM_IO_READ_TIME]!: number;
-  [NodeProp.SUM_IO_WRITE_TIME]!: number;
-  [NodeProp.PARTIAL_MODE]!: string;
-  [NodeProp.SCAN_DIRECTION]!: string;
-  [NodeProp.DISABLED]: boolean = false;
+  [Property.ACTUAL_LOOPS]!: number;
+  [Property.ACTUAL_ROWS]!: number;
+  [Property.ACTUAL_ROWS_REVISED]!: number;
+  [Property.ACTUAL_STARTUP_TIME]?: number;
+  [Property.ACTUAL_TOTAL_TIME]?: number;
+  [Property.EXCLUSIVE_COST]!: number;
+  [Property.EXCLUSIVE_DURATION]!: number;
+  [Property.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]!: number;
+  [Property.EXCLUSIVE_LOCAL_HIT_BLOCKS]!: number;
+  [Property.EXCLUSIVE_LOCAL_READ_BLOCKS]!: number;
+  [Property.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]!: number;
+  [Property.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]!: number;
+  [Property.EXCLUSIVE_SHARED_HIT_BLOCKS]!: number;
+  [Property.EXCLUSIVE_SHARED_READ_BLOCKS]!: number;
+  [Property.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]!: number;
+  [Property.EXCLUSIVE_READ_BLOCKS]!: number;
+  [Property.EXCLUSIVE_WRITTEN_BLOCKS]!: number;
+  [Property.EXCLUSIVE_TEMP_READ_BLOCKS]!: number;
+  [Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]!: number;
+  [Property.FILTER]!: string;
+  [Property.PLANNER_ESTIMATE_DIRECTION]?: EstimateDirection;
+  [Property.PLANNER_ESTIMATE_FACTOR]?: number;
+  [Property.INDEX_NAME]?: string;
+  [Property.NODE_TYPE]!: string;
+  [Property.PARALLEL_AWARE]: boolean = false;
+  [Property.PLANS]!: Node[];
+  [Property.PLAN_ROWS]!: number;
+  [Property.PLAN_ROWS_REVISED]?: number;
+  [Property.SUBPLAN_NAME]?: string;
+  [Property.TOTAL_COST]!: number;
+  [Property.WORKERS]?: Worker[];
+  [Property.WORKERS_LAUNCHED]?: number;
+  [Property.WORKERS_PLANNED]?: number;
+  [Property.WORKERS_LAUNCHED_BY_GATHER]?: number;
+  [Property.WORKERS_PLANNED_BY_GATHER]?: number;
+  [Property.EXCLUSIVE_IO_READ_TIME]!: number;
+  [Property.EXCLUSIVE_IO_WRITE_TIME]!: number;
+  [Property.EXCLUSIVE_SHARED_IO_READ_TIME]!: number;
+  [Property.EXCLUSIVE_SHARED_IO_WRITE_TIME]!: number;
+  [Property.EXCLUSIVE_LOCAL_IO_READ_TIME]!: number;
+  [Property.EXCLUSIVE_LOCAL_IO_WRITE_TIME]!: number;
+  [Property.EXCLUSIVE_TEMP_IO_READ_TIME]!: number;
+  [Property.EXCLUSIVE_TEMP_IO_WRITE_TIME]!: number;
+  [Property.EXCLUSIVE_SUM_IO_READ_TIME]!: number;
+  [Property.EXCLUSIVE_SUM_IO_WRITE_TIME]!: number;
+  [Property.AVERAGE_IO_READ_SPEED]!: number;
+  [Property.AVERAGE_IO_WRITE_SPEED]!: number;
+  [Property.AVERAGE_SHARED_IO_READ_SPEED]!: number;
+  [Property.AVERAGE_SHARED_IO_WRITE_SPEED]!: number;
+  [Property.AVERAGE_LOCAL_IO_READ_SPEED]!: number;
+  [Property.AVERAGE_LOCAL_IO_WRITE_SPEED]!: number;
+  [Property.AVERAGE_TEMP_IO_READ_SPEED]!: number;
+  [Property.AVERAGE_TEMP_IO_WRITE_SPEED]!: number;
+  [Property.AVERAGE_SUM_IO_READ_SPEED]!: number;
+  [Property.AVERAGE_SUM_IO_WRITE_SPEED]!: number;
+  [Property.EXCLUSIVE_AVERAGE_SUM_IO_READ_SPEED]!: number;
+  [Property.EXCLUSIVE_AVERAGE_SUM_IO_WRITE_SPEED]!: number;
+  [Property.IO_READ_TIME]!: number;
+  [Property.IO_WRITE_TIME]!: number;
+  [Property.SHARED_IO_READ_TIME]!: number;
+  [Property.SHARED_IO_WRITE_TIME]!: number;
+  [Property.LOCAL_IO_READ_TIME]!: number;
+  [Property.LOCAL_IO_WRITE_TIME]!: number;
+  [Property.TEMP_IO_READ_TIME]!: number;
+  [Property.TEMP_IO_WRITE_TIME]!: number;
+  [Property.SUM_IO_READ_TIME]!: number;
+  [Property.SUM_IO_WRITE_TIME]!: number;
+  [Property.PARTIAL_MODE]!: string;
+  [Property.SCAN_DIRECTION]!: string;
+  [Property.DISABLED]: boolean = false;
   [k: string]:
     | Node[]
     | Options
@@ -166,7 +163,7 @@ export class Node {
     if (!type) {
       return
     }
-    this[NodeProp.NODE_TYPE] = type
+    this[Property.NODE_TYPE] = type
 
     enum ScanAndOperationMatch {
       NodeType = 1,
@@ -218,77 +215,77 @@ export class Node {
     }
     const subqueryRegex = /^(Subquery\sScan)\son\s(.+)$/.exec(type)
     if (scanAndOperationsRegex) {
-      this[NodeProp.NODE_TYPE] =
+      this[Property.NODE_TYPE] =
         scanAndOperationsRegex[ScanAndOperationMatch.NodeType]
-      this[NodeProp.RELATION_NAME] =
+      this[Property.RELATION_NAME] =
         scanAndOperationsRegex[ScanAndOperationMatch.RelationName]
       if (scanAndOperationsRegex[ScanAndOperationMatch.Alias]) {
-        this[NodeProp.ALIAS] =
+        this[Property.ALIAS] =
           scanAndOperationsRegex[ScanAndOperationMatch.Alias]
       }
     } else if (bitmapRegex) {
-      this[NodeProp.NODE_TYPE] = bitmapRegex[BitmapMatch.NodeType]
-      this[NodeProp.INDEX_NAME] = bitmapRegex[BitmapMatch.IndexName]
+      this[Property.NODE_TYPE] = bitmapRegex[BitmapMatch.NodeType]
+      this[Property.INDEX_NAME] = bitmapRegex[BitmapMatch.IndexName]
     } else if (indexRegex) {
-      this[NodeProp.NODE_TYPE] = indexRegex[IndexMatch.NodeType]
-      this[NodeProp.INDEX_NAME] = indexRegex[IndexMatch.IndexName]
-      this[NodeProp.SCAN_DIRECTION] = indexRegex[IndexMatch.ScanDirection] ? "Backward" : "Forward"
-      this[NodeProp.RELATION_NAME] = indexRegex[IndexMatch.RelationName]
+      this[Property.NODE_TYPE] = indexRegex[IndexMatch.NodeType]
+      this[Property.INDEX_NAME] = indexRegex[IndexMatch.IndexName]
+      this[Property.SCAN_DIRECTION] = indexRegex[IndexMatch.ScanDirection] ? "Backward" : "Forward"
+      this[Property.RELATION_NAME] = indexRegex[IndexMatch.RelationName]
       if (indexRegex[IndexMatch.Alias]) {
-        this[NodeProp.ALIAS] = indexRegex[IndexMatch.Alias]
+        this[Property.ALIAS] = indexRegex[IndexMatch.Alias]
       }
     } else if (cteRegex) {
-      this[NodeProp.NODE_TYPE] = cteRegex[CteMatch.NodeType]
-      this[NodeProp.CTE_NAME] = cteRegex[CteMatch.CteName]
+      this[Property.NODE_TYPE] = cteRegex[CteMatch.NodeType]
+      this[Property.CTE_NAME] = cteRegex[CteMatch.CteName]
       if (cteRegex[CteMatch.Alias]) {
-        this[NodeProp.ALIAS] = cteRegex[CteMatch.Alias]
+        this[Property.ALIAS] = cteRegex[CteMatch.Alias]
       }
     } else if (functionRegex) {
-      this[NodeProp.NODE_TYPE] = functionRegex[FunctionMatch.NodeType]
-      this[NodeProp.FUNCTION_NAME] = functionRegex[FunctionMatch.FunctionName]
+      this[Property.NODE_TYPE] = functionRegex[FunctionMatch.NodeType]
+      this[Property.FUNCTION_NAME] = functionRegex[FunctionMatch.FunctionName]
       if (functionRegex[FunctionMatch.Alias]) {
-        this[NodeProp.ALIAS] = functionRegex[FunctionMatch.Alias]
+        this[Property.ALIAS] = functionRegex[FunctionMatch.Alias]
       }
     } else if (subqueryRegex) {
-      this[NodeProp.NODE_TYPE] = subqueryRegex[SubqueryMatch.NodeType]
-      this[NodeProp.ALIAS] = subqueryRegex[SubqueryMatch.Alias]
+      this[Property.NODE_TYPE] = subqueryRegex[SubqueryMatch.NodeType]
+      this[Property.ALIAS] = subqueryRegex[SubqueryMatch.Alias]
     }
     enum ParallelMatch {
       NodeType = 2,
     }
     const parallelRegex = /^(Parallel\s+)(.*)/.exec(
-      <string>this[NodeProp.NODE_TYPE],
+      <string>this[Property.NODE_TYPE],
     )
     if (parallelRegex) {
-      this[NodeProp.NODE_TYPE] = parallelRegex[ParallelMatch.NodeType]
-      this[NodeProp.PARALLEL_AWARE] = true
+      this[Property.NODE_TYPE] = parallelRegex[ParallelMatch.NodeType]
+      this[Property.PARALLEL_AWARE] = true
     }
 
     enum JoinMatch {
       NodeType = 1,
     }
-    const joinRegex = /(.*)\sJoin$/.exec(<string>this[NodeProp.NODE_TYPE])
+    const joinRegex = /(.*)\sJoin$/.exec(<string>this[Property.NODE_TYPE])
 
     enum JoinModifierMatch {
       NodeType = 1,
       JoinType,
     }
     const joinModifierRegex = /(.*)\s+(Full|Left|Right|Anti)/.exec(
-      <string>this[NodeProp.NODE_TYPE],
+      <string>this[Property.NODE_TYPE],
     )
     if (joinRegex) {
-      this[NodeProp.NODE_TYPE] = joinRegex[JoinMatch.NodeType]
+      this[Property.NODE_TYPE] = joinRegex[JoinMatch.NodeType]
       if (joinModifierRegex) {
-        this[NodeProp.NODE_TYPE] = joinModifierRegex[JoinModifierMatch.NodeType]
-        this[NodeProp.JOIN_TYPE] = joinModifierRegex[JoinModifierMatch.JoinType]
+        this[Property.NODE_TYPE] = joinModifierRegex[JoinModifierMatch.NodeType]
+        this[Property.JOIN_TYPE] = joinModifierRegex[JoinModifierMatch.JoinType]
       }
-      this[NodeProp.NODE_TYPE] += " Join"
+      this[Property.NODE_TYPE] += " Join"
     }
   }
 }
 
 export interface Worker {
-  [WorkerProp.WORKER_NUMBER]: number
+  [Property.WORKER_NUMBER]: number
   [k: string]: string | number | object
 }
 
@@ -305,8 +302,8 @@ export type Settings = {
 }
 
 export type SortGroups = {
-  [SortGroupsProp.SORT_METHODS_USED]: string[]
-  [SortGroupsProp.SORT_SPACE_MEMORY]: SortSpaceMemory
+  [Property.SORT_METHODS_USED]: string[]
+  [Property.SORT_SPACE_MEMORY]: SortSpaceMemory
   [key: string]: number | string | string[] | SortSpaceMemory
 }
 
@@ -337,16 +334,16 @@ export interface JIT {
 export interface ISerialization {
   Time: number
   "Output Volume": number
-  [BuffersProp.LOCAL_DIRTIED_BLOCKS]: number
-  [BuffersProp.LOCAL_HIT_BLOCKS]: number
-  [BuffersProp.LOCAL_READ_BLOCKS]: number
-  [BuffersProp.LOCAL_WRITTEN_BLOCKS]: number
-  [BuffersProp.SHARED_DIRTIED_BLOCKS]: number
-  [BuffersProp.SHARED_HIT_BLOCKS]: number
-  [BuffersProp.SHARED_READ_BLOCKS]: number
-  [BuffersProp.SHARED_WRITTEN_BLOCKS]: number
-  [BuffersProp.TEMP_READ_BLOCKS]: number
-  [BuffersProp.TEMP_WRITTEN_BLOCKS]: number
+  [Property.LOCAL_DIRTIED_BLOCKS]: number
+  [Property.LOCAL_HIT_BLOCKS]: number
+  [Property.LOCAL_READ_BLOCKS]: number
+  [Property.LOCAL_WRITTEN_BLOCKS]: number
+  [Property.SHARED_DIRTIED_BLOCKS]: number
+  [Property.SHARED_HIT_BLOCKS]: number
+  [Property.SHARED_READ_BLOCKS]: number
+  [Property.SHARED_WRITTEN_BLOCKS]: number
+  [Property.TEMP_READ_BLOCKS]: number
+  [Property.TEMP_WRITTEN_BLOCKS]: number
 }
 
 // A plan node with id, node, isLastSibling, branches

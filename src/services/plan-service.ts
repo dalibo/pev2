@@ -2,10 +2,7 @@ import _ from "lodash"
 import {
   BufferLocation,
   EstimateDirection,
-  SortGroupsProp,
-  NodeProp,
-  SortSpaceMemoryProp,
-  WorkerProp,
+  Property,
 } from "@/enums"
 import { splitBalanced } from "@/services/help-service"
 import type {
@@ -37,7 +34,7 @@ export class PlanService {
   private flat: Node[] = []
 
   private recurse(nodes: Node[]): recurseItemType {
-    return _.map(nodes, (node) => [node, this.recurse(node[NodeProp.PLANS])])
+    return _.map(nodes, (node) => [node, this.recurse(node[Property.PLANS])])
   }
 
   public createPlan(
@@ -53,14 +50,14 @@ export class PlanService {
     planQuery = planQuery.replace(/(\S)(?!$)(\s{2,})/gm, "$1 ")
 
     const plan: IPlan = {
-      id: NodeProp.PEV_PLAN_TAG + new Date().getTime().toString(),
+      id: Property.PEV_PLAN_TAG + new Date().getTime().toString(),
       name: planName || "plan created on " + new Date().toDateString(),
       createdOn: new Date(),
       content: planContent,
       query: planQuery,
       planStats: {} as IPlanStats,
       ctes: [],
-      isAnalyze: _.has(planContent.Plan, NodeProp.ACTUAL_ROWS),
+      isAnalyze: _.has(planContent.Plan, Property.ACTUAL_ROWS),
       isVerbose: this.findOutputProperty(planContent.Plan),
     }
 
@@ -83,8 +80,8 @@ export class PlanService {
 
   public isCTE(node: Node) {
     return (
-      node[NodeProp.PARENT_RELATIONSHIP] === "InitPlan" &&
-      _.startsWith(node[NodeProp.SUBPLAN_NAME], "CTE")
+      node[Property.PARENT_RELATIONSHIP] === "InitPlan" &&
+      _.startsWith(node[Property.SUBPLAN_NAME], "CTE")
     )
   }
 
@@ -93,19 +90,19 @@ export class PlanService {
     node.nodeId = this.nodeId++
     this.calculatePlannerEstimate(node)
 
-    _.each(node[NodeProp.PLANS], (child) => {
+    _.each(node[Property.PLANS], (child) => {
       // Disseminate workers planned info to parallel nodes (ie. Gather children)
       if (
         !this.isCTE(child) &&
-        child[NodeProp.PARENT_RELATIONSHIP] !== "InitPlan" &&
-        child[NodeProp.PARENT_RELATIONSHIP] !== "SubPlan"
+        child[Property.PARENT_RELATIONSHIP] !== "InitPlan" &&
+        child[Property.PARENT_RELATIONSHIP] !== "SubPlan"
       ) {
-        child[NodeProp.WORKERS_PLANNED_BY_GATHER] =
-          node[NodeProp.WORKERS_PLANNED] ||
-          node[NodeProp.WORKERS_PLANNED_BY_GATHER]
-        child[NodeProp.WORKERS_LAUNCHED_BY_GATHER] =
-          node[NodeProp.WORKERS_LAUNCHED] ||
-          node[NodeProp.WORKERS_LAUNCHED_BY_GATHER]
+        child[Property.WORKERS_PLANNED_BY_GATHER] =
+          node[Property.WORKERS_PLANNED] ||
+          node[Property.WORKERS_PLANNED_BY_GATHER]
+        child[Property.WORKERS_LAUNCHED_BY_GATHER] =
+          node[Property.WORKERS_LAUNCHED] ||
+          node[Property.WORKERS_LAUNCHED_BY_GATHER]
       }
       if (this.isCTE(child)) {
         plan.ctes.push(child)
@@ -113,7 +110,7 @@ export class PlanService {
       this.processNode(child, plan)
     })
 
-    _.remove(node[NodeProp.PLANS], (child) => this.isCTE(child))
+    _.remove(node[Property.PLANS], (child) => this.isCTE(child))
 
     // calculate actuals after processing child nodes so that actual duration
     // takes loops into account
@@ -124,24 +121,24 @@ export class PlanService {
   }
 
   public calculateMaximums(plan: IPlan) {
-    const largest = _.maxBy(this.flat, NodeProp.ACTUAL_ROWS_REVISED)
+    const largest = _.maxBy(this.flat, Property.ACTUAL_ROWS_REVISED)
     if (largest) {
-      plan.content.maxRows = largest[NodeProp.ACTUAL_ROWS_REVISED] as number
+      plan.content.maxRows = largest[Property.ACTUAL_ROWS_REVISED] as number
     }
 
-    const costliest = _.maxBy(this.flat, NodeProp.EXCLUSIVE_COST)
+    const costliest = _.maxBy(this.flat, Property.EXCLUSIVE_COST)
     if (costliest) {
-      plan.content.maxCost = costliest[NodeProp.EXCLUSIVE_COST] as number
+      plan.content.maxCost = costliest[Property.EXCLUSIVE_COST] as number
     }
 
-    const totalCostliest = _.maxBy(this.flat, NodeProp.TOTAL_COST)
+    const totalCostliest = _.maxBy(this.flat, Property.TOTAL_COST)
     if (totalCostliest) {
-      plan.content.maxTotalCost = totalCostliest[NodeProp.TOTAL_COST] as number
+      plan.content.maxTotalCost = totalCostliest[Property.TOTAL_COST] as number
     }
 
-    const slowest = _.maxBy(this.flat, NodeProp.EXCLUSIVE_DURATION)
+    const slowest = _.maxBy(this.flat, Property.EXCLUSIVE_DURATION)
     if (slowest) {
-      plan.content.maxDuration = slowest[NodeProp.EXCLUSIVE_DURATION] as number
+      plan.content.maxDuration = slowest[Property.EXCLUSIVE_DURATION] as number
     }
 
     if (!plan.content.maxBlocks) {
@@ -150,10 +147,10 @@ export class PlanService {
 
     function sumShared(o: Node): number {
       return (
-        (o[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] as number) +
-        (o[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] as number) +
-        (o[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] as number) +
-        (o[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] as number)
+        (o[Property.EXCLUSIVE_SHARED_HIT_BLOCKS] as number) +
+        (o[Property.EXCLUSIVE_SHARED_READ_BLOCKS] as number) +
+        (o[Property.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] as number) +
+        (o[Property.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] as number)
       )
     }
     const highestShared = _.maxBy(this.flat, (o) => {
@@ -165,8 +162,8 @@ export class PlanService {
 
     function sumTemp(o: Node): number {
       return (
-        (o[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] as number) +
-        (o[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] as number)
+        (o[Property.EXCLUSIVE_TEMP_READ_BLOCKS] as number) +
+        (o[Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] as number)
       )
     }
     const highestTemp = _.maxBy(this.flat, (o) => {
@@ -178,10 +175,10 @@ export class PlanService {
 
     function sumLocal(o: Node) {
       return (
-        (o[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] as number) +
-        (o[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] as number) +
-        (o[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] as number) +
-        (o[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] as number)
+        (o[Property.EXCLUSIVE_LOCAL_HIT_BLOCKS] as number) +
+        (o[Property.EXCLUSIVE_LOCAL_READ_BLOCKS] as number) +
+        (o[Property.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] as number) +
+        (o[Property.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] as number)
       )
     }
     const highestLocal = _.maxBy(this.flat, (o) => {
@@ -196,8 +193,8 @@ export class PlanService {
     }
     function sumIo(o: Node) {
       return (
-        (o[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME] as number) +
-        (o[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME] as number)
+        (o[Property.EXCLUSIVE_SUM_IO_READ_TIME] as number) +
+        (o[Property.EXCLUSIVE_SUM_IO_WRITE_TIME] as number)
       )
     }
     const highestIo = _.maxBy(this.flat, (o) => {
@@ -209,7 +206,7 @@ export class PlanService {
 
     const highestEstimateFactor = _.max(
       _.map(this.flat, (node) => {
-        const f = node[NodeProp.PLANNER_ESTIMATE_FACTOR]
+        const f = node[Property.PLANNER_ESTIMATE_FACTOR]
         if (f !== Infinity) {
           return f
         }
@@ -220,40 +217,40 @@ export class PlanService {
 
   // actual duration and actual cost are calculated by subtracting child values from the total
   public calculateActuals(node: Node) {
-    if (!_.isUndefined(node[NodeProp.ACTUAL_TOTAL_TIME])) {
+    if (!_.isUndefined(node[Property.ACTUAL_TOTAL_TIME])) {
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
       // number of workers is also taken into account
-      const workers = (node[NodeProp.WORKERS_LAUNCHED_BY_GATHER] || 0) + 1
-      node[NodeProp.ACTUAL_TOTAL_TIME] =
-        ((node[NodeProp.ACTUAL_TOTAL_TIME] as number) *
-          (node[NodeProp.ACTUAL_LOOPS] as number)) /
+      const workers = (node[Property.WORKERS_LAUNCHED_BY_GATHER] || 0) + 1
+      node[Property.ACTUAL_TOTAL_TIME] =
+        ((node[Property.ACTUAL_TOTAL_TIME] as number) *
+          (node[Property.ACTUAL_LOOPS] as number)) /
         workers
-      node[NodeProp.ACTUAL_STARTUP_TIME] =
-        ((node[NodeProp.ACTUAL_STARTUP_TIME] as number) *
-          (node[NodeProp.ACTUAL_LOOPS] as number)) /
+      node[Property.ACTUAL_STARTUP_TIME] =
+        ((node[Property.ACTUAL_STARTUP_TIME] as number) *
+          (node[Property.ACTUAL_LOOPS] as number)) /
         workers
-      node[NodeProp.EXCLUSIVE_DURATION] = node[NodeProp.ACTUAL_TOTAL_TIME] as number
+      node[Property.EXCLUSIVE_DURATION] = node[Property.ACTUAL_TOTAL_TIME] as number
 
       const duration =
-        (node[NodeProp.EXCLUSIVE_DURATION] as number) -
+        (node[Property.EXCLUSIVE_DURATION] as number) -
         this.childrenDuration(node, 0)
-      node[NodeProp.EXCLUSIVE_DURATION] = duration > 0 ? duration : 0
+      node[Property.EXCLUSIVE_DURATION] = duration > 0 ? duration : 0
     }
 
-    if (!_.isUndefined(node[NodeProp.TOTAL_COST])) {
-      node[NodeProp.EXCLUSIVE_COST] = node[NodeProp.TOTAL_COST]
+    if (!_.isUndefined(node[Property.TOTAL_COST])) {
+      node[Property.EXCLUSIVE_COST] = node[Property.TOTAL_COST]
     }
 
-    _.each(node[NodeProp.PLANS], (subPlan) => {
-      if (subPlan[NodeProp.TOTAL_COST]) {
-        node[NodeProp.EXCLUSIVE_COST] =
-          (node[NodeProp.EXCLUSIVE_COST] as number) -
-          (subPlan[NodeProp.TOTAL_COST] as number)
+    _.each(node[Property.PLANS], (subPlan) => {
+      if (subPlan[Property.TOTAL_COST]) {
+        node[Property.EXCLUSIVE_COST] =
+          (node[Property.EXCLUSIVE_COST] as number) -
+          (subPlan[Property.TOTAL_COST] as number)
       }
     })
 
-    if ((node[NodeProp.EXCLUSIVE_COST] as number) < 0) {
-      node[NodeProp.EXCLUSIVE_COST] = 0
+    if ((node[Property.EXCLUSIVE_COST] as number) < 0) {
+      node[Property.EXCLUSIVE_COST] = 0
     }
 
     _.each(
@@ -264,12 +261,12 @@ export class PlanService {
         "ROWS_REMOVED_BY_JOIN_FILTER",
         "ROWS_REMOVED_BY_INDEX_RECHECK",
       ],
-      (prop: keyof typeof NodeProp) => {
-        if (!_.isUndefined(node[NodeProp[prop]])) {
-          const revisedProp = (prop + "_REVISED") as keyof typeof NodeProp
-          const loops = node[NodeProp.ACTUAL_LOOPS] || 1
-          const revised = <number>node[NodeProp[prop]] * loops
-          node[NodeProp[revisedProp] as unknown as keyof typeof Node] = revised
+      (prop: keyof typeof Property) => {
+        if (!_.isUndefined(node[Property[prop]])) {
+          const revisedProp = (prop + "_REVISED") as keyof typeof Property
+          const loops = node[Property.ACTUAL_LOOPS] || 1
+          const revised = <number>node[Property[prop]] * loops
+          node[Property[revisedProp] as unknown as keyof typeof Node] = revised
         }
       },
     )
@@ -284,27 +281,27 @@ export class PlanService {
     // Iterate over the CTEs
     _.each(plan.ctes, (cte) => {
       // Time spent in the CTE itself
-      const cteDuration = cte[NodeProp.ACTUAL_TOTAL_TIME] || 0
+      const cteDuration = cte[Property.ACTUAL_TOTAL_TIME] || 0
 
       // Find all nodes that are "CTE Scan" for the given CTE
       const cteScans = _.filter(
         this.flat,
         (node) =>
-          `CTE ${node[NodeProp.CTE_NAME]}` == cte[NodeProp.SUBPLAN_NAME],
+          `CTE ${node[Property.CTE_NAME]}` == cte[Property.SUBPLAN_NAME],
       )
 
       // Sum of exclusive time for the CTE Scans
       const sumScansDuration = _.sumBy(
         cteScans,
-        (node) => node[NodeProp.EXCLUSIVE_DURATION],
+        (node) => node[Property.EXCLUSIVE_DURATION],
       )
 
       // Subtract exclusive time proportionally
       _.each(cteScans, (node) => {
-        node[NodeProp.EXCLUSIVE_DURATION] = Math.max(
+        node[Property.EXCLUSIVE_DURATION] = Math.max(
           0,
-          node[NodeProp.EXCLUSIVE_DURATION] -
-            (cteDuration * (node[NodeProp.ACTUAL_TOTAL_TIME] || 0)) /
+          node[Property.EXCLUSIVE_DURATION] -
+            (cteDuration * (node[Property.ACTUAL_TOTAL_TIME] || 0)) /
               sumScansDuration,
         )
       })
@@ -320,7 +317,7 @@ export class PlanService {
     // Find all initPlans
     const initPlans = _.filter(
       this.flat,
-      (node) => node[NodeProp.PARENT_RELATIONSHIP] == "InitPlan",
+      (node) => node[Property.PARENT_RELATIONSHIP] == "InitPlan",
     )
 
     _.each(initPlans, (subPlan) => {
@@ -328,11 +325,11 @@ export class PlanService {
       // It can be either:
       //  - InitPlan 2 (returns $1) -> $1
       //  - InitPlan 2 -> InitPlan 2
-      if (!subPlan[NodeProp.SUBPLAN_NAME]) {
+      if (!subPlan[Property.SUBPLAN_NAME]) {
         return
       }
       const matches = /(InitPlan\s+[1-9]+)(?:\s+\(returns (\$[0-9]+)\))*/m.exec(
-        subPlan[NodeProp.SUBPLAN_NAME] as string,
+        subPlan[Property.SUBPLAN_NAME] as string,
       )
       if (!matches) {
         return
@@ -344,7 +341,7 @@ export class PlanService {
       _.each(
         _.filter(
           this.flat,
-          (node) => node[NodeProp.PARENT_RELATIONSHIP] != "InitPlan",
+          (node) => node[Property.PARENT_RELATIONSHIP] != "InitPlan",
         ),
         (node) => {
           _.each(node, (value) => {
@@ -357,8 +354,8 @@ export class PlanService {
               `.*${name.replace(/[^a-zA-Z0-9]/g, "\\$&")}[0-9]?`,
             ).exec(value)
             if (matches) {
-              node[NodeProp.EXCLUSIVE_DURATION] -=
-                subPlan[NodeProp.ACTUAL_TOTAL_TIME] || 0
+              node[Property.EXCLUSIVE_DURATION] -=
+                subPlan[Property.ACTUAL_TOTAL_TIME] || 0
               // Stop iterating for this node
               return false
             }
@@ -370,15 +367,15 @@ export class PlanService {
 
   // function to get the sum of actual durations of a a node children
   public childrenDuration(node: Node, duration: number) {
-    _.each(node[NodeProp.PLANS], (child) => {
+    _.each(node[Property.PLANS], (child) => {
       // Subtract sub plans duration from this node except for InitPlans
       // (ie. CTE)
       if (
-        child[NodeProp.PARENT_RELATIONSHIP] !== "InitPlan" ||
-        (child[NodeProp.PARENT_RELATIONSHIP] == "InitPlan" &&
-          node[NodeProp.NODE_TYPE] == "Result")
+        child[Property.PARENT_RELATIONSHIP] !== "InitPlan" ||
+        (child[Property.PARENT_RELATIONSHIP] == "InitPlan" &&
+          node[Property.NODE_TYPE] == "Result")
       ) {
-        duration += child[NodeProp.ACTUAL_TOTAL_TIME] || 0 // Duration may not be set
+        duration += child[Property.ACTUAL_TOTAL_TIME] || 0 // Duration may not be set
       }
     })
     return duration
@@ -388,20 +385,20 @@ export class PlanService {
   // invloved in this node
   public calculatePlannerEstimate(node: Node) {
     if (
-      node[NodeProp.ACTUAL_ROWS] !== undefined &&
-      node[NodeProp.PLAN_ROWS] !== undefined
+      node[Property.ACTUAL_ROWS] !== undefined &&
+      node[Property.PLAN_ROWS] !== undefined
     ) {
-      node[NodeProp.PLANNER_ESTIMATE_FACTOR] =
-        node[NodeProp.ACTUAL_ROWS] / node[NodeProp.PLAN_ROWS]
-      node[NodeProp.PLANNER_ESTIMATE_DIRECTION] = EstimateDirection.none
+      node[Property.PLANNER_ESTIMATE_FACTOR] =
+        node[Property.ACTUAL_ROWS] / node[Property.PLAN_ROWS]
+      node[Property.PLANNER_ESTIMATE_DIRECTION] = EstimateDirection.none
 
-      if (node[NodeProp.ACTUAL_ROWS] > node[NodeProp.PLAN_ROWS]) {
-        node[NodeProp.PLANNER_ESTIMATE_DIRECTION] = EstimateDirection.under
+      if (node[Property.ACTUAL_ROWS] > node[Property.PLAN_ROWS]) {
+        node[Property.PLANNER_ESTIMATE_DIRECTION] = EstimateDirection.under
       }
-      if (node[NodeProp.ACTUAL_ROWS] < node[NodeProp.PLAN_ROWS]) {
-        node[NodeProp.PLANNER_ESTIMATE_DIRECTION] = EstimateDirection.over
-        node[NodeProp.PLANNER_ESTIMATE_FACTOR] =
-          node[NodeProp.PLAN_ROWS] / node[NodeProp.ACTUAL_ROWS]
+      if (node[Property.ACTUAL_ROWS] < node[Property.PLAN_ROWS]) {
+        node[Property.PLANNER_ESTIMATE_DIRECTION] = EstimateDirection.over
+        node[Property.PLANNER_ESTIMATE_FACTOR] =
+          node[Property.PLAN_ROWS] / node[Property.ACTUAL_ROWS]
       }
     }
   }
@@ -725,20 +722,20 @@ export class PlanService {
           (nodeMatches[NodeMatch.EstimatedStartupCost2] &&
             nodeMatches[NodeMatch.EstimatedTotalCost2])
         ) {
-          newNode[NodeProp.STARTUP_COST] = parseFloat(
+          newNode[Property.STARTUP_COST] = parseFloat(
             nodeMatches[NodeMatch.EstimatedStartupCost1] ||
               nodeMatches[NodeMatch.EstimatedStartupCost2],
           )
-          newNode[NodeProp.TOTAL_COST] = parseFloat(
+          newNode[Property.TOTAL_COST] = parseFloat(
             nodeMatches[NodeMatch.EstimatedTotalCost1] ||
               nodeMatches[NodeMatch.EstimatedTotalCost2],
           )
-          newNode[NodeProp.PLAN_ROWS] = parseInt(
+          newNode[Property.PLAN_ROWS] = parseInt(
             nodeMatches[NodeMatch.EstimatedRows] ||
               nodeMatches[NodeMatch.EstimatedRows2],
             0,
           )
-          newNode[NodeProp.PLAN_WIDTH] = parseInt(
+          newNode[Property.PLAN_WIDTH] = parseInt(
             nodeMatches[NodeMatch.EstimatedRowWidth] ||
               nodeMatches[NodeMatch.EstimatedRowWidth2],
             0,
@@ -750,11 +747,11 @@ export class PlanService {
           (nodeMatches[NodeMatch.ActualTimeFirst2] &&
             nodeMatches[NodeMatch.ActualTimeLast2])
         ) {
-          newNode[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
+          newNode[Property.ACTUAL_STARTUP_TIME] = parseFloat(
             nodeMatches[NodeMatch.ActualTimeFirst1] ||
               nodeMatches[NodeMatch.ActualTimeFirst2],
           )
-          newNode[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
+          newNode[Property.ACTUAL_TOTAL_TIME] = parseFloat(
             nodeMatches[NodeMatch.ActualTimeLast1] ||
               nodeMatches[NodeMatch.ActualTimeLast2],
           )
@@ -770,10 +767,10 @@ export class PlanService {
             nodeMatches[NodeMatch.ActualRows1] ||
             nodeMatches[NodeMatch.ActualRows2]
           if (actual_rows.indexOf(".") != -1) {
-            newNode[NodeProp.ACTUAL_ROWS_FRACTIONAL] = true
+            newNode[Property.ACTUAL_ROWS_FRACTIONAL] = true
           }
-          newNode[NodeProp.ACTUAL_ROWS] = parseFloat(actual_rows)
-          newNode[NodeProp.ACTUAL_LOOPS] = parseInt(
+          newNode[Property.ACTUAL_ROWS] = parseFloat(actual_rows)
+          newNode[Property.ACTUAL_LOOPS] = parseInt(
             nodeMatches[NodeMatch.ActualLoops1] ||
               nodeMatches[NodeMatch.ActualLoops2],
             0,
@@ -781,13 +778,13 @@ export class PlanService {
         }
 
         if (nodeMatches[NodeMatch.PartialMode]) {
-          newNode[NodeProp.PARTIAL_MODE] = nodeMatches[NodeMatch.PartialMode]
+          newNode[Property.PARTIAL_MODE] = nodeMatches[NodeMatch.PartialMode]
         }
 
         if (neverExecuted) {
-          newNode[NodeProp.ACTUAL_LOOPS] = 0
-          newNode[NodeProp.ACTUAL_ROWS] = 0
-          newNode[NodeProp.ACTUAL_TOTAL_TIME] = undefined
+          newNode[Property.ACTUAL_LOOPS] = 0
+          newNode[Property.ACTUAL_ROWS] = 0
+          newNode[Property.ACTUAL_TOTAL_TIME] = undefined
         }
         const element = {
           node: newNode,
@@ -815,15 +812,15 @@ export class PlanService {
 
         elementsAtDepth.push([depth, element])
 
-        if (!previousElement.node[NodeProp.PLANS]) {
-          previousElement.node[NodeProp.PLANS] = []
+        if (!previousElement.node[Property.PLANS]) {
+          previousElement.node[Property.PLANS] = []
         }
         if (previousElement.subelementType === "initplan") {
-          newNode[NodeProp.PARENT_RELATIONSHIP] = "InitPlan"
-          newNode[NodeProp.SUBPLAN_NAME] = previousElement.name as string
+          newNode[Property.PARENT_RELATIONSHIP] = "InitPlan"
+          newNode[Property.SUBPLAN_NAME] = previousElement.name as string
         } else if (previousElement.subelementType === "subplan") {
-          newNode[NodeProp.PARENT_RELATIONSHIP] = "SubPlan"
-          newNode[NodeProp.SUBPLAN_NAME] = previousElement.name as string
+          newNode[Property.PARENT_RELATIONSHIP] = "SubPlan"
+          newNode[Property.SUBPLAN_NAME] = previousElement.name as string
         }
         previousElement.node.Plans?.push(newNode)
       } else if (subMatches) {
@@ -857,29 +854,29 @@ export class PlanService {
         if (!previousElement) {
           return
         }
-        if (!previousElement.node[NodeProp.WORKERS]) {
-          previousElement.node[NodeProp.WORKERS] = [] as Worker[]
+        if (!previousElement.node[Property.WORKERS]) {
+          previousElement.node[Property.WORKERS] = [] as Worker[]
         }
         let worker = this.getWorker(previousElement.node, workerNumber)
         if (!worker) {
-          worker = {[WorkerProp.WORKER_NUMBER]: workerNumber}
-          previousElement.node[NodeProp.WORKERS]?.push(worker)
+          worker = {[Property.WORKER_NUMBER]: workerNumber}
+          previousElement.node[Property.WORKERS]?.push(worker)
         }
         if (
           workerMatches[WorkerMatch.ActualTimeFirst] &&
           workerMatches[WorkerMatch.ActualTimeLast]
         ) {
-          worker[NodeProp.ACTUAL_STARTUP_TIME] = parseFloat(
+          worker[Property.ACTUAL_STARTUP_TIME] = parseFloat(
             workerMatches[WorkerMatch.ActualTimeFirst],
           )
-          worker[NodeProp.ACTUAL_TOTAL_TIME] = parseFloat(
+          worker[Property.ACTUAL_TOTAL_TIME] = parseFloat(
             workerMatches[WorkerMatch.ActualTimeLast],
           )
-          worker[NodeProp.ACTUAL_ROWS] = parseInt(
+          worker[Property.ACTUAL_ROWS] = parseInt(
             workerMatches[WorkerMatch.ActualRows],
             0,
           )
-          worker[NodeProp.ACTUAL_LOOPS] = parseInt(
+          worker[Property.ACTUAL_LOOPS] = parseInt(
             workerMatches[WorkerMatch.ActualLoops],
             0,
           )
@@ -922,9 +919,9 @@ export class PlanService {
           if (!lastElement) {
             return
           }
-          if (_.last(lastElement.node?.[NodeProp.WORKERS])) {
+          if (_.last(lastElement.node?.[Property.WORKERS])) {
             const worker: Worker = _.last(
-              lastElement.node?.[NodeProp.WORKERS],
+              lastElement.node?.[Property.WORKERS],
             ) as Worker
             worker.JIT = {} as JIT
             element = {
@@ -1057,9 +1054,9 @@ export class PlanService {
       /^(\s*)Sort Method:\s+(.*)\s+(Memory|Disk):\s+(?:(\S*)kB)\s*$/g
     const sortMatches = sortRegex.exec(text)
     if (sortMatches) {
-      el[NodeProp.SORT_METHOD] = sortMatches[SortMatch.Method].trim()
-      el[NodeProp.SORT_SPACE_USED] = sortMatches[SortMatch.SpaceUsed]
-      el[NodeProp.SORT_SPACE_TYPE] = sortMatches[SortMatch.SpaceType]
+      el[Property.SORT_METHOD] = sortMatches[SortMatch.Method].trim()
+      el[Property.SORT_SPACE_USED] = sortMatches[SortMatch.SpaceUsed]
+      el[Property.SORT_SPACE_TYPE] = sortMatches[SortMatch.SpaceType]
       return true
     }
     return false
@@ -1105,8 +1102,8 @@ export class PlanService {
   }
 
   private getWorker(node: Node, workerNumber: number): Worker | undefined {
-    return _.find(node[NodeProp.WORKERS], (worker) => {
-      return worker[WorkerProp.WORKER_NUMBER] === workerNumber
+    return _.find(node[Property.WORKERS], (worker) => {
+      return worker[Property.WORKER_NUMBER] === workerNumber
     })
   }
 
@@ -1202,30 +1199,30 @@ export class PlanService {
 
     // Initiate with default value
     if (scopeIsDetailed) {
-      el[NodeProp.SHARED_IO_READ_TIME] = 0
-      el[NodeProp.SHARED_IO_WRITE_TIME] = 0
-      el[NodeProp.LOCAL_IO_READ_TIME] = 0
-      el[NodeProp.LOCAL_IO_WRITE_TIME] = 0
+      el[Property.SHARED_IO_READ_TIME] = 0
+      el[Property.SHARED_IO_WRITE_TIME] = 0
+      el[Property.LOCAL_IO_READ_TIME] = 0
+      el[Property.LOCAL_IO_WRITE_TIME] = 0
     } else {
-      el[NodeProp.IO_READ_TIME] = 0
-      el[NodeProp.IO_WRITE_TIME] = 0
+      el[Property.IO_READ_TIME] = 0
+      el[Property.IO_WRITE_TIME] = 0
     }
     if (scopeIsPartiallyDetailed || scopeIsDetailed) {
-      el[NodeProp.TEMP_IO_READ_TIME] = 0
-      el[NodeProp.TEMP_IO_WRITE_TIME] = 0
+      el[Property.TEMP_IO_READ_TIME] = 0
+      el[Property.TEMP_IO_WRITE_TIME] = 0
     }
 
     results.forEach((result) => {
       ;["read", "write"].forEach((operation) => {
-        let prop = `IO_${_.upperCase(operation)}_TIME` as keyof typeof NodeProp
+        let prop = `IO_${_.upperCase(operation)}_TIME` as keyof typeof Property
 
         if (result.scope && result.scope != "shared/local") {
           prop = (_.upperCase(result.scope) +
             "_" +
-            prop) as keyof typeof NodeProp
+            prop) as keyof typeof Property
         }
-        const nodeProp = NodeProp[prop] as unknown as keyof typeof Node
-        el[nodeProp] = result[operation as "read" | "write"]
+        const property = Property[prop] as unknown as keyof typeof Node
+        el[property] = result[operation as "read" | "write"]
       })
     })
 
@@ -1320,24 +1317,24 @@ export class PlanService {
 
     if (matches) {
       const groups: SortGroups = {
-        [SortGroupsProp.GROUP_COUNT]: parseInt(matches[2], 0),
-        [SortGroupsProp.SORT_METHODS_USED]: _.map(
+        [Property.GROUP_COUNT]: parseInt(matches[2], 0),
+        [Property.SORT_METHODS_USED]: _.map(
           matches[3].split(","),
           _.trim,
         ),
-        [SortGroupsProp.SORT_SPACE_MEMORY]: {
-          [SortSpaceMemoryProp.AVERAGE_SORT_SPACE_USED]: parseInt(
+        [Property.SORT_SPACE_MEMORY]: {
+          [Property.AVERAGE_SORT_SPACE_USED]: parseInt(
             matches[4],
             0,
           ),
-          [SortSpaceMemoryProp.PEAK_SORT_SPACE_USED]: parseInt(matches[5], 0),
+          [Property.PEAK_SORT_SPACE_USED]: parseInt(matches[5], 0),
         },
       }
 
       if (matches[1] === "Full-sort") {
-        el[NodeProp.FULL_SORT_GROUPS] = groups
+        el[Property.FULL_SORT_GROUPS] = groups
       } else if (matches[1] === "Pre-sorted") {
-        el[NodeProp.PRE_SORTED_GROUPS] = groups
+        el[Property.PRE_SORTED_GROUPS] = groups
       } else {
         throw new Error("Unsupported sort groups method")
       }
@@ -1352,7 +1349,7 @@ export class PlanService {
     const matches = booleanRegex.test(text)
 
     if (matches) {
-      el[NodeProp.DISABLED] = true;
+      el[Property.DISABLED] = true;
       return true
     }
     return false
@@ -1360,7 +1357,7 @@ export class PlanService {
 
   private calculateExclusives(node: Node) {
     // Caculate inclusive value for the current node for the given property
-    const properties: Array<keyof typeof NodeProp> = [
+    const properties: Array<keyof typeof Property> = [
       "SHARED_HIT_BLOCKS",
       "SHARED_READ_BLOCKS",
       "SHARED_DIRTIED_BLOCKS",
@@ -1380,26 +1377,25 @@ export class PlanService {
       "TEMP_IO_READ_TIME",
       "TEMP_IO_WRITE_TIME",
     ]
-    _.each(properties, (property) => {
+    _.each(properties, (p) => {
       const sum = Number(
         _.sumBy(
           // Don't take subplans into account (InitPlan)
           _.filter(
-            node[NodeProp.PLANS],
-            (child: Node) => !child[NodeProp.SUBPLAN_NAME],
+            node[Property.PLANS],
+            (child: Node) => !child[Property.SUBPLAN_NAME],
           ),
           (child: Node) => {
-            return (child[NodeProp[property]] as number) || 0
+            return (child[Property[p]] as number) || 0
           },
         ).toFixed(3),
       )
-      const exclusivePropertyString = ("EXCLUSIVE_" +
-        property) as keyof typeof NodeProp
-      const nodeProp = NodeProp[
+      const exclusivePropertyString = ("EXCLUSIVE_" + p) as keyof typeof Property
+      const property = Property[
         exclusivePropertyString
       ] as unknown as keyof typeof Node
-      node[nodeProp] = Number(
-        ((node[NodeProp[property]] as number) - sum).toFixed(3),
+      node[property] = Number(
+        ((node[Property[p]] as number) - sum).toFixed(3),
       )
     })
   }
@@ -1407,12 +1403,12 @@ export class PlanService {
   private calculateIoTimingsAverage(node: Node) {
     // The matrix to match I/O Timings with Buffers
     let scopesMatrix
-    if (_.isUndefined(node[NodeProp.TEMP_IO_READ_TIME])) {
+    if (_.isUndefined(node[Property.TEMP_IO_READ_TIME])) {
       // pre Pg15
       scopesMatrix = {
         "": ["shared", "local", "temp"],
       }
-    } else if (!_.isUndefined(node[NodeProp.IO_READ_TIME])) {
+    } else if (!_.isUndefined(node[Property.IO_READ_TIME])) {
       // pg15-16
       scopesMatrix = {
         "": ["shared", "local"],
@@ -1433,20 +1429,20 @@ export class PlanService {
       operations.forEach((operation, index) => {
         ;["exclusive_", ""].forEach((prefix) => {
           const timeProp =
-            `${prefix}${timingScope ? timingScope + "_" : ""}io_${operation}_time`.toUpperCase() as keyof typeof NodeProp
+            `${prefix}${timingScope ? timingScope + "_" : ""}io_${operation}_time`.toUpperCase() as keyof typeof Property
           const speedProp =
-            `${prefix}average_${timingScope ? timingScope + "_" : ""}io_${operation}_speed`.toUpperCase() as keyof typeof NodeProp
-          const time = (node[NodeProp[timeProp]] as number) || 0
+            `${prefix}average_${timingScope ? timingScope + "_" : ""}io_${operation}_speed`.toUpperCase() as keyof typeof Property
+          const time = (node[Property[timeProp]] as number) || 0
           const buffersOperation = buffersOperations[index]
           const buffers = _.sumBy(buffersScopes, (bufferScope) => {
             const bufferProp =
-              `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof NodeProp
-            return (node[NodeProp[bufferProp]] as number) || 0
+              `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof Property
+            return (node[Property[bufferProp]] as number) || 0
           })
-          const buffersProp = `${prefix}${buffersOperation}_blocks`.toUpperCase() as keyof typeof NodeProp;
-          node[NodeProp[buffersProp] as unknown as keyof typeof Node] = buffers;
+          const buffersProp = `${prefix}${buffersOperation}_blocks`.toUpperCase() as keyof typeof Property;
+          node[Property[buffersProp] as unknown as keyof typeof Node] = buffers;
           if (time) {
-            node[NodeProp[speedProp] as unknown as keyof typeof Node] = Number(
+            node[Property[speedProp] as unknown as keyof typeof Node] = Number(
               (buffers / (time / 1000)).toFixed(3),
             )
           }
@@ -1458,27 +1454,27 @@ export class PlanService {
     operations.forEach((operation, index) => {
       ;["exclusive_", ""].forEach((prefix) => {
         const sumTimeProp =
-          `${prefix}sum_io_${operation}_time`.toUpperCase() as keyof typeof NodeProp
+          `${prefix}sum_io_${operation}_time`.toUpperCase() as keyof typeof Property
         const speedProp =
-          `${prefix}average_sum_io_${operation}_speed`.toUpperCase() as keyof typeof NodeProp
+          `${prefix}average_sum_io_${operation}_speed`.toUpperCase() as keyof typeof Property
         let time = 0
         let buffers = 0
         _.forEach(scopesMatrix, (buffersScopes, timingScope) => {
           const timeProp =
-            `${prefix}${timingScope ? timingScope + "_" : ""}io_${operation}_time`.toUpperCase() as keyof typeof NodeProp
-          time += (node[NodeProp[timeProp]] as number) || 0
+            `${prefix}${timingScope ? timingScope + "_" : ""}io_${operation}_time`.toUpperCase() as keyof typeof Property
+          time += (node[Property[timeProp]] as number) || 0
           const buffersOperation = buffersOperations[index]
           buffers += _.sumBy(buffersScopes, (bufferScope) => {
             const bufferProp =
-              `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof NodeProp
-            return (node[NodeProp[bufferProp]] as number) || 0
+              `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof Property
+            return (node[Property[bufferProp]] as number) || 0
           })
         })
-        node[NodeProp[sumTimeProp] as unknown as keyof typeof Node] = Number(
+        node[Property[sumTimeProp] as unknown as keyof typeof Node] = Number(
           time.toFixed(3),
         )
         if (time) {
-          node[NodeProp[speedProp] as unknown as keyof typeof Node] = Number(
+          node[Property[speedProp] as unknown as keyof typeof Node] = Number(
             (buffers / (time / 1000)).toFixed(3),
           )
         }
@@ -1493,15 +1489,15 @@ export class PlanService {
       return false
     }
     return _.some(children, (child) => {
-      return _.has(child, NodeProp.OUTPUT) || this.findOutputProperty(child)
+      return _.has(child, Property.OUTPUT) || this.findOutputProperty(child)
     })
   }
 
   private convertNodeType(node: Node): void {
     // Convert some node type (possibly from JSON source) to match the TEXT format
-    if (node[NodeProp.NODE_TYPE] == "Aggregate" && node[NodeProp.STRATEGY]) {
+    if (node[Property.NODE_TYPE] == "Aggregate" && node[Property.STRATEGY]) {
       let prefix = ""
-      switch (node[NodeProp.STRATEGY]) {
+      switch (node[Property.STRATEGY]) {
         case "Sorted":
           prefix = "Group"
           break
@@ -1514,11 +1510,11 @@ export class PlanService {
         default:
           console.error("Unsupported Aggregate Strategy")
       }
-      node[NodeProp.NODE_TYPE] = prefix + "Aggregate"
+      node[Property.NODE_TYPE] = prefix + "Aggregate"
     }
 
-    if (node[NodeProp.NODE_TYPE] == "ModifyTable") {
-      node[NodeProp.NODE_TYPE] = node[NodeProp.OPERATION] as string
+    if (node[Property.NODE_TYPE] == "ModifyTable") {
+      node[Property.NODE_TYPE] = node[Property.OPERATION] as string
     }
   }
 }

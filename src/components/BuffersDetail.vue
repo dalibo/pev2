@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { formatBlocks } from "@/filters"
 import type { ISerialization, Node } from "@/interfaces"
-import { BuffersProp, NodeProp } from "@/enums"
+import { Property } from "@/enums"
 
 interface Props {
   object: Node | ISerialization
@@ -9,45 +9,45 @@ interface Props {
 const props = defineProps<Props>()
 
 const sharedHitBlocks =
-  NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS in props.object
-    ? props.object[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]
-    : props.object[BuffersProp.SHARED_HIT_BLOCKS]
+  Property.EXCLUSIVE_SHARED_HIT_BLOCKS in props.object
+    ? props.object[Property.EXCLUSIVE_SHARED_HIT_BLOCKS]
+    : props.object[Property.SHARED_HIT_BLOCKS]
 const sharedReadBlocks =
-  NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS in props.object
-    ? props.object[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]
-    : props.object[BuffersProp.SHARED_READ_BLOCKS]
+  Property.EXCLUSIVE_SHARED_READ_BLOCKS in props.object
+    ? props.object[Property.EXCLUSIVE_SHARED_READ_BLOCKS]
+    : props.object[Property.SHARED_READ_BLOCKS]
 const sharedDirtiedBlocks =
-  NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS in props.object
-    ? props.object[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]
-    : props.object[BuffersProp.SHARED_DIRTIED_BLOCKS]
+  Property.EXCLUSIVE_SHARED_DIRTIED_BLOCKS in props.object
+    ? props.object[Property.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]
+    : props.object[Property.SHARED_DIRTIED_BLOCKS]
 const sharedWrittenBlocks =
-  NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS in props.object
-    ? props.object[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]
-    : props.object[BuffersProp.SHARED_WRITTEN_BLOCKS]
+  Property.EXCLUSIVE_SHARED_WRITTEN_BLOCKS in props.object
+    ? props.object[Property.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]
+    : props.object[Property.SHARED_WRITTEN_BLOCKS]
 const localHitBlocks =
-  NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS in props.object
-    ? props.object[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]
-    : props.object[BuffersProp.LOCAL_HIT_BLOCKS]
+  Property.EXCLUSIVE_LOCAL_HIT_BLOCKS in props.object
+    ? props.object[Property.EXCLUSIVE_LOCAL_HIT_BLOCKS]
+    : props.object[Property.LOCAL_HIT_BLOCKS]
 const localReadBlocks =
-  NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS in props.object
-    ? props.object[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]
-    : props.object[BuffersProp.LOCAL_READ_BLOCKS]
+  Property.EXCLUSIVE_LOCAL_READ_BLOCKS in props.object
+    ? props.object[Property.EXCLUSIVE_LOCAL_READ_BLOCKS]
+    : props.object[Property.LOCAL_READ_BLOCKS]
 const localDirtiedBlocks =
-  NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS in props.object
-    ? props.object[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]
-    : props.object[BuffersProp.LOCAL_DIRTIED_BLOCKS]
+  Property.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS in props.object
+    ? props.object[Property.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]
+    : props.object[Property.LOCAL_DIRTIED_BLOCKS]
 const localWrittenBlocks =
-  NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS in props.object
-    ? props.object[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]
-    : props.object[BuffersProp.LOCAL_WRITTEN_BLOCKS]
+  Property.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS in props.object
+    ? props.object[Property.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]
+    : props.object[Property.LOCAL_WRITTEN_BLOCKS]
 const tempReadBlocks =
-  NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS in props.object
-    ? props.object[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]
-    : props.object[BuffersProp.TEMP_READ_BLOCKS]
+  Property.EXCLUSIVE_TEMP_READ_BLOCKS in props.object
+    ? props.object[Property.EXCLUSIVE_TEMP_READ_BLOCKS]
+    : props.object[Property.TEMP_READ_BLOCKS]
 const tempWrittenBlocks =
-  NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS in props.object
-    ? props.object[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]
-    : props.object[BuffersProp.TEMP_WRITTEN_BLOCKS]
+  Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS in props.object
+    ? props.object[Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]
+    : props.object[Property.TEMP_WRITTEN_BLOCKS]
 </script>
 <template>
   <table class="table table-sm">

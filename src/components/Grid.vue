@@ -3,7 +3,7 @@ import _ from "lodash"
 import { computed, onMounted } from "vue"
 import type { Node } from "@/interfaces"
 import GridRow from "@/components/GridRow.vue"
-import { NodeProp } from "../enums"
+import { Property } from "../enums"
 import LevelDivider from "@/components/LevelDivider.vue"
 import { store } from "@/store"
 import type { FlattenedPlanNode } from "@/store"
@@ -13,13 +13,13 @@ onMounted((): void => {
 })
 
 function isCTE(node: Node): boolean {
-  return _.startsWith(node[NodeProp.SUBPLAN_NAME], "CTE")
+  return _.startsWith(node[Property.SUBPLAN_NAME], "CTE")
 }
 
 const hasTime = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_DURATION] || 0 > 1
+      return row.node[Property.EXCLUSIVE_DURATION] || 0 > 1
     })
   })
 })
@@ -28,10 +28,10 @@ const hasIORead = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
       return (
-        row.node[NodeProp.IO_READ_TIME] ||
-        row.node[NodeProp.SHARED_IO_READ_TIME] ||
-        row.node[NodeProp.LOCAL_IO_READ_TIME] ||
-        row.node[NodeProp.TEMP_IO_READ_TIME]
+        row.node[Property.IO_READ_TIME] ||
+        row.node[Property.SHARED_IO_READ_TIME] ||
+        row.node[Property.LOCAL_IO_READ_TIME] ||
+        row.node[Property.TEMP_IO_READ_TIME]
       )
     })
   })
@@ -41,10 +41,10 @@ const hasIOWrite = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
       return (
-        row.node[NodeProp.IO_WRITE_TIME] ||
-        row.node[NodeProp.SHARED_IO_WRITE_TIME] ||
-        row.node[NodeProp.LOCAL_IO_WRITE_TIME] ||
-        row.node[NodeProp.TEMP_IO_WRITE_TIME]
+        row.node[Property.IO_WRITE_TIME] ||
+        row.node[Property.SHARED_IO_WRITE_TIME] ||
+        row.node[Property.LOCAL_IO_WRITE_TIME] ||
+        row.node[Property.TEMP_IO_WRITE_TIME]
       )
     })
   })
@@ -61,7 +61,7 @@ const ioColumns = computed((): number => {
 const hasRows = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.ACTUAL_ROWS_REVISED] || 0 > 1
+      return row.node[Property.ACTUAL_ROWS_REVISED] || 0 > 1
     })
   })
 })
@@ -69,7 +69,7 @@ const hasRows = computed((): boolean => {
 const hasEstimation = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.PLANNER_ESTIMATE_FACTOR] || 0 > 1
+      return row.node[Property.PLANNER_ESTIMATE_FACTOR] || 0 > 1
     })
   })
 })
@@ -77,7 +77,7 @@ const hasEstimation = computed((): boolean => {
 const hasLoops = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.ACTUAL_LOOPS] > 1
+      return row.node[Property.ACTUAL_LOOPS] > 1
     })
   })
 })
@@ -85,7 +85,7 @@ const hasLoops = computed((): boolean => {
 const hasCost = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_COST] > 1
+      return row.node[Property.EXCLUSIVE_COST] > 1
     })
   })
 })
@@ -94,9 +94,9 @@ const hasFilter = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
       return (
-        row.node[NodeProp.ROWS_REMOVED_BY_FILTER] ||
-        row.node[NodeProp.ROWS_REMOVED_BY_JOIN_FILTER] ||
-        row.node[NodeProp.ROWS_REMOVED_BY_INDEX_RECHECK]
+        row.node[Property.ROWS_REMOVED_BY_FILTER] ||
+        row.node[Property.ROWS_REMOVED_BY_JOIN_FILTER] ||
+        row.node[Property.ROWS_REMOVED_BY_INDEX_RECHECK]
       )
     })
   })
@@ -105,7 +105,7 @@ const hasFilter = computed((): boolean => {
 const hasHeapFetches = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.HEAP_FETCHES]
+      return row.node[Property.HEAP_FETCHES]
     })
   })
 })
@@ -125,7 +125,7 @@ const sharedBlocksColumns = computed((): number => {
 const hasSharedHit = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS]
+      return row.node[Property.EXCLUSIVE_SHARED_HIT_BLOCKS]
     })
   })
 })
@@ -133,7 +133,7 @@ const hasSharedHit = computed((): boolean => {
 const hasSharedRead = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS]
+      return row.node[Property.EXCLUSIVE_SHARED_READ_BLOCKS]
     })
   })
 })
@@ -141,7 +141,7 @@ const hasSharedRead = computed((): boolean => {
 const hasSharedDirtied = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]
+      return row.node[Property.EXCLUSIVE_SHARED_DIRTIED_BLOCKS]
     })
   })
 })
@@ -149,7 +149,7 @@ const hasSharedDirtied = computed((): boolean => {
 const hasSharedWritten = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]
+      return row.node[Property.EXCLUSIVE_SHARED_WRITTEN_BLOCKS]
     })
   })
 })
@@ -161,7 +161,7 @@ const tempBlocksColumns = computed((): number => {
 const hasTempRead = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS]
+      return row.node[Property.EXCLUSIVE_TEMP_READ_BLOCKS]
     })
   })
 })
@@ -169,7 +169,7 @@ const hasTempRead = computed((): boolean => {
 const hasTempWritten = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]
+      return row.node[Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]
     })
   })
 })
@@ -189,7 +189,7 @@ const localBlocksColumns = computed((): number => {
 const hasLocalHit = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS]
+      return row.node[Property.EXCLUSIVE_LOCAL_HIT_BLOCKS]
     })
   })
 })
@@ -197,7 +197,7 @@ const hasLocalHit = computed((): boolean => {
 const hasLocalRead = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS]
+      return row.node[Property.EXCLUSIVE_LOCAL_READ_BLOCKS]
     })
   })
 })
@@ -205,7 +205,7 @@ const hasLocalRead = computed((): boolean => {
 const hasLocalDirtied = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]
+      return row.node[Property.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]
     })
   })
 })
@@ -213,7 +213,7 @@ const hasLocalDirtied = computed((): boolean => {
 const hasLocalWritten = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]
+      return row.node[Property.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS]
     })
   })
 })
@@ -348,7 +348,7 @@ const columns = computed(() => {
       </thead>
       <tbody v-for="(flat, index) in store.flat" :key="index">
         <template v-for="row in flat" :key="row">
-          <tr v-if="row.node[NodeProp.SUBPLAN_NAME]">
+          <tr v-if="row.node[Property.SUBPLAN_NAME]">
             <td class="bg-body-tertiary" :colspan="1 + columnsLeft.length"></td>
             <td
               class="plan pr-2 bg-body-tertiary"
@@ -357,7 +357,7 @@ const columns = computed(() => {
             >
               <LevelDivider :row="row"></LevelDivider>
               <b class="fst-italic text-reset">
-                {{ row.node[NodeProp.SUBPLAN_NAME] }}
+                {{ row.node[Property.SUBPLAN_NAME] }}
               </b>
             </td>
           </tr>
