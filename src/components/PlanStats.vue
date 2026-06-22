@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import _ from "lodash"
 import { computed, ref } from "vue"
-import type { ITrigger, Node } from "@/interfaces"
+import type { ISerialization, ITrigger, Node } from "@/interfaces"
 import { getHelpMessage } from "@/services/help-service"
 import { formatDuration, durationClass, formatKilobytes } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
-import { NodeProp } from "../enums"
-import { BuffersProp } from "../enums"
-import { formatNodeProp } from "@/filters"
+import { Property } from "../enums"
+import { formatProp } from "@/filters"
 import JitDetails from "@/components/JitDetails.vue"
 import BuffersDetail from "@/components/BuffersDetail.vue"
 import IoTooltip from "@/components/tooltip/IoTooltip.vue"
@@ -54,17 +53,17 @@ const triggersTotalDuration = computed(() => {
 })
 
 function averageIO(node: Node) {
-  const readAverage = node[NodeProp.AVERAGE_SUM_IO_READ_SPEED]
-  const writeAverage = node[NodeProp.AVERAGE_SUM_IO_WRITE_SPEED]
+  const readAverage = node[Property.AVERAGE_SUM_IO_READ_SPEED]
+  const writeAverage = node[Property.AVERAGE_SUM_IO_WRITE_SPEED]
   const r = []
   if (readAverage) {
     r.push(
-      `read=~${formatNodeProp(NodeProp.AVERAGE_SUM_IO_READ_SPEED, readAverage)}`,
+      `read=~${formatProp(Property.AVERAGE_SUM_IO_READ_SPEED, readAverage)}`,
     )
   }
   if (writeAverage) {
     r.push(
-      `write=~${formatNodeProp(NodeProp.AVERAGE_SUM_IO_WRITE_SPEED, writeAverage)}`,
+      `write=~${formatProp(Property.AVERAGE_SUM_IO_WRITE_SPEED, writeAverage)}`,
     )
   }
   return r.join(", ")
@@ -72,7 +71,7 @@ function averageIO(node: Node) {
 
 function hasParallelChildren(node: Node) {
   return node.Plans?.some(function iter(a) {
-    if (a[NodeProp.WORKERS_PLANNED] || a[NodeProp.WORKERS_PLANNED_BY_GATHER]) {
+    if (a[Property.WORKERS_PLANNED] || a[Property.WORKERS_PLANNED_BY_GATHER]) {
       return true
     }
     return Array.isArray(a.Plans) && a.Plans.some(iter)
@@ -83,20 +82,20 @@ const shouldShowSerializationBuffers = computed((): boolean => {
   if (!store.stats.serialization) {
     return false
   }
-  const properties: Array<keyof typeof BuffersProp> = [
-    "SHARED_HIT_BLOCKS",
-    "SHARED_READ_BLOCKS",
-    "SHARED_DIRTIED_BLOCKS",
-    "SHARED_WRITTEN_BLOCKS",
-    "TEMP_READ_BLOCKS",
-    "TEMP_WRITTEN_BLOCKS",
-    "LOCAL_HIT_BLOCKS",
-    "LOCAL_READ_BLOCKS",
-    "LOCAL_DIRTIED_BLOCKS",
-    "LOCAL_WRITTEN_BLOCKS",
+  const properties: (keyof ISerialization)[] = [
+    Property.SHARED_HIT_BLOCKS,
+    Property.SHARED_READ_BLOCKS,
+    Property.SHARED_DIRTIED_BLOCKS,
+    Property.SHARED_WRITTEN_BLOCKS,
+    Property.TEMP_READ_BLOCKS,
+    Property.TEMP_WRITTEN_BLOCKS,
+    Property.LOCAL_HIT_BLOCKS,
+    Property.LOCAL_READ_BLOCKS,
+    Property.LOCAL_DIRTIED_BLOCKS,
+    Property.LOCAL_WRITTEN_BLOCKS,
   ]
   const values = _.map(properties, (property) => {
-    const value = store.stats.serialization?.[BuffersProp[property]]
+    const value = store.stats.serialization?.[property]
     return _.isNaN(value) ? 0 : value
   })
   const sum = _.sum(values)
