@@ -197,25 +197,6 @@ export const NodeProp = {
 
 export type NodeProp = typeof NodeProp[keyof typeof NodeProp]
 
-export enum PropType {
-  blocks,
-  boolean,
-  bytes,
-  cost,
-  duration,
-  estimateDirection,
-  factor,
-  increment,
-  json,
-  kilobytes,
-  list,
-  loops,
-  rows,
-  sortGroups,
-  transferRate,
-  jit,
-}
-
 export enum WorkerProp {
   // plan property keys
   WORKER_NUMBER = "Worker Number",
