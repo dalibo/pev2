@@ -2,7 +2,7 @@
 import { inject, reactive } from "vue"
 import * as _ from "lodash"
 import type { Node, ViewOptions } from "@/interfaces"
-import { NodeProp, Scope } from "@/enums"
+import { Property, Scope } from "@/enums"
 import { ViewOptionsKey } from "@/symbols"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { directive as vTippy } from "vue-tippy"
@@ -29,34 +29,34 @@ const scope = props.scope ? `${props.scope}_`.toUpperCase() : ""
 const name = props.scope ? _.capitalize(props.scope) : "Shared/Local"
 const readTimeProp = (exclusivePrefix +
   scope +
-  "IO_READ_TIME") as keyof typeof NodeProp
+  "IO_READ_TIME") as keyof typeof Property
 const readSpeedProp = (exclusivePrefix +
   "AVERAGE_" +
   scope +
-  "IO_READ_SPEED") as keyof typeof NodeProp
+  "IO_READ_SPEED") as keyof typeof Property
 const readBlocksProp = (exclusivePrefix +
   scope +
-  "READ_BLOCKS") as keyof typeof NodeProp
+  "READ_BLOCKS") as keyof typeof Property
 const writeTimeProp = (exclusivePrefix +
   scope +
-  "IO_WRITE_TIME") as keyof typeof NodeProp
+  "IO_WRITE_TIME") as keyof typeof Property
 const writeSpeedProp = (exclusivePrefix +
   "AVERAGE_" +
   scope +
-  "IO_WRITE_SPEED") as keyof typeof NodeProp
+  "IO_WRITE_SPEED") as keyof typeof Property
 const writtenBlocksProp = (exclusivePrefix +
   scope +
-  "WRITTEN_BLOCKS") as keyof typeof NodeProp
+  "WRITTEN_BLOCKS") as keyof typeof Property
 </script>
 
 <template>
   <tr>
     <td>{{ name }}</td>
-    <td class="text-end" v-if="node[NodeProp[readTimeProp]]">
+    <td class="text-end" v-if="node[Property[readTimeProp]]">
       {{ formattedProp(readTimeProp) }}
       <br />
       <small>{{
-        formatBlocksAsBytes(node[NodeProp[readBlocksProp]] as number)
+        formatBlocksAsBytes(node[Property[readBlocksProp]] as number)
       }}</small>
       <br />
       <small>~{{ formattedProp(readSpeedProp) }}</small>
@@ -67,17 +67,17 @@ const writtenBlocksProp = (exclusivePrefix +
           content: getHelpMessage('io timings parallel'),
         }"
         v-if="
-          node[NodeProp.WORKERS_PLANNED] ||
-          node[NodeProp.WORKERS_PLANNED_BY_GATHER]
+          node[Property.WORKERS_PLANNED] ||
+          node[Property.WORKERS_PLANNED_BY_GATHER]
         "
       ></FontAwesomeIcon>
     </td>
     <td class="text-end" v-else>-</td>
-    <td class="text-end" v-if="node[NodeProp[writeTimeProp]]">
+    <td class="text-end" v-if="node[Property[writeTimeProp]]">
       {{ formattedProp(writeTimeProp) }}
       <br />
       <small>{{
-        formatBlocksAsBytes(node[NodeProp[writtenBlocksProp]] as number)
+        formatBlocksAsBytes(node[Property[writtenBlocksProp]] as number)
       }}</small>
       <br />
       <small>~{{ formattedProp(writeSpeedProp) }}</small>

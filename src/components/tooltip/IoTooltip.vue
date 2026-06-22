@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, reactive } from "vue"
 import type { Node } from "@/interfaces"
-import { NodeProp, Scope } from "@/enums"
+import { Property, Scope } from "@/enums"
 import IoTimingsRow from "@/components/IoTimingsRow.vue"
 
 interface Props {
@@ -22,39 +22,39 @@ const node = reactive<Node>(props.node)
     class="table table-sm"
     v-if="
       node[
-        NodeProp[(exclusivePrefix + 'IO_READ_TIME') as keyof typeof NodeProp]
+        Property[(exclusivePrefix + 'IO_READ_TIME') as keyof typeof Property]
       ] ||
       node[
-        NodeProp[(exclusivePrefix + 'IO_WRITE_TIME') as keyof typeof NodeProp]
+        Property[(exclusivePrefix + 'IO_WRITE_TIME') as keyof typeof Property]
       ] ||
       node[
-        NodeProp[
-          (exclusivePrefix + 'SHARED_IO_READ_TIME') as keyof typeof NodeProp
+        Property[
+          (exclusivePrefix + 'SHARED_IO_READ_TIME') as keyof typeof Property
         ]
       ] ||
       node[
-        NodeProp[
-          (exclusivePrefix + 'SHARED_IO_WRITE_TIME') as keyof typeof NodeProp
+        Property[
+          (exclusivePrefix + 'SHARED_IO_WRITE_TIME') as keyof typeof Property
         ]
       ] ||
       node[
-        NodeProp[
-          (exclusivePrefix + 'LOCAL_IO_READ_TIME') as keyof typeof NodeProp
+        Property[
+          (exclusivePrefix + 'LOCAL_IO_READ_TIME') as keyof typeof Property
         ]
       ] ||
       node[
-        NodeProp[
-          (exclusivePrefix + 'LOCAL_IO_WRITE_TIME') as keyof typeof NodeProp
+        Property[
+          (exclusivePrefix + 'LOCAL_IO_WRITE_TIME') as keyof typeof Property
         ]
       ] ||
       node[
-        NodeProp[
-          (exclusivePrefix + 'TEMP_IO_READ_TIME') as keyof typeof NodeProp
+        Property[
+          (exclusivePrefix + 'TEMP_IO_READ_TIME') as keyof typeof Property
         ]
       ] ||
       node[
-        NodeProp[
-          (exclusivePrefix + 'TEMP_IO_WRITE_TIME') as keyof typeof NodeProp
+        Property[
+          (exclusivePrefix + 'TEMP_IO_WRITE_TIME') as keyof typeof Property
         ]
       ]
     "
@@ -72,13 +72,13 @@ const node = reactive<Node>(props.node)
         :node="node"
         v-if="
           node[
-            NodeProp[
-              (exclusivePrefix + 'IO_READ_TIME') as keyof typeof NodeProp
+            Property[
+              (exclusivePrefix + 'IO_READ_TIME') as keyof typeof Property
             ]
           ] ||
           node[
-            NodeProp[
-              (exclusivePrefix + 'IO_WRITE_TIME') as keyof typeof NodeProp
+            Property[
+              (exclusivePrefix + 'IO_WRITE_TIME') as keyof typeof Property
             ]
           ]
         "
@@ -88,14 +88,14 @@ const node = reactive<Node>(props.node)
         :node="node"
         v-if="
           node[
-            NodeProp[
-              (exclusivePrefix + 'SHARED_IO_READ_TIME') as keyof typeof NodeProp
+            Property[
+              (exclusivePrefix + 'SHARED_IO_READ_TIME') as keyof typeof Property
             ]
           ] ||
           node[
-            NodeProp[
+            Property[
               (exclusivePrefix +
-                'SHARED_IO_WRITE_TIME') as keyof typeof NodeProp
+                'SHARED_IO_WRITE_TIME') as keyof typeof Property
             ]
           ]
         "
@@ -106,13 +106,13 @@ const node = reactive<Node>(props.node)
         :node="node"
         v-if="
           node[
-            NodeProp[
-              (exclusivePrefix + 'LOCAL_IO_READ_TIME') as keyof typeof NodeProp
+            Property[
+              (exclusivePrefix + 'LOCAL_IO_READ_TIME') as keyof typeof Property
             ]
           ] ||
           node[
-            NodeProp[
-              (exclusivePrefix + 'LOCAL_IO_WRITE_TIME') as keyof typeof NodeProp
+            Property[
+              (exclusivePrefix + 'LOCAL_IO_WRITE_TIME') as keyof typeof Property
             ]
           ]
         "
@@ -123,13 +123,13 @@ const node = reactive<Node>(props.node)
         :node="node"
         v-if="
           node[
-            NodeProp[
-              (exclusivePrefix + 'TEMP_IO_READ_TIME') as keyof typeof NodeProp
+            Property[
+              (exclusivePrefix + 'TEMP_IO_READ_TIME') as keyof typeof Property
             ]
           ] ||
           node[
-            NodeProp[
-              (exclusivePrefix + 'TEMP_IO_WRITE_TIME') as keyof typeof NodeProp
+            Property[
+              (exclusivePrefix + 'TEMP_IO_WRITE_TIME') as keyof typeof Property
             ]
           ]
         "

@@ -9,7 +9,7 @@ import {
   ref,
   watch,
 } from "vue"
-import { BufferLocation, NodeProp, Metric } from "../enums"
+import { BufferLocation, Property, Metric } from "../enums"
 import {
   getHelpMessage,
   scrollChildIntoParentView,
@@ -63,7 +63,7 @@ const dataAvailable = computed((): boolean => {
 })
 
 function isCTE(node: Node): boolean {
-  return _.startsWith(node[NodeProp.SUBPLAN_NAME], "CTE")
+  return _.startsWith(node[Property.SUBPLAN_NAME], "CTE")
 }
 
 function scrollTo(el: Element) {
@@ -219,7 +219,7 @@ provide("scrollTo", scrollTo)
             <th colspan="3" class="subplan">Main Query Plan</th>
           </tr>
           <template v-for="row in flat" :key="row">
-            <tr v-if="row.node[NodeProp.SUBPLAN_NAME]">
+            <tr v-if="row.node[Property.SUBPLAN_NAME]">
               <td></td>
               <td
                 :class="{ 'fw-bold': isCTE(row.node) }"
@@ -231,7 +231,7 @@ provide("scrollTo", scrollTo)
                   href=""
                   @click.prevent="selectNode(row.node.nodeId, true)"
                 >
-                  {{ row.node[NodeProp.SUBPLAN_NAME] }}
+                  {{ row.node[Property.SUBPLAN_NAME] }}
                 </a>
               </td>
             </tr>
