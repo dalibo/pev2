@@ -6,7 +6,7 @@ import { getNodeTypeDescription } from "@/services/help-service"
 import { EstimateDirection, Property } from "@/enums"
 import useNode from "@/node"
 import { store } from "@/store"
-import IoTooltip from "@/components/tooltip/IoTooltip.vue"
+import IoTable from "@/components/IoTable.vue"
 import WorkersDetail from "@/components/WorkersDetail.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
 import BuffersDetail from "@/components/BuffersDetail.vue"
@@ -323,7 +323,7 @@ watch(activeTab, () => {
     </div>
     <div class="tab-pane" :class="{ 'show active': activeTab === 'iobuffer' }">
       <!-- iobuffer tab -->
-      <IoTooltip :node="node" exclusive />
+      <IoTable :node="node" exclusive />
       <BuffersDetail :object="node" />
       <div
         v-if="node[Property.WAL_RECORDS] || node[Property.WAL_BYTES]"

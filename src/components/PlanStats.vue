@@ -9,7 +9,7 @@ import { Property } from "../enums"
 import { formatProp } from "@/filters"
 import JitDetails from "@/components/JitDetails.vue"
 import BuffersDetail from "@/components/BuffersDetail.vue"
-import IoTooltip from "@/components/tooltip/IoTooltip.vue"
+import IoTable from "@/components/IoTable.vue"
 import { store } from "@/store"
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
@@ -367,7 +367,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           class="btn btn-xs btn-close float-end"
           v-on:click="showIO = false"
         ></button>
-        <IoTooltip :node="store.plan?.content.Plan" class="mb-0" />
+        <IoTable :node="store.plan?.content.Plan" class="mb-0" />
       </div>
     </div>
   </div>
