@@ -49,7 +49,7 @@ const writtenBlocksProp = (exclusivePrefix +
 </script>
 
 <template>
-  <tr>
+  <tr v-if="node[Property[readTimeProp]] || node[Property[writeTimeProp]]">
     <td>{{ name }}</td>
     <td class="text-end" v-if="node[Property[readTimeProp]]">
       {{ formattedProp(readTimeProp) }}
