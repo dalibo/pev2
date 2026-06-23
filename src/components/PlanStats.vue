@@ -212,6 +212,31 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           </div>
           <IoTable :object="store.stats.planning" class="mb-0" />
         </template>
+        <div
+          v-if="
+            store.stats.planning?.[Property.MEMORY_USED] ||
+            store.stats.planning?.[Property.MEMORY_ALLOCATED]
+          "
+          class="mt-2"
+        >
+          <b>Memory:</b>
+          <ul class="mb-0">
+            <li>
+              used:
+              {{
+                formatKilobytes(store.stats.planning?.[Property.MEMORY_USED])
+              }}
+            </li>
+            <li>
+              allocated:
+              {{
+                formatKilobytes(
+                  store.stats.planning?.[Property.MEMORY_ALLOCATED],
+                )
+              }}
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div
