@@ -9,7 +9,7 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 import { formatBlocksAsBytes, formatProp } from "@/filters"
 
 interface Props {
-  node: Node
+  object: Node
   scope?: Scope
   exclusive?: boolean
 }
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const exclusivePrefix = props.exclusive ? "EXCLUSIVE_" : ""
-const node = props.node
+const object = props.object
 const scope = props.scope ? `${props.scope}_`.toUpperCase() : ""
 const name = props.scope ? _.capitalize(props.scope) : "Shared/Local"
 
@@ -35,14 +35,14 @@ const writtenBlocksProp = toProperty(exclusivePrefix + scope + "WRITTEN_BLOCKS")
 </script>
 
 <template>
-  <tr v-if="node[readTimeProp] || node[writeTimeProp]">
+  <tr v-if="object[readTimeProp] || object[writeTimeProp]">
     <td>{{ name }}</td>
-    <td class="text-end" v-if="node[readTimeProp]">
-      {{ formatProp(readTimeProp, node[readTimeProp]) }}
+    <td class="text-end" v-if="object[readTimeProp]">
+      {{ formatProp(readTimeProp, object[readTimeProp]) }}
       <br />
-      <small>{{ formatBlocksAsBytes(node[readBlocksProp] as number) }}</small>
+      <small>{{ formatBlocksAsBytes(object[readBlocksProp] as number) }}</small>
       <br />
-      <small>~{{ formatProp(readSpeedProp, node[readSpeedProp]) }}</small>
+      <small>~{{ formatProp(readSpeedProp, object[readSpeedProp]) }}</small>
       <FontAwesomeIcon
         :icon="faInfoCircle"
         class="cursor-help d-inline-block text-body-tertiary"
@@ -50,20 +50,20 @@ const writtenBlocksProp = toProperty(exclusivePrefix + scope + "WRITTEN_BLOCKS")
           content: getHelpMessage('io timings parallel'),
         }"
         v-if="
-          node[Property.WORKERS_PLANNED] ||
-          node[Property.WORKERS_PLANNED_BY_GATHER]
+          object[Property.WORKERS_PLANNED] ||
+          object[Property.WORKERS_PLANNED_BY_GATHER]
         "
       ></FontAwesomeIcon>
     </td>
     <td class="text-end" v-else>-</td>
-    <td class="text-end" v-if="node[writeTimeProp]">
-      {{ formatProp(writeTimeProp, node[writeTimeProp]) }}
+    <td class="text-end" v-if="object[writeTimeProp]">
+      {{ formatProp(writeTimeProp, object[writeTimeProp]) }}
       <br />
       <small>{{
-        formatBlocksAsBytes(node[writtenBlocksProp] as number)
+        formatBlocksAsBytes(object[writtenBlocksProp] as number)
       }}</small>
       <br />
-      <small>~{{ formatProp(writeSpeedProp, node[writeSpeedProp]) }}</small>
+      <small>~{{ formatProp(writeSpeedProp, object[writeSpeedProp]) }}</small>
     </td>
     <td class="text-end" v-else>-</td>
   </tr>

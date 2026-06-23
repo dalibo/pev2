@@ -367,7 +367,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           class="btn btn-xs btn-close float-end"
           v-on:click="showIO = false"
         ></button>
-        <IoTable :node="store.plan?.content.Plan" class="mb-0" />
+        <IoTable :object="store.plan?.content.Plan" class="mb-0" />
       </div>
     </div>
   </div>
