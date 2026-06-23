@@ -13,50 +13,28 @@ const props = withDefaults(defineProps<Props>(), {
 
 const exclusivePrefix = props.exclusive ? "EXCLUSIVE_" : ""
 const node = props.node
+
+const shouldShow = props.exclusive
+  ? node[Property.EXCLUSIVE_IO_READ_TIME] ||
+    node[Property.EXCLUSIVE_IO_WRITE_TIME] ||
+    node[Property.EXCLUSIVE_SHARED_IO_READ_TIME] ||
+    node[Property.EXCLUSIVE_SHARED_IO_WRITE_TIME] ||
+    node[Property.EXCLUSIVE_LOCAL_IO_READ_TIME] ||
+    node[Property.EXCLUSIVE_LOCAL_IO_WRITE_TIME] ||
+    node[Property.EXCLUSIVE_TEMP_IO_READ_TIME] ||
+    node[Property.EXCLUSIVE_TEMP_IO_WRITE_TIME]
+  : node[Property.IO_READ_TIME] ||
+    node[Property.IO_WRITE_TIME] ||
+    node[Property.SHARED_IO_READ_TIME] ||
+    node[Property.SHARED_IO_WRITE_TIME] ||
+    node[Property.LOCAL_IO_READ_TIME] ||
+    node[Property.LOCAL_IO_WRITE_TIME] ||
+    node[Property.TEMP_IO_READ_TIME] ||
+    node[Property.TEMP_IO_WRITE_TIME]
 </script>
 
 <template>
-  <table
-    class="table table-sm"
-    v-if="
-      node[
-        Property[(exclusivePrefix + 'IO_READ_TIME') as keyof typeof Property]
-      ] ||
-      node[
-        Property[(exclusivePrefix + 'IO_WRITE_TIME') as keyof typeof Property]
-      ] ||
-      node[
-        Property[
-          (exclusivePrefix + 'SHARED_IO_READ_TIME') as keyof typeof Property
-        ]
-      ] ||
-      node[
-        Property[
-          (exclusivePrefix + 'SHARED_IO_WRITE_TIME') as keyof typeof Property
-        ]
-      ] ||
-      node[
-        Property[
-          (exclusivePrefix + 'LOCAL_IO_READ_TIME') as keyof typeof Property
-        ]
-      ] ||
-      node[
-        Property[
-          (exclusivePrefix + 'LOCAL_IO_WRITE_TIME') as keyof typeof Property
-        ]
-      ] ||
-      node[
-        Property[
-          (exclusivePrefix + 'TEMP_IO_READ_TIME') as keyof typeof Property
-        ]
-      ] ||
-      node[
-        Property[
-          (exclusivePrefix + 'TEMP_IO_WRITE_TIME') as keyof typeof Property
-        ]
-      ]
-    "
-  >
+  <table class="table table-sm" v-if="shouldShow">
     <thead>
       <tr>
         <th class="text-nowrap">I/O Timings</th>
