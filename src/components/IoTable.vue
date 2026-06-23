@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { computed, reactive } from "vue"
 import type { Node } from "@/interfaces"
 import { Property, Scope } from "@/enums"
 import IoTimingsRow from "@/components/IoTimingsRow.vue"
@@ -12,9 +11,8 @@ const props = withDefaults(defineProps<Props>(), {
   exclusive: () => false,
 })
 
-const exclusivePrefix = computed(() => (props.exclusive ? "EXCLUSIVE_" : ""))
-
-const node = reactive<Node>(props.node)
+const exclusivePrefix = props.exclusive ? "EXCLUSIVE_" : ""
+const node = props.node
 </script>
 
 <template>
