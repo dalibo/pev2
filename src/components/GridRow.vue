@@ -19,7 +19,7 @@ import GridProgressBar from "@/components/GridProgressBar.vue"
 import WorkersDetail from "@/components/WorkersDetail.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
 import SeverityBullet from "@/components/SeverityBullet.vue"
-import IoTooltip from "@/components/tooltip/IoTooltip.vue"
+import IoTable from "@/components/IoTable.vue"
 import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
 import useNode from "@/node"
 import { Tippy, directive as vTippy } from "vue-tippy"
@@ -149,7 +149,7 @@ const isHighlighted = computed(
       v-if="columns.includes('ioread')"
     >
       <template #content>
-        <IoTooltip :node="node" class="mb-0" exclusive />
+        <IoTable :node="node" class="mb-0" exclusive />
       </template>
       <template v-if="node[Property.EXCLUSIVE_SUM_IO_READ_TIME]">
         <GridProgressBar
@@ -182,7 +182,7 @@ const isHighlighted = computed(
       v-if="columns.includes('iowrite')"
     >
       <template #content>
-        <IoTooltip :node="node" class="mb-0" exclusive />
+        <IoTable :node="node" class="mb-0" exclusive />
       </template>
       <template v-if="node[Property.EXCLUSIVE_SUM_IO_WRITE_TIME]">
         <GridProgressBar

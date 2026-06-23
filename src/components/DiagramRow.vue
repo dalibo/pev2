@@ -12,7 +12,7 @@ import type { ViewOptions } from "@/interfaces"
 import { EstimateDirection, BufferLocation, Property, Metric } from "../enums"
 import LevelDivider from "@/components/LevelDivider.vue"
 import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
-import IoTooltip from "@/components/tooltip/IoTooltip.vue"
+import IoTable from "@/components/IoTable.vue"
 import useNode from "@/node"
 import { store } from "@/store"
 import type { FlattenedPlanNode } from "@/store"
@@ -90,7 +90,7 @@ const isHighlighted = computed(
         :node="node"
         v-if="diagramViewOptions.metric == Metric.time"
       />
-      <IoTooltip
+      <IoTable
         :node="node"
         v-else-if="diagramViewOptions.metric == Metric.io"
         exclusive
