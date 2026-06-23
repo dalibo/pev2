@@ -182,6 +182,13 @@ export enum Property {
   WRITTEN_BLOCKS = "*Written Blocks",
 }
 
+export function toProperty(key: string): typeof Property[keyof typeof Property] {
+  if (!(key in Property)) {
+    throw new Error(`"${key}" is not a valid Property key`)
+  }
+  return Property[key as keyof typeof Property]
+}
+
 export enum SortSpaceMemoryProp {
   AVERAGE_SORT_SPACE_USED = "Average Sort Space Used",
   PEAK_SORT_SPACE_USED = "Peak Sort Space Used",
