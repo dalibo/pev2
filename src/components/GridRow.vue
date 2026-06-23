@@ -149,7 +149,7 @@ const isHighlighted = computed(
       v-if="columns.includes('ioread')"
     >
       <template #content>
-        <IoTable :node="node" class="mb-0" exclusive />
+        <IoTable :object="node" class="mb-0" exclusive />
       </template>
       <template v-if="node[Property.EXCLUSIVE_SUM_IO_READ_TIME]">
         <GridProgressBar
@@ -182,7 +182,7 @@ const isHighlighted = computed(
       v-if="columns.includes('iowrite')"
     >
       <template #content>
-        <IoTable :node="node" class="mb-0" exclusive />
+        <IoTable :object="node" class="mb-0" exclusive />
       </template>
       <template v-if="node[Property.EXCLUSIVE_SUM_IO_WRITE_TIME]">
         <GridProgressBar
