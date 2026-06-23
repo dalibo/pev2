@@ -323,7 +323,7 @@ watch(activeTab, () => {
     </div>
     <div class="tab-pane" :class="{ 'show active': activeTab === 'iobuffer' }">
       <!-- iobuffer tab -->
-      <IoTable :node="node" exclusive />
+      <IoTable :object="node" exclusive />
       <BuffersDetail :object="node" />
       <div
         v-if="node[Property.WAL_RECORDS] || node[Property.WAL_BYTES]"

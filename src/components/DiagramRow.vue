@@ -91,7 +91,7 @@ const isHighlighted = computed(
         v-if="diagramViewOptions.metric == Metric.time"
       />
       <IoTable
-        :node="node"
+        :object="node"
         v-else-if="diagramViewOptions.metric == Metric.io"
         exclusive
         class="mb-0"
