@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, reactive } from "vue"
+import { inject } from "vue"
 import * as _ from "lodash"
 import type { Node, ViewOptions } from "@/interfaces"
 import { Property, Scope } from "@/enums"
@@ -21,8 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const exclusivePrefix = props.exclusive ? "EXCLUSIVE_" : ""
-
-const node = reactive<Node>(props.node)
+const node = props.node
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
 const { formattedProp } = useNode(node, viewOptions)
 const scope = props.scope ? `${props.scope}_`.toUpperCase() : ""
