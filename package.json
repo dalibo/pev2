@@ -49,6 +49,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
     "@eslint/js": "^9.21.0",
+    "@playwright/test": "^1.61.0",
     "@types/d3": "^7.4.3",
     "@types/humanize-duration": "^3.27.1",
     "@types/lodash": "^4.14.202",
