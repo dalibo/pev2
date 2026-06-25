@@ -165,8 +165,7 @@ function centerCte() {
               <NodeBadges :node="node" />
               <a
                 class="fw-normal small ms-1"
-                href=""
-                @click.prevent.stop="selectNode(node.nodeId, true)"
+                :href="`#plan/node/${node.nodeId}`"
               >
                 #{{ node.nodeId }}
               </a>
