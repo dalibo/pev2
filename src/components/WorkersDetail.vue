@@ -2,11 +2,11 @@
 import { inject, reactive } from "vue"
 import _ from "lodash"
 import type { Node, ViewOptions } from "@/interfaces"
-import { NodeProp, WorkerProp } from "@/enums"
+import { Property } from "@/enums"
 import { ViewOptionsKey } from "@/symbols"
 import { getHelpMessage } from "@/services/help-service"
 import useNode from "@/node"
-import { formatNodeProp } from "@/filters"
+import { formatProp } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons"
@@ -28,8 +28,8 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(node, viewOptions)
     <span class="px-1">{{ workersPlannedCount }} </span>
     <em
       v-if="
-        !node[NodeProp.WORKERS_PLANNED] &&
-        !node[NodeProp.WORKERS] &&
+        !node[Property.WORKERS_PLANNED] &&
+        !node[Property.WORKERS] &&
         (!store.plan?.isVerbose || !store.plan?.isAnalyze)
       "
       class="text-warning"
@@ -46,8 +46,8 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(node, viewOptions)
     <span class="px-1">{{ workersLaunchedCount }}</span>
     <em
       v-if="
-        !node[NodeProp.WORKERS_LAUNCHED] &&
-        !node[NodeProp.WORKERS] &&
+        !node[Property.WORKERS_LAUNCHED] &&
+        !node[Property.WORKERS] &&
         (!store.plan?.isVerbose || !store.plan?.isAnalyze)
       "
       class="text-warning"
@@ -61,15 +61,15 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(node, viewOptions)
   </div>
 
   <div
-    v-if="_.isArray(node[NodeProp.WORKERS])"
+    v-if="_.isArray(node[Property.WORKERS])"
     class="overflow-auto"
     style="max-height: 300px"
     @wheel.stop
   >
-    <template v-for="(worker, index) in node[NodeProp.WORKERS]" :key="index">
+    <template v-for="(worker, index) in node[Property.WORKERS]" :key="index">
       <div class="card mt-2">
         <div class="card-header">
-          <b>Worker {{ worker[WorkerProp.WORKER_NUMBER] }}</b>
+          <b>Worker {{ worker[Property.WORKER_NUMBER] }}</b>
         </div>
         <ul class="list-group list-group-flush">
           <template v-for="(value, key) in worker" :key="key">
@@ -79,7 +79,7 @@ const { workersLaunchedCount, workersPlannedCount } = useNode(node, viewOptions)
               </div>
               <div
                 class="col-6"
-                v-html="formatNodeProp(key as string, value)"
+                v-html="formatProp(key as string, value)"
               ></div>
             </li>
           </template>

@@ -9,10 +9,10 @@ import {
   ViewOptionsKey,
 } from "@/symbols"
 import type { ViewOptions } from "@/interfaces"
-import { EstimateDirection, BufferLocation, NodeProp, Metric } from "../enums"
+import { EstimateDirection, BufferLocation, Property, Metric } from "../enums"
 import LevelDivider from "@/components/LevelDivider.vue"
 import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
-import IoTooltip from "@/components/tooltip/IoTooltip.vue"
+import IoTable from "@/components/IoTable.vue"
 import useNode from "@/node"
 import { store } from "@/store"
 import type { FlattenedPlanNode } from "@/store"
@@ -81,17 +81,17 @@ const isHighlighted = computed(
     @click.prevent="selectNode(node.nodeId, true)"
   >
     <template #content>
-      <template v-if="node[NodeProp.CTE_NAME]">
+      <template v-if="node[Property.CTE_NAME]">
         <div>
-          <em>CTE {{ node[NodeProp.CTE_NAME] }} </em>
+          <em>CTE {{ node[Property.CTE_NAME] }} </em>
         </div>
       </template>
       <TimeTooltip
         :node="node"
         v-if="diagramViewOptions.metric == Metric.time"
       />
-      <IoTooltip
-        :node="node"
+      <IoTable
+        :object="node"
         v-else-if="diagramViewOptions.metric == Metric.io"
         exclusive
         class="mb-0"
@@ -117,7 +117,7 @@ const isHighlighted = computed(
     <td>
       <LevelDivider
         :row="row"
-        :isSubplan="!!node[NodeProp.SUBPLAN_NAME]"
+        :isSubplan="!!node[Property.SUBPLAN_NAME]"
         dense
       ></LevelDivider>
       <span
@@ -142,15 +142,15 @@ const isHighlighted = computed(
         <div
           class="progress-bar border-secondary bg-secondary"
           :class="{
-            'border-start': node[NodeProp.EXCLUSIVE_DURATION] > 0,
+            'border-start': node[Property.EXCLUSIVE_DURATION] > 0,
           }"
           role="progressbar"
           style="height: 5px"
           :style="{
             width:
-              (node[NodeProp.EXCLUSIVE_DURATION] /
+              (node[Property.EXCLUSIVE_DURATION] /
                 (store.stats.executionTime ||
-                  store.plan?.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
+                  store.plan?.content.Plan[Property.ACTUAL_TOTAL_TIME] ||
                   0)) *
                 100 +
               '%',
@@ -165,10 +165,10 @@ const isHighlighted = computed(
           style="height: 5px"
           :style="{
             width:
-              (((node[NodeProp.ACTUAL_TOTAL_TIME] || 0) -
-                node[NodeProp.EXCLUSIVE_DURATION]) /
+              (((node[Property.ACTUAL_TOTAL_TIME] || 0) -
+                node[Property.EXCLUSIVE_DURATION]) /
                 (store.stats.executionTime ||
-                  store.plan?.content.Plan[NodeProp.ACTUAL_TOTAL_TIME] ||
+                  store.plan?.content.Plan[Property.ACTUAL_TOTAL_TIME] ||
                   0)) *
                 100 +
               '%',
@@ -191,7 +191,7 @@ const isHighlighted = computed(
           :style="{
             width:
               Math.round(
-                (node[NodeProp.ACTUAL_ROWS_REVISED] / store.stats.maxRows) *
+                (node[Property.ACTUAL_ROWS_REVISED] / store.stats.maxRows) *
                   100,
               ) + '%',
           }"
@@ -211,7 +211,7 @@ const isHighlighted = computed(
             fixed-width
             :icon="faArrowDown"
             v-if="
-              node[NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+              node[Property.PLANNER_ESTIMATE_DIRECTION] ===
               EstimateDirection.under
             "
           ></FontAwesomeIcon>
@@ -220,7 +220,7 @@ const isHighlighted = computed(
         <div
           class="progress-bar"
           :class="[
-            node[NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+            node[Property.PLANNER_ESTIMATE_DIRECTION] ===
             EstimateDirection.under
               ? 'bg-secondary'
               : 'bg-transparent',
@@ -243,7 +243,7 @@ const isHighlighted = computed(
         <div
           class="progress-bar"
           :class="[
-            node[NodeProp.PLANNER_ESTIMATE_DIRECTION] === EstimateDirection.over
+            node[Property.PLANNER_ESTIMATE_DIRECTION] === EstimateDirection.over
               ? 'bg-secondary'
               : 'bg-transparent',
           ]"
@@ -259,7 +259,7 @@ const isHighlighted = computed(
             fixed-width
             :icon="faArrowUp"
             v-if="
-              node[NodeProp.PLANNER_ESTIMATE_DIRECTION] ===
+              node[Property.PLANNER_ESTIMATE_DIRECTION] ===
               EstimateDirection.over
             "
           ></FontAwesomeIcon>
@@ -275,14 +275,14 @@ const isHighlighted = computed(
         <div
           class="bg-secondary"
           :class="{
-            'border-secondary border-start': node[NodeProp.EXCLUSIVE_COST] > 0,
+            'border-secondary border-start': node[Property.EXCLUSIVE_COST] > 0,
           }"
           role="progressbar"
           style="height: 5px"
           :style="{
             width:
               Math.round(
-                (node[NodeProp.EXCLUSIVE_COST] / store.stats.maxCost) * 100,
+                (node[Property.EXCLUSIVE_COST] / store.stats.maxCost) * 100,
               ) + '%',
           }"
           aria-valuenow="15"
@@ -304,14 +304,14 @@ const isHighlighted = computed(
           class="bg-hit"
           :class="{
             'border-start border-hit':
-              node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] > 0,
+              node[Property.EXCLUSIVE_SHARED_HIT_BLOCKS] > 0,
           }"
           role="progressbar"
           style="height: 5px"
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_SHARED_HIT_BLOCKS] /
+                (node[Property.EXCLUSIVE_SHARED_HIT_BLOCKS] /
                   store.stats.maxBlocks?.[BufferLocation.shared]) *
                   100,
               ) || 0) + '%',
@@ -325,13 +325,13 @@ const isHighlighted = computed(
           role="progressbar"
           :class="{
             'border-start border-read':
-              node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] > 0,
+              node[Property.EXCLUSIVE_SHARED_READ_BLOCKS] > 0,
           }"
           style="height: 5px"
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_SHARED_READ_BLOCKS] /
+                (node[Property.EXCLUSIVE_SHARED_READ_BLOCKS] /
                   store.stats.maxBlocks?.[BufferLocation.shared]) *
                   100,
               ) || 0) + '%',
@@ -344,14 +344,14 @@ const isHighlighted = computed(
           class="bg-dirtied"
           :class="{
             'border-start border-dirtied':
-              node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] > 0,
+              node[Property.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] > 0,
           }"
           role="progressbar"
           style="height: 5px"
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
+                (node[Property.EXCLUSIVE_SHARED_DIRTIED_BLOCKS] /
                   store.stats.maxBlocks?.[BufferLocation.shared]) *
                   100,
               ) || 0) + '%',
@@ -364,14 +364,14 @@ const isHighlighted = computed(
           class="bg-written"
           :class="{
             'border-start border-written':
-              node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] > 0,
+              node[Property.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] > 0,
           }"
           role="progressbar"
           style="height: 5px"
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
+                (node[Property.EXCLUSIVE_SHARED_WRITTEN_BLOCKS] /
                   store.stats.maxBlocks?.[BufferLocation.shared]) *
                   100,
               ) || 0) + '%',
@@ -398,7 +398,7 @@ const isHighlighted = computed(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_TEMP_READ_BLOCKS] /
+                (node[Property.EXCLUSIVE_TEMP_READ_BLOCKS] /
                   store.stats.maxBlocks?.[BufferLocation.temp]) *
                   100,
               ) || 0) + '%',
@@ -413,7 +413,7 @@ const isHighlighted = computed(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
+                (node[Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS] /
                   store.stats.maxBlocks?.[BufferLocation.temp]) *
                   100,
               ) || 0) + '%',
@@ -441,7 +441,7 @@ const isHighlighted = computed(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
+                (node[Property.EXCLUSIVE_LOCAL_HIT_BLOCKS] /
                   store.stats.maxBlocks?.[BufferLocation.local]) *
                   100,
               ) || 0) + '%',
@@ -456,7 +456,7 @@ const isHighlighted = computed(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_LOCAL_READ_BLOCKS] /
+                (node[Property.EXCLUSIVE_LOCAL_READ_BLOCKS] /
                   store.stats.maxBlocks?.[BufferLocation.local]) *
                   100,
               ) || 0) + '%',
@@ -473,7 +473,7 @@ const isHighlighted = computed(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
+                (node[Property.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS] /
                   store.stats.maxBlocks?.[BufferLocation.local]) *
                   100,
               ) || 0) + '%',
@@ -489,7 +489,7 @@ const isHighlighted = computed(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
+                (node[Property.EXCLUSIVE_LOCAL_WRITTEN_BLOCKS] /
                   store.stats.maxBlocks?.[BufferLocation.local]) *
                   100,
               ) || 0) + '%',
@@ -505,8 +505,8 @@ const isHighlighted = computed(
         style="height: 5px"
         v-else-if="
           diagramViewOptions.metric == Metric.io &&
-          (store.plan?.content.Plan[NodeProp.SUM_IO_READ_TIME] ||
-            store.plan?.content.Plan[NodeProp.SUM_IO_WRITE_TIME])
+          (store.plan?.content.Plan[Property.SUM_IO_READ_TIME] ||
+            store.plan?.content.Plan[Property.SUM_IO_WRITE_TIME])
         "
       >
         <div
@@ -516,7 +516,7 @@ const isHighlighted = computed(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_SUM_IO_READ_TIME] /
+                (node[Property.EXCLUSIVE_SUM_IO_READ_TIME] /
                   store.stats.maxIo) *
                   100,
               ) || 0) + '%',
@@ -532,7 +532,7 @@ const isHighlighted = computed(
           :style="{
             width:
               (Math.round(
-                (node[NodeProp.EXCLUSIVE_SUM_IO_WRITE_TIME] /
+                (node[Property.EXCLUSIVE_SUM_IO_WRITE_TIME] /
                   store.stats.maxIo) *
                   100,
               ) || 0) + '%',

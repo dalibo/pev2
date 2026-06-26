@@ -28,7 +28,7 @@ import PlanStats from "@/components/PlanStats.vue"
 import Stats from "@/components/Stats.vue"
 import AnimatedEdge from "@/components/AnimatedEdge.vue"
 import { findNodeById } from "@/services/help-service"
-import { HighlightType, NodeProp } from "@/enums"
+import { HighlightType, Property } from "@/enums"
 import { json_, pgsql_ } from "@/filters"
 import { setDefaultProps } from "vue-tippy"
 import { store } from "@/store"
@@ -171,11 +171,11 @@ function doLayout() {
   // compute links from node to CTE
   toCteLinks.value = []
   _.each(layoutRootNode.value.descendants(), (source) => {
-    if (_.has(source.data, NodeProp.CTE_NAME)) {
+    if (_.has(source.data, Property.CTE_NAME)) {
       const cte = _.find(ctes.value, (cteNode) => {
         return (
-          cteNode.data[NodeProp.SUBPLAN_NAME] ==
-          "CTE " + source.data[NodeProp.CTE_NAME]
+          cteNode.data[Property.SUBPLAN_NAME] ==
+          "CTE " + source.data[Property.CTE_NAME]
         )
       })
       if (cte) {
@@ -190,11 +190,11 @@ function doLayout() {
   // compute links from node in CTE to other CTE
   _.each(ctes.value, (cte) => {
     _.each(cte.descendants(), (sourceCte) => {
-      if (_.has(sourceCte.data, NodeProp.CTE_NAME)) {
+      if (_.has(sourceCte.data, Property.CTE_NAME)) {
         const targetCte = _.find(ctes.value, (cteNode) => {
           return (
-            cteNode.data[NodeProp.SUBPLAN_NAME] ==
-            "CTE " + sourceCte.data[NodeProp.CTE_NAME]
+            cteNode.data[Property.SUBPLAN_NAME] ==
+            "CTE " + sourceCte.data[Property.CTE_NAME]
           )
         })
         if (targetCte) {
@@ -377,7 +377,7 @@ function getLayoutExtent(
 }
 
 function isNeverExecuted(node: Node): boolean {
-  return !!store.stats.executionTime && !node[NodeProp.ACTUAL_LOOPS]
+  return !!store.stats.executionTime && !node[Property.ACTUAL_LOOPS]
 }
 
 watch(
@@ -578,7 +578,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         "
                         :disabled="
                           !rootNode ||
-                          rootNode[NodeProp.ACTUAL_ROWS] === undefined
+                          rootNode[Property.ACTUAL_ROWS] === undefined
                         "
                       >
                         rows
@@ -607,7 +607,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         stroke-color="#B3D7D7"
                         :stroke-width="
                           edgeWeight(
-                            link.target.data[NodeProp.ACTUAL_ROWS_REVISED],
+                            link.target.data[Property.ACTUAL_ROWS_REVISED],
                           )
                         "
                       />
@@ -621,7 +621,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                         stroke-color="grey"
                         :stroke-width="
                           edgeWeight(
-                            link.target.data[NodeProp.ACTUAL_ROWS_REVISED],
+                            link.target.data[Property.ACTUAL_ROWS_REVISED],
                           )
                         "
                       />
@@ -665,7 +665,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
                           stroke-color="grey"
                           :stroke-width="
                             edgeWeight(
-                              link.target.data[NodeProp.ACTUAL_ROWS_REVISED],
+                              link.target.data[Property.ACTUAL_ROWS_REVISED],
                             )
                           "
                         />
