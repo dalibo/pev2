@@ -297,6 +297,8 @@ const notMiscProperties: string[] = [
   Property.WORKERS,
   Property.WORKERS_PLANNED,
   Property.WORKERS_LAUNCHED,
+  Property.WORKERS_PLANNED_BY_GATHER,
+  Property.WORKERS_LAUNCHED_BY_GATHER,
   Property.READ_BLOCKS,
   Property.WRITTEN_BLOCKS,
   Property.EXCLUSIVE_SHARED_HIT_BLOCKS,
