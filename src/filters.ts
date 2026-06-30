@@ -67,6 +67,13 @@ export function formatCost(value: unknown): string {
   return (value as number).toLocaleString(undefined, { minimumFractionDigits: 2 })
 }
 
+export function formatNumber(value: unknown): string {
+  if (value === undefined) {
+    return "N/A"
+  }
+  return (value as number).toLocaleString()
+}
+
 export function formatRows(value: unknown): string {
   if (value === undefined) {
     return "N/A"
@@ -245,6 +252,8 @@ const nodePropFormatters: Partial<Record<Property, Formatter>> = {
   [Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]: formatBlocksHtml,
   [Property.FULL_SORT_GROUPS]: formatSortGroups,
   [Property.HEAP_FETCHES]: formatRows,
+  [Property.HASH_BATCHES]: formatNumber,
+  [Property.HASH_BUCKETS]: formatNumber,
   [Property.IO_READ_TIME]: formatDuration,
   [Property.IO_WRITE_TIME]: formatDuration,
   [Property.JIT]: formatJit,
@@ -254,8 +263,11 @@ const nodePropFormatters: Partial<Record<Property, Formatter>> = {
   [Property.LOCAL_IO_WRITE_TIME]: formatDuration,
   [Property.LOCAL_READ_BLOCKS]: formatBlocksHtml,
   [Property.LOCAL_WRITTEN_BLOCKS]: formatBlocksHtml,
+  [Property.ORIGINAL_HASH_BATCHES]: formatNumber,
+  [Property.ORIGINAL_HASH_BUCKETS]: formatNumber,
   [Property.OUTPUT]: formatList,
   [Property.PARALLEL_AWARE]: formatBoolean,
+  [Property.PEAK_MEMORY_USAGE]: formatKilobytes,
   [Property.PLANNER_ESTIMATE_DIRECTION]: formatEstimateDirection,
   [Property.PLANNER_ESTIMATE_FACTOR]: formatFactor,
   [Property.PLAN_ROWS]: formatRows,

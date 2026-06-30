@@ -994,6 +994,10 @@ export class PlanService {
           return
         }
 
+        if (this.parseBuckets(extraMatches[2], element as Node)) {
+          return
+        }
+
         if (this.parseWAL(extraMatches[2], element as Node)) {
           return
         }
@@ -1118,6 +1122,30 @@ export class PlanService {
     const method = s[0]
     const value = parseInt(s[1], 0)
     el[_.map([type, method, "blocks"], _.capitalize).join(" ")] = value
+  }
+
+  private parseBuckets(text: string, el: Node): boolean {
+
+    enum BucketsMatch {
+      Buckets = 1,
+      OriginalBuckets,
+      Batches,
+      OriginalBatches,
+      MemoryUsage,
+    }
+
+    const bucketsRegex = /Buckets:\s+([0-9]*)(?:\s*\(originally\s+([0-9]*)\))*\s+Batches:\s+([0-9]*)(?:\s*\(originally\s+([0-9]*)\))*\s+Memory Usage:\s+([0-9]*)kB.*\s*$/g
+    const bucketsMatches = bucketsRegex.exec(text)
+
+    if (bucketsMatches) {
+      el[Property.HASH_BUCKETS] = parseInt(bucketsMatches[BucketsMatch.Buckets], 0)
+      el[Property.HASH_BATCHES] = parseInt(bucketsMatches[BucketsMatch.Batches], 0)
+      el[Property.ORIGINAL_HASH_BUCKETS] = parseInt(bucketsMatches[BucketsMatch.OriginalBuckets], 0)
+      el[Property.ORIGINAL_HASH_BATCHES] = parseInt(bucketsMatches[BucketsMatch.OriginalBatches], 0)
+      el[Property.PEAK_MEMORY_USAGE] = parseInt(bucketsMatches[BucketsMatch.MemoryUsage], 0)
+      return true
+    }
+    return false
   }
 
   private getWorker(node: Node, workerNumber: number): Worker | undefined {
