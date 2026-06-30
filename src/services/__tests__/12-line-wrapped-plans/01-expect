@@ -54,7 +54,7 @@
             "Actual Total Time": 0.062,
             "Actual Rows": 2,
             "Actual Loops": 1,
-            "Buckets": 1024,
+            "Hash Buckets": 1024,
             "Plans": [
               {
                 "Node Type": "Seq Scan",
