@@ -1,0 +1,24 @@
+{
+  "Plan": {
+    "Node Type": "Aggregate",
+    "Plans": [
+      {
+        "Node Type": "Hash Join",
+        "Plans": [
+          {
+            "Node Type": "Seq Scan"
+          },
+          {
+            "Node Type": "Hash",
+            "Actual Rows": 1001000,
+            "Hash Buckets": 262144,
+            "Original Hash Buckets": 262144,
+            "Hash Batches": 2048,
+            "Original Hash Batches": 8,
+            "Peak Memory Usage": 35157
+          }
+        ]
+      }
+    ]
+  }
+}

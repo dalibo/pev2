@@ -1,0 +1,23 @@
+{
+  "Plan": {
+    "Node Type": "Hash Join",
+    "Plans": [
+      {
+        "Node Type": "Seq Scan"
+      }, {
+        "Node Type": "Hash",
+        "Shared Hit Blocks": 14909,
+        "Shared Read Blocks": 98728,
+        "Temp Written Blocks": 88109,
+        "Hash Buckets": 1048576,
+        "Hash Batches": 16,
+        "Peak Memory Usage": 62533,
+        "Plans": [
+          {
+            "Node Type": "Seq Scan"
+          }
+        ]
+      }
+    ]
+  }
+}
