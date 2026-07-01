@@ -1,0 +1,15 @@
+{
+  "Plan": {
+    "Node Type": "HashAggregate",
+    "Planned Partitions": 32,
+    "HashAgg Batches": 193,
+    "Peak Memory Usage": 4153,
+    "Disk Usage": 31752,
+    "Plans": [
+      {
+        "Node Type": "Seq Scan"
+      }
+    ]
+  }
+}
+

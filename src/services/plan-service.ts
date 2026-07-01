@@ -998,6 +998,10 @@ export class PlanService {
           return
         }
 
+        if (this.parsePlannedPartitions(extraMatches[2], element as Node)) {
+          return
+        }
+
         if (this.parseWAL(extraMatches[2], element as Node)) {
           return
         }
@@ -1143,6 +1147,37 @@ export class PlanService {
       el[Property.ORIGINAL_HASH_BUCKETS] = parseInt(bucketsMatches[BucketsMatch.OriginalBuckets], 0) || el[Property.HASH_BUCKETS]
       el[Property.ORIGINAL_HASH_BATCHES] = parseInt(bucketsMatches[BucketsMatch.OriginalBatches], 0) || el[Property.HASH_BATCHES]
       el[Property.PEAK_MEMORY_USAGE] = parseInt(bucketsMatches[BucketsMatch.MemoryUsage], 0)
+      return true
+    }
+    return false
+  }
+
+  private parsePlannedPartitions(text: string, el: Node): boolean {
+
+    enum PlannedPartitionsMatch {
+      Partitions = 1,
+      Batches,
+      MemoryUsage,
+      DiskUsage,
+    }
+
+    const plannedPartitionsRegex = /Planned Partitions:\s+([0-9]*)(?:\s+Batches:\s+([0-9]*))*(?:\s+Memory Usage:\s+([0-9]*)kB)*(?:\s*Disk Usage:\s+([0-9]*)kB)*\s*$/g
+    const plannedPartitionsMatches = plannedPartitionsRegex.exec(text)
+
+    if (plannedPartitionsMatches) {
+      el[Property.PLANNED_PARTITIONS] = parseInt(plannedPartitionsMatches[PlannedPartitionsMatch.Partitions], 0)
+      let batches = plannedPartitionsMatches[PlannedPartitionsMatch.Batches]
+      if (batches) {;
+        el[Property.HASHAGG_BATCHES] = parseInt(batches, 0)
+      }
+      let memoryUsage = plannedPartitionsMatches[PlannedPartitionsMatch.MemoryUsage]
+      if (memoryUsage) {
+        el[Property.PEAK_MEMORY_USAGE] = parseInt(memoryUsage)
+      }
+      let diskUsage = plannedPartitionsMatches[PlannedPartitionsMatch.DiskUsage]
+      if (diskUsage) {
+        el[Property.DISK_USAGE] = parseInt(diskUsage)
+      }
       return true
     }
     return false
