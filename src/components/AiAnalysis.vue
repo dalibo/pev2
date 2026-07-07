@@ -294,6 +294,8 @@ ${props.planSource}`
           messages: [{ role: "user", content: prompt }]
         })
       })
+    } else {
+      throw new Error(`Unsupported provider: ${provider.value}`)
     }
 
     if (!response.ok) {
