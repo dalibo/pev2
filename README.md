@@ -1,12 +1,44 @@
 PEV2: A VueJS component to show a graphical vizualization of a PostgreSQL execution
 plan.
 
-![PEV2 Main screenshot](pev2_screenshot.png)
-![PEV2 Grid screenshot](pev2_screenshot-grid.png)
-![PEV2 Stats screenshot](pev2_screenshot-stats.png)
-![PEV2 AI Setup screenshot](pev2_screenshot-ai-setup.png)
-![PEV2 AI Working screenshot](pev2_screenshot-ai-working.png)
-![PEV2 AI Report screenshot](pev2_screenshot-ai-report.png)
+# Features & Screenshots
+
+<details>
+  <summary><strong>1. Graphical Plan Visualization (Main View)</strong></summary>
+  <p>The core interactive tree visualization showing query execution flow, node execution stats, and operational details.</p>
+  <img src="pev2_screenshot.png" alt="Graphical Plan Visualization" width="100%">
+</details>
+
+<details>
+  <summary><strong>2. Sortable Node Grid</strong></summary>
+  <p>A tabular, sortable grid listing of plan nodes, making it easy to identify the most resource-intensive operations at a glance.</p>
+  <img src="pev2_screenshot-grid.png" alt="Sortable Node Grid" width="100%">
+</details>
+
+<details>
+  <summary><strong>3. Plan Execution Statistics</strong></summary>
+  <p>Detailed performance analytics, planning/execution timelines, triggers, and memory or I/O timings.</p>
+  <img src="pev2_screenshot-stats.png" alt="Plan Execution Statistics" width="100%">
+</details>
+
+<details>
+  <summary><strong>4. AI Engine Configuration & Credentials</strong></summary>
+  <p>Select your preferred AI engine (Google Gemini, OpenAI, Anthropic, or local Ollama) and configure endpoints and API keys stored securely in your browser.</p>
+  <img src="pev2_screenshot-ai-setup.png" alt="AI Engine Configuration" width="100%">
+</details>
+
+<details>
+  <summary><strong>5. Active Plan Analysis</strong></summary>
+  <p>The AI assistant active analysis spinner screen when reading the execution plan and checking optimal tuning actions.</p>
+  <img src="pev2_screenshot-ai-working.png" alt="Active Plan Analysis" width="100%">
+</details>
+
+<details>
+  <summary><strong>6. Optimization & Recommendations Report</strong></summary>
+  <p>Custom formatted markdown report with actionable index recommendations, bottlenecks outline, and query rewrite suggestions.</p>
+  <img src="pev2_screenshot-ai-report.png" alt="AI Recommendations Report" width="100%">
+</details>
+
 
 # Usage
 
