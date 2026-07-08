@@ -143,7 +143,7 @@ onMounted(() => {
   if (storedHistory) {
     try {
       historyList.value = JSON.parse(storedHistory)
-    } catch (e) {
+    } catch {
       historyList.value = []
     }
   }
@@ -336,8 +336,8 @@ ${props.planSource}`
     } else {
       throw new Error("No analysis response returned from the AI model.")
     }
-  } catch (err: any) {
-    errorMsg.value = err.message || "An unexpected error occurred during analysis."
+  } catch (err) {
+    errorMsg.value = err instanceof Error ? err.message : "An unexpected error occurred during analysis."
   } finally {
     isAnalyzing.value = false
   }
