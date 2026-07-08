@@ -3,11 +3,10 @@ plan.
 
 # Features & Screenshots
 
-<details>
-  <summary><strong>1. Graphical Plan Visualization (Main View)</strong></summary>
-  <p>The core interactive tree visualization showing query execution flow, node execution stats, and operational details.</p>
-  <img src="pev2_screenshot.png" alt="Graphical Plan Visualization" width="100%">
-</details>
+## 1. Graphical Plan Visualization (Main View)
+The core interactive tree visualization showing query execution flow, node execution stats, and operational details.
+
+<img src="pev2_screenshot.png" alt="Graphical Plan Visualization" width="100%">
 
 <details>
   <summary><strong>2. Sortable Node Grid</strong></summary>
