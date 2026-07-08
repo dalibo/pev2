@@ -363,8 +363,8 @@ function copyToClipboard() {
             <div class="sparkles-container mb-2">
               <FontAwesomeIcon :icon="faRobot" class="fs-1 animate-pulse" />
             </div>
-            <h4 class="mb-0 fw-bold">AI Assistant Setup</h4>
-            <p class="mb-0 opacity-75 small mt-1">Multi-Engine Plan Optimization</p>
+            <h4 class="mb-0 fw-bold">PEV2 - AI Assistant Setup</h4>
+            <p class="mb-0 opacity-75 small mt-1">Configure AI Engine & Model</p>
           </div>
           <div class="card-body p-4 bg-body">
             <p class="text-body-secondary small mb-4 text-center">
