@@ -1,7 +1,12 @@
 PEV2: A VueJS component to show a graphical vizualization of a PostgreSQL execution
 plan.
 
-![PEV2 screenshot](pev2_screenshot.png)
+![PEV2 Main screenshot](pev2_screenshot.png)
+![PEV2 Grid screenshot](pev2_screenshot-grid.png)
+![PEV2 Stats screenshot](pev2_screenshot-stats.png)
+![PEV2 AI Setup screenshot](pev2_screenshot-ai-setup.png)
+![PEV2 AI Working screenshot](pev2_screenshot-ai-working.png)
+![PEV2 AI Report screenshot](pev2_screenshot-ai-report.png)
 
 # Usage
 
