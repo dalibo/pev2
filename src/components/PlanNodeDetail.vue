@@ -10,6 +10,7 @@ import IoTable from "@/components/IoTable.vue"
 import WorkersDetail from "@/components/WorkersDetail.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
 import BuffersDetail from "@/components/BuffersDetail.vue"
+import BucketsDetail from "@/components/BucketsDetail.vue"
 import { ViewOptionsKey } from "@/symbols"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
@@ -323,6 +324,7 @@ watch(activeTab, () => {
     </div>
     <div class="tab-pane" :class="{ 'show active': activeTab === 'iobuffer' }">
       <!-- iobuffer tab -->
+      <BucketsDetail :node="node" />
       <IoTable :object="node" exclusive />
       <BuffersDetail :object="node" />
       <div

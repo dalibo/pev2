@@ -192,6 +192,18 @@ export default function useNode(
     return false
   })
 
+  const bucketsBatchesClass = computed(() => {
+    let c
+    const i = node[Property.HASH_BATCHES] as number
+    if (i > 1) {
+      c = 3
+    }
+    if (c) {
+      return "c-" + c
+    }
+    return false
+  })
+
   const rowsRemovedClass = computed(() => {
     let c
     const i = rowsRemovedPercent.value
@@ -513,6 +525,7 @@ export default function useNode(
   return {
     barColor,
     barWidth,
+    bucketsBatchesClass,
     buffersByLocationTooltip,
     buffersByMetricTooltip,
     costClass,
