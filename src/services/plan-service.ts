@@ -1038,6 +1038,10 @@ export class PlanService {
           return
         }
 
+        if (this.parseCache(extraMatches[2], element as Node)) {
+          return
+        }
+
         // remove the " ms" unit in case of time
         let value: string | number = info[1].replace(/(\s*ms)$/, "")
         // try to convert to number
@@ -1432,6 +1436,31 @@ export class PlanService {
 
     if (matches) {
       el[Property.DISABLED] = true;
+      return true
+    }
+    return false
+  }
+
+  private parseCache(text: string, el: Node): boolean {
+    // Parses a cache block (usually for a Memoize node)
+    // eg. Hits: 998  Misses: 2  Evictions: 0  Overflows: 0  Memory Usage: 1kB
+    enum CacheMatch {
+      Hits = 2,
+      Misses,
+      Evictions,
+      Overflows,
+      MemoryUsage,
+    }
+    const cacheRegex =
+      /^(\s*)Hits:\s+(\d+)\s+Misses:\s+(\d+)\s+Evictions:\s+(\d+)\s+Overflows:\s+(\d+)\s+Memory Usage:\s+(\d+)kB\s*$/
+    const cacheMatches = cacheRegex.exec(text)
+
+    if (cacheMatches) {
+      el[Property.CACHE_HITS] = parseInt(cacheMatches[CacheMatch.Hits], 0)
+      el[Property.CACHE_MISSES] = parseInt(cacheMatches[CacheMatch.Misses], 0)
+      el[Property.CACHE_EVICTIONS] = parseInt(cacheMatches[CacheMatch.Evictions], 0)
+      el[Property.CACHE_OVERFLOWS] = parseInt(cacheMatches[CacheMatch.Overflows], 0)
+      el[Property.PEAK_MEMORY_USAGE] = parseInt(cacheMatches[CacheMatch.MemoryUsage], 0)
       return true
     }
     return false
