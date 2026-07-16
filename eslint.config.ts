@@ -23,7 +23,7 @@ export default defineConfigWithVueTs(
       "vue/multi-word-component-names": [
         "error",
         {
-          ignores: ["Plan", "Grid", "Copy", "Diagram", "Stats"],
+          ignores: ["Plan", "Grid", "Copy", "Diagram", "Stats", "Approximative"],
         },
       ],
     },

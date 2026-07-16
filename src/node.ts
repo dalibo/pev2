@@ -255,6 +255,8 @@ export default function useNode(
     }</code></pre>`
   })
 
+  const approximativeTooltip = `<b>Value may not be accurate.</b><br />It couldn't be computed precisely because there are several loops and rows count is an average value.`
+
   const isNeverExecuted = computed((): boolean => {
     return !!store.stats.executionTime && !node[Property.ACTUAL_LOOPS]
   })
@@ -419,7 +421,7 @@ export default function useNode(
   })
 
   const rowsRemovedTooltip = computed((): string => {
-    return `${Property[rowsRemovedProp]}: ${tilde.value}${formatRows(rowsRemoved.value)}`
+    return `${Property[rowsRemovedProp]}: ${tilde}${formatRows(rowsRemoved.value)}`
   })
 
   const rowsIsFractional = computed((): boolean => {
@@ -430,9 +432,10 @@ export default function useNode(
     return (node[Property.ACTUAL_LOOPS] as number) > 1
   })
 
-  const tilde = computed((): string => {
-    return !rowsIsFractional.value && hasSeveralLoops.value ? "~" : ""
-  })
+  const isApproximative = !rowsIsFractional.value && hasSeveralLoops.value
+
+  const tilde = isApproximative ? "~" : ""
+
 
   const buffersByLocationTooltip = computed(
     () =>
@@ -523,6 +526,7 @@ export default function useNode(
   }
 
   return {
+    approximativeTooltip,
     barColor,
     barWidth,
     bucketsBatchesClass,
@@ -542,6 +546,7 @@ export default function useNode(
     heapFetchesTooltip,
     highlightValue,
     indexRecheckTooltip,
+    isApproximative,
     isNeverExecuted,
     isParallelAware,
     localDirtiedPercent,
