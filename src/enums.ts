@@ -38,6 +38,11 @@ export enum EstimateDirection {
   none = 3,
 }
 
+export enum SortSpaceType {
+  memory = "Memory",
+  disk = "Disk",
+}
+
 export enum CenterMode {
   center,
   visible,
