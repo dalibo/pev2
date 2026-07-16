@@ -1170,15 +1170,15 @@ export class PlanService {
 
     if (plannedPartitionsMatches) {
       el[Property.PLANNED_PARTITIONS] = parseInt(plannedPartitionsMatches[PlannedPartitionsMatch.Partitions], 0)
-      let batches = plannedPartitionsMatches[PlannedPartitionsMatch.Batches]
+      const batches = plannedPartitionsMatches[PlannedPartitionsMatch.Batches]
       if (batches) {;
         el[Property.HASHAGG_BATCHES] = parseInt(batches, 0)
       }
-      let memoryUsage = plannedPartitionsMatches[PlannedPartitionsMatch.MemoryUsage]
+      const memoryUsage = plannedPartitionsMatches[PlannedPartitionsMatch.MemoryUsage]
       if (memoryUsage) {
         el[Property.PEAK_MEMORY_USAGE] = parseInt(memoryUsage)
       }
-      let diskUsage = plannedPartitionsMatches[PlannedPartitionsMatch.DiskUsage]
+      const diskUsage = plannedPartitionsMatches[PlannedPartitionsMatch.DiskUsage]
       if (diskUsage) {
         el[Property.DISK_USAGE] = parseInt(diskUsage)
       }
