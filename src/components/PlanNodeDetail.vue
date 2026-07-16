@@ -11,6 +11,7 @@ import WorkersDetail from "@/components/WorkersDetail.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
 import BuffersDetail from "@/components/BuffersDetail.vue"
 import BucketsDetail from "@/components/BucketsDetail.vue"
+import Approximative from "@/components/Approximative.vue"
 import { ViewOptionsKey } from "@/symbols"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
@@ -220,6 +221,7 @@ watch(activeTab, () => {
         <span class="text-body-tertiary" v-if="node[Property.PLAN_ROWS]"
           >(Planned: {{ tilde + formattedProp("PLAN_ROWS_REVISED") }})</span
         >
+        <Approximative :node="node" />
         <span
           v-if="
             plannerRowEstimateDirection !== EstimateDirection.none &&
@@ -258,6 +260,7 @@ watch(activeTab, () => {
             >{{ rowsRemovedPercentString }}%</span
           >
         </span>
+        <Approximative :node="node" />
         <FontAwesomeIcon
           fixed-width
           :icon="faInfoCircle"
