@@ -181,3 +181,16 @@ test.describe("Parallel (4 workers)", () => {
     await expect(node).toHaveScreenshot("approximative_rows_values.png")
   })
 })
+
+test.describe("Sort Info", () => {
+  test.beforeEach(async ({ page }) => {
+    await loadPlan(page, "With Buffers")
+  })
+  test("sort info is correctly displayed", async ({ page }) => {
+    const node = page.locator(".plan-node", { hasText: "Sort #7" })
+    const toggle = node.getByRole("heading")
+
+    await toggle.click()
+    await expect(node).toHaveScreenshot()
+  })
+})

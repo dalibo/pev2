@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { createApp } from "vue"
-import { EstimateDirection, Property } from "@/enums"
+import { EstimateDirection, Property, SortSpaceType } from "@/enums"
 import SortGroup from "@/components/SortGroup.vue"
 import JitDetails from "@/components/JitDetails.vue"
 import hljs from "highlight.js/lib/core"
@@ -205,6 +205,18 @@ function formatEstimateDirection(value: unknown): string {
   }
 }
 
+function formatSortSpaceType(value: unknown): string {
+  switch (value) {
+    case SortSpaceType.memory:
+      return "in <b>Memory</b>"
+    case SortSpaceType.disk:
+      return "on <b>Disk</b>"
+    default:
+      console.error("Unsupported Sort Space Type")
+      return "-"
+  }
+}
+
 type Formatter = (value: unknown) => string
 
 const nodePropFormatters: Partial<Record<Property, Formatter>> = {
@@ -294,6 +306,7 @@ const nodePropFormatters: Partial<Record<Property, Formatter>> = {
   [Property.SHARED_WRITTEN_BLOCKS]: formatBlocksHtml,
   [Property.SORT_KEY]: formatList,
   [Property.SORT_SPACE_USED]: formatKilobytes,
+  [Property.SORT_SPACE_TYPE]: formatSortSpaceType,
   [Property.STARTUP_COST]: formatCost,
   [Property.SUM_IO_READ_TIME]: formatDuration,
   [Property.SUM_IO_WRITE_TIME]: formatDuration,
