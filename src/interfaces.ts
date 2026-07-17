@@ -73,7 +73,6 @@ export type IBlocksStats = {
   [key in BufferLocation]: number
 }
 
-
 // Class to create nodes when parsing text
 export class Node {
   nodeId!: number
@@ -233,7 +232,9 @@ export class Node {
     } else if (indexRegex) {
       this[Property.NODE_TYPE] = indexRegex[IndexMatch.NodeType]
       this[Property.INDEX_NAME] = indexRegex[IndexMatch.IndexName]
-      this[Property.SCAN_DIRECTION] = indexRegex[IndexMatch.ScanDirection] ? "Backward" : "Forward"
+      this[Property.SCAN_DIRECTION] = indexRegex[IndexMatch.ScanDirection]
+        ? "Backward"
+        : "Forward"
       this[Property.RELATION_NAME] = indexRegex[IndexMatch.RelationName]
       if (indexRegex[IndexMatch.Alias]) {
         this[Property.ALIAS] = indexRegex[IndexMatch.Alias]

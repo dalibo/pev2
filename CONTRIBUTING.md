@@ -38,7 +38,6 @@ npm run lint
 npm run test
 ```
 
-
 ## Run Visual tests
 
 ```sh

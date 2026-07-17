@@ -1,9 +1,5 @@
 import _ from "lodash"
-import {
-  BufferLocation,
-  EstimateDirection,
-  Property,
-} from "@/enums"
+import { BufferLocation, EstimateDirection, Property } from "@/enums"
 import { splitBalanced } from "@/services/help-service"
 import type {
   IBlocksStats,
@@ -235,7 +231,9 @@ export class PlanService {
         ((node[Property.ACTUAL_STARTUP_TIME] as number) *
           (node[Property.ACTUAL_LOOPS] as number)) /
         workers
-      node[Property.EXCLUSIVE_DURATION] = node[Property.ACTUAL_TOTAL_TIME] as number
+      node[Property.EXCLUSIVE_DURATION] = node[
+        Property.ACTUAL_TOTAL_TIME
+      ] as number
 
       const duration =
         (node[Property.EXCLUSIVE_DURATION] as number) -
@@ -634,7 +632,7 @@ export class PlanService {
 
     enum SerializationMatch {
       Time = 2,
-      Output = 3
+      Output = 3,
     }
     const serializationRegex =
       /^(\s*)Serialization:\s+time=(\d+\.\d+) ms.*output=(\d+).*$/
@@ -868,7 +866,7 @@ export class PlanService {
         }
         let worker = this.getWorker(previousElement.node, workerNumber)
         if (!worker) {
-          worker = {[Property.WORKER_NUMBER]: workerNumber}
+          worker = { [Property.WORKER_NUMBER]: workerNumber }
           previousElement.node[Property.WORKERS]?.push(worker)
         }
         if (
@@ -942,16 +940,18 @@ export class PlanService {
       } else if (planningMatches) {
         root.Planning = {} as IPlanning
         const element = {
-          node: root.Planning
+          node: root.Planning,
         }
         elementsAtDepth.push([1, element])
       } else if (serializationMatches) {
         root.Serialization = {
           Time: parseFloat(serializationMatches[SerializationMatch.Time]),
-          "Output Volume": parseInt(serializationMatches[SerializationMatch.Output])
+          "Output Volume": parseInt(
+            serializationMatches[SerializationMatch.Output],
+          ),
         } as ISerialization
         const element = {
-          node: root.Serialization
+          node: root.Serialization,
         }
         elementsAtDepth.push([1, element])
       } else if (extraMatches) {
@@ -1034,7 +1034,9 @@ export class PlanService {
           return
         }
 
-        if (this.parseMemory(extraMatches[2], element as unknown as IPlanning)) {
+        if (
+          this.parseMemory(extraMatches[2], element as unknown as IPlanning)
+        ) {
           return
         }
 
@@ -1133,7 +1135,6 @@ export class PlanService {
   }
 
   private parseBuckets(text: string, el: Node): boolean {
-
     enum BucketsMatch {
       Buckets = 1,
       OriginalBuckets,
@@ -1142,22 +1143,35 @@ export class PlanService {
       MemoryUsage,
     }
 
-    const bucketsRegex = /Buckets:\s+([0-9]*)(?:\s*\(originally\s+([0-9]*)\))*\s+Batches:\s+([0-9]*)(?:\s*\(originally\s+([0-9]*)\))*\s+Memory Usage:\s+([0-9]*)kB\s*$/g
+    const bucketsRegex =
+      /Buckets:\s+([0-9]*)(?:\s*\(originally\s+([0-9]*)\))*\s+Batches:\s+([0-9]*)(?:\s*\(originally\s+([0-9]*)\))*\s+Memory Usage:\s+([0-9]*)kB\s*$/g
     const bucketsMatches = bucketsRegex.exec(text)
 
     if (bucketsMatches) {
-      el[Property.HASH_BUCKETS] = parseInt(bucketsMatches[BucketsMatch.Buckets], 0)
-      el[Property.HASH_BATCHES] = parseInt(bucketsMatches[BucketsMatch.Batches], 0)
-      el[Property.ORIGINAL_HASH_BUCKETS] = parseInt(bucketsMatches[BucketsMatch.OriginalBuckets], 0) || el[Property.HASH_BUCKETS]
-      el[Property.ORIGINAL_HASH_BATCHES] = parseInt(bucketsMatches[BucketsMatch.OriginalBatches], 0) || el[Property.HASH_BATCHES]
-      el[Property.PEAK_MEMORY_USAGE] = parseInt(bucketsMatches[BucketsMatch.MemoryUsage], 0)
+      el[Property.HASH_BUCKETS] = parseInt(
+        bucketsMatches[BucketsMatch.Buckets],
+        0,
+      )
+      el[Property.HASH_BATCHES] = parseInt(
+        bucketsMatches[BucketsMatch.Batches],
+        0,
+      )
+      el[Property.ORIGINAL_HASH_BUCKETS] =
+        parseInt(bucketsMatches[BucketsMatch.OriginalBuckets], 0) ||
+        el[Property.HASH_BUCKETS]
+      el[Property.ORIGINAL_HASH_BATCHES] =
+        parseInt(bucketsMatches[BucketsMatch.OriginalBatches], 0) ||
+        el[Property.HASH_BATCHES]
+      el[Property.PEAK_MEMORY_USAGE] = parseInt(
+        bucketsMatches[BucketsMatch.MemoryUsage],
+        0,
+      )
       return true
     }
     return false
   }
 
   private parsePlannedPartitions(text: string, el: Node): boolean {
-
     enum PlannedPartitionsMatch {
       Partitions = 1,
       Batches,
@@ -1165,20 +1179,26 @@ export class PlanService {
       DiskUsage,
     }
 
-    const plannedPartitionsRegex = /Planned Partitions:\s+([0-9]*)(?:\s+Batches:\s+([0-9]*))*(?:\s+Memory Usage:\s+([0-9]*)kB)*(?:\s*Disk Usage:\s+([0-9]*)kB)*\s*$/g
+    const plannedPartitionsRegex =
+      /Planned Partitions:\s+([0-9]*)(?:\s+Batches:\s+([0-9]*))*(?:\s+Memory Usage:\s+([0-9]*)kB)*(?:\s*Disk Usage:\s+([0-9]*)kB)*\s*$/g
     const plannedPartitionsMatches = plannedPartitionsRegex.exec(text)
 
     if (plannedPartitionsMatches) {
-      el[Property.PLANNED_PARTITIONS] = parseInt(plannedPartitionsMatches[PlannedPartitionsMatch.Partitions], 0)
+      el[Property.PLANNED_PARTITIONS] = parseInt(
+        plannedPartitionsMatches[PlannedPartitionsMatch.Partitions],
+        0,
+      )
       const batches = plannedPartitionsMatches[PlannedPartitionsMatch.Batches]
-      if (batches) {;
+      if (batches) {
         el[Property.HASHAGG_BATCHES] = parseInt(batches, 0)
       }
-      const memoryUsage = plannedPartitionsMatches[PlannedPartitionsMatch.MemoryUsage]
+      const memoryUsage =
+        plannedPartitionsMatches[PlannedPartitionsMatch.MemoryUsage]
       if (memoryUsage) {
         el[Property.PEAK_MEMORY_USAGE] = parseInt(memoryUsage)
       }
-      const diskUsage = plannedPartitionsMatches[PlannedPartitionsMatch.DiskUsage]
+      const diskUsage =
+        plannedPartitionsMatches[PlannedPartitionsMatch.DiskUsage]
       if (diskUsage) {
         el[Property.DISK_USAGE] = parseInt(diskUsage)
       }
@@ -1404,15 +1424,9 @@ export class PlanService {
     if (matches) {
       const groups: SortGroups = {
         [Property.GROUP_COUNT]: parseInt(matches[2], 0),
-        [Property.SORT_METHODS_USED]: _.map(
-          matches[3].split(","),
-          _.trim,
-        ),
+        [Property.SORT_METHODS_USED]: _.map(matches[3].split(","), _.trim),
         [Property.SORT_SPACE_MEMORY]: {
-          [Property.AVERAGE_SORT_SPACE_USED]: parseInt(
-            matches[4],
-            0,
-          ),
+          [Property.AVERAGE_SORT_SPACE_USED]: parseInt(matches[4], 0),
           [Property.PEAK_SORT_SPACE_USED]: parseInt(matches[5], 0),
         },
       }
@@ -1429,13 +1443,13 @@ export class PlanService {
     return false
   }
 
-  private parseDisabled(text: string, el:Node): boolean {
+  private parseDisabled(text: string, el: Node): boolean {
     // Parse Disabled value into boolean
     const booleanRegex = /^\s*(Disabled)\s*:\s*(true)$/
     const matches = booleanRegex.test(text)
 
     if (matches) {
-      el[Property.DISABLED] = true;
+      el[Property.DISABLED] = true
       return true
     }
     return false
@@ -1458,9 +1472,18 @@ export class PlanService {
     if (cacheMatches) {
       el[Property.CACHE_HITS] = parseInt(cacheMatches[CacheMatch.Hits], 0)
       el[Property.CACHE_MISSES] = parseInt(cacheMatches[CacheMatch.Misses], 0)
-      el[Property.CACHE_EVICTIONS] = parseInt(cacheMatches[CacheMatch.Evictions], 0)
-      el[Property.CACHE_OVERFLOWS] = parseInt(cacheMatches[CacheMatch.Overflows], 0)
-      el[Property.PEAK_MEMORY_USAGE] = parseInt(cacheMatches[CacheMatch.MemoryUsage], 0)
+      el[Property.CACHE_EVICTIONS] = parseInt(
+        cacheMatches[CacheMatch.Evictions],
+        0,
+      )
+      el[Property.CACHE_OVERFLOWS] = parseInt(
+        cacheMatches[CacheMatch.Overflows],
+        0,
+      )
+      el[Property.PEAK_MEMORY_USAGE] = parseInt(
+        cacheMatches[CacheMatch.MemoryUsage],
+        0,
+      )
       return true
     }
     return false
@@ -1471,15 +1494,17 @@ export class PlanService {
     // eg. Memory: used=6kB  allocated=8kB
     enum MemoryMatch {
       Used = 2,
-      Allocated = 3
+      Allocated = 3,
     }
-    const memoryRegex =
-      /^(\s*)Memory:\s+used=(\d+)kB.*allocated=(\d+)kB.*$/
+    const memoryRegex = /^(\s*)Memory:\s+used=(\d+)kB.*allocated=(\d+)kB.*$/
     const memoryMatches = memoryRegex.exec(text)
 
     if (memoryMatches) {
       el[Property.MEMORY_USED] = parseInt(memoryMatches[MemoryMatch.Used], 0)
-      el[Property.MEMORY_ALLOCATED] = parseInt(memoryMatches[MemoryMatch.Allocated], 0)
+      el[Property.MEMORY_ALLOCATED] = parseInt(
+        memoryMatches[MemoryMatch.Allocated],
+        0,
+      )
       return true
     }
     return false
@@ -1520,13 +1545,12 @@ export class PlanService {
           },
         ).toFixed(3),
       )
-      const exclusivePropertyString = ("EXCLUSIVE_" + p) as keyof typeof Property
+      const exclusivePropertyString = ("EXCLUSIVE_" +
+        p) as keyof typeof Property
       const property = Property[
         exclusivePropertyString
       ] as unknown as keyof typeof Node
-      node[property] = Number(
-        ((node[Property[p]] as number) - sum).toFixed(3),
-      )
+      node[property] = Number(((node[Property[p]] as number) - sum).toFixed(3))
     })
   }
 
@@ -1562,15 +1586,16 @@ export class PlanService {
             `${prefix}${timingScope ? timingScope + "_" : ""}io_${operation}_time`.toUpperCase() as keyof typeof Property
           const speedProp =
             `${prefix}average_${timingScope ? timingScope + "_" : ""}io_${operation}_speed`.toUpperCase() as keyof typeof Property
-          const time = (node[Property[timeProp] as keyof IOBuffers]) || 0
+          const time = node[Property[timeProp] as keyof IOBuffers] || 0
           const buffersOperation = buffersOperations[index]
           const buffers = _.sumBy(buffersScopes, (bufferScope) => {
             const bufferProp =
               `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof Property
-            return (node[Property[bufferProp] as keyof IOBuffers]) || 0
+            return node[Property[bufferProp] as keyof IOBuffers] || 0
           })
-          const buffersProp = `${prefix}${buffersOperation}_blocks`.toUpperCase() as keyof typeof Property;
-          node[Property[buffersProp] as keyof IOBuffers] = buffers;
+          const buffersProp =
+            `${prefix}${buffersOperation}_blocks`.toUpperCase() as keyof typeof Property
+          node[Property[buffersProp] as keyof IOBuffers] = buffers
           if (time) {
             node[Property[speedProp] as keyof IOBuffers] = Number(
               (buffers / (time / 1000)).toFixed(3),
@@ -1597,12 +1622,12 @@ export class PlanService {
           buffers += _.sumBy(buffersScopes, (bufferScope) => {
             const bufferProp =
               `${prefix}${bufferScope}_${buffersOperation}_blocks`.toUpperCase() as keyof typeof Property
-            return (node[Property[bufferProp] as keyof IOBuffers] as number) || 0
+            return (
+              (node[Property[bufferProp] as keyof IOBuffers] as number) || 0
+            )
           })
         })
-        node[Property[sumTimeProp] as keyof IOBuffers] = Number(
-          time.toFixed(3),
-        )
+        node[Property[sumTimeProp] as keyof IOBuffers] = Number(time.toFixed(3))
         if (time) {
           node[Property[speedProp] as keyof IOBuffers] = Number(
             (buffers / (time / 1000)).toFixed(3),

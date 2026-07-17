@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page } from "@playwright/test"
 
 export async function loadPlan(page: Page, planName: string) {
   await page.goto("http://localhost:5173/")
