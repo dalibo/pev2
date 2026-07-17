@@ -194,7 +194,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
         ></FontAwesomeIcon>
       </button>
       <div
-        class="stat-dropdown-container text-start"
+        class="stat-dropdown-container start-0"
         v-if="showPlanningDetails && hasPlanningDetails"
       >
         <button
@@ -266,10 +266,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           class="text-body-tertiary"
         ></FontAwesomeIcon>
       </button>
-      <div
-        class="stat-dropdown-container text-start"
-        v-if="showSerializationDetails"
-      >
+      <div class="stat-dropdown-container" v-if="showSerializationDetails">
         <button
           class="btn btn-xs btn-close float-end"
           v-on:click="showSerializationDetails = false"
@@ -316,7 +313,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
             class="text-body-tertiary"
           ></FontAwesomeIcon>
         </button>
-        <div class="stat-dropdown-container text-start" v-if="showJitDetails">
+        <div class="stat-dropdown-container" v-if="showJitDetails">
           <div>
             <JitDetails
               :jit="store.plan?.content.JIT"
@@ -348,7 +345,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           class="text-body-tertiary"
         ></FontAwesomeIcon>
       </button>
-      <div class="stat-dropdown-container text-start" v-if="showTriggers">
+      <div class="stat-dropdown-container" v-if="showTriggers">
         <button
           class="btn btn-xs btn-close float-end"
           v-on:click="showTriggers = false"
@@ -402,7 +399,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           class="text-body-tertiary"
         ></FontAwesomeIcon>
       </button>
-      <div class="stat-dropdown-container text-start" v-if="showSettings">
+      <div class="stat-dropdown-container" v-if="showSettings">
         <button
           class="btn btn-xs btn-close float-end"
           v-on:click="showSettings = false"
@@ -446,7 +443,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           class="text-body-tertiary"
         ></FontAwesomeIcon>
       </button>
-      <div class="stat-dropdown-container text-start" v-if="showIO">
+      <div class="stat-dropdown-container" v-if="showIO">
         <button
           class="btn btn-xs btn-close float-end"
           v-on:click="showIO = false"
