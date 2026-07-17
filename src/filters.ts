@@ -17,6 +17,9 @@ export function formatDuration(value: unknown): string {
   if (typeof value !== "number") {
     throw new Error(`Expected number, got ${typeof value}`)
   }
+  if (Number.isNaN(value)) {
+    return "N/A"
+  }
   if (value < 0) {
     console.error(`
       Duration is negative. This is probably a bug.
