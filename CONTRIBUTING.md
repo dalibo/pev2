@@ -37,3 +37,26 @@ npm run lint
 ```sh
 npm run test
 ```
+
+## Run Visual tests
+
+```sh
+npm run test:visual:build
+npm run test:visual:run
+```
+
+Visual tests are executed inside a Docker container using Playwright, ensuring consistent results between local and CI environments. The Docker image only needs to be built once before running the tests, unless dependencies change.
+
+### Display html report
+
+```sh
+npm run test:visual:report
+```
+
+### Update snapshots
+
+```sh
+npm run test:visual:update
+```
+
+Visual testing via snapshots is supported by Playwright. To update or create new snapshots, run this command.

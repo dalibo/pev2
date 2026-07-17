@@ -25,8 +25,11 @@
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-pattern .gitignore",
+    "format": "prettier --check .",
     "prepare": "husky",
-    "test": "LANG=en_US.UTF-8 vitest --run"
+    "test": "LANG=en_US.UTF-8 vitest --run",
+    "test:visual:run": "docker run --rm -it --init --user \"$(id -u):$(id -g)\" -e HOME=/tmp -v $PWD:$PWD -w $PWD -p 9323:9323 mcr.microsoft.com/playwright:v1.61.0-noble sh -c \"npx playwright test; npx playwright show-report --host 0.0.0.0\"",
+    "test:visual:update": "docker run --rm -it --init --user \"$(id -u):$(id -g)\" -e HOME=/tmp -v $PWD:$PWD -w $PWD -p 9323:9323 mcr.microsoft.com/playwright:v1.61.0-noble npx playwright test --update-snapshots"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -49,6 +52,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
     "@eslint/js": "^9.21.0",
+    "@playwright/test": "^1.61.0",
     "@types/d3": "^7.4.3",
     "@types/humanize-duration": "^3.27.1",
     "@types/lodash": "^4.14.202",

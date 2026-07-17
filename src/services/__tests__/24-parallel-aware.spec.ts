@@ -21,4 +21,3 @@ describe("PlanService", () => {
     expect(root?.["Parallel Aware"]).toBe(true)
   })
 })
-

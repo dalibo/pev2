@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { createApp } from "vue"
-import { EstimateDirection, Property } from "@/enums"
+import { EstimateDirection, Property, SortSpaceType } from "@/enums"
 import SortGroup from "@/components/SortGroup.vue"
 import JitDetails from "@/components/JitDetails.vue"
 import hljs from "highlight.js/lib/core"
@@ -15,7 +15,7 @@ export function formatDuration(value: unknown): string {
     return "-"
   }
   if (typeof value !== "number") {
-    throw new Error(`Expected number, got ${typeof value}`);
+    throw new Error(`Expected number, got ${typeof value}`)
   }
   if (value < 0) {
     console.error(`
@@ -64,7 +64,16 @@ export function formatCost(value: unknown): string {
   if (value === undefined) {
     return "N/A"
   }
-  return (value as number).toLocaleString(undefined, { minimumFractionDigits: 2 })
+  return (value as number).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+  })
+}
+
+export function formatNumber(value: unknown): string {
+  if (value === undefined) {
+    return "N/A"
+  }
+  return (value as number).toLocaleString()
 }
 
 export function formatRows(value: unknown): string {
@@ -85,7 +94,9 @@ export function formatFactor(value: unknown): string {
   if (value === undefined) {
     return "N/A"
   }
-  const f: string = parseFloat((value as number).toPrecision(2)).toLocaleString()
+  const f: string = parseFloat(
+    (value as number).toPrecision(2),
+  ).toLocaleString()
   return `${f}&nbsp;&times;`
 }
 
@@ -105,9 +116,10 @@ export function formatBytes_(value: number) {
   const units = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
   const i = Math.floor(Math.log(value) / Math.log(k))
   const raw = value / Math.pow(k, i)
-  const valueString = raw % 1 === 0
-    ? raw.toLocaleString()
-    : parseFloat(raw.toPrecision(2)).toLocaleString()
+  const valueString =
+    raw % 1 === 0
+      ? raw.toLocaleString()
+      : parseFloat(raw.toPrecision(2)).toLocaleString()
   return `${valueString} ${units[i]}`
 }
 
@@ -140,18 +152,15 @@ export function formatPercent(value: number): string {
 
 export function formatList(value: unknown): string {
   if (value == undefined) {
-    return ''
+    return ""
   }
-  const lines =
-    typeof value === "string"
-    ? value.split(/\s*,\s*/)
-    : value
+  const lines = typeof value === "string" ? value.split(/\s*,\s*/) : value
 
   if (!Array.isArray(lines)) {
-    throw new Error(`Expected string or array of strings, got ${typeof value}`);
+    throw new Error(`Expected string or array of strings, got ${typeof value}`)
   }
 
-  const items = lines.map(line => `<li>${_.escape(line)}</li>`).join("")
+  const items = lines.map((line) => `<li>${_.escape(line)}</li>`).join("")
 
   return `<ul class="list-unstyled mb-0">${items}</ul>`
 }
@@ -196,7 +205,19 @@ function formatEstimateDirection(value: unknown): string {
   }
 }
 
-type Formatter = (value: unknown) => string;
+function formatSortSpaceType(value: unknown): string {
+  switch (value) {
+    case SortSpaceType.memory:
+      return "in <b>Memory</b>"
+    case SortSpaceType.disk:
+      return "on <b>Disk</b>"
+    default:
+      console.error("Unsupported Sort Space Type")
+      return "-"
+  }
+}
+
+type Formatter = (value: unknown) => string
 
 const nodePropFormatters: Partial<Record<Property, Formatter>> = {
   [Property.ACTUAL_LOOPS]: formatLoops,
@@ -215,6 +236,7 @@ const nodePropFormatters: Partial<Record<Property, Formatter>> = {
   [Property.AVERAGE_SUM_IO_WRITE_SPEED]: formatTransferRate,
   [Property.AVERAGE_TEMP_IO_READ_SPEED]: formatTransferRate,
   [Property.AVERAGE_TEMP_IO_WRITE_SPEED]: formatTransferRate,
+  [Property.DISK_USAGE]: formatKilobytes,
   [Property.EXCLUSIVE_AVERAGE_IO_READ_SPEED]: formatTransferRate,
   [Property.EXCLUSIVE_AVERAGE_IO_WRITE_SPEED]: formatTransferRate,
   [Property.EXCLUSIVE_AVERAGE_LOCAL_IO_READ_SPEED]: formatTransferRate,
@@ -245,6 +267,9 @@ const nodePropFormatters: Partial<Record<Property, Formatter>> = {
   [Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]: formatBlocksHtml,
   [Property.FULL_SORT_GROUPS]: formatSortGroups,
   [Property.HEAP_FETCHES]: formatRows,
+  [Property.HASHAGG_BATCHES]: formatNumber,
+  [Property.HASH_BATCHES]: formatNumber,
+  [Property.HASH_BUCKETS]: formatNumber,
   [Property.IO_READ_TIME]: formatDuration,
   [Property.IO_WRITE_TIME]: formatDuration,
   [Property.JIT]: formatJit,
@@ -254,8 +279,12 @@ const nodePropFormatters: Partial<Record<Property, Formatter>> = {
   [Property.LOCAL_IO_WRITE_TIME]: formatDuration,
   [Property.LOCAL_READ_BLOCKS]: formatBlocksHtml,
   [Property.LOCAL_WRITTEN_BLOCKS]: formatBlocksHtml,
+  [Property.ORIGINAL_HASH_BATCHES]: formatNumber,
+  [Property.ORIGINAL_HASH_BUCKETS]: formatNumber,
   [Property.OUTPUT]: formatList,
   [Property.PARALLEL_AWARE]: formatBoolean,
+  [Property.PEAK_MEMORY_USAGE]: formatKilobytes,
+  [Property.PLANNED_PARTITIONS]: formatNumber,
   [Property.PLANNER_ESTIMATE_DIRECTION]: formatEstimateDirection,
   [Property.PLANNER_ESTIMATE_FACTOR]: formatFactor,
   [Property.PLAN_ROWS]: formatRows,
@@ -277,6 +306,7 @@ const nodePropFormatters: Partial<Record<Property, Formatter>> = {
   [Property.SHARED_WRITTEN_BLOCKS]: formatBlocksHtml,
   [Property.SORT_KEY]: formatList,
   [Property.SORT_SPACE_USED]: formatKilobytes,
+  [Property.SORT_SPACE_TYPE]: formatSortSpaceType,
   [Property.STARTUP_COST]: formatCost,
   [Property.SUM_IO_READ_TIME]: formatDuration,
   [Property.SUM_IO_WRITE_TIME]: formatDuration,
@@ -292,8 +322,8 @@ const nodePropFormatters: Partial<Record<Property, Formatter>> = {
 }
 
 export function formatProp(key: string, value: unknown): string {
-  const formatter = nodePropFormatters[key as Property];
-  if (formatter) return formatter(value);
+  const formatter = nodePropFormatters[key as Property]
+  if (formatter) return formatter(value)
   return _.escape(value as unknown as string)
 }
 

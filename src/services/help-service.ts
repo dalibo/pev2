@@ -52,6 +52,8 @@ Consider modifying max_parallel_workers or max_parallel_workers_per_gather.`,
   "FUZZY NEEDS VERBOSE": `Information may not be accurate. Use EXPLAIN VERBOSE mode.`,
   "HINT TRACK_IO_TIMING": `HINT: activate <em><b>track_io_timing</b></em> to have details on time spent outside the PG cache.`,
   "IO TIMINGS PARALLEL": "Distributed among parallel workers",
+  "MULTIPLE HASH BATCHES":
+    "Several batches were required to process the hash buckets with the available memory. Spilling data to temporary disk, yet generating some operation on disk (I/O).<br/> <b>Hint</b>: consider increasing <code>work_mem</code> or decreasing <code>hash_mem_multiplier</code> so that only one batch is used to possibly improve performance.",
 }
 
 interface EaseInOutQuadOptions {
@@ -297,6 +299,8 @@ const notMiscProperties: string[] = [
   Property.WORKERS,
   Property.WORKERS_PLANNED,
   Property.WORKERS_LAUNCHED,
+  Property.WORKERS_PLANNED_BY_GATHER,
+  Property.WORKERS_LAUNCHED_BY_GATHER,
   Property.READ_BLOCKS,
   Property.WRITTEN_BLOCKS,
   Property.EXCLUSIVE_SHARED_HIT_BLOCKS,

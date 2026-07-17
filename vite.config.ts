@@ -49,7 +49,7 @@ export default defineConfig({
         },
       },
     }),
-    process.env.LIB ? dts() : viteSingleFile()
+    process.env.LIB ? dts() : viteSingleFile(),
   ],
   resolve: {
     alias: {

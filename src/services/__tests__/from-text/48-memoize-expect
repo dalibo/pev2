@@ -1,0 +1,20 @@
+{
+  "Plan": {
+    "Node Type": "Nested Loop",
+    "Plans": [
+      {
+        "Node Type": "Seq Scan"
+      },
+      {
+        "Node Type": "Memoize",
+        "Cache Key": "s.user_id",
+        "Cache Mode": "logical",
+        "Cache Hits": 998,
+        "Cache Misses": 2,
+        "Cache Evictions": 0,
+        "Cache Overflows": 0,
+        "Peak Memory Usage": 1
+      }
+    ]
+  }
+}

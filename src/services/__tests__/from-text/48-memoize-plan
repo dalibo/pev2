@@ -1,0 +1,17 @@
+Nested Loop  (cost=0.43..64.45 rows=1000 width=40) (actual time=0.014..0.322 rows=1000 loops=1)
+  Buffers: shared hit=15
+  ->  Seq Scan on sessions s  (cost=0.00..17.00 rows=1000 width=24) (actual time=0.005..0.044 rows=1000 loops=1)
+        Buffers: shared hit=7
+  ->  Memoize  (cost=0.43..7.50 rows=1 width=16) (actual time=0.000..0.000 rows=1 loops=1000)
+        Cache Key: s.user_id
+        Cache Mode: logical
+        Hits: 998  Misses: 2  Evictions: 0  Overflows: 0  Memory Usage: 1kB
+        Buffers: shared hit=8
+        ->  Index Scan using users_pkey on users u  (cost=0.42..7.49 rows=1 width=16) (actual time=0.003..0.003 rows=1 loops=2)
+              Index Cond: (id = s.user_id)
+              Buffers: shared hit=8
+Planning:
+  Buffers: shared hit=8
+Planning Time: 0.094 ms
+Execution Time: 0.375 ms
+

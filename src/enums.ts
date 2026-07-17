@@ -38,6 +38,11 @@ export enum EstimateDirection {
   none = 3,
 }
 
+export enum SortSpaceType {
+  memory = "Memory",
+  disk = "Disk",
+}
+
 export enum CenterMode {
   center,
   visible,
@@ -63,9 +68,16 @@ export enum Property {
   AVERAGE_SUM_IO_WRITE_SPEED = "*I/O Write Time speed (all scopes)",
   AVERAGE_TEMP_IO_READ_SPEED = "*Temp I/O Read Speed",
   AVERAGE_TEMP_IO_WRITE_SPEED = "*Temp I/O Write Speed",
+  CACHE_EVICTIONS = "Cache Evictions",
+  CACHE_HITS = "Cache Hits",
+  CACHE_KEY = "Cache Key",
+  CACHE_MISSES = "Cache Misses",
+  CACHE_MODE = "Cache Mode",
+  CACHE_OVERFLOWS = "Cache Overflows",
   CTE_NAME = "CTE Name",
   CTE_SCAN = "CTE Scan",
   DISABLED = "Disabled",
+  DISK_USAGE = "Disk Usage",
   EXCLUSIVE_AVERAGE_IO_READ_SPEED = "*I/O Read Speed (exclusive)",
   EXCLUSIVE_AVERAGE_IO_WRITE_SPEED = "*I/O Write Speed (exclusive)",
   EXCLUSIVE_AVERAGE_LOCAL_IO_READ_SPEED = "*Local I/O Read Speed (exclusive)",
@@ -105,6 +117,9 @@ export enum Property {
   FUNCTION_NAME = "Function Name",
   GROUP_COUNT = "Group Count",
   GROUP_KEY = "Group Key",
+  HASHAGG_BATCHES = "HashAgg Batches",
+  HASH_BATCHES = "Hash Batches",
+  HASH_BUCKETS = "Hash Buckets",
   HASH_CONDITION = "Hash Cond",
   HEAP_FETCHES = "Heap Fetches",
   INDEX_NAME = "Index Name",
@@ -123,12 +138,16 @@ export enum Property {
   NODE_ID = "nodeId",
   NODE_TYPE = "Node Type",
   OPERATION = "Operation",
+  ORIGINAL_HASH_BATCHES = "Original Hash Batches",
+  ORIGINAL_HASH_BUCKETS = "Original Hash Buckets",
   OUTPUT = "Output",
   PARALLEL_AWARE = "Parallel Aware",
   PARENT_RELATIONSHIP = "Parent Relationship",
   PARTIAL_MODE = "Partial Mode",
+  PEAK_MEMORY_USAGE = "Peak Memory Usage",
   PEAK_SORT_SPACE_USED = "Peak Sort Space Used",
   PEV_PLAN_TAG = "plan_",
+  PLANNED_PARTITIONS = "Planned Partitions",
   PLANNER_ESTIMATE_DIRECTION = "*Planner Row Estimate Direction",
   PLANNER_ESTIMATE_FACTOR = "*Planner Row Estimate Factor",
   PLANS = "Plans",
@@ -183,7 +202,9 @@ export enum Property {
   WRITTEN_BLOCKS = "*Written Blocks",
 }
 
-export function toProperty(key: string): typeof Property[keyof typeof Property] {
+export function toProperty(
+  key: string,
+): (typeof Property)[keyof typeof Property] {
   if (!(key in Property)) {
     throw new Error(`"${key}" is not a valid Property key`)
   }
