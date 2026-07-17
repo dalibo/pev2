@@ -8,14 +8,18 @@ import {
   EstimateDirection,
   HighlightType,
 } from "@/enums"
-import { formatBlocks, formatCost, formatDuration, formatFactor, formatProp, formatRows } from "@/filters"
+import {
+  formatBlocks,
+  formatCost,
+  formatDuration,
+  formatFactor,
+  formatProp,
+  formatRows,
+} from "@/filters"
 import { numberToColorHsl } from "@/services/color-service"
 import { store } from "@/store"
 
-export default function useNode(
-  node: Node,
-  viewOptions: ViewOptions,
-) {
+export default function useNode(node: Node, viewOptions: ViewOptions) {
   const executionTimePercent = ref<number>(NaN)
   // UI flags
   // calculated properties
@@ -49,9 +53,7 @@ export default function useNode(
           highlightValue.value = null
           break
         }
-        barWidth.value = Math.round(
-          value / store.stats.maxDuration * 100
-        )
+        barWidth.value = Math.round((value / store.stats.maxDuration) * 100)
         highlightValue.value = formatDuration(value)
         break
       case HighlightType.ROWS:
@@ -60,10 +62,7 @@ export default function useNode(
           highlightValue.value = null
           break
         }
-        barWidth.value =
-          Math.round(
-            value / store.stats.maxRows * 100
-          ) || 0
+        barWidth.value = Math.round((value / store.stats.maxRows) * 100) || 0
         highlightValue.value = formatRows(value)
         break
       case HighlightType.COST:
@@ -72,9 +71,7 @@ export default function useNode(
           highlightValue.value = null
           break
         }
-        barWidth.value = Math.round(
-          value / store.stats.maxCost * 100
-        )
+        barWidth.value = Math.round((value / store.stats.maxCost) * 100)
         highlightValue.value = formatCost(value)
         break
     }
@@ -97,7 +94,7 @@ export default function useNode(
       nodeName += " " + node[Property.SCAN_DIRECTION]
     }
     if (node[Property.JOIN_TYPE]) {
-      nodeName = nodeName.replace("Join", `${node[Property.JOIN_TYPE]} Join`);
+      nodeName = nodeName.replace("Join", `${node[Property.JOIN_TYPE]} Join`)
     }
     return nodeName
   })
@@ -385,9 +382,10 @@ export default function useNode(
   })
 
   const rowsTooltip = computed((): string => {
-    return ["Rows: ", formatRows(node[Property.ACTUAL_ROWS_REVISED] as number)].join(
-      "",
-    )
+    return [
+      "Rows: ",
+      formatRows(node[Property.ACTUAL_ROWS_REVISED] as number),
+    ].join("")
   })
 
   const estimateFactorTooltip = computed((): string => {
@@ -409,7 +407,9 @@ export default function useNode(
     }
     text += " estimated"
     text +=
-      estimateFactor !== 1 ? " by <b>" + formatFactor(estimateFactor) + "</b>" : ""
+      estimateFactor !== 1
+        ? " by <b>" + formatFactor(estimateFactor) + "</b>"
+        : ""
     text += "<br>"
     text += `Rows: ${formatRows(node[Property.ACTUAL_ROWS_REVISED])} `
     text += `(${formatRows(node[Property.PLAN_ROWS_REVISED] as number)} planned)`
@@ -417,7 +417,9 @@ export default function useNode(
   })
 
   const costTooltip = computed((): string => {
-    return ["Cost: ", formatRows(node[Property.EXCLUSIVE_COST] as number)].join("")
+    return ["Cost: ", formatRows(node[Property.EXCLUSIVE_COST] as number)].join(
+      "",
+    )
   })
 
   const rowsRemovedTooltip = computed((): string => {
@@ -435,7 +437,6 @@ export default function useNode(
   const isApproximative = !rowsIsFractional.value && hasSeveralLoops.value
 
   const tilde = isApproximative ? "~" : ""
-
 
   const buffersByLocationTooltip = computed(
     () =>

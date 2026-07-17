@@ -10,5 +10,5 @@ export default mergeConfig(
       root: fileURLToPath(new URL("./", import.meta.url)),
       exclude: ["tests/e2e/**", "**/node_modules/**"],
     },
-  })
+  }),
 )

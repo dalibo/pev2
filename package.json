@@ -25,6 +25,7 @@
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-pattern .gitignore",
+    "format": "prettier --check .",
     "prepare": "husky",
     "test": "LANG=en_US.UTF-8 vitest --run",
     "test:visual:run": "docker run --rm -it --init --user \"$(id -u):$(id -g)\" -e HOME=/tmp -v $PWD:$PWD -w $PWD -p 9323:9323 mcr.microsoft.com/playwright:v1.61.0-noble sh -c \"npx playwright test; npx playwright show-report --host 0.0.0.0\"",

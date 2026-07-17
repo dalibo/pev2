@@ -146,7 +146,7 @@ function parseAndShow() {
 }
 
 function doLayout() {
-  if (tree.value === undefined){
+  if (tree.value === undefined) {
     return
   }
 

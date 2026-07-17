@@ -124,7 +124,6 @@ $buffers-colors: (
   opacity: 0.2 !important;
 }
 
-
 @include meta.load-css("highlight.js/styles/stackoverflow-light");
 [data-bs-theme="dark"] {
   @include meta.load-css("highlight.js/styles/stackoverflow-dark");
