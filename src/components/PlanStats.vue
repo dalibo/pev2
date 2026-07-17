@@ -141,7 +141,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
       Execution time:
       <template v-if="!store.stats.executionTime">
         <span class="text-body-tertiary">
-          N/A
+          {{ formatDuration(store.stats.executionTime) }}
           <FontAwesomeIcon
             :icon="faInfoCircle"
             class="cursor-help"
@@ -160,7 +160,7 @@ const shouldShowSerializationBuffers = computed((): boolean => {
       Planning:
       <template v-if="!store.stats.planningTime">
         <span class="text-body-tertiary">
-          N/A
+          {{ formatDuration(store.stats.planningTime) }}
           <FontAwesomeIcon
             :icon="faInfoCircle"
             class="cursor-help"
