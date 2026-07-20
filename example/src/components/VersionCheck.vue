@@ -34,7 +34,10 @@ async function checkForUpdate() {
     const data = await resp.json()
     remoteVersion.value = data.tag_name.replace(/^v/i, "")
 
-    if (compareVersions(localVersion.value, remoteVersion.value) < 0) {
+    if (
+      localVersion.value != "TEST" &&
+      compareVersions(localVersion.value, remoteVersion.value) < 0
+    ) {
       updateRequired.value = true
     } else {
       console.log("pev2 is up to date.")

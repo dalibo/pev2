@@ -4,6 +4,8 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+env:
+  APP_VERSION: TEST
 jobs:
   test:
     timeout-minutes: 60
