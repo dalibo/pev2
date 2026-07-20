@@ -10,6 +10,21 @@ test.describe("Simple join", () => {
     test("navigates to home page", async ({ page }) => {
       await page.getByText("New Plan").click()
       await expect(page).toHaveURL("http://localhost:5173/")
+      // Ensure that plans DB is ready
+      await page.waitForFunction(async () => {
+        return await new Promise((resolve) => {
+          const request = indexedDB.open("pev2")
+
+          request.onsuccess = () => {
+            const db = request.result
+            const ready = db.objectStoreNames.contains("plans")
+            db.close()
+            resolve(ready)
+          }
+
+          request.onerror = () => resolve(false)
+        })
+      })
       await expect(page).toHaveScreenshot("home.png")
     })
 
