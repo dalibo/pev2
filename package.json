@@ -28,8 +28,8 @@
     "format": "prettier --check .",
     "prepare": "husky",
     "test": "LANG=en_US.UTF-8 vitest --run",
-    "test:visual:run": "docker run --rm -it --init --user \"$(id -u):$(id -g)\" -e HOME=/tmp -v $PWD:$PWD -w $PWD -p 9323:9323 mcr.microsoft.com/playwright:v1.61.0-noble sh -c \"npx playwright test; npx playwright show-report --host 0.0.0.0\"",
-    "test:visual:update": "docker run --rm -it --init --user \"$(id -u):$(id -g)\" -e HOME=/tmp -v $PWD:$PWD -w $PWD -p 9323:9323 mcr.microsoft.com/playwright:v1.61.0-noble npx playwright test --update-snapshots"
+    "test:visual:run": "docker run --rm -it --init --user \"$(id -u):$(id -g)\" -e HOME=/tmp -e APP_VERSION=TEST -v $PWD:$PWD -w $PWD -p 9323:9323 mcr.microsoft.com/playwright:v1.61.0-noble sh -c \"npx playwright test; npx playwright show-report --host 0.0.0.0\"",
+    "test:visual:update": "docker run --rm -it --init --user \"$(id -u):$(id -g)\" -e HOME=/tmp -e APP_VERSION=TEST -v $PWD:$PWD -w $PWD -p 9323:9323 mcr.microsoft.com/playwright:v1.61.0-noble npx playwright test --update-snapshots"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
