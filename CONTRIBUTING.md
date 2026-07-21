@@ -60,3 +60,13 @@ npm run test:visual:update
 ```
 
 Visual testing via snapshots is supported by Playwright. To update or create new snapshots, run this command.
+
+## Release Process
+
+### Build library and tag version
+
+```sh
+npm version minor
+git push origin master
+git push --tags
+```
