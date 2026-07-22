@@ -79,5 +79,8 @@
   "lint-staged": {
     "*.{vue,js,jsx,cjs,mjs,ts,tsx,cts,mts}": "eslint --cache --fix",
     "*.{js,css,md}": "prettier --write"
+  },
+  "allowScripts": {
+    "@parcel/watcher@2.5.6": true
   }
 }

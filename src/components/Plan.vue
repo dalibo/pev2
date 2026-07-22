@@ -26,6 +26,7 @@ import LogoImage from "@/components/LogoImage.vue"
 import PlanNode from "@/components/PlanNode.vue"
 import PlanStats from "@/components/PlanStats.vue"
 import Stats from "@/components/Stats.vue"
+import AiAnalysis from "@/components/AiAnalysis.vue"
 import AnimatedEdge from "@/components/AnimatedEdge.vue"
 import { findNodeById } from "@/services/help-service"
 import { HighlightType, Property } from "@/enums"
@@ -63,6 +64,7 @@ const selectedNodeId = ref<number>(NaN)
 const selectedNode = ref<Node | undefined>(undefined)
 const highlightedNodeId = ref<number>(NaN)
 const gridIsNotNew = localStorage.getItem("gridIsNotNew")
+const aiIsNotNew = localStorage.getItem("aiIsNotNew")
 const ready = ref(false)
 
 const viewOptions = reactive({
@@ -500,6 +502,21 @@ function updateNodeSize(node: Node, size: [number, number]) {
             >Stats</a
           >
         </li>
+        <li class="nav-item p-1">
+          <a
+            class="nav-link px-2 py-0 position-relative"
+            :class="{ active: activeTab === 'ai' }"
+            href="#ai"
+            >AI Analysis
+            <span
+              class="badge bg-info"
+              style="font-size: 0.6em"
+              v-if="!aiIsNotNew"
+            >
+              new
+            </span>
+          </a>
+        </li>
       </ul>
       <div class="ms-auto me-2 small">
         <a href="https://github.com/dalibo/pev2" target="_blank">
@@ -735,6 +752,16 @@ function updateNodeSize(node: Node, size: [number, number]) {
         :class="{ 'show active': activeTab === 'stats' }"
       >
         <Stats v-if="store.plan" />
+      </div>
+      <div
+        class="tab-pane flex-grow-1 overflow-auto"
+        :class="{ 'show active': activeTab === 'ai' }"
+        v-if="activeTab === 'ai'"
+      >
+        <AiAnalysis
+          :plan-source="planSource"
+          :plan-query="planQuery"
+        />
       </div>
     </div>
   </div>
