@@ -57,6 +57,7 @@ export enum Property {
   ACTUAL_STARTUP_TIME = "Actual Startup Time",
   ACTUAL_TOTAL_TIME = "Actual Total Time",
   ALIAS = "Alias",
+  ASYNC_CAPABLE = "Async Capable",
   AVERAGE_IO_READ_SPEED = "*I/O Read Speed",
   AVERAGE_IO_WRITE_SPEED = "*I/O Write Speed",
   AVERAGE_LOCAL_IO_READ_SPEED = "*Local I/O Read Speed",

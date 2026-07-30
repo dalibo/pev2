@@ -85,6 +85,7 @@ export class Node {
   [Property.ACTUAL_ROWS_REVISED]!: number;
   [Property.ACTUAL_STARTUP_TIME]?: number;
   [Property.ACTUAL_TOTAL_TIME]?: number;
+  [Property.ASYNC_CAPABLE]: boolean = false;
   [Property.EXCLUSIVE_COST]!: number;
   [Property.EXCLUSIVE_DURATION]!: number;
   [Property.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]!: number;
@@ -264,6 +265,15 @@ export class Node {
     if (parallelRegex) {
       this[Property.NODE_TYPE] = parallelRegex[ParallelMatch.NodeType]
       this[Property.PARALLEL_AWARE] = true
+    }
+
+    enum AsyncMatch {
+      NodeType = 2,
+    }
+    const asyncRegex = /^(Async\s+)(.*)/.exec(<string>this[Property.NODE_TYPE])
+    if (asyncRegex) {
+      this[Property.NODE_TYPE] = asyncRegex[AsyncMatch.NodeType]
+      this[Property.ASYNC_CAPABLE] = true
     }
 
     enum JoinMatch {
