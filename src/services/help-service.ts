@@ -398,6 +398,7 @@ const notMiscProperties: string[] = [
   Property.ACTUAL_ROWS_FRACTIONAL,
   Property.DISABLED,
   Property.WORKER_NUMBER,
+  Property.ASYNC_CAPABLE,
 ]
 
 export function shouldShowProp(key: string, value: unknown): boolean {

@@ -83,6 +83,7 @@ export default function useNode(node: Node, viewOptions: ViewOptions) {
 
   const nodeName = computed((): string => {
     let nodeName = isParallelAware.value ? "Parallel " : ""
+    nodeName += node[Property.ASYNC_CAPABLE] ? "Async " : ""
     nodeName += node[Property.PARTIAL_MODE]
       ? node[Property.PARTIAL_MODE] + " "
       : ""
