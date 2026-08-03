@@ -354,10 +354,11 @@ export class PlanService {
             }
             // Value for node property should contain sub plan name (with a number
             // matching exactly)
+            // Never executed nodes (time == 0) are not taken into account
             const matches = new RegExp(
               `.*${name.replace(/[^a-zA-Z0-9]/g, "\\$&")}[0-9]?`,
             ).exec(value)
-            if (matches) {
+            if (matches && node[Property.EXCLUSIVE_DURATION]) {
               node[Property.EXCLUSIVE_DURATION] -=
                 subPlan[Property.ACTUAL_TOTAL_TIME] || 0
               // Stop iterating for this node
@@ -791,7 +792,8 @@ export class PlanService {
         if (neverExecuted) {
           newNode[Property.ACTUAL_LOOPS] = 0
           newNode[Property.ACTUAL_ROWS] = 0
-          newNode[Property.ACTUAL_TOTAL_TIME] = undefined
+          newNode[Property.ACTUAL_TOTAL_TIME] = 0
+          newNode[Property.ACTUAL_STARTUP_TIME] = 0
         }
         const element = {
           node: newNode,
