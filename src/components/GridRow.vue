@@ -10,6 +10,7 @@ import {
   formatCost,
   formatDuration,
   formatFactor,
+  formatNumber,
   keysToString,
   sortKeys,
   formatTransferRate,
@@ -299,9 +300,7 @@ const isHighlighted = computed(
     </td>
     <td class="text-end text-nowrap" v-if="columns.includes('loops')">
       <!-- loops -->
-      <span v-if="node[Property.ACTUAL_LOOPS] != 1">
-        {{ node[Property.ACTUAL_LOOPS].toLocaleString() }}
-      </span>
+      {{ formatNumber(node[Property.ACTUAL_LOOPS]) }}
     </td>
     <td
       class="text-end grid-progress-cell text-nowrap"
