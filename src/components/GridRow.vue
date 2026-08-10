@@ -224,7 +224,7 @@ const isHighlighted = computed(
         class="position-relative"
         v-tippy="{ content: rowsTooltip, allowHTML: true }"
       >
-        {{ tilde + node[Property.ACTUAL_ROWS_REVISED]?.toLocaleString() }}
+        {{ tilde + formatNumber(node[Property.ACTUAL_ROWS_REVISED]) }}
       </div>
     </td>
     <td
