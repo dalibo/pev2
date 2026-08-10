@@ -1,0 +1,23 @@
+                                        QUERY PLAN                                         
+-------------------------------------------------------------------------------------------
+ Append (actual time=0.224..3.626 rows=2000.00 loops=1)
+   Buffers: shared hit=3395 dirtied=67 written=67, temp read=64 written=64
+   I/O Timings: shared write=0.314, temp read=0.154 write=0.251
+   CTE update_cte
+     ->  Update on t (actual time=0.221..2.787 rows=1000.00 loops=1)
+           Buffers: shared hit=3395 dirtied=67 written=67
+           I/O Timings: shared write=0.314
+           ->  Seq Scan on t (actual time=0.193..0.343 rows=1000.00 loops=1)
+                 Buffers: shared hit=261
+   ->  CTE Scan on update_cte (actual time=0.224..3.312 rows=1000.00 loops=1)
+         Storage: Disk  Maximum Storage: 506kB
+         Buffers: shared hit=3395 dirtied=67 written=67, temp written=63
+         I/O Timings: shared write=0.314, temp write=0.248
+   ->  CTE Scan on update_cte update_cte_1 (actual time=0.010..0.222 rows=1000.00 loops=1)
+         Storage: Disk  Maximum Storage: 506kB
+         Buffers: temp read=64 written=1
+         I/O Timings: temp read=0.154 write=0.003
+ Planning Time: 0.064 ms
+ Execution Time: 3.863 ms
+(19 rows)
+
