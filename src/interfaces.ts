@@ -84,7 +84,9 @@ export class Node {
   [Property.ACTUAL_ROWS]!: number;
   [Property.ACTUAL_ROWS_REVISED]!: number;
   [Property.ACTUAL_STARTUP_TIME]?: number;
+  [Property.ACTUAL_STARTUP_TIME_REVISED]?: number;
   [Property.ACTUAL_TOTAL_TIME]?: number;
+  [Property.ACTUAL_TOTAL_TIME_REVISED]?: number;
   [Property.ASYNC_CAPABLE]: boolean = false;
   [Property.EXCLUSIVE_COST]!: number;
   [Property.EXCLUSIVE_DURATION]!: number;
