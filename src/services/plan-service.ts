@@ -116,8 +116,8 @@ export class PlanService {
 
     // calculate actuals after processing child nodes so that actual duration
     // takes loops into account
-    this.calculateActuals(node)
     this.calculateExclusives(node)
+    this.calculateBuffersIOExclusives(node)
     this.calculateIoTimingsAverage(node as unknown as IOBuffers)
     this.convertNodeType(node)
   }
@@ -217,8 +217,8 @@ export class PlanService {
     plan.content.maxEstimateFactor = highestEstimateFactor * 2 || 1
   }
 
-  // actual duration and actual cost are calculated by subtracting child values from the total
-  public calculateActuals(node: Node) {
+  public calculateExclusives(node: Node) {
+    // Calculate exclusive duration and cost by subtracting child values from the total
     if (!_.isUndefined(node[Property.ACTUAL_TOTAL_TIME])) {
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
       // number of workers is also taken into account
@@ -1512,7 +1512,7 @@ export class PlanService {
     return false
   }
 
-  private calculateExclusives(node: Node) {
+  private calculateBuffersIOExclusives(node: Node) {
     // Caculate inclusive value for the current node for the given property
     const properties: Array<keyof typeof Property> = [
       "SHARED_HIT_BLOCKS",
