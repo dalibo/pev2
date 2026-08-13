@@ -114,7 +114,7 @@ export class PlanService {
 
     _.remove(node[Property.PLANS], (child) => this.isCTE(child))
 
-    // calculate actuals after processing child nodes so that actual duration
+    // calculate exclusives after processing child nodes so that exclusive duration
     // takes loops into account
     this.calculateExclusives(node)
     this.calculateBuffersIOExclusives(node)
@@ -223,21 +223,17 @@ export class PlanService {
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
       // number of workers is also taken into account
       const workers = (node[Property.WORKERS_LAUNCHED_BY_GATHER] || 0) + 1
-      node[Property.ACTUAL_TOTAL_TIME] =
+      const totalTimeRevised =
         ((node[Property.ACTUAL_TOTAL_TIME] as number) *
           (node[Property.ACTUAL_LOOPS] as number)) /
         workers
-      node[Property.ACTUAL_STARTUP_TIME] =
+      node[Property.ACTUAL_STARTUP_TIME_REVISED] =
         ((node[Property.ACTUAL_STARTUP_TIME] as number) *
           (node[Property.ACTUAL_LOOPS] as number)) /
         workers
-      node[Property.EXCLUSIVE_DURATION] = node[
-        Property.ACTUAL_TOTAL_TIME
-      ] as number
+      node[Property.ACTUAL_TOTAL_TIME_REVISED] = totalTimeRevised
 
-      const duration =
-        (node[Property.EXCLUSIVE_DURATION] as number) -
-        this.childrenDuration(node, 0)
+      const duration = totalTimeRevised - this.childrenDuration(node, 0)
       node[Property.EXCLUSIVE_DURATION] = duration > 0 ? duration : 0
     }
 
@@ -285,7 +281,7 @@ export class PlanService {
     // Iterate over the CTEs
     _.each(plan.ctes, (cte) => {
       // Time spent in the CTE itself
-      const cteDuration = cte[Property.ACTUAL_TOTAL_TIME] || 0
+      const cteDuration = cte[Property.ACTUAL_TOTAL_TIME_REVISED] || 0
 
       // Find all nodes that are "CTE Scan" for the given CTE
       const cteScans = _.filter(
@@ -305,7 +301,7 @@ export class PlanService {
         node[Property.EXCLUSIVE_DURATION] = Math.max(
           0,
           node[Property.EXCLUSIVE_DURATION] -
-            (cteDuration * (node[Property.ACTUAL_TOTAL_TIME] || 0)) /
+            (cteDuration * (node[Property.ACTUAL_TOTAL_TIME_REVISED] || 0)) /
               sumScansDuration,
         )
       })
@@ -360,7 +356,7 @@ export class PlanService {
             ).exec(value)
             if (matches && node[Property.EXCLUSIVE_DURATION]) {
               node[Property.EXCLUSIVE_DURATION] -=
-                subPlan[Property.ACTUAL_TOTAL_TIME] || 0
+                subPlan[Property.ACTUAL_TOTAL_TIME_REVISED] || 0
               // Stop iterating for this node
               return false
             }
@@ -380,7 +376,7 @@ export class PlanService {
         (child[Property.PARENT_RELATIONSHIP] == "InitPlan" &&
           node[Property.NODE_TYPE] == "Result")
       ) {
-        duration += child[Property.ACTUAL_TOTAL_TIME] || 0 // Duration may not be set
+        duration += child[Property.ACTUAL_TOTAL_TIME_REVISED] || 0 // Duration may not be set
       }
     })
     return duration
