@@ -97,6 +97,9 @@ export default function useNode(node: Node, viewOptions: ViewOptions) {
     if (node[Property.JOIN_TYPE]) {
       nodeName = nodeName.replace("Join", `${node[Property.JOIN_TYPE]} Join`)
     }
+    if (node[Property.ASYNC_CAPABLE]) {
+      nodeName = `Async ${nodeName}`
+    }
     return nodeName
   })
 
