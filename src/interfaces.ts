@@ -173,12 +173,13 @@ export class Node {
 
     enum ScanAndOperationMatch {
       NodeType = 1,
+      AsyncCapable,
       RelationName,
       Alias,
     }
     // tslint:disable-next-line:max-line-length
     const scanAndOperationsRegex =
-      /^((?:Parallel\s+)?(?:Seq|Tid.*|Bitmap\s+Heap|WorkTable|(?:Async\s+)?Foreign)\s+Scan|Update|Insert|Delete|Merge)\son\s(\S+)(?:\s+(\S+))?$/.exec(
+      /^((?:Parallel\s+)?(?:Seq|Tid.*|Bitmap\s+Heap|WorkTable|(Async\s+)?Foreign)\s+Scan|Update|Insert|Delete|Merge)\son\s(\S+)(?:\s+(\S+))?$/.exec(
         type,
       )
 
@@ -228,6 +229,13 @@ export class Node {
       if (scanAndOperationsRegex[ScanAndOperationMatch.Alias]) {
         this[Property.ALIAS] =
           scanAndOperationsRegex[ScanAndOperationMatch.Alias]
+      }
+      if (scanAndOperationsRegex[ScanAndOperationMatch.AsyncCapable]) {
+        this[Property.ASYNC_CAPABLE] = true
+        this[Property.NODE_TYPE] = this[Property.NODE_TYPE].replace(
+          /Async\s+/,
+          "",
+        )
       }
     } else if (bitmapRegex) {
       this[Property.NODE_TYPE] = bitmapRegex[BitmapMatch.NodeType]
