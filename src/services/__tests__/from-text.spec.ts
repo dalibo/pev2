@@ -29,7 +29,11 @@ tests.forEach((planTest: string) => {
 
       const planService = new PlanService()
       const r = planService.fromSource(planText)
-      expect(r).toMatchObject(JSON.parse(planExpect))
+      let planJson = JSON.parse(planExpect)
+      if (Array.isArray(planJson)) {
+        planJson = planJson[0]
+      }
+      expect(r).toMatchObject(planJson)
     })
   })
 })
