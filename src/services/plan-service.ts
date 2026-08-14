@@ -217,6 +217,28 @@ export class PlanService {
     plan.content.maxEstimateFactor = highestEstimateFactor * 2 || 1
   }
 
+  public setParentRelationship(node: Node, parent: Node | null, index: number) {
+    // Set the "Parent Relationship" field given parent and siblings
+    _.each(node[Property.PLANS], (child, index) => {
+      this.setParentRelationship(child, node, index)
+    })
+    // Root node doesn't have any relationship set
+    // Also don't overwrite already set parent relationship
+    if (!parent || node[Property.PARENT_RELATIONSHIP]) {
+      return
+    }
+    const t = parent[Property.NODE_TYPE]
+    let r = "Outer"
+    if (["Nested Loop", "Hash Join", "Merge Join"].includes(t)) {
+      r = index == 0 ? "Outer" : "Inner"
+    } else if (["Append", "MergeAppend", "BitmapAnd", "BitmapOr"].includes(t)) {
+      r = "Member"
+    } else if (t == "Subquery Scan") {
+      r = "Subquery"
+    }
+    node[Property.PARENT_RELATIONSHIP] = r
+  }
+
   public calculateExclusives(node: Node) {
     // Calculate exclusive duration and cost by subtracting child values from the total
     if (!_.isUndefined(node[Property.ACTUAL_TOTAL_TIME])) {
@@ -1062,6 +1084,7 @@ export class PlanService {
     if (root == null || !root.Plan) {
       throw new Error("Unable to parse plan")
     }
+    this.setParentRelationship(root.Plan, null, 0)
     return root
   }
 
