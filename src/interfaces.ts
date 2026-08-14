@@ -303,6 +303,8 @@ export class Node {
       if (joinModifierRegex) {
         this[Property.NODE_TYPE] = joinModifierRegex[JoinModifierMatch.NodeType]
         this[Property.JOIN_TYPE] = joinModifierRegex[JoinModifierMatch.JoinType]
+      } else {
+        this[Property.JOIN_TYPE] = "Inner"
       }
       this[Property.NODE_TYPE] += " Join"
     }
