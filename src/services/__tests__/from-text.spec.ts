@@ -14,14 +14,17 @@ const __filename = fileURLToPath(import.meta.url)
 
 const dir = path.join(path.dirname(__filename), "from-text")
 const files = fs.readdirSync(dir)
-let tests = files.map((file: string) => file.replace(/-([^-]+)$/, ""))
+let tests = files.filter((file: string) => file.match(/-plan$/))
 tests = _.uniq(tests)
 tests.forEach((planTest: string) => {
   describe("From text: Plan " + planTest, () => {
     test("", () => {
-      const planFile = path.join(dir, planTest + "-plan")
+      const planFile = path.join(dir, planTest)
       const planText = fs.readFileSync(planFile, { encoding: "utf-8" })
-      const planExpectFile = path.join(dir, planTest + "-expect")
+      const planExpectFile = path.join(
+        dir,
+        planTest.replace(/-plan$/, "-expect"),
+      )
       const planExpect = fs.readFileSync(planExpectFile, { encoding: "utf-8" })
 
       const planService = new PlanService()
