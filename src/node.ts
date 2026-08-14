@@ -94,7 +94,7 @@ export default function useNode(node: Node, viewOptions: ViewOptions) {
     ) {
       nodeName += " " + node[Property.SCAN_DIRECTION]
     }
-    if (node[Property.JOIN_TYPE]) {
+    if (node[Property.JOIN_TYPE] && node[Property.JOIN_TYPE] != "Inner") {
       nodeName = nodeName.replace("Join", `${node[Property.JOIN_TYPE]} Join`)
     }
     if (node[Property.ASYNC_CAPABLE]) {
