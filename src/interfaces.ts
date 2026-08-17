@@ -288,25 +288,18 @@ export class Node {
 
     enum JoinMatch {
       NodeType = 1,
-    }
-    const joinRegex = /(.*)\sJoin$/.exec(<string>this[Property.NODE_TYPE])
-
-    enum JoinModifierMatch {
-      NodeType = 1,
       JoinType,
     }
-    const joinModifierRegex = /(.*)\s+(Full|Left|Right|Anti)/.exec(
-      <string>this[Property.NODE_TYPE],
-    )
+    const joinRegex =
+      /^(Nested Loop|Hash|Merge)(?:\s+(Right Semi|Right Anti|Left|Right|Full|Semi|Anti))?\s+Join$/.exec(
+        <string>this[Property.NODE_TYPE],
+      )
     if (joinRegex) {
       this[Property.NODE_TYPE] = joinRegex[JoinMatch.NodeType]
-      if (joinModifierRegex) {
-        this[Property.NODE_TYPE] = joinModifierRegex[JoinModifierMatch.NodeType]
-        this[Property.JOIN_TYPE] = joinModifierRegex[JoinModifierMatch.JoinType]
-      } else {
-        this[Property.JOIN_TYPE] = "Inner"
-      }
-      this[Property.NODE_TYPE] += " Join"
+      this[Property.JOIN_TYPE] = joinRegex[JoinMatch.JoinType] || "Inner"
+      // Re-add "Join" suffix to nodes with type != "Nested Loop"
+      this[Property.NODE_TYPE] +=
+        this[Property.NODE_TYPE] == "Nested Loop" ? "" : " Join"
     }
   }
 }
