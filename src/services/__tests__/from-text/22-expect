@@ -1,6 +1,8 @@
 {
   "Plan": {
-    "Node Type": "GroupAggregate",
+    "Node Type": "Aggregate",
+    "Strategy": "Sorted",
+    "Partial Mode": "Simple",
     "Startup Cost": 265935.63,
     "Total Cost": 285867.54,
     "Plan Rows": 137462,

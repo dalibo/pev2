@@ -1,6 +1,8 @@
 {
   "Plan": {
-    "Node Type": "HashAggregate",
+    "Node Type": "Aggregate",
+    "Strategy": "Hashed",
+    "Partial Mode": "Simple",
     "Planned Partitions": 32,
     "HashAgg Batches": 193,
     "Peak Memory Usage": 4153,

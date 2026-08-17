@@ -73,6 +73,22 @@ export type IBlocksStats = {
   [key in BufferLocation]: number
 }
 
+export type GroupingSet = {
+  [Property.HASH_KEYS]?: string[][]
+  [Property.GROUP_KEYS]?: string[][]
+  [Property.SORT_KEY]?: string[]
+}
+
+const STRATEGY_MAP = {
+  Group: "Sorted",
+  Hash: "Hashed",
+  Mixed: "Mixed",
+}
+
+export const REVERSE_STRATEGY_MAP = Object.fromEntries(
+  Object.entries(STRATEGY_MAP).map(([raw, mapped]) => [mapped, raw]),
+)
+
 // Class to create nodes when parsing text
 export class Node {
   nodeId!: number
@@ -103,6 +119,10 @@ export class Node {
   [Property.EXCLUSIVE_TEMP_READ_BLOCKS]!: number;
   [Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]!: number;
   [Property.FILTER]!: string;
+  [Property.HASH_KEY]!: string[];
+  [Property.GROUPING_SETS]!: GroupingSet[];
+  [Property.GROUP_KEY]!: string[];
+  [Property.PLANNED_PARTITIONS]?: number;
   [Property.PLANNER_ESTIMATE_DIRECTION]?: EstimateDirection;
   [Property.PLANNER_ESTIMATE_FACTOR]?: number;
   [Property.INDEX_NAME]?: string;
@@ -159,6 +179,7 @@ export class Node {
     | SortGroups
     | Timing
     | Worker[]
+    | GroupingSet[]
     | boolean
     | number
     | string
@@ -221,6 +242,14 @@ export class Node {
       Alias,
     }
     const subqueryRegex = /^(Subquery\sScan)\son\s(.+)$/.exec(type)
+
+    enum AggregateMatch {
+      PartialMode = 1,
+      Strategy = 2,
+    }
+    const aggregateRegex =
+      /^(Partial|Finalize)*\s*(Group|Hash|Mixed|[A-z]*)*Aggregate$/.exec(type)
+
     if (scanAndOperationsRegex) {
       this[Property.NODE_TYPE] =
         scanAndOperationsRegex[ScanAndOperationMatch.NodeType]
@@ -264,6 +293,27 @@ export class Node {
     } else if (subqueryRegex) {
       this[Property.NODE_TYPE] = subqueryRegex[SubqueryMatch.NodeType]
       this[Property.ALIAS] = subqueryRegex[SubqueryMatch.Alias]
+    } else if (aggregateRegex) {
+      this[Property.NODE_TYPE] = "Aggregate"
+      this[Property.PARTIAL_MODE] =
+        aggregateRegex[AggregateMatch.PartialMode] || "Simple"
+
+      const rawStrategy = aggregateRegex[AggregateMatch.Strategy]
+      let strategy
+      if (rawStrategy === undefined) {
+        strategy = "Plain"
+      } else if (rawStrategy in STRATEGY_MAP) {
+        strategy = STRATEGY_MAP[rawStrategy as keyof typeof STRATEGY_MAP]
+      } else {
+        strategy = rawStrategy
+        console.error(`Unsupported Aggregate node strategy: ${rawStrategy}`)
+      }
+
+      if (["Hash", "Mixed"].includes(rawStrategy)) {
+        this[Property.PLANNED_PARTITIONS] =
+          this[Property.PLANNED_PARTITIONS] || 0
+      }
+      this[Property.STRATEGY] = strategy
     }
     enum ParallelMatch {
       NodeType = 2,

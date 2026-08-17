@@ -1,0 +1,6 @@
+MixedAggregate  (cost=0.00..107.28 rows=982 width=52)
+  Hash Key: customer_id, status
+  Hash Key: customer_id
+  Hash Key: status
+  Group Key: ()
+  ->  Seq Scan on orders  (cost=0.00..35.00 rows=2000 width=18)
