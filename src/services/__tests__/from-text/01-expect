@@ -4,6 +4,7 @@
     "Async Capable": false,
     "Parallel Aware": false,
     "Relation Name": "tenk1",
+    "Alias": "tenk1",
     "Startup Cost": 0,
     "Total Cost": 333,
     "Plan Rows": 10000,
