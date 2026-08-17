@@ -1,0 +1,29 @@
+{
+  "Plan": {
+    "Node Type": "Aggregate",
+    "Strategy": "Hashed",
+    "Partial Mode": "Simple",
+    "Parallel Aware": false,
+    "Async Capable": false,
+    "Startup Cost": 5471.00,
+    "Total Cost": 5721.00,
+    "Plan Rows": 20000,
+    "Plan Width": 53,
+    "Disabled": false,
+    "Group Key": ["customer_id", "status"],
+    "Planned Partitions": 0,
+    "Plans": [
+      {
+        "Node Type": "Seq Scan",
+        "Parallel Aware": false,
+        "Async Capable": false,
+        "Relation Name": "orders",
+        "Startup Cost": 0.00,
+        "Total Cost": 3471.00,
+        "Plan Rows": 200000,
+        "Plan Width": 19,
+        "Disabled": false
+      }
+    ]
+  }
+}
