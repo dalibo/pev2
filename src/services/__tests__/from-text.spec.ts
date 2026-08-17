@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest"
 import { PlanService } from "@/services/plan-service"
+import type { Node } from "@/interfaces"
 import _ from "lodash"
 import * as fs from "fs"
 import { fileURLToPath } from "url"
@@ -11,6 +12,23 @@ const __filename = fileURLToPath(import.meta.url)
 // directory.
 // The xxx-plan file is parsed and the result is expected to equal the content
 // of the corresponding xxx-expect file.
+
+function removeKeys(node: Node | Node[]) {
+  // Remove keys that cannot be determined from text format
+  // for tests where the `-expect` file is actually generated with EXPLAIN
+  // (FORMAT JSON)
+  if (Array.isArray(node)) {
+    node.forEach(removeKeys)
+    return node
+  }
+  delete node["Inner Unique"]
+
+  if (node["Plans"]) {
+    removeKeys(node["Plans"])
+  }
+
+  return node
+}
 
 const dir = path.join(path.dirname(__filename), "from-text")
 const files = fs.readdirSync(dir)
@@ -33,6 +51,7 @@ tests.forEach((planTest: string) => {
       if (Array.isArray(planJson)) {
         planJson = planJson[0]
       }
+      planJson["Plan"] = removeKeys(planJson["Plan"])
       expect(r).toMatchObject(planJson)
     })
   })

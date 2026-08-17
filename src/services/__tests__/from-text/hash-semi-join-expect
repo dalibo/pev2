@@ -1,0 +1,58 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Hash Join",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Join Type": "Right Semi",
+      "Startup Cost": 2887.00,
+      "Total Cost": 16639.53,
+      "Plan Rows": 85160,
+      "Plan Width": 18,
+      "Disabled": false,
+      "Inner Unique": true,
+      "Hash Cond": "(o.customer_id = c.id)",
+      "Plans": [
+        {
+          "Node Type": "Seq Scan",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Relation Name": "orders",
+          "Alias": "o",
+          "Startup Cost": 0.00,
+          "Total Cost": 7703.00,
+          "Plan Rows": 500000,
+          "Plan Width": 4,
+          "Disabled": false
+        },
+        {
+          "Node Type": "Hash",
+          "Parent Relationship": "Inner",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 1637.00,
+          "Total Cost": 1637.00,
+          "Plan Rows": 100000,
+          "Plan Width": 18,
+          "Disabled": false,
+          "Plans": [
+            {
+              "Node Type": "Seq Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Async Capable": false,
+              "Relation Name": "customers",
+              "Alias": "c",
+              "Startup Cost": 0.00,
+              "Total Cost": 1637.00,
+              "Plan Rows": 100000,
+              "Plan Width": 18,
+              "Disabled": false
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

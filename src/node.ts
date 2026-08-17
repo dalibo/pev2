@@ -95,7 +95,13 @@ export default function useNode(node: Node, viewOptions: ViewOptions) {
       nodeName += " " + node[Property.SCAN_DIRECTION]
     }
     if (node[Property.JOIN_TYPE] && node[Property.JOIN_TYPE] != "Inner") {
-      nodeName = nodeName.replace("Join", `${node[Property.JOIN_TYPE]} Join`)
+      // Add the join type to the node name before the "Join" suffix
+      // Note: in the case of a Nested Loop, "Join" isn't part of the node type
+      // (hence the regexp)
+      nodeName = nodeName.replace(
+        /(\s+Join)*$/,
+        ` ${node[Property.JOIN_TYPE]} Join`,
+      )
     }
     if (node[Property.ASYNC_CAPABLE]) {
       nodeName = `Async ${nodeName}`
