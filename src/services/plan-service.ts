@@ -1010,6 +1010,10 @@ export class PlanService {
           return
         }
 
+        if (this.parseGroupHashSortKey(extraMatches[2], element as Node)) {
+          return
+        }
+
         if (this.parseBuffers(extraMatches[2], element as Node)) {
           return
         }
@@ -1531,6 +1535,70 @@ export class PlanService {
     return false
   }
 
+  private parseGroupHashSortKey(text: string, el: Node): boolean {
+    // Parses a Group, Hash or Sort Key line, e.g.:
+    //   Group Key: customer_id, status
+    //   Hash Key: customer_id, status
+    //   Sort Key: status
+    // Possibly converted to Grouping Sets / Group Keys of multiple values
+
+    const match = /^\s*(Group|Hash|Sort) Key:\s+(.*)$/.exec(text)
+    if (!match) {
+      return false
+    }
+
+    const [, keyType, rawValue] = match
+    const values = rawValue === "()" ? [] : rawValue.split(/\s*,\s*/)
+
+    switch (keyType) {
+      case "Hash": {
+        el[Property.GROUPING_SETS] = el[Property.GROUPING_SETS] || []
+        el[Property.GROUPING_SETS].push({ [Property.HASH_KEYS]: [values] })
+        return true
+      }
+
+      case "Sort": {
+        // Only handle here when already inside a Grouping Sets block;
+        // otherwise the simple case is handled elsewhere (parseSortKey).
+        if (!el[Property.GROUPING_SETS]) {
+          return false
+        }
+        el[Property.GROUPING_SETS].push({ [Property.SORT_KEY]: values })
+        return true
+      }
+
+      case "Group": {
+        const lastSet =
+          el[Property.GROUPING_SETS] && _.last(el[Property.GROUPING_SETS])
+
+        if (lastSet && Property.SORT_KEY in lastSet) {
+          // Group Key attached to a Sort Key in the same Grouping Set
+          lastSet[Property.GROUP_KEYS] = [values]
+        } else if (lastSet && Property.HASH_KEYS in lastSet) {
+          // Last set was Hash Keys: start a new Grouping Set
+          el[Property.GROUPING_SETS]!.push({ [Property.GROUP_KEYS]: [values] })
+        } else if (lastSet) {
+          // Append to the current set's existing Group Keys
+          lastSet[Property.GROUP_KEYS]?.push(values)
+        } else if (el[Property.GROUP_KEY]) {
+          // No Grouping Sets yet, but a Group Key already exists:
+          // convert it into a Grouping Set holding both keys
+          el[Property.GROUPING_SETS] = [
+            {
+              [Property.GROUP_KEYS]: [el[Property.GROUP_KEY], values],
+            },
+          ]
+        } else {
+          el[Property.GROUP_KEY] = values
+        }
+        return true
+      }
+
+      default:
+        return false
+    }
+  }
+
   private calculateBuffersIOExclusives(node: Node) {
     // Caculate inclusive value for the current node for the given property
     const properties: Array<keyof typeof Property> = [
@@ -1670,25 +1738,6 @@ export class PlanService {
   }
 
   private convertNodeType(node: Node): void {
-    // Convert some node type (possibly from JSON source) to match the TEXT format
-    if (node[Property.NODE_TYPE] == "Aggregate" && node[Property.STRATEGY]) {
-      let prefix = ""
-      switch (node[Property.STRATEGY]) {
-        case "Sorted":
-          prefix = "Group"
-          break
-        case "Hashed":
-          prefix = "Hash"
-          break
-        case "Plain":
-          prefix = ""
-          break
-        default:
-          console.error("Unsupported Aggregate Strategy")
-      }
-      node[Property.NODE_TYPE] = prefix + "Aggregate"
-    }
-
     if (node[Property.NODE_TYPE] == "ModifyTable") {
       node[Property.NODE_TYPE] = node[Property.OPERATION] as string
     }

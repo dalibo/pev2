@@ -2,6 +2,7 @@
 import _ from "lodash"
 import { computed, onBeforeMount, ref, watch } from "vue"
 import type { Node, Worker, ViewOptions } from "@/interfaces"
+import { REVERSE_STRATEGY_MAP } from "@/interfaces"
 import {
   BufferLocation,
   Property,
@@ -84,10 +85,22 @@ export default function useNode(node: Node, viewOptions: ViewOptions) {
   const nodeName = computed((): string => {
     let nodeName = isParallelAware.value ? "Parallel " : ""
     nodeName += node[Property.ASYNC_CAPABLE] ? "Async " : ""
-    nodeName += node[Property.PARTIAL_MODE]
-      ? node[Property.PARTIAL_MODE] + " "
-      : ""
+
     nodeName += node[Property.NODE_TYPE]
+
+    if (node[Property.STRATEGY]) {
+      nodeName =
+        (REVERSE_STRATEGY_MAP[
+          node[Property.STRATEGY] as keyof typeof REVERSE_STRATEGY_MAP
+        ] || "") + nodeName
+    }
+
+    if (
+      node[Property.PARTIAL_MODE] &&
+      node[Property.PARTIAL_MODE] != "Simple"
+    ) {
+      nodeName = `${node[Property.PARTIAL_MODE]} ${nodeName}`
+    }
     if (
       node[Property.SCAN_DIRECTION] &&
       node[Property.SCAN_DIRECTION] !== "Forward"
