@@ -226,10 +226,9 @@ export class Node {
         scanAndOperationsRegex[ScanAndOperationMatch.NodeType]
       this[Property.RELATION_NAME] =
         scanAndOperationsRegex[ScanAndOperationMatch.RelationName]
-      if (scanAndOperationsRegex[ScanAndOperationMatch.Alias]) {
-        this[Property.ALIAS] =
-          scanAndOperationsRegex[ScanAndOperationMatch.Alias]
-      }
+      this[Property.ALIAS] =
+        scanAndOperationsRegex[ScanAndOperationMatch.Alias] ||
+        this[Property.RELATION_NAME]
       if (scanAndOperationsRegex[ScanAndOperationMatch.AsyncCapable]) {
         this[Property.ASYNC_CAPABLE] = true
         this[Property.NODE_TYPE] = this[Property.NODE_TYPE].replace(
