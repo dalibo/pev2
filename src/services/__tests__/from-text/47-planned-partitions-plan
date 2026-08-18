@@ -1,0 +1,11 @@
+-- taken from https://explain.dalibo.com/plan/bcc3fd5fc7bc771b
+
+ HashAggregate  (cost=79468.50..98636.70 rows=940257 width=11) (actual time=231.946..413.626 rows=970675 loops=1)
+   Group Key: name
+   Planned Partitions: 32  Batches: 193  Memory Usage: 4153kB  Disk Usage: 31752kB
+   ->  Seq Scan on t1  (cost=0.00..15406.00 rows=1000000 width=11) (actual time=0.118..36.474 rows=1000000 loops=1)
+ Planning Time: 0.201 ms
+ Execution Time: 438.186 ms
+(6 rows)
+
+Time: 438.861 ms

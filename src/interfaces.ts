@@ -73,7 +73,6 @@ export type IBlocksStats = {
   [key in BufferLocation]: number
 }
 
-
 // Class to create nodes when parsing text
 export class Node {
   nodeId!: number
@@ -86,6 +85,7 @@ export class Node {
   [Property.ACTUAL_ROWS_REVISED]!: number;
   [Property.ACTUAL_STARTUP_TIME]?: number;
   [Property.ACTUAL_TOTAL_TIME]?: number;
+  [Property.ASYNC_CAPABLE]: boolean = false;
   [Property.EXCLUSIVE_COST]!: number;
   [Property.EXCLUSIVE_DURATION]!: number;
   [Property.EXCLUSIVE_LOCAL_DIRTIED_BLOCKS]!: number;
@@ -233,7 +233,9 @@ export class Node {
     } else if (indexRegex) {
       this[Property.NODE_TYPE] = indexRegex[IndexMatch.NodeType]
       this[Property.INDEX_NAME] = indexRegex[IndexMatch.IndexName]
-      this[Property.SCAN_DIRECTION] = indexRegex[IndexMatch.ScanDirection] ? "Backward" : "Forward"
+      this[Property.SCAN_DIRECTION] = indexRegex[IndexMatch.ScanDirection]
+        ? "Backward"
+        : "Forward"
       this[Property.RELATION_NAME] = indexRegex[IndexMatch.RelationName]
       if (indexRegex[IndexMatch.Alias]) {
         this[Property.ALIAS] = indexRegex[IndexMatch.Alias]
@@ -263,6 +265,15 @@ export class Node {
     if (parallelRegex) {
       this[Property.NODE_TYPE] = parallelRegex[ParallelMatch.NodeType]
       this[Property.PARALLEL_AWARE] = true
+    }
+
+    enum AsyncMatch {
+      NodeType = 2,
+    }
+    const asyncRegex = /^(Async\s+)(.*)/.exec(<string>this[Property.NODE_TYPE])
+    if (asyncRegex) {
+      this[Property.NODE_TYPE] = asyncRegex[AsyncMatch.NodeType]
+      this[Property.ASYNC_CAPABLE] = true
     }
 
     enum JoinMatch {

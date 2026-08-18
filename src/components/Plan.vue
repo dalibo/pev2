@@ -148,7 +148,7 @@ function parseAndShow() {
 }
 
 function doLayout() {
-  if (tree.value === undefined){
+  if (tree.value === undefined) {
     return
   }
 
@@ -262,7 +262,7 @@ function onSelectedNode(v: number) {
   }
 }
 
-function lineGen(link: FlexHierarchyPointLink<object>) {
+function lineGen(link: FlexHierarchyPointLink<Node>) {
   const source = link.source
   const target = link.target
   const k = Math.abs(target.y - (source.y + source.ySize) - padding)
@@ -758,10 +758,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
         :class="{ 'show active': activeTab === 'ai' }"
         v-if="activeTab === 'ai'"
       >
-        <AiAnalysis
-          :plan-source="planSource"
-          :plan-query="planQuery"
-        />
+        <AiAnalysis :plan-source="planSource" :plan-query="planQuery" />
       </div>
     </div>
   </div>

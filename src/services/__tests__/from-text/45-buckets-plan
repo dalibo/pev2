@@ -1,0 +1,23 @@
+                                                           QUERY PLAN                                                            
+---------------------------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=471037.90..1304640.12 rows=14999862 width=114) (actual time=1480.644..9895.695 rows=15001138 loops=1)
+   Hash Cond: (details.eid = entetes.eid)
+   Buffers: shared hit=15940 read=282899, temp read=246065 written=246065
+   I/O Timings: shared read=242.957, temp read=317.342 write=830.025
+   ->  Seq Scan on details  (cost=0.00..335215.62 rows=15001362 width=65) (actual time=0.014..1114.539 rows=15001289 loops=1)
+         Filter: (b IS NOT NULL)
+         Buffers: shared hit=1031 read=184171
+         I/O Timings: shared read=157.615
+   ->  Hash  (cost=238637.70..238637.70 rows=9999056 width=57) (actual time=1474.384..1474.385 rows=9999900 loops=1)
+         Buckets: 1048576  Batches: 16  Memory Usage: 62533kB
+         Buffers: shared hit=14909 read=98728, temp written=88109
+         I/O Timings: shared read=85.342, temp write=294.483
+         ->  Seq Scan on entetes  (cost=0.00..238637.70 rows=9999056 width=57) (actual time=0.016..567.370 rows=9999900 loops=1)
+               Filter: (a > 100)
+               Rows Removed by Filter: 101
+               Buffers: shared hit=14909 read=98728
+               I/O Timings: shared read=85.342
+ Planning:
+   Buffers: shared hit=8
+ Planning Time: 0.119 ms
+ Execution Time: 10244.597 ms

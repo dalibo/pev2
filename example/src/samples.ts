@@ -5534,7 +5534,7 @@ const plan8_source = String.raw`{
 }
 `
 
-const plan_asmany_source =` Merge on public.tb  (cost=262602.88..306621.45 rows=0 width=0) (actual time=7798.118..7798.122 rows=0 loops=1)
+const plan_asmany_source = ` Merge on public.tb  (cost=262602.88..306621.45 rows=0 width=0) (actual time=7798.118..7798.122 rows=0 loops=1)
    Tuples: inserted=9995 updated=9679 deleted=326
    Buffers: shared hit=7731564 read=22226 dirtied=27295 written=38115, temp read=9593 written=27592
    I/O Timings: shared read=22.960 write=186.426, temp read=17.017 write=119.861

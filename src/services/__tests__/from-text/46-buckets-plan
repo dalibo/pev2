@@ -1,0 +1,56 @@
+-- source: https://www.postgresql.org/message-id/flat/CA%2BhUKGKWWmf%3DWELLG%3DaUGbcugRaSQbtm0tKYiBut-B2rVKX63g%40mail.gmail.com
+
+SET max_parallel_workers_per_gather = 0;
+SET synchronize_seqscans = off;
+SET work_mem = '4MB';
+
+
+
+CREATE TABLE r AS SELECT generate_series(1, 10000000)::int i;
+ANALYZE r;
+
+
+
+-- 1k uniform keys + 1m duplicates
+CREATE TABLE s1k (i int);
+INSERT INTO s1k SELECT generate_series(1, 1000)::int i;
+ALTER TABLE s1k SET (autovacuum_enabled = off);
+ANALYZE s1k;
+INSERT INTO s1k SELECT 42 FROM generate_series(1, 1000000);
+
+
+
+EXPLAIN ANALYZE SELECT COUNT(*) FROM r JOIN s1k USING (i);
+SET
+SET
+SET
+SELECT 10000000
+ANALYZE
+CREATE TABLE
+INSERT 0 1000
+ALTER TABLE
+ANALYZE
+INSERT 0 1000000
+                                                            QUERY PLAN                                                            
+----------------------------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=302291.30..302291.31 rows=1 width=8) (actual time=3656.686..3656.688 rows=1.00 loops=1)
+   Buffers: shared hit=6734 read=41984 dirtied=13621, temp read=49855 written=49855
+   ->  Hash Join  (cost=27826.00..300076.30 rows=886000 width=0) (actual time=146.635..3619.685 rows=1001000.00 loops=1)
+         Hash Cond: (r.i = s1k.i)
+         Buffers: shared hit=6734 read=41984 dirtied=13621, temp read=49855 written=49855
+         ->  Seq Scan on r  (cost=0.00..144294.76 rows=10000676 width=4) (actual time=0.201..1200.806 rows=10000000.00 loops=1)
+               Buffers: shared hit=2304 read=41984 dirtied=13621
+         ->  Hash  (cost=13290.00..13290.00 rows=886000 width=4) (actual time=145.449..145.450 rows=1001000.00 loops=1)
+               Buckets: 262144 (originally 262144)  Batches: 2048 (originally 8)  Memory Usage: 35157kB
+               Buffers: shared hit=4430, temp written=2930
+               ->  Seq Scan on s1k  (cost=0.00..13290.00 rows=886000 width=4) (actual time=0.011..61.783 rows=1001000.00 loops=1)
+                     Buffers: shared hit=4430
+ Planning:
+   Buffers: shared hit=83 read=9
+ Planning Time: 0.495 ms
+ JIT:
+   Functions: 10
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.492 ms (Deform 0.134 ms), Inlining 0.000 ms, Optimization 0.266 ms, Emission 3.684 ms, Total 4.442 ms
+ Execution Time: 3674.128 ms
+(20 rows)

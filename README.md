@@ -3,6 +3,7 @@ PEV2: A VueJS component to show a graphical vizualization of a PostgreSQL execut
 # Features & Screenshots
 
 ## 1. Graphical Plan Visualization (Main View)
+
 The core interactive tree visualization showing query execution flow, node execution stats, settings and operational details.
 
 <img src="pev2_screenshot.png" alt="Graphical Plan Visualization" width="100%">
@@ -36,7 +37,6 @@ The core interactive tree visualization showing query execution flow, node execu
   <p>Custom formatted markdown report with actionable index recommendations, bottlenecks outline, and query rewrite suggestions.  Multiple executions are saved locally, so you can compare the tuning suggestions of different AI models and providers.</p>
   <img src="pev2_screenshot-ai-report.png" alt="AI Recommendations Report" width="100%">
 </details>
-
 
 # Usage
 
@@ -80,7 +80,7 @@ open it in your favorite internet browser.
   const plan = `
     Aggregate  (cost=12.50..12.51 rows=1 width=8)
       ->  Seq Scan on employees  (cost=0.00..10.00 rows=1000 width=0)
-  `;
+  `
 
   const app = createApp({
     data() {

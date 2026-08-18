@@ -50,26 +50,35 @@ const activeHistoryId = ref<string>("")
 
 const currentPlanHash = computed(() => hashString(props.planSource))
 const filteredHistory = computed(() => {
-  return historyList.value.filter(entry => entry.planHash === currentPlanHash.value)
+  return historyList.value.filter(
+    (entry) => entry.planHash === currentPlanHash.value,
+  )
 })
 
-watch(filteredHistory, (newHistory) => {
-  if (newHistory.length > 0 && !newHistory.some(h => h.id === activeHistoryId.value)) {
-    activeHistoryId.value = newHistory[0].id
-    analysisResult.value = newHistory[0].result
-  }
-}, { immediate: true })
+watch(
+  filteredHistory,
+  (newHistory) => {
+    if (
+      newHistory.length > 0 &&
+      !newHistory.some((h) => h.id === activeHistoryId.value)
+    ) {
+      activeHistoryId.value = newHistory[0].id
+      analysisResult.value = newHistory[0].result
+    }
+  },
+  { immediate: true },
+)
 
 function selectHistoryEntry(id: string) {
   activeHistoryId.value = id
-  const found = historyList.value.find(h => h.id === id)
+  const found = historyList.value.find((h) => h.id === id)
   if (found) {
     analysisResult.value = found.result
   }
 }
 
 function deleteHistoryEntry(id: string) {
-  historyList.value = historyList.value.filter(h => h.id !== id)
+  historyList.value = historyList.value.filter((h) => h.id !== id)
   localStorage.setItem("pev2_ai_history", JSON.stringify(historyList.value))
   if (activeHistoryId.value === id) {
     const remaining = filteredHistory.value
@@ -134,7 +143,9 @@ watch(provider, (newProvider) => {
 })
 
 onMounted(() => {
-  const storedProvider = localStorage.getItem("pev2_ai_provider") as Provider | null
+  const storedProvider = localStorage.getItem(
+    "pev2_ai_provider",
+  ) as Provider | null
   const storedKey = localStorage.getItem("pev2_ai_key")
   const storedEndpoint = localStorage.getItem("pev2_ai_endpoint")
   const storedModel = localStorage.getItem("pev2_ai_model")
@@ -152,16 +163,16 @@ onMounted(() => {
     provider.value = storedProvider
     apiKey.value = storedKey || ""
     endpointUrl.value = storedEndpoint || ""
-    
+
     // Check if the stored model is a default model or custom
-    const defaults = providerModels[storedProvider].map(m => m.value)
+    const defaults = providerModels[storedProvider].map((m) => m.value)
     if (storedModel && defaults.includes(storedModel)) {
       selectedModel.value = storedModel
     } else if (storedModel) {
       selectedModel.value = "custom"
       customModel.value = storedModel
     }
-    
+
     savedConfigExists.value = true
   } else {
     // Default values
@@ -175,10 +186,13 @@ function saveConfig() {
   localStorage.setItem("pev2_ai_provider", provider.value)
   localStorage.setItem("pev2_ai_key", apiKey.value.trim())
   localStorage.setItem("pev2_ai_endpoint", endpointUrl.value.trim())
-  
-  const modelToSave = selectedModel.value === "custom" ? customModel.value.trim() : selectedModel.value
+
+  const modelToSave =
+    selectedModel.value === "custom"
+      ? customModel.value.trim()
+      : selectedModel.value
   localStorage.setItem("pev2_ai_model", modelToSave)
-  
+
   savedConfigExists.value = true
   errorMsg.value = ""
 }
@@ -188,7 +202,7 @@ function clearConfig() {
   localStorage.removeItem("pev2_ai_key")
   localStorage.removeItem("pev2_ai_endpoint")
   localStorage.removeItem("pev2_ai_model")
-  
+
   provider.value = "gemini"
   apiKey.value = ""
   endpointUrl.value = ""
@@ -199,7 +213,10 @@ function clearConfig() {
 }
 
 async function runAnalysis() {
-  const modelName = selectedModel.value === "custom" ? customModel.value.trim() : selectedModel.value
+  const modelName =
+    selectedModel.value === "custom"
+      ? customModel.value.trim()
+      : selectedModel.value
   if (!modelName) {
     errorMsg.value = "Model name is required."
     return
@@ -228,7 +245,9 @@ ${props.planSource}`
 
     if (provider.value === "gemini") {
       let url = activeEndpoint
-      const headers: Record<string, string> = { "Content-Type": "application/json" }
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      }
       if (!url) {
         url = `https://generativelanguage.googleapis.com/v1/models/${modelName}:generateContent`
         if (apiKey.value.trim()) {
@@ -244,8 +263,8 @@ ${props.planSource}`
         method: "POST",
         headers,
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
+          contents: [{ parts: [{ text: prompt }] }],
+        }),
       })
     } else if (provider.value === "openai") {
       const url = activeEndpoint || "https://api.openai.com/v1/chat/completions"
@@ -253,18 +272,20 @@ ${props.planSource}`
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey.value}`
+          Authorization: `Bearer ${apiKey.value}`,
         },
         body: JSON.stringify({
           model: modelName,
-          messages: [{ role: "user", content: prompt }]
-        })
+          messages: [{ role: "user", content: prompt }],
+        }),
       })
     } else if (provider.value === "ollama") {
       // Ollama
       const baseUrl = activeEndpoint || "http://localhost:11434"
       const url = `${baseUrl}/api/generate`
-      const headers: Record<string, string> = { "Content-Type": "application/json" }
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      }
       if (apiKey.value.trim()) {
         headers["Authorization"] = `Bearer ${apiKey.value.trim()}`
       }
@@ -274,8 +295,8 @@ ${props.planSource}`
         body: JSON.stringify({
           model: modelName,
           prompt: prompt,
-          stream: false
-        })
+          stream: false,
+        }),
       })
     } else if (provider.value === "anthropic") {
       const url = activeEndpoint || "https://api.anthropic.com/v1/messages"
@@ -283,7 +304,7 @@ ${props.planSource}`
         "Content-Type": "application/json",
         "x-api-key": apiKey.value.trim(),
         "anthropic-version": "2023-06-01",
-        "dangerously-allow-browser": "true"
+        "dangerously-allow-browser": "true",
       }
       response = await fetch(url, {
         method: "POST",
@@ -291,8 +312,8 @@ ${props.planSource}`
         body: JSON.stringify({
           model: modelName,
           max_tokens: 4096,
-          messages: [{ role: "user", content: prompt }]
-        })
+          messages: [{ role: "user", content: prompt }],
+        }),
       })
     } else {
       throw new Error(`Unsupported provider: ${provider.value}`)
@@ -300,7 +321,10 @@ ${props.planSource}`
 
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}))
-      const msg = errData.error?.message || errData.error || `HTTP error! Status: ${response.status}`
+      const msg =
+        errData.error?.message ||
+        errData.error ||
+        `HTTP error! Status: ${response.status}`
       throw new Error(msg)
     }
 
@@ -324,7 +348,7 @@ ${props.planSource}`
         planHash: currentPlanHash.value,
         provider: provider.value,
         model: modelName,
-        result: text
+        result: text,
       }
       historyList.value.unshift(newEntry)
       if (historyList.value.length > 30) {
@@ -337,7 +361,10 @@ ${props.planSource}`
       throw new Error("No analysis response returned from the AI model.")
     }
   } catch (err) {
-    errorMsg.value = err instanceof Error ? err.message : "An unexpected error occurred during analysis."
+    errorMsg.value =
+      err instanceof Error
+        ? err.message
+        : "An unexpected error occurred during analysis."
   } finally {
     isAnalyzing.value = false
   }
@@ -354,27 +381,45 @@ function copyToClipboard() {
 </script>
 
 <template>
-  <div class="ai-analysis-container d-flex flex-column h-100 w-100 p-3 overflow-auto">
+  <div
+    class="ai-analysis-container d-flex flex-column h-100 w-100 p-3 overflow-auto"
+  >
     <!-- Configuration Screen -->
     <div v-if="!savedConfigExists" class="row justify-content-center my-auto">
       <div class="col-md-6 col-lg-5">
-        <div class="card shadow-lg border-0 rounded-4 ai-setup-card overflow-hidden">
-          <div class="card-header bg-gradient-primary text-white p-4 text-center border-0 position-relative">
+        <div
+          class="card shadow-lg border-0 rounded-4 ai-setup-card overflow-hidden"
+        >
+          <div
+            class="card-header bg-gradient-primary text-white p-4 text-center border-0 position-relative"
+          >
             <div class="sparkles-container mb-2">
               <FontAwesomeIcon :icon="faRobot" class="fs-1 animate-pulse" />
             </div>
             <h4 class="mb-0 fw-bold">PEV2 - AI Assistant Setup</h4>
-            <p class="mb-0 opacity-75 small mt-1">Configure AI Engine & Model</p>
+            <p class="mb-0 opacity-75 small mt-1">
+              Configure AI Engine & Model
+            </p>
           </div>
           <div class="card-body p-4 bg-body">
             <p class="text-body-secondary small mb-4 text-center">
-              Analyze Postgres execution plans directly in your browser using your preferred AI engine. Configuration is stored locally in your browser.
+              Analyze Postgres execution plans directly in your browser using
+              your preferred AI engine. Configuration is stored locally in your
+              browser.
             </p>
 
             <!-- Provider Selector -->
             <div class="mb-3">
-              <label for="providerSelect" class="form-label small fw-semibold text-body-secondary">AI Provider</label>
-              <select id="providerSelect" class="form-select" v-model="provider">
+              <label
+                for="providerSelect"
+                class="form-label small fw-semibold text-body-secondary"
+                >AI Provider</label
+              >
+              <select
+                id="providerSelect"
+                class="form-select"
+                v-model="provider"
+              >
                 <option value="gemini">Google Gemini</option>
                 <option value="openai">OpenAI</option>
                 <option value="anthropic">Anthropic Claude</option>
@@ -384,8 +429,11 @@ function copyToClipboard() {
 
             <!-- API Key -->
             <div class="mb-3">
-              <label for="apiKeyInput" class="form-label small fw-semibold text-body-secondary">
-                API Key{{ provider === 'ollama' ? ' (Optional)' : '' }}
+              <label
+                for="apiKeyInput"
+                class="form-label small fw-semibold text-body-secondary"
+              >
+                API Key{{ provider === "ollama" ? " (Optional)" : "" }}
               </label>
               <div class="input-group">
                 <span class="input-group-text bg-body-tertiary border-end-0">
@@ -409,26 +457,48 @@ function copyToClipboard() {
               </div>
               <div class="form-text small mt-2" v-if="provider === 'gemini'">
                 Don't have a key? Get one for free from
-                <a href="https://aistudio.google.com/" target="_blank" class="text-primary text-decoration-none">Google AI Studio</a>.
+                <a
+                  href="https://aistudio.google.com/"
+                  target="_blank"
+                  class="text-primary text-decoration-none"
+                  >Google AI Studio</a
+                >.
               </div>
               <div class="form-text small mt-2" v-if="provider === 'openai'">
                 Get your key from the
-                <a href="https://platform.openai.com/api-keys" target="_blank" class="text-primary text-decoration-none">OpenAI Platform</a>.
+                <a
+                  href="https://platform.openai.com/api-keys"
+                  target="_blank"
+                  class="text-primary text-decoration-none"
+                  >OpenAI Platform</a
+                >.
               </div>
               <div class="form-text small mt-2" v-if="provider === 'anthropic'">
                 Get your key from the
-                <a href="https://console.anthropic.com/" target="_blank" class="text-primary text-decoration-none">Anthropic Console</a>.
-                Note: Browser requests to Anthropic's official API will trigger CORS blockages. You should specify a custom proxy / gateway endpoint URL below.
+                <a
+                  href="https://console.anthropic.com/"
+                  target="_blank"
+                  class="text-primary text-decoration-none"
+                  >Anthropic Console</a
+                >. Note: Browser requests to Anthropic's official API will
+                trigger CORS blockages. You should specify a custom proxy /
+                gateway endpoint URL below.
               </div>
               <div class="form-text small mt-2" v-if="provider === 'ollama'">
-                Optional. Specify if your local Ollama proxy or gateway requires an authorization token.
+                Optional. Specify if your local Ollama proxy or gateway requires
+                an authorization token.
               </div>
             </div>
 
             <!-- Custom Endpoint (Optional/Required depending on setup) -->
             <div class="mb-3">
-              <label for="endpointInput" class="form-label small fw-semibold text-body-secondary">
-                Custom Endpoint URL{{ provider === 'ollama' ? '' : ' (Optional)' }}
+              <label
+                for="endpointInput"
+                class="form-label small fw-semibold text-body-secondary"
+              >
+                Custom Endpoint URL{{
+                  provider === "ollama" ? "" : " (Optional)"
+                }}
               </label>
               <div class="input-group">
                 <span class="input-group-text bg-body-tertiary border-end-0">
@@ -438,21 +508,47 @@ function copyToClipboard() {
                   type="text"
                   id="endpointInput"
                   class="form-control border-start-0 ps-0"
-                  :placeholder="provider === 'ollama' ? 'http://localhost:11434' : provider === 'openai' ? 'https://api.openai.com/v1/chat/completions' : provider === 'anthropic' ? 'https://api.anthropic.com/v1/messages' : 'https://generativelanguage.googleapis.com'"
+                  :placeholder="
+                    provider === 'ollama'
+                      ? 'http://localhost:11434'
+                      : provider === 'openai'
+                        ? 'https://api.openai.com/v1/chat/completions'
+                        : provider === 'anthropic'
+                          ? 'https://api.anthropic.com/v1/messages'
+                          : 'https://generativelanguage.googleapis.com'
+                  "
                   v-model="endpointUrl"
                 />
               </div>
               <div class="form-text small mt-2">
-                <span v-if="provider === 'ollama'">Ensure Ollama is running and configured to accept cross-origin requests.</span>
-                <span v-else>Leave blank to use the official API endpoint, or specify a custom proxy/gateway URL to bypass CORS limits.</span>
+                <span v-if="provider === 'ollama'"
+                  >Ensure Ollama is running and configured to accept
+                  cross-origin requests.</span
+                >
+                <span v-else
+                  >Leave blank to use the official API endpoint, or specify a
+                  custom proxy/gateway URL to bypass CORS limits.</span
+                >
               </div>
             </div>
 
             <!-- Model Selector -->
             <div class="mb-3">
-              <label for="modelSelect" class="form-label small fw-semibold text-body-secondary">Model</label>
-              <select id="modelSelect" class="form-select" v-model="selectedModel">
-                <option v-for="m in providerModels[provider]" :key="m.value" :value="m.value">
+              <label
+                for="modelSelect"
+                class="form-label small fw-semibold text-body-secondary"
+                >Model</label
+              >
+              <select
+                id="modelSelect"
+                class="form-select"
+                v-model="selectedModel"
+              >
+                <option
+                  v-for="m in providerModels[provider]"
+                  :key="m.value"
+                  :value="m.value"
+                >
                   {{ m.name }}
                 </option>
               </select>
@@ -460,7 +556,11 @@ function copyToClipboard() {
 
             <!-- Custom Model Input -->
             <div class="mb-4" v-if="selectedModel === 'custom'">
-              <label for="customModelInput" class="form-label small fw-semibold text-body-secondary">Custom Model Name</label>
+              <label
+                for="customModelInput"
+                class="form-label small fw-semibold text-body-secondary"
+                >Custom Model Name</label
+              >
               <input
                 type="text"
                 id="customModelInput"
@@ -487,15 +587,27 @@ function copyToClipboard() {
     <div v-else class="d-flex flex-column h-100">
       <!-- Top Control Bar -->
       <div class="card shadow-sm border-0 rounded-3 mb-3 bg-body">
-        <div class="card-body py-3 px-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div
+          class="card-body py-3 px-4 d-flex flex-wrap align-items-center justify-content-between gap-3"
+        >
           <div class="d-flex align-items-center gap-3">
-            <div class="bg-primary-subtle p-2.5 rounded-3 text-primary d-none d-sm-block">
+            <div
+              class="bg-primary-subtle p-2.5 rounded-3 text-primary d-none d-sm-block"
+            >
               <FontAwesomeIcon :icon="faRobot" class="fs-4" />
             </div>
             <div>
               <h6 class="mb-0 fw-bold">AI Plan Analyzer</h6>
               <span class="text-body-secondary small">
-                Using {{ provider === 'gemini' ? 'Gemini' : provider === 'openai' ? 'OpenAI' : 'Ollama' }} ({{ selectedModel === 'custom' ? customModel : selectedModel }})
+                Using
+                {{
+                  provider === "gemini"
+                    ? "Gemini"
+                    : provider === "openai"
+                      ? "OpenAI"
+                      : "Ollama"
+                }}
+                ({{ selectedModel === "custom" ? customModel : selectedModel }})
               </span>
             </div>
           </div>
@@ -506,8 +618,11 @@ function copyToClipboard() {
               @click="runAnalysis"
               :disabled="isAnalyzing"
             >
-              <FontAwesomeIcon :icon="isAnalyzing ? faCircleNotch : faPlay" :spin="isAnalyzing" />
-              {{ isAnalyzing ? 'Analyzing...' : 'Analyze Plan' }}
+              <FontAwesomeIcon
+                :icon="isAnalyzing ? faCircleNotch : faPlay"
+                :spin="isAnalyzing"
+              />
+              {{ isAnalyzing ? "Analyzing..." : "Analyze Plan" }}
             </button>
 
             <button
@@ -525,24 +640,35 @@ function copyToClipboard() {
       <!-- Main Workspace -->
       <div class="flex-grow-1 overflow-hidden d-flex gap-3 position-relative">
         <!-- Sidebar: History List -->
-        <div class="border-end flex-shrink-0 bg-body-tertiary d-flex flex-column rounded-3 overflow-hidden shadow-sm" style="width: 250px;" v-if="filteredHistory.length > 0">
-          <div class="px-3 py-2.5 border-bottom fw-bold small text-body-secondary bg-body">
+        <div
+          class="border-end flex-shrink-0 bg-body-tertiary d-flex flex-column rounded-3 overflow-hidden shadow-sm"
+          style="width: 250px"
+          v-if="filteredHistory.length > 0"
+        >
+          <div
+            class="px-3 py-2.5 border-bottom fw-bold small text-body-secondary bg-body"
+          >
             Previous Executions ({{ filteredHistory.length }})
           </div>
-          <div class="flex-grow-1 overflow-auto p-2 list-group list-group-flush">
-            <div 
-              v-for="entry in filteredHistory" 
+          <div
+            class="flex-grow-1 overflow-auto p-2 list-group list-group-flush"
+          >
+            <div
+              v-for="entry in filteredHistory"
               :key="entry.id"
               class="list-group-item list-group-item-action border rounded-3 mb-2 p-2.5 position-relative history-item"
               :class="{ active: activeHistoryId === entry.id }"
               @click="selectHistoryEntry(entry.id)"
-              style="cursor: pointer;"
+              style="cursor: pointer"
             >
               <div class="d-flex justify-content-between align-items-start">
-                <div class="fw-semibold small text-truncate pe-4" style="max-width: 180px;">
+                <div
+                  class="fw-semibold small text-truncate pe-4"
+                  style="max-width: 180px"
+                >
                   {{ entry.model }}
                 </div>
-                <button 
+                <button
                   class="btn btn-link btn-xs p-0 text-danger border-0 position-absolute end-0 top-0 mt-2.5 me-2 delete-btn"
                   @click.stop="deleteHistoryEntry(entry.id)"
                   title="Delete this execution"
@@ -550,7 +676,10 @@ function copyToClipboard() {
                   <FontAwesomeIcon :icon="faTrash" class="small" />
                 </button>
               </div>
-              <div class="text-body-secondary small mt-1 font-monospace" style="font-size: 0.85em;">
+              <div
+                class="text-body-secondary small mt-1 font-monospace"
+                style="font-size: 0.85em"
+              >
                 {{ entry.timestamp }}
               </div>
             </div>
@@ -560,7 +689,11 @@ function copyToClipboard() {
         <!-- Main Display Column -->
         <div class="flex-grow-1 overflow-hidden d-flex flex-column">
           <!-- Error Alert -->
-          <div v-if="errorMsg" class="alert alert-danger d-flex align-items-center border-0 shadow-sm mb-3" role="alert">
+          <div
+            v-if="errorMsg"
+            class="alert alert-danger d-flex align-items-center border-0 shadow-sm mb-3"
+            role="alert"
+          >
             <FontAwesomeIcon :icon="faExclamationCircle" class="fs-4 me-3" />
             <div>
               <h6 class="alert-heading mb-1 fw-bold">Analysis Failed</h6>
@@ -569,46 +702,75 @@ function copyToClipboard() {
           </div>
 
           <!-- Result Box / Welcome state -->
-          <div class="flex-grow-1 card border-0 shadow-sm overflow-hidden bg-body d-flex flex-column">
+          <div
+            class="flex-grow-1 card border-0 shadow-sm overflow-hidden bg-body d-flex flex-column"
+          >
             <!-- Welcome instructions / No analysis yet -->
-            <div v-if="!analysisResult && !isAnalyzing" class="my-auto text-center p-5">
+            <div
+              v-if="!analysisResult && !isAnalyzing"
+              class="my-auto text-center p-5"
+            >
               <div class="text-primary-subtle mb-4">
                 <FontAwesomeIcon :icon="faRobot" class="display-1 opacity-25" />
               </div>
               <h5 class="fw-bold mb-2">Ready to Analyze</h5>
-              <p class="text-body-secondary mx-auto" style="max-width: 480px;">
-                Click the <strong class="text-primary">Analyze Plan</strong> button above to ask the AI engine to highlight key bottlenecks, suggest appropriate indices, and provide performance optimization recommendations.
+              <p class="text-body-secondary mx-auto" style="max-width: 480px">
+                Click the
+                <strong class="text-primary">Analyze Plan</strong> button above
+                to ask the AI engine to highlight key bottlenecks, suggest
+                appropriate indices, and provide performance optimization
+                recommendations.
               </p>
             </div>
 
             <!-- Loading state -->
             <div v-if="isAnalyzing" class="my-auto text-center p-5">
               <div class="spinner-pulse-container mb-4">
-                <FontAwesomeIcon :icon="faCircleNotch" class="display-3 text-primary spinner-animation" spin />
+                <FontAwesomeIcon
+                  :icon="faCircleNotch"
+                  class="display-3 text-primary spinner-animation"
+                  spin
+                />
               </div>
               <h5 class="fw-bold mb-2">Analyzing Execution Plan</h5>
-              <p class="text-body-secondary mx-auto animate-pulse" style="max-width: 320px;">
-                Requesting AI recommendation, analyzing index layouts and query semantics...
+              <p
+                class="text-body-secondary mx-auto animate-pulse"
+                style="max-width: 320px"
+              >
+                Requesting AI recommendation, analyzing index layouts and query
+                semantics...
               </p>
             </div>
 
             <!-- Finished state -->
-            <div v-if="analysisResult && !isAnalyzing" class="d-flex flex-column h-100">
-              <div class="card-header bg-body border-bottom py-2.5 px-4 d-flex align-items-center justify-content-between">
+            <div
+              v-if="analysisResult && !isAnalyzing"
+              class="d-flex flex-column h-100"
+            >
+              <div
+                class="card-header bg-body border-bottom py-2.5 px-4 d-flex align-items-center justify-content-between"
+              >
                 <div class="d-flex align-items-center gap-2">
                   <div class="status-indicator bg-success"></div>
-                  <span class="fw-semibold small text-body-secondary">Optimization Report</span>
+                  <span class="fw-semibold small text-body-secondary"
+                    >Optimization Report</span
+                  >
                 </div>
                 <button
                   class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1.5"
                   @click="copyToClipboard"
                 >
-                  <FontAwesomeIcon :icon="copySuccess ? faCheck : faCopy" :class="{'text-success': copySuccess}" />
-                  {{ copySuccess ? 'Copied!' : 'Copy Report' }}
+                  <FontAwesomeIcon
+                    :icon="copySuccess ? faCheck : faCopy"
+                    :class="{ 'text-success': copySuccess }"
+                  />
+                  {{ copySuccess ? "Copied!" : "Copy Report" }}
                 </button>
               </div>
-              <div class="card-body p-4 overflow-auto markdown-body" v-html="parseMarkdown(analysisResult)">
-              </div>
+              <div
+                class="card-body p-4 overflow-auto markdown-body"
+                v-html="parseMarkdown(analysisResult)"
+              ></div>
             </div>
           </div>
         </div>
@@ -646,7 +808,8 @@ function copyToClipboard() {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -660,23 +823,26 @@ function copyToClipboard() {
   line-height: 1.6;
   font-size: 13.5px;
   color: var(--bs-body-color);
-  
-  :deep(h1), :deep(h2), :deep(h3), :deep(h4) {
+
+  :deep(h1),
+  :deep(h2),
+  :deep(h3),
+  :deep(h4) {
     color: var(--bs-body-color);
   }
-  
+
   :deep(p) {
     margin-bottom: 1rem;
   }
-  
+
   :deep(pre) {
     font-size: 12px;
   }
-  
+
   :deep(ul) {
     margin-bottom: 1rem;
   }
-  
+
   :deep(li) {
     margin-bottom: 0.25rem;
   }
@@ -686,20 +852,20 @@ function copyToClipboard() {
   transition: all 0.2s ease;
   background-color: var(--bs-body-bg);
   border-color: var(--bs-border-color) !important;
-  
+
   &:hover {
     background-color: var(--bs-tertiary-bg);
-    
+
     .delete-btn {
       opacity: 1;
     }
   }
-  
+
   &.active {
     background-color: var(--bs-primary-bg-subtle) !important;
     border-color: var(--bs-primary-border-subtle) !important;
     color: var(--bs-primary-text-emphasis) !important;
-    
+
     .text-body-secondary {
       color: var(--bs-primary-text-emphasis) !important;
       opacity: 0.8;
@@ -710,7 +876,7 @@ function copyToClipboard() {
 .delete-btn {
   opacity: 0.3;
   transition: opacity 0.2s ease;
-  
+
   &:hover {
     opacity: 1 !important;
   }

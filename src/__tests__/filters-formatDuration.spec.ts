@@ -1,7 +1,6 @@
 import { beforeEach, describe, it, expect, vi } from "vitest"
 import { formatDuration } from "@/filters"
 
-
 describe("formatDuration", () => {
   describe("special values", () => {
     it("returns '-' for undefined", () => {

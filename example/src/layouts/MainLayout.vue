@@ -28,7 +28,9 @@ const { theme, toggleTheme } = useTheme()
         <button
           class="btn btn-link"
           @click="toggleTheme"
-          :title="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+          :title="
+            theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+          "
         >
           <FontAwesomeIcon :icon="theme === 'dark' ? faMoon : faSun" />
         </button>

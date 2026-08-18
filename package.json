@@ -1,6 +1,6 @@
 {
   "name": "pev2",
-  "version": "1.22.0",
+  "version": "1.23.0",
   "homepage": "https://github.com/dalibo/pev2",
   "license": "PostgreSQL license",
   "type": "module",
@@ -25,8 +25,11 @@
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-pattern .gitignore",
+    "format": "prettier --check .",
     "prepare": "husky",
-    "test": "LANG=en_US.UTF-8 vitest --run"
+    "test": "LANG=en_US.UTF-8 vitest --run",
+    "test:visual:run": "docker run --rm -it --init --user \"$(id -u):$(id -g)\" -e HOME=/tmp -e APP_VERSION=TEST -v $PWD:$PWD -w $PWD -p 9323:9323 mcr.microsoft.com/playwright:v1.61.0-noble sh -c \"npx playwright test; npx playwright show-report --host 0.0.0.0\"",
+    "test:visual:update": "docker run --rm -it --init --user \"$(id -u):$(id -g)\" -e HOME=/tmp -e APP_VERSION=TEST -v $PWD:$PWD -w $PWD -p 9323:9323 mcr.microsoft.com/playwright:v1.61.0-noble npx playwright test --update-snapshots"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -41,42 +44,46 @@
     "humanize-duration": "^3.33.2",
     "lodash": "^4.18.1",
     "motion": "^12.29.2",
-    "splitpanes": "^3.2.0",
+    "splitpanes": "^4.1.2",
     "vue": "^3.5.28",
     "vue-clipboard3": "^2.0.0",
     "vue-tippy": "^6.7.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.0",
-    "@eslint/js": "^9.21.0",
+    "@eslint/eslintrc": "^3.3.6",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.0",
     "@types/d3": "^7.4.3",
     "@types/humanize-duration": "^3.27.1",
     "@types/lodash": "^4.14.202",
-    "@types/node": "^24.7.1",
+    "@types/node": "^26.1.2",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/eslint-config-prettier": "^10.2.0",
-    "@vue/eslint-config-typescript": "^14.4.0",
-    "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.21.0",
-    "eslint-plugin-vue": "^9.32.0",
+    "@vue/eslint-config-typescript": "^14.9.0",
+    "@vue/tsconfig": "^0.9.1",
+    "eslint": "^10.8.0",
+    "eslint-plugin-vue": "^10.10.0",
     "husky": "^9.1.7",
     "jiti": "^2.4.2",
-    "jsdom": "^26.0.0",
-    "lint-staged": "^15.4.3",
-    "prettier": "^3.5.2",
+    "jsdom": "^30.0.0",
+    "lint-staged": "^17.2.0",
+    "prettier": "^3.9.6",
     "sass": "^1.58.0",
-    "typescript": "^5.7.3",
-    "vite": "^8.0.16",
-    "vite-plugin-dts": "^4.5.4",
+    "typescript": "^5.9.3",
+    "vite": "^8.1.5",
+    "vite-plugin-dts": "^5.0.3",
     "vite-plugin-singlefile": "^2.3.3",
     "vitest": "^4.1.0",
-    "vue-tsc": "^2.2.4"
+    "vue-tsc": "^3.3.8"
   },
   "lint-staged": {
     "*.{vue,js,jsx,cjs,mjs,ts,tsx,cts,mts}": "eslint --cache --fix",
     "*.{js,css,md}": "prettier --write"
   },
+  "overrides": {
+    "minimatch": "^10.2.6"
+  },
   "allowScripts": {
-    "@parcel/watcher@2.5.6": true
+    "@parcel/watcher@2.6.0": true
   }
 }

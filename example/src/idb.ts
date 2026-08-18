@@ -6,7 +6,7 @@ type StoredPlan = Record<string, unknown> & { id?: unknown }
 type ImportablePlan = StoredPlan | unknown[]
 
 function deepEqual<T>(a: T, b: T): boolean {
-  return JSON.stringify(a) === JSON.stringify(b);
+  return JSON.stringify(a) === JSON.stringify(b)
 }
 
 export default {
@@ -92,8 +92,8 @@ export default {
       const trans = db.transaction(["plans"], "readwrite")
       const store = trans.objectStore("plans")
 
-      let count = 0;
-      let duplicates = 0;
+      let count = 0
+      let duplicates = 0
 
       trans.oncomplete = () => {
         resolve([count, duplicates])
@@ -104,35 +104,34 @@ export default {
       }
 
       for (const plan of plans) {
-        if ("id" in plan) delete plan.id;
+        if ("id" in plan) delete plan.id
 
-        const cursorReq = store.openCursor();
-        let exists = false;
+        const cursorReq = store.openCursor()
+        let exists = false
 
         cursorReq.onsuccess = (e) => {
-          const cursor = e.target.result;
+          const cursor = e.target.result
           if (!cursor) {
             // reached end → no duplicate found
             if (!exists) {
-              store.add(plan);
-              count++;
+              store.add(plan)
+              count++
             }
-            return;
+            return
           }
 
-          const existing = cursor.value;
-          delete existing.id;
+          const existing = cursor.value
+          delete existing.id
 
           if (deepEqual(existing, plan)) {
-            exists = true; // duplicate found
-            duplicates++;
-            return;        // stop scanning
+            exists = true // duplicate found
+            duplicates++
+            return // stop scanning
           }
 
-          cursor.continue();
-        };
+          cursor.continue()
+        }
       }
-
     })
   },
 }
