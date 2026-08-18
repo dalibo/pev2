@@ -22,8 +22,9 @@ declare module "d3-flextree" {
     target: FlexHierarchyPointNode<Datum>
   }
 
-  export interface FlexHierarchyPointNode<Datum>
-    extends d3.HierarchyPointNode<Datum> {
+  export interface FlexHierarchyPointNode<
+    Datum,
+  > extends d3.HierarchyPointNode<Datum> {
     /**
      * The horizontal size
      */

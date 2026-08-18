@@ -4,12 +4,14 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+env:
+  APP_VERSION: TEST
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.61.0-noble
+      image: mcr.microsoft.com/playwright:v1.62.0-noble
       options: --user 1001
     steps:
     - uses: actions/checkout@v7

@@ -262,7 +262,7 @@ function onSelectedNode(v: number) {
   }
 }
 
-function lineGen(link: FlexHierarchyPointLink<object>) {
+function lineGen(link: FlexHierarchyPointLink<Node>) {
   const source = link.source
   const target = link.target
   const k = Math.abs(target.y - (source.y + source.ySize) - padding)
