@@ -99,10 +99,12 @@ const needsApiKey = computed(() => {
 
 const providerModels: Record<Provider, { name: string; value: string }[]> = {
   gemini: [
-    { name: "Gemini 3.5 Flash (Recommended)", value: "gemini-3.5-flash" },
+    { name: "Gemini 3.7 Flash (Recommended)", value: "gemini-3.7-flash" },
     { name: "Gemini 3.1 Pro", value: "gemini-3.1-pro" },
+    { name: "Gemini 3.5 Flash", value: "gemini-3.5-flash" },
     { name: "Gemini 2.5 Flash", value: "gemini-2.5-flash" },
     { name: "Gemini 2.5 Pro", value: "gemini-2.5-pro" },
+    { name: "Gemini 2.5 Flash-Lite", value: "gemini-2.5-flash-lite" },
     { name: "Custom...", value: "custom" },
   ],
   openai: [
@@ -127,7 +129,7 @@ const providerModels: Record<Provider, { name: string; value: string }[]> = {
 watch(provider, (newProvider) => {
   if (!savedConfigExists.value) {
     if (newProvider === "gemini") {
-      selectedModel.value = "gemini-3.5-flash"
+      selectedModel.value = "gemini-3.7-flash"
       endpointUrl.value = ""
     } else if (newProvider === "openai") {
       selectedModel.value = "gpt-4o-mini"
@@ -175,7 +177,7 @@ onMounted(() => {
   } else {
     // Default values
     provider.value = "gemini"
-    selectedModel.value = "gemini-3.5-flash"
+    selectedModel.value = "gemini-3.7-flash"
   }
   localStorage.setItem("aiIsNotNew", "true")
 })
@@ -204,7 +206,7 @@ function clearConfig() {
   provider.value = "gemini"
   apiKey.value = ""
   endpointUrl.value = ""
-  selectedModel.value = "gemini-3.5-flash"
+  selectedModel.value = "gemini-3.7-flash"
   customModel.value = ""
   savedConfigExists.value = false
   analysisResult.value = ""
