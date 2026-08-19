@@ -143,9 +143,7 @@ watch(provider, (newProvider) => {
 })
 
 onMounted(() => {
-  const storedProvider = localStorage.getItem(
-    "pev2_ai_provider",
-  ) as Provider | null
+  const storedProvider = localStorage.getItem("pev2_ai_provider") as Provider | null
   const storedKey = localStorage.getItem("pev2_ai_key")
   const storedEndpoint = localStorage.getItem("pev2_ai_endpoint")
   const storedModel = localStorage.getItem("pev2_ai_model")
@@ -213,10 +211,7 @@ function clearConfig() {
 }
 
 async function runAnalysis() {
-  const modelName =
-    selectedModel.value === "custom"
-      ? customModel.value.trim()
-      : selectedModel.value
+  const modelName = selectedModel.value === "custom" ? customModel.value.trim() : selectedModel.value
   if (!modelName) {
     errorMsg.value = "Model name is required."
     return
@@ -245,9 +240,7 @@ ${props.planSource}`
 
     if (provider.value === "gemini") {
       let url = activeEndpoint
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      }
+      const headers: Record<string, string> = { "Content-Type": "application/json" }
       if (!url) {
         url = `https://generativelanguage.googleapis.com/v1/models/${modelName}:generateContent`
         if (apiKey.value.trim()) {
@@ -263,8 +256,8 @@ ${props.planSource}`
         method: "POST",
         headers,
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-        }),
+          contents: [{ parts: [{ text: prompt }] }]
+        })
       })
     } else if (provider.value === "openai") {
       const url = activeEndpoint || "https://api.openai.com/v1/chat/completions"
@@ -283,9 +276,7 @@ ${props.planSource}`
       // Ollama
       const baseUrl = activeEndpoint || "http://localhost:11434"
       const url = `${baseUrl}/api/generate`
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      }
+      const headers: Record<string, string> = { "Content-Type": "application/json" }
       if (apiKey.value.trim()) {
         headers["Authorization"] = `Bearer ${apiKey.value.trim()}`
       }
@@ -321,10 +312,7 @@ ${props.planSource}`
 
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}))
-      const msg =
-        errData.error?.message ||
-        errData.error ||
-        `HTTP error! Status: ${response.status}`
+      const msg = errData.error?.message || errData.error || `HTTP error! Status: ${response.status}`
       throw new Error(msg)
     }
 
