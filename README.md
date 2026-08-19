@@ -27,8 +27,8 @@ The core interactive tree visualization showing query execution flow, node execu
 </details>
 
 <details>
-  <summary><strong>5. AI Active Plan Analysis</strong></summary>
-  <p>The AI assistant active analysis spinner screen when reading the execution plan and checking optimal tuning actions.</p>
+  <summary><strong>5. AI Active Plan Analysis & Supplementary Context Files</strong></summary>
+  <p>Analyze execution plans with your chosen AI model. You can attach multiple supplementary context files (such as DDL schemas <code>.sql</code>, server configuration <code>postgresql.conf</code>, table statistics, or execution logs) via drag-and-drop or file upload to provide the AI engine with deeper context for precise tuning recommendations (max 4 files, max 2 MB per file, up to 8 MB total).</p>
   <img src="pev2_screenshot-ai-working.png" alt="Active Plan Analysis" width="100%">
 </details>
 

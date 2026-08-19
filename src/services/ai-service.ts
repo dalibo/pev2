@@ -1,3 +1,25 @@
+export interface AttachedFile {
+  id: string
+  name: string
+  size: number
+  content: string
+}
+
+export type Provider = "gemini" | "openai" | "ollama" | "anthropic"
+
+export interface ProviderRequestConfig {
+  url: string
+  method: string
+  headers: Record<string, string>
+  body: string
+}
+
+export interface FileValidationResult {
+  valid: boolean
+  error?: string
+  isDuplicate?: boolean
+}
+
 export function hashString(str: string): string {
   if (!str) return ""
   let hash = 0
@@ -7,6 +29,183 @@ export function hashString(str: string): string {
     hash |= 0
   }
   return hash.toString(36)
+}
+
+export function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+export function validateFileAttachment(
+  file: { name: string; size: number },
+  existingFiles: { name: string; size: number }[],
+  maxFileSize: number = 2 * 1024 * 1024, // 2 MB
+  maxTotalSize: number = 8 * 1024 * 1024, // 8 MB
+): FileValidationResult {
+  if (existingFiles.some((f) => f.name === file.name && f.size === file.size)) {
+    return { valid: false, isDuplicate: true }
+  }
+
+  if (file.size > maxFileSize) {
+    return {
+      valid: false,
+      error: `File "${file.name}" exceeds the maximum allowed size of ${formatFileSize(maxFileSize)}.`,
+    }
+  }
+
+  const currentTotal = existingFiles.reduce((sum, f) => sum + f.size, 0)
+  if (currentTotal + file.size > maxTotalSize) {
+    return {
+      valid: false,
+      error: `Total attached files size cannot exceed ${formatFileSize(maxTotalSize)}.`,
+    }
+  }
+
+  return { valid: true }
+}
+
+export function buildAnalysisPrompt(
+  planQuery: string | undefined,
+  planSource: string,
+  attachedFiles: AttachedFile[] = [],
+): string {
+  let filesContext = ""
+  if (attachedFiles.length > 0) {
+    filesContext = `\n\n### SUPPLEMENTARY CONTEXT FILES (${attachedFiles.length} attached)`
+    for (const file of attachedFiles) {
+      filesContext += `\n\n#### File: ${file.name}\n\`\`\`\n${file.content}\n\`\`\``
+    }
+  }
+
+  return `You are a database performance expert. Analyze the following PostgreSQL EXPLAIN plan, the query (if provided), and any supplementary context files (such as DDL schemas, table statistics, configuration parameters, or execution logs). Identify bottlenecks, expensive operations, and provide actionable optimization recommendations (e.g. index additions, query rewrites, configuration changes). Keep the explanation clear, professional, and concise.
+
+### QUERY
+${planQuery || "No query SQL provided."}
+
+### EXPLAIN PLAN
+${planSource}${filesContext}`
+}
+
+export function buildProviderRequest(
+  provider: Provider,
+  modelName: string,
+  apiKey: string,
+  endpointUrl: string,
+  prompt: string,
+): ProviderRequestConfig {
+  const activeEndpoint = endpointUrl.trim()
+  const trimmedKey = apiKey.trim()
+
+  if (provider === "gemini") {
+    let url = activeEndpoint
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    }
+    if (!url) {
+      url = `https://generativelanguage.googleapis.com/v1/models/${modelName}:generateContent`
+      if (trimmedKey) {
+        url += `?key=${trimmedKey}`
+      }
+    } else if (trimmedKey) {
+      headers["x-goog-api-key"] = trimmedKey
+      headers["Authorization"] = `Bearer ${trimmedKey}`
+    }
+
+    return {
+      url,
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+      }),
+    }
+  }
+
+  if (provider === "openai") {
+    const url = activeEndpoint || "https://api.openai.com/v1/chat/completions"
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    }
+    if (trimmedKey) {
+      headers["Authorization"] = `Bearer ${trimmedKey}`
+    }
+    return {
+      url,
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        model: modelName,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    }
+  }
+
+  if (provider === "anthropic") {
+    const url = activeEndpoint || "https://api.anthropic.com/v1/messages"
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      "anthropic-version": "2023-06-01",
+      "dangerously-allow-browser": "true",
+    }
+    if (trimmedKey) {
+      headers["x-api-key"] = trimmedKey
+    }
+    return {
+      url,
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        model: modelName,
+        max_tokens: 4096,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    }
+  }
+
+  // Ollama
+  const baseUrl = activeEndpoint || "http://localhost:11434"
+  const url = `${baseUrl}/api/generate`
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  }
+  if (trimmedKey) {
+    headers["Authorization"] = `Bearer ${trimmedKey}`
+  }
+  return {
+    url,
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      model: modelName,
+      prompt,
+      stream: false,
+    }),
+  }
+}
+
+export function parseProviderResponse(provider: Provider, data: any): string {
+  if (!data) return ""
+  if (provider === "gemini") {
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || ""
+  }
+  if (provider === "openai") {
+    return data.choices?.[0]?.message?.content || ""
+  }
+  if (provider === "anthropic") {
+    return data.content?.[0]?.text || ""
+  }
+  if (provider === "ollama") {
+    return data.response || ""
+  }
+  return ""
+}
+
+export function limitHistoryEntries<T>(
+  entries: T[],
+  maxEntries: number = 30,
+): T[] {
+  return entries.slice(0, maxEntries)
 }
 
 // Custom simple markdown formatter to output safe HTML

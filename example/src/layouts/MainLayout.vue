@@ -10,6 +10,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const version = __APP_VERSION__
 const currentPath = inject("currentPath")
 const { theme, toggleTheme } = useTheme()
 </script>
@@ -18,9 +19,21 @@ const { theme, toggleTheme } = useTheme()
   <div class="d-flex flex-column vh-100">
     <nav class="navbar">
       <div :class="[currentPath == '/plan' ? 'container-fluid' : 'container']">
-        <VLink class="btn btn-link" to="/">
-          <img src="../assets/logo_pev2.svg" alt="" style="height: 1.5rem" />
-        </VLink>
+        <div class="d-flex align-items-center">
+          <VLink class="btn btn-link pe-1" to="/">
+            <img
+              src="../assets/logo_pev2.svg"
+              alt="PEV2"
+              style="height: 1.5rem"
+            />
+          </VLink>
+          <span
+            class="badge bg-secondary-subtle text-secondary-emphasis font-monospace fw-normal small ms-1"
+            title="PEV2 Version"
+          >
+            v{{ version }}
+          </span>
+        </div>
         <div v-if="props?.title" class="text-center ms-auto">
           {{ props?.title }}
         </div>
