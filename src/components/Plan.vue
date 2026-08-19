@@ -758,10 +758,7 @@ function updateNodeSize(node: Node, size: [number, number]) {
         :class="{ 'show active': activeTab === 'ai' }"
         v-if="activeTab === 'ai'"
       >
-        <AiAnalysis
-          :plan-source="planSource"
-          :plan-query="planQuery"
-        />
+        <AiAnalysis :plan-source="planSource" :plan-query="planQuery" />
       </div>
     </div>
   </div>

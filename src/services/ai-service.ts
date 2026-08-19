@@ -26,26 +26,32 @@ export function parseMarkdown(text: string): string {
   })
 
   // 2. Inline code: `code`
-  html = html.replace(/`([^`]+)`/g, '<code class="bg-body-secondary px-1 py-0.5 rounded text-danger font-monospace">$1</code>')
+  html = html.replace(
+    /`([^`]+)`/g,
+    '<code class="bg-body-secondary px-1 py-0.5 rounded text-danger font-monospace">$1</code>',
+  )
 
   // 3. Headers: ### Header
   html = html.replace(/^(#{1,6})\s+(.+)$/gm, (_, hashes, title) => {
     const level = hashes.length
-    const classes = level === 1 ? "fs-3 border-bottom pb-2 mt-4 mb-3 fw-bold" :
-                    level === 2 ? "fs-4 mt-4 mb-2 fw-semibold" :
-                    "fs-5 mt-3 mb-2 fw-semibold"
+    const classes =
+      level === 1
+        ? "fs-3 border-bottom pb-2 mt-4 mb-3 fw-bold"
+        : level === 2
+          ? "fs-4 mt-4 mb-2 fw-semibold"
+          : "fs-5 mt-3 mb-2 fw-semibold"
     return `<h${level} class="${classes}">${title}</h${level}>`
   })
 
   // 4. Bold: **text**
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+  html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
 
   // 5. Italics: *text*
-  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>')
+  html = html.replace(/\*([^*]+)\*/g, "<em>$1</em>")
 
   // 6. Bullet lists: lines starting with - or *
-  html = html.replace(/^\s*[-*]\s+(.+)$/gm, '<li>$1</li>')
-  
+  html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li>$1</li>")
+
   const lines = html.split("\n")
   let inList = false
   for (let i = 0; i < lines.length; i++) {
