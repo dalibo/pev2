@@ -1,6 +1,7 @@
 {
   "Plan": {
-    "Node Type": "Nested Loop Join",
+    "Node Type": "Nested Loop",
+    "Join Type": "Left",
     "Plans": [{
       "Node Type": "Bitmap Heap Scan",
       "Plans": [{

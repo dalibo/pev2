@@ -1,0 +1,60 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Aggregate",
+      "Strategy": "Sorted",
+      "Partial Mode": "Simple",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 144.66,
+      "Total Cost": 311.59,
+      "Plan Rows": 982,
+      "Plan Width": 52,
+      "Disabled": false,
+      "Grouping Sets": [
+        {
+          "Group Keys": [
+            ["customer_id", "status"],
+            ["customer_id"],
+            []
+          ]
+        },
+        {
+          "Sort Key": ["status"],
+          "Group Keys": [
+            ["status"]
+          ]
+        }
+      ],
+      "Plans": [
+        {
+          "Node Type": "Sort",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 144.66,
+          "Total Cost": 149.66,
+          "Plan Rows": 2000,
+          "Plan Width": 18,
+          "Disabled": false,
+          "Sort Key": ["customer_id", "status"],
+          "Plans": [
+            {
+              "Node Type": "Seq Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Async Capable": false,
+              "Relation Name": "orders",
+              "Alias": "orders",
+              "Startup Cost": 0.00,
+              "Total Cost": 35.00,
+              "Plan Rows": 2000,
+              "Plan Width": 18,
+              "Disabled": false
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

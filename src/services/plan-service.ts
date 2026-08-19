@@ -114,10 +114,10 @@ export class PlanService {
 
     _.remove(node[Property.PLANS], (child) => this.isCTE(child))
 
-    // calculate actuals after processing child nodes so that actual duration
+    // calculate exclusives after processing child nodes so that exclusive duration
     // takes loops into account
-    this.calculateActuals(node)
     this.calculateExclusives(node)
+    this.calculateBuffersIOExclusives(node)
     this.calculateIoTimingsAverage(node as unknown as IOBuffers)
     this.convertNodeType(node)
   }
@@ -217,27 +217,45 @@ export class PlanService {
     plan.content.maxEstimateFactor = highestEstimateFactor * 2 || 1
   }
 
-  // actual duration and actual cost are calculated by subtracting child values from the total
-  public calculateActuals(node: Node) {
+  public setParentRelationship(node: Node, parent: Node | null, index: number) {
+    // Set the "Parent Relationship" field given parent and siblings
+    _.each(node[Property.PLANS], (child, index) => {
+      this.setParentRelationship(child, node, index)
+    })
+    // Root node doesn't have any relationship set
+    // Also don't overwrite already set parent relationship
+    if (!parent || node[Property.PARENT_RELATIONSHIP]) {
+      return
+    }
+    const t = parent[Property.NODE_TYPE]
+    let r = "Outer"
+    if (["Nested Loop", "Hash Join", "Merge Join"].includes(t)) {
+      r = index == 0 ? "Outer" : "Inner"
+    } else if (["Append", "MergeAppend", "BitmapAnd", "BitmapOr"].includes(t)) {
+      r = "Member"
+    } else if (t == "Subquery Scan") {
+      r = "Subquery"
+    }
+    node[Property.PARENT_RELATIONSHIP] = r
+  }
+
+  public calculateExclusives(node: Node) {
+    // Calculate exclusive duration and cost by subtracting child values from the total
     if (!_.isUndefined(node[Property.ACTUAL_TOTAL_TIME])) {
       // since time is reported for an invidual loop, actual duration must be adjusted by number of loops
       // number of workers is also taken into account
       const workers = (node[Property.WORKERS_LAUNCHED_BY_GATHER] || 0) + 1
-      node[Property.ACTUAL_TOTAL_TIME] =
+      const totalTimeRevised =
         ((node[Property.ACTUAL_TOTAL_TIME] as number) *
           (node[Property.ACTUAL_LOOPS] as number)) /
         workers
-      node[Property.ACTUAL_STARTUP_TIME] =
+      node[Property.ACTUAL_STARTUP_TIME_REVISED] =
         ((node[Property.ACTUAL_STARTUP_TIME] as number) *
           (node[Property.ACTUAL_LOOPS] as number)) /
         workers
-      node[Property.EXCLUSIVE_DURATION] = node[
-        Property.ACTUAL_TOTAL_TIME
-      ] as number
+      node[Property.ACTUAL_TOTAL_TIME_REVISED] = totalTimeRevised
 
-      const duration =
-        (node[Property.EXCLUSIVE_DURATION] as number) -
-        this.childrenDuration(node, 0)
+      const duration = totalTimeRevised - this.childrenDuration(node, 0)
       node[Property.EXCLUSIVE_DURATION] = duration > 0 ? duration : 0
     }
 
@@ -285,7 +303,7 @@ export class PlanService {
     // Iterate over the CTEs
     _.each(plan.ctes, (cte) => {
       // Time spent in the CTE itself
-      const cteDuration = cte[Property.ACTUAL_TOTAL_TIME] || 0
+      const cteDuration = cte[Property.ACTUAL_TOTAL_TIME_REVISED] || 0
 
       // Find all nodes that are "CTE Scan" for the given CTE
       const cteScans = _.filter(
@@ -305,7 +323,7 @@ export class PlanService {
         node[Property.EXCLUSIVE_DURATION] = Math.max(
           0,
           node[Property.EXCLUSIVE_DURATION] -
-            (cteDuration * (node[Property.ACTUAL_TOTAL_TIME] || 0)) /
+            (cteDuration * (node[Property.ACTUAL_TOTAL_TIME_REVISED] || 0)) /
               sumScansDuration,
         )
       })
@@ -360,7 +378,7 @@ export class PlanService {
             ).exec(value)
             if (matches && node[Property.EXCLUSIVE_DURATION]) {
               node[Property.EXCLUSIVE_DURATION] -=
-                subPlan[Property.ACTUAL_TOTAL_TIME] || 0
+                subPlan[Property.ACTUAL_TOTAL_TIME_REVISED] || 0
               // Stop iterating for this node
               return false
             }
@@ -380,7 +398,7 @@ export class PlanService {
         (child[Property.PARENT_RELATIONSHIP] == "InitPlan" &&
           node[Property.NODE_TYPE] == "Result")
       ) {
-        duration += child[Property.ACTUAL_TOTAL_TIME] || 0 // Duration may not be set
+        duration += child[Property.ACTUAL_TOTAL_TIME_REVISED] || 0 // Duration may not be set
       }
     })
     return duration
@@ -992,6 +1010,10 @@ export class PlanService {
           return
         }
 
+        if (this.parseGroupHashSortKey(extraMatches[2], element as Node)) {
+          return
+        }
+
         if (this.parseBuffers(extraMatches[2], element as Node)) {
           return
         }
@@ -1066,6 +1088,7 @@ export class PlanService {
     if (root == null || !root.Plan) {
       throw new Error("Unable to parse plan")
     }
+    this.setParentRelationship(root.Plan, null, 0)
     return root
   }
 
@@ -1512,7 +1535,71 @@ export class PlanService {
     return false
   }
 
-  private calculateExclusives(node: Node) {
+  private parseGroupHashSortKey(text: string, el: Node): boolean {
+    // Parses a Group, Hash or Sort Key line, e.g.:
+    //   Group Key: customer_id, status
+    //   Hash Key: customer_id, status
+    //   Sort Key: status
+    // Possibly converted to Grouping Sets / Group Keys of multiple values
+
+    const match = /^\s*(Group|Hash|Sort) Key:\s+(.*)$/.exec(text)
+    if (!match) {
+      return false
+    }
+
+    const [, keyType, rawValue] = match
+    const values = rawValue === "()" ? [] : rawValue.split(/\s*,\s*/)
+
+    switch (keyType) {
+      case "Hash": {
+        el[Property.GROUPING_SETS] = el[Property.GROUPING_SETS] || []
+        el[Property.GROUPING_SETS].push({ [Property.HASH_KEYS]: [values] })
+        return true
+      }
+
+      case "Sort": {
+        // Only handle here when already inside a Grouping Sets block;
+        // otherwise the simple case is handled elsewhere (parseSortKey).
+        if (!el[Property.GROUPING_SETS]) {
+          return false
+        }
+        el[Property.GROUPING_SETS].push({ [Property.SORT_KEY]: values })
+        return true
+      }
+
+      case "Group": {
+        const lastSet =
+          el[Property.GROUPING_SETS] && _.last(el[Property.GROUPING_SETS])
+
+        if (lastSet && Property.SORT_KEY in lastSet) {
+          // Group Key attached to a Sort Key in the same Grouping Set
+          lastSet[Property.GROUP_KEYS] = [values]
+        } else if (lastSet && Property.HASH_KEYS in lastSet) {
+          // Last set was Hash Keys: start a new Grouping Set
+          el[Property.GROUPING_SETS]!.push({ [Property.GROUP_KEYS]: [values] })
+        } else if (lastSet) {
+          // Append to the current set's existing Group Keys
+          lastSet[Property.GROUP_KEYS]?.push(values)
+        } else if (el[Property.GROUP_KEY]) {
+          // No Grouping Sets yet, but a Group Key already exists:
+          // convert it into a Grouping Set holding both keys
+          el[Property.GROUPING_SETS] = [
+            {
+              [Property.GROUP_KEYS]: [el[Property.GROUP_KEY], values],
+            },
+          ]
+        } else {
+          el[Property.GROUP_KEY] = values
+        }
+        return true
+      }
+
+      default:
+        return false
+    }
+  }
+
+  private calculateBuffersIOExclusives(node: Node) {
     // Caculate inclusive value for the current node for the given property
     const properties: Array<keyof typeof Property> = [
       "SHARED_HIT_BLOCKS",
@@ -1651,25 +1738,6 @@ export class PlanService {
   }
 
   private convertNodeType(node: Node): void {
-    // Convert some node type (possibly from JSON source) to match the TEXT format
-    if (node[Property.NODE_TYPE] == "Aggregate" && node[Property.STRATEGY]) {
-      let prefix = ""
-      switch (node[Property.STRATEGY]) {
-        case "Sorted":
-          prefix = "Group"
-          break
-        case "Hashed":
-          prefix = "Hash"
-          break
-        case "Plain":
-          prefix = ""
-          break
-        default:
-          console.error("Unsupported Aggregate Strategy")
-      }
-      node[Property.NODE_TYPE] = prefix + "Aggregate"
-    }
-
     if (node[Property.NODE_TYPE] == "ModifyTable") {
       node[Property.NODE_TYPE] = node[Property.OPERATION] as string
     }

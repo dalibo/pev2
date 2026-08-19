@@ -1,0 +1,9 @@
+GroupAggregate  (cost=144.66..311.59 rows=982 width=52)
+  Group Key: customer_id, status
+  Group Key: customer_id
+  Group Key: ()
+  Sort Key: status
+    Group Key: status
+  ->  Sort  (cost=144.66..149.66 rows=2000 width=18)
+        Sort Key: customer_id, status
+        ->  Seq Scan on orders  (cost=0.00..35.00 rows=2000 width=18)

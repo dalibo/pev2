@@ -1,0 +1,54 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Aggregate",
+      "Strategy": "Mixed",
+      "Partial Mode": "Simple",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 0.00,
+      "Total Cost": 107.28,
+      "Plan Rows": 982,
+      "Plan Width": 52,
+      "Disabled": false,
+      "Grouping Sets": [
+        {
+          "Hash Keys": [
+            ["customer_id", "status"]
+          ]
+        },
+        {
+          "Hash Keys": [
+            ["customer_id"]
+          ]
+        },
+        {
+          "Hash Keys": [
+            ["status"]
+          ]
+        },
+        {
+          "Group Keys": [
+            []
+          ]
+        }
+      ],
+      "Planned Partitions": 0,
+      "Plans": [
+        {
+          "Node Type": "Seq Scan",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Relation Name": "orders",
+          "Alias": "orders",
+          "Startup Cost": 0.00,
+          "Total Cost": 35.00,
+          "Plan Rows": 2000,
+          "Plan Width": 18,
+          "Disabled": false
+        }
+      ]
+    }
+  }
+]

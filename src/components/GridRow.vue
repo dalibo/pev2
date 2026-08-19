@@ -388,9 +388,7 @@ const isHighlighted = computed(
           </template>
           <template v-if="node[Property.GROUP_KEY]">
             <span class="text-body-tertiary">by</span>
-            <span
-              v-html="keysToString(node[Property.GROUP_KEY] as string)"
-            ></span>
+            <span v-html="keysToString(node[Property.GROUP_KEY])"></span>
           </template>
           <template v-if="node[Property.SORT_KEY]">
             <span class="text-body-tertiary">by</span>

@@ -202,9 +202,7 @@ function centerCte() {
               :class="{ 'line-clamp-2': !showDetails }"
             >
               <span class="text-body-tertiary">by</span>
-              <span
-                v-html="keysToString(node[Property.GROUP_KEY] as string)"
-              ></span>
+              <span v-html="keysToString(node[Property.GROUP_KEY])"></span>
             </div>
             <div
               v-if="node[Property.SORT_KEY]"

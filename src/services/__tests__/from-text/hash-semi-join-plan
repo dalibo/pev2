@@ -1,0 +1,5 @@
+Hash Right Semi Join  (cost=2887.00..16639.53 rows=85160 width=18)
+  Hash Cond: (o.customer_id = c.id)
+  ->  Seq Scan on orders o  (cost=0.00..7703.00 rows=500000 width=4)
+  ->  Hash  (cost=1637.00..1637.00 rows=100000 width=18)
+        ->  Seq Scan on customers c  (cost=0.00..1637.00 rows=100000 width=18)

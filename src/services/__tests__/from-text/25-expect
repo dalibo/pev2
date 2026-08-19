@@ -35,7 +35,7 @@
             "Filter": "(s.account_id IS NULL)",
             "Plans": [
               {
-                "Node Type": "Nested Loop Join",
+                "Node Type": "Nested Loop",
                 "Join Type": "Left",
                 "Startup Cost": 2671.24,
                 "Total Cost": 6316.24,
