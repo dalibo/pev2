@@ -50,6 +50,7 @@ import {
 interface Props {
   planSource: string
   planQuery: string
+  planComment?: string
 }
 const props = defineProps<Props>()
 
@@ -59,6 +60,9 @@ const rootEl = ref(null) // The root Element of this instance
 const activeTab = ref<string>("")
 const planEl = ref()
 const rootNode = computed(() => store.plan && store.plan.content.Plan)
+const hasQueryDetails = computed(() =>
+  Boolean(store.query || props.planComment),
+)
 const selectedNodeId = ref<number>(NaN)
 const selectedNode = ref<Node | undefined>(undefined)
 const highlightedNodeId = ref<number>(NaN)
@@ -487,7 +491,10 @@ function updateNodeSize(node: Node, size: [number, number]) {
         <li class="nav-item p-1">
           <a
             class="nav-link px-2 py-0"
-            :class="{ active: activeTab === 'query', disabled: !store.query }"
+            :class="{
+              active: activeTab === 'query',
+              disabled: !hasQueryDetails,
+            }"
             href="#query"
             >Query</a
           >
@@ -719,16 +726,20 @@ function updateNodeSize(node: Node, size: [number, number]) {
       <div
         class="tab-pane flex-grow-1 overflow-hidden position-relative"
         :class="{ 'show active': activeTab === 'query' }"
-        v-if="store.query"
+        v-if="hasQueryDetails"
       >
-        <div class="overflow-hidden d-flex w-100 h-100">
-          <div class="overflow-auto flex-grow-1">
+        <div class="overflow-auto w-100 h-100">
+          <div class="position-relative" v-if="store.query">
             <pre
               class="small p-2 mb-0"
             ><code v-html="pgsql_(store.query)"></code></pre>
+            <Copy :content="store.query" />
+          </div>
+          <div class="p-2" v-if="planComment">
+            <h6>Comments</h6>
+            <div class="small text-break plan-comment">{{ planComment }}</div>
           </div>
         </div>
-        <Copy :content="store.query" />
       </div>
       <div
         class="tab-pane flex-grow-1 overflow-auto"
@@ -748,5 +759,9 @@ function updateNodeSize(node: Node, size: [number, number]) {
   foreignObject {
     transition: all 0.2s ease-in-out;
   }
+}
+
+.plan-comment {
+  white-space: pre-wrap;
 }
 </style>

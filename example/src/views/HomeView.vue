@@ -26,6 +26,7 @@ const setPlanData = inject("setPlanData")
 
 const planInput = ref<string>("")
 const queryInput = ref<string>("")
+const commentInput = ref<string>("")
 const planName = ref<string>("")
 const savedPlans = ref<Plan[]>([])
 const pageSize = 11
@@ -87,7 +88,7 @@ const { isOverDropZone: isOverSavedPlansDropZone } = useDropZone(
 )
 
 function submitPlan() {
-  const newPlan: Plan = ["", "", ""]
+  const newPlan: Plan = ["", "", "", "", ""]
   newPlan[0] =
     planName.value ||
     "New Plan - " +
@@ -98,9 +99,10 @@ function submitPlan() {
   newPlan[1] = planInput.value
   newPlan[2] = queryInput.value
   newPlan[3] = new Date().toISOString()
+  newPlan[4] = commentInput.value
   savePlanData(newPlan)
 
-  setPlanData(...newPlan)
+  setPlanData(newPlan[0], newPlan[1], newPlan[2], newPlan[4])
 }
 
 async function savePlanData(sample: Plan) {
@@ -133,6 +135,7 @@ function loadPlan(plan?: Plan) {
   planName.value = plan[0]
   planInput.value = plan[1]
   queryInput.value = plan[2]
+  commentInput.value = plan[4] || ""
 }
 
 function openOrSelectPlan(plan: Plan) {
@@ -144,7 +147,7 @@ function openOrSelectPlan(plan: Plan) {
 }
 
 function openPlan(plan: Plan) {
-  setPlanData(plan[0], plan[1], plan[2])
+  setPlanData(plan[0], plan[1], plan[2], plan[4])
 }
 
 function isSelected(id: integer) {
@@ -375,6 +378,20 @@ function addMessage(text) {
                 rows="8"
                 v-model="queryInput"
                 placeholder="Paste corresponding SQL query\nOr drop a file"
+              >
+              </textarea>
+            </div>
+            <div class="mb-3">
+              <label for="commentInput" class="form-label">
+                Comments
+                <span class="small text-body-tertiary">(optional)</span>
+              </label>
+              <textarea
+                class="form-control"
+                id="commentInput"
+                rows="4"
+                v-model="commentInput"
+                placeholder="Add notes about this plan"
               >
               </textarea>
             </div>
