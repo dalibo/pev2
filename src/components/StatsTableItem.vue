@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import _ from "lodash"
-import { ref } from "vue"
-import type { Node, StatsTableItemType } from "@/interfaces"
-import { Property } from "@/enums"
-import { formatDuration, durationClass, formatPercent } from "@/filters"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
   faChevronDown,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import _ from "lodash"
+import { ref } from "vue"
+
+import { Property } from "@/enums"
+import { durationClass, formatDuration, formatPercent } from "@/filters"
+import type { Node, StatsTableItemType } from "@/interfaces"
 
 interface Props {
   value: StatsTableItemType

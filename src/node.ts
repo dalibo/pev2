@@ -1,13 +1,12 @@
 // Composable for PlanNode and PlanNodeDetail components
 import _ from "lodash"
 import { computed, onBeforeMount, ref, watch } from "vue"
-import type { Node, Worker, ViewOptions } from "@/interfaces"
-import { REVERSE_STRATEGY_MAP } from "@/interfaces"
+
 import {
   BufferLocation,
-  Property,
   EstimateDirection,
   HighlightType,
+  Property,
 } from "@/enums"
 import {
   formatBlocks,
@@ -17,6 +16,8 @@ import {
   formatProp,
   formatRows,
 } from "@/filters"
+import type { Node, ViewOptions, Worker } from "@/interfaces"
+import { REVERSE_STRATEGY_MAP } from "@/interfaces"
 import { numberToColorHsl } from "@/services/color-service"
 import { store } from "@/store"
 

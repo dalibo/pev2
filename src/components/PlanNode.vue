@@ -1,26 +1,27 @@
 <script lang="ts" setup>
+import {
+  faChevronDown,
+  faChevronUp,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { inject, nextTick, onMounted, provide, reactive, ref, watch } from "vue"
-import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
-import NodeBadges from "@/components/NodeBadges.vue"
+
 import DisabledBadge from "@/components/DisabledBadge.vue"
+import NodeBadges from "@/components/NodeBadges.vue"
+import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
+import { HighlightType, Property } from "@/enums"
+import { keysToString, sortKeys } from "@/filters"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
+import useNode from "@/node"
+import { findNodeBySubplanName } from "@/services/help-service"
+import { store } from "@/store"
 import {
   HighlightedNodeIdKey,
   SelectedNodeIdKey,
   SelectNodeKey,
   ViewOptionsKey,
 } from "@/symbols"
-import { keysToString, sortKeys } from "@/filters"
-import { HighlightType, Property } from "@/enums"
-import { findNodeBySubplanName } from "@/services/help-service"
-import useNode from "@/node"
-import { store } from "@/store"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import {
-  faChevronDown,
-  faChevronUp,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons"
 
 const outerEl = ref<Element | null>(null) // The outer Element, useful for CTE and subplans
 

@@ -4,7 +4,6 @@ import type {
   HighlightType,
   SortSpaceMemoryProp,
 } from "@/enums"
-
 import { Property } from "@/enums"
 
 export interface IPlan {

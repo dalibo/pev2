@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, computed, provide } from "vue"
+import { computed, provide, ref } from "vue"
+
 import AboutView from "./views/AboutView.vue"
 import HomeView from "./views/HomeView.vue"
 import NotFoundView from "./views/NotFoundView.vue"

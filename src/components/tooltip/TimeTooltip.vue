@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { Node } from "@/interfaces"
 import { Property } from "@/enums"
 import { formatDuration } from "@/filters"
+import type { Node } from "@/interfaces"
 interface Props {
   node: Node
 }

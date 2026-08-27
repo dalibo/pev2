@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import { faCheck, faClipboard } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { ref } from "vue"
 import useClipboard from "vue-clipboard3"
 import { directive as vTippy } from "vue-tippy"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { faCheck, faClipboard } from "@fortawesome/free-solid-svg-icons"
 
 interface Props {
   content: string

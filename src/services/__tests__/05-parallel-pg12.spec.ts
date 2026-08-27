@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest"
-import { PlanService } from "@/services/plan-service"
+
 import type { IPlan, IPlanContent } from "@/interfaces"
+import { PlanService } from "@/services/plan-service"
 
 // Example plans from this file are the results for the following commands:
 // docker run -p 5432:5432 --rm --name explain -e POSTGRES_PASSWORD=postgres -d postgres:12

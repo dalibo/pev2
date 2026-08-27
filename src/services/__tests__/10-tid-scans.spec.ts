@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest"
-import { PlanService } from "@/services/plan-service"
+
 import type { IPlan, IPlanContent } from "@/interfaces"
+import { PlanService } from "@/services/plan-service"
 
 describe("PlanService", () => {
   test("Actual durations are correct", () => {

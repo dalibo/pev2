@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest"
+import { describe, expect, it } from "vitest"
+
 import { formatBytes_ } from "@/filters"
 
 describe("formatBytes_", () => {

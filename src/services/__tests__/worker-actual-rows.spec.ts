@@ -1,7 +1,8 @@
 import { describe, expect, test } from "vitest"
-import { PlanService } from "@/services/plan-service"
-import type { IPlan, IPlanContent } from "@/interfaces"
+
 import { Property } from "@/enums"
+import type { IPlan, IPlanContent } from "@/interfaces"
+import { PlanService } from "@/services/plan-service"
 
 describe("Worker rows parsing", () => {
   const planService = new PlanService()

@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import _ from "lodash"
 import { computed, onMounted } from "vue"
-import type { Node } from "@/interfaces"
+
 import GridRow from "@/components/GridRow.vue"
-import { Property } from "../enums"
 import LevelDivider from "@/components/LevelDivider.vue"
-import { store } from "@/store"
+import type { Node } from "@/interfaces"
 import type { FlattenedPlanNode } from "@/store"
+import { store } from "@/store"
+
+import { Property } from "../enums"
 
 onMounted((): void => {
   localStorage.setItem("gridIsNotNew", "true")

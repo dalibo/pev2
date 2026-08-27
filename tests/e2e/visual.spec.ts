@@ -1,4 +1,5 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
+
 import { loadPlan } from "./utils/plan"
 
 test.describe("Simple join", () => {
