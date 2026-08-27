@@ -1,6 +1,7 @@
 import { describe, test } from "vitest"
-import { PlanService } from "@/services/plan-service"
+
 import type { IPlanContent } from "@/interfaces"
+import { PlanService } from "@/services/plan-service"
 
 describe("PlanService", () => {
   test("correctly handles two double quotes in JSON", () => {

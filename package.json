@@ -62,6 +62,7 @@
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.9.1",
     "eslint": "^10.8.0",
+    "eslint-plugin-simple-import-sort": "^14.0.0",
     "eslint-plugin-vue": "^10.10.0",
     "husky": "^9.1.7",
     "jiti": "^2.4.2",

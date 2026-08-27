@@ -1,7 +1,8 @@
 import { describe, expect, test } from "vitest"
-import { PlanService } from "@/services/plan-service"
+
 import type { IPlan, IPlanContent } from "@/interfaces"
 import { findNodeById } from "@/services/help-service"
+import { PlanService } from "@/services/plan-service"
 
 describe("PlanService", () => {
   test("can parse plan in json format", () => {

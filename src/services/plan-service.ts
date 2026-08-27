@@ -1,6 +1,6 @@
 import _ from "lodash"
+
 import { BufferLocation, EstimateDirection, Property } from "@/enums"
-import { splitBalanced } from "@/services/help-service"
 import type {
   IBlocksStats,
   IOBuffers,
@@ -14,6 +14,7 @@ import type {
   Worker,
 } from "@/interfaces"
 import { Node } from "@/interfaces"
+import { splitBalanced } from "@/services/help-service"
 
 interface NodeElement {
   node: Node

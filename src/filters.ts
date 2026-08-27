@@ -1,11 +1,12 @@
-import _ from "lodash"
-import { createApp } from "vue"
-import { EstimateDirection, Property, SortSpaceType } from "@/enums"
-import type { GroupingSet } from "@/interfaces"
-import SortGroup from "@/components/SortGroup.vue"
-import JitDetails from "@/components/JitDetails.vue"
 import hljs from "highlight.js/lib/core"
 import pgsql from "highlight.js/lib/languages/pgsql"
+import _ from "lodash"
+import { createApp } from "vue"
+
+import JitDetails from "@/components/JitDetails.vue"
+import SortGroup from "@/components/SortGroup.vue"
+import { EstimateDirection, Property, SortSpaceType } from "@/enums"
+import type { GroupingSet } from "@/interfaces"
 hljs.registerLanguage("pgsql", pgsql)
 
 import json from "highlight.js/lib/languages/json"

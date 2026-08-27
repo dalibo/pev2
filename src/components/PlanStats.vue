@@ -1,19 +1,20 @@
 <script lang="ts" setup>
+import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import _ from "lodash"
 import { computed, ref } from "vue"
-import type { IPlanning, ISerialization, ITrigger, Node } from "@/interfaces"
-import { getHelpMessage } from "@/services/help-service"
-import { formatDuration, durationClass, formatKilobytes } from "@/filters"
 import { directive as vTippy } from "vue-tippy"
-import { Property } from "../enums"
-import { formatProp } from "@/filters"
-import JitDetails from "@/components/JitDetails.vue"
+
 import BuffersDetail from "@/components/BuffersDetail.vue"
 import IoTable from "@/components/IoTable.vue"
+import JitDetails from "@/components/JitDetails.vue"
+import { durationClass, formatDuration, formatKilobytes } from "@/filters"
+import { formatProp } from "@/filters"
+import type { IPlanning, ISerialization, ITrigger, Node } from "@/interfaces"
+import { getHelpMessage } from "@/services/help-service"
 import { store } from "@/store"
 
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
+import { Property } from "../enums"
 
 const showSettings = ref<boolean>(false)
 const showPlanningDetails = ref<boolean>(false)

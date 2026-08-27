@@ -1,11 +1,12 @@
 import { describe, expect, test } from "vitest"
-import { PlanService } from "@/services/plan-service"
+
 import type {
   IPlan,
   IPlanContent,
   IPlanning,
   ISerialization,
 } from "@/interfaces"
+import { PlanService } from "@/services/plan-service"
 
 describe("PlanService", () => {
   test("Serialization and Planning are correctly parsed", () => {

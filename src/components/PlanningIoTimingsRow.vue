@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import * as _ from "lodash"
-import type { IPlanning } from "@/interfaces"
-import { toProperty, Scope } from "@/enums"
+
+import { Scope, toProperty } from "@/enums"
 import { formatBlocksAsBytes, formatProp } from "@/filters"
+import type { IPlanning } from "@/interfaces"
 
 interface Props {
   object: IPlanning

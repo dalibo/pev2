@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { inject } from "vue"
-import { SortDirection } from "@/enums"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
   faArrowDownShortWide,
   faArrowDownWideShort,
 } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { inject } from "vue"
+
+import { SortDirection } from "@/enums"
 
 interface Props {
   name: string

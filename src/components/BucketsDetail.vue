@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { inject } from "vue"
-import type { Node, ViewOptions } from "@/interfaces"
-import { Property } from "@/enums"
-import useNode from "@/node"
-import { ViewOptionsKey } from "@/symbols"
-import _ from "lodash"
-import { getHelpMessage } from "@/services/help-service"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import _ from "lodash"
+import { inject } from "vue"
 import { Tippy } from "vue-tippy"
+
+import { Property } from "@/enums"
+import type { Node, ViewOptions } from "@/interfaces"
+import useNode from "@/node"
+import { getHelpMessage } from "@/services/help-service"
+import { ViewOptionsKey } from "@/symbols"
 
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
 

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest"
-import { PlanService } from "@/services/plan-service"
+
 import type { IPlanContent } from "@/interfaces"
+import { PlanService } from "@/services/plan-service"
 
 describe("PlanService", () => {
   test("Parses 'Execution time line", () => {

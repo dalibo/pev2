@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest"
-import { PlanService } from "@/services/plan-service"
+
 import type { IPlanContent } from "@/interfaces"
+import { PlanService } from "@/services/plan-service"
 
 // Guards against catastrophic backtracking in PlanService.cleanupSource: the
 // frame-stripping regexes must stay linear so a large single-line plan is

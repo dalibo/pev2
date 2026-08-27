@@ -1,6 +1,7 @@
-import { describe, it, expect } from "vitest"
-import { formatProp } from "@/filters"
+import { describe, expect, it } from "vitest"
+
 import { Property } from "@/enums"
+import { formatProp } from "@/filters"
 
 describe("formatProp", () => {
   describe("duration", () => {

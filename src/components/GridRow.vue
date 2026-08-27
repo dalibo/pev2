@@ -1,9 +1,16 @@
 <script lang="ts" setup>
 import { computed, inject, ref } from "vue"
+import { directive as vTippy, Tippy } from "vue-tippy"
+
 import DisabledBadge from "@/components/DisabledBadge.vue"
-import type { ViewOptions } from "@/interfaces"
+import GridProgressBar from "@/components/GridProgressBar.vue"
+import IoTable from "@/components/IoTable.vue"
+import LevelDivider from "@/components/LevelDivider.vue"
+import MiscDetail from "@/components/MiscDetail.vue"
+import SeverityBullet from "@/components/SeverityBullet.vue"
+import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
+import WorkersDetail from "@/components/WorkersDetail.vue"
 import { EstimateDirection, Property } from "@/enums"
-import { HighlightedNodeIdKey, ViewOptionsKey } from "@/symbols"
 import {
   formatBlocks,
   formatBlocksAsBytes,
@@ -11,22 +18,16 @@ import {
   formatDuration,
   formatFactor,
   formatNumber,
+  formatTransferRate,
   keysToString,
   sortKeys,
-  formatTransferRate,
 } from "@/filters"
-import LevelDivider from "@/components/LevelDivider.vue"
-import GridProgressBar from "@/components/GridProgressBar.vue"
-import WorkersDetail from "@/components/WorkersDetail.vue"
-import MiscDetail from "@/components/MiscDetail.vue"
-import SeverityBullet from "@/components/SeverityBullet.vue"
-import IoTable from "@/components/IoTable.vue"
-import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
+import type { ViewOptions } from "@/interfaces"
 import useNode from "@/node"
-import { Tippy, directive as vTippy } from "vue-tippy"
 import { getNodeTypeDescription } from "@/services/help-service"
-import { store } from "@/store"
 import type { FlattenedPlanNode } from "@/store"
+import { store } from "@/store"
+import { HighlightedNodeIdKey, ViewOptionsKey } from "@/symbols"
 
 interface Props {
   row: FlattenedPlanNode

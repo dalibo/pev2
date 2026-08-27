@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import * as _ from "lodash"
-import type { Node } from "@/interfaces"
-import { toProperty, Property, Scope } from "@/enums"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { directive as vTippy } from "vue-tippy"
-import { getHelpMessage } from "@/services/help-service"
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import * as _ from "lodash"
+import { directive as vTippy } from "vue-tippy"
+
+import { Property, Scope, toProperty } from "@/enums"
 import { formatBlocksAsBytes, formatProp } from "@/filters"
+import type { Node } from "@/interfaces"
+import { getHelpMessage } from "@/services/help-service"
 
 interface Props {
   object: Node
