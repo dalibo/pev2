@@ -50,7 +50,6 @@
     "vue-tippy": "^6.7.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.6",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.0",
     "@types/d3": "^7.4.3",
