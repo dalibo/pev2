@@ -10,8 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { useDropZone } from "@vueuse/core"
 import type { Ref } from "vue"
 import { computed, inject, onMounted, ref, useTemplateRef, watch } from "vue"
-import { Tippy } from "vue-tippy"
-import { directive as vTippy } from "vue-tippy"
+import { directive as vTippy, Tippy } from "vue-tippy"
 
 import Plan from "@/components/Plan.vue"
 
@@ -303,7 +302,8 @@ function addMessage(text) {
               <div class="text-body-secondary">
                 For best results, use
                 <code>
-                  EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)
+                  EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, SETTINGS,
+                  SERIALIZE, WAL, FORMAT JSON)
                 </code>
                 <br />
                 <em>psql</em> users can export the plan to a file using
@@ -392,6 +392,44 @@ function addMessage(text) {
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
+          <div class="row mt-3">
+            <div class="col d-flex">
+              <div class="text-body-secondary">
+                <ul>
+                  <li>
+                    All options are not available in all PostgreSQL versions
+                    (see
+                    <a
+                      href="https://www.postgresql.org/docs/18/sql-explain.html"
+                      >documentation</a
+                    >).
+                  </li>
+                  <li>
+                    Be aware that
+                    <span class="text-bg-light">ANALYZE</span> will execute the
+                    query !
+                  </li>
+                  <li>
+                    Use <code>FORMAT TEXT</code> instead of
+                    <code>FORMAT JSON</code> to get the plan readable by a
+                    human.
+                  </li>
+                  <li>
+                    For the IO throughput, execute
+                    <code>
+                      SET track_io_timing to ON; SET track_wal_io_timing to ON;
+                    </code>
+                    before <code>EXPLAIN</code> (You may want to test your
+                    server first with
+                    <a
+                      href="https://www.postgresql.org/docs/18/pgtesttiming.html"
+                      >pg_test_timing</a
+                    >)
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
         <div
           class="col-sm-5 position-relative"
