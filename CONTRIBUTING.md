@@ -41,7 +41,6 @@ npm run test
 ## Run Visual tests
 
 ```sh
-npm run test:visual:build
 npm run test:visual:run
 ```
 
