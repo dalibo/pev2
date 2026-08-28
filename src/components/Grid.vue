@@ -63,7 +63,7 @@ const ioColumns = computed((): number => {
 const hasRows = computed((): boolean => {
   return _.some(store.flat, (plan: FlattenedPlanNode[]) => {
     return _.some(plan, (row: FlattenedPlanNode) => {
-      return row.node[Property.ACTUAL_ROWS_REVISED] || 0 > 1
+      return row.node[Property.ACTUAL_ROWS_REVISED] !== undefined
     })
   })
 })
