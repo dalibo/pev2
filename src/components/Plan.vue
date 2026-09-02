@@ -493,13 +493,10 @@ function updateNodeSize(node: Node, size: [number, number]) {
             >Query</a
           >
         </li>
-        <li class="nav-item p-1">
+        <li class="nav-item p-1" v-if="planComment">
           <a
             class="nav-link px-2 py-0"
-            :class="{
-              active: activeTab === 'comment',
-              disabled: !planComment,
-            }"
+            :class="{ active: activeTab === 'comment' }"
             href="#comment"
             >Comment</a
           >

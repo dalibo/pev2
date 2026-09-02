@@ -1,5 +1,14 @@
 import { expect, test } from "@playwright/test"
 
+test("hides the comment tab when no comment is provided", async ({ page }) => {
+  await page.goto("http://localhost:5173/")
+  await page.getByRole("button", { name: "Sample Plans" }).click()
+  await page.getByRole("link", { name: "Simple join (JSON format)" }).click()
+  await page.getByRole("button", { name: "Submit" }).click()
+
+  await expect(page.getByRole("link", { name: "Comment" })).toHaveCount(0)
+})
+
 test("stores and displays plan comments", async ({ page }) => {
   const comment =
     "Production uses a lower work_mem setting.\nRecheck after tuning."
