@@ -25,6 +25,7 @@ const setPlanData = inject("setPlanData")
 
 const planInput = ref<string>("")
 const queryInput = ref<string>("")
+const commentInput = ref<string>("")
 const planName = ref<string>("")
 const savedPlans = ref<Plan[]>([])
 const pageSize = 11
@@ -86,7 +87,7 @@ const { isOverDropZone: isOverSavedPlansDropZone } = useDropZone(
 )
 
 function submitPlan() {
-  const newPlan: Plan = ["", "", ""]
+  const newPlan: Plan = ["", "", "", "", ""]
   newPlan[0] =
     planName.value ||
     "New Plan - " +
@@ -97,9 +98,10 @@ function submitPlan() {
   newPlan[1] = planInput.value
   newPlan[2] = queryInput.value
   newPlan[3] = new Date().toISOString()
+  newPlan[4] = commentInput.value
   savePlanData(newPlan)
 
-  setPlanData(...newPlan)
+  setPlanData(newPlan[0], newPlan[1], newPlan[2], newPlan[4])
 }
 
 async function savePlanData(sample: Plan) {
@@ -132,6 +134,7 @@ function loadPlan(plan?: Plan) {
   planName.value = plan[0]
   planInput.value = plan[1]
   queryInput.value = plan[2]
+  commentInput.value = plan[4] || ""
 }
 
 function openOrSelectPlan(plan: Plan) {
@@ -143,7 +146,7 @@ function openOrSelectPlan(plan: Plan) {
 }
 
 function openPlan(plan: Plan) {
-  setPlanData(plan[0], plan[1], plan[2])
+  setPlanData(plan[0], plan[1], plan[2], plan[4])
 }
 
 function isSelected(id: integer) {
@@ -315,6 +318,19 @@ function addMessage(text) {
           </div>
           <form v-on:submit.prevent="submitPlan">
             <div class="mb-3">
+              <label for="planName" class="form-label">
+                Plan Name
+                <span class="small text-body-tertiary">(optional)</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="planName"
+                v-model="planName"
+                placeholder="Name for the plan"
+              />
+            </div>
+            <div class="mb-3">
               <div class="d-flex align-items-center mb-2">
                 <label for="planInput" class="form-label">
                   Plan
@@ -378,17 +394,18 @@ function addMessage(text) {
               </textarea>
             </div>
             <div class="mb-3">
-              <label for="planName" class="form-label">
-                Plan Name
+              <label for="commentInput" class="form-label">
+                Comments
                 <span class="small text-body-tertiary">(optional)</span>
               </label>
-              <input
-                type="text"
+              <textarea
                 class="form-control"
-                id="planName"
-                v-model="planName"
-                placeholder="Name for the plan"
-              />
+                id="commentInput"
+                rows="4"
+                v-model="commentInput"
+                placeholder="Add notes about this plan"
+              >
+              </textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>

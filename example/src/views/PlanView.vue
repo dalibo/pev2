@@ -14,6 +14,7 @@ const planData = inject("planData")
       v-if="planData[0]"
       :plan-source="planData[0]"
       :plan-query="planData[1]"
+      :plan-comment="planData[3]"
     />
   </MainLayout>
 </template>

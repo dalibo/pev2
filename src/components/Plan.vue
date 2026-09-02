@@ -51,6 +51,7 @@ import {
 interface Props {
   planSource: string
   planQuery: string
+  planComment?: string
 }
 const props = defineProps<Props>()
 
@@ -493,6 +494,14 @@ function updateNodeSize(node: Node, size: [number, number]) {
             >Query</a
           >
         </li>
+        <li class="nav-item p-1" v-if="planComment">
+          <a
+            class="nav-link px-2 py-0"
+            :class="{ active: activeTab === 'comment' }"
+            href="#comment"
+            >Comment</a
+          >
+        </li>
         <li class="nav-item p-1">
           <a
             class="nav-link px-2 py-0"
@@ -733,6 +742,13 @@ function updateNodeSize(node: Node, size: [number, number]) {
       </div>
       <div
         class="tab-pane flex-grow-1 overflow-auto"
+        :class="{ 'show active': activeTab === 'comment' }"
+        v-if="planComment"
+      >
+        <div class="small p-2 text-break plan-comment">{{ planComment }}</div>
+      </div>
+      <div
+        class="tab-pane flex-grow-1 overflow-auto"
         :class="{ 'show active': activeTab === 'stats' }"
       >
         <Stats v-if="store.plan" />
@@ -749,5 +765,9 @@ function updateNodeSize(node: Node, size: [number, number]) {
   foreignObject {
     transition: all 0.2s ease-in-out;
   }
+}
+
+.plan-comment {
+  white-space: pre-wrap;
 }
 </style>

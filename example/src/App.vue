@@ -19,13 +19,14 @@ const currentView = computed(() => {
   return routes[currentPath.value] || NotFoundView
 })
 
-const planData = ["", "", ""]
+const planData = ["", "", "", ""]
 provide("planData", planData)
 
-function setPlanData(name, plan, query) {
+function setPlanData(name, plan, query, comment = "") {
   planData[0] = plan
   planData[1] = query
   planData[2] = name
+  planData[3] = comment
   currentPath.value = "/plan"
 }
 provide("setPlanData", setPlanData)
