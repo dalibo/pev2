@@ -1,26 +1,25 @@
 <script lang="ts" setup>
-import { computed, inject, useTemplateRef, ref, onMounted, watch } from "vue"
-import type { Ref } from "vue"
-
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { Tippy } from "vue-tippy"
-import { directive as vTippy } from "vue-tippy"
-import { useDropZone } from "@vueuse/core"
-
-import { time_ago } from "../utils"
-import MainLayout from "../layouts/MainLayout.vue"
-import Plan from "@/components/Plan.vue"
-import VersionCheck from "../components/VersionCheck.vue"
 import {
+  faDownload,
   faEdit,
   faInfoCircle,
   faTrash,
-  faDownload,
   faUpload,
 } from "@fortawesome/free-solid-svg-icons"
-import samples from "../samples.ts"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { useDropZone } from "@vueuse/core"
+import type { Ref } from "vue"
+import { computed, inject, onMounted, ref, useTemplateRef, watch } from "vue"
+import { Tippy } from "vue-tippy"
+import { directive as vTippy } from "vue-tippy"
 
+import Plan from "@/components/Plan.vue"
+
+import VersionCheck from "../components/VersionCheck.vue"
 import idb from "../idb"
+import MainLayout from "../layouts/MainLayout.vue"
+import samples from "../samples.ts"
+import { time_ago } from "../utils"
 
 const setPlanData = inject("setPlanData")
 

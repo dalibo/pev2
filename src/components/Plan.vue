@@ -1,24 +1,19 @@
 <script lang="ts" setup>
 import _ from "lodash"
+import { Pane, Splitpanes } from "splitpanes"
 import {
   computed,
-  reactive,
-  ref,
   nextTick,
   onBeforeUnmount,
   onMounted,
   provide,
+  reactive,
+  ref,
   watch,
 } from "vue"
-import { Splitpanes, Pane } from "splitpanes"
+import { setDefaultProps } from "vue-tippy"
 
-import type { Node } from "@/interfaces"
-import {
-  HighlightedNodeIdKey,
-  SelectedNodeIdKey,
-  SelectNodeKey,
-  ViewOptionsKey,
-} from "@/symbols"
+import AnimatedEdge from "@/components/AnimatedEdge.vue"
 import Copy from "@/components/Copy.vue"
 import Diagram from "@/components/Diagram.vue"
 import Grid from "@/components/Grid.vue"
@@ -26,13 +21,20 @@ import LogoImage from "@/components/LogoImage.vue"
 import PlanNode from "@/components/PlanNode.vue"
 import PlanStats from "@/components/PlanStats.vue"
 import Stats from "@/components/Stats.vue"
-import AiAnalysis from "@/components/AiAnalysis.vue"
 import AnimatedEdge from "@/components/AnimatedEdge.vue"
+import AiAnalysis from "@/components/AiAnalysis.vue"
 import { findNodeById } from "@/services/help-service"
 import { HighlightType, Property } from "@/enums"
 import { json_, pgsql_ } from "@/filters"
-import { setDefaultProps } from "vue-tippy"
+import type { Node } from "@/interfaces"
+import { findNodeById } from "@/services/help-service"
 import { store } from "@/store"
+import {
+  HighlightedNodeIdKey,
+  SelectedNodeIdKey,
+  SelectNodeKey,
+  ViewOptionsKey,
+} from "@/symbols"
 
 setDefaultProps({
   theme: "bootstrap",
@@ -41,11 +43,12 @@ setDefaultProps({
 import "tippy.js/dist/tippy.css"
 import "tippy.js/dist/border.css"
 import "@/assets/css/tippy-bootstrap.css"
+
 import * as d3 from "d3"
 import {
-  flextree,
   type FlexHierarchyPointLink,
   type FlexHierarchyPointNode,
+  flextree,
 } from "d3-flextree"
 
 interface Props {

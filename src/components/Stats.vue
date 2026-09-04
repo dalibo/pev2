@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import _ from "lodash"
 import { computed } from "vue"
-import type { Node, StatsTableItemType } from "@/interfaces"
-import { Property, SortDirection } from "@/enums"
+
 import SortedTable from "@/components/SortedTable.vue"
 import SortLink from "@/components/SortLink.vue"
 import StatsTableItem from "@/components/StatsTableItem.vue"
+import { Property, SortDirection } from "@/enums"
+import type { Node, StatsTableItemType } from "@/interfaces"
 import { store } from "@/store"
 
 const executionTime = computed(

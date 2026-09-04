@@ -1,23 +1,24 @@
 <script lang="ts" setup>
-import { computed, inject, reactive, ref, watch } from "vue"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { computed, inject, reactive, ref, watch } from "vue"
+import { Tippy } from "vue-tippy"
+
+import IoTable from "@/components/IoTable.vue"
+import LevelDivider from "@/components/LevelDivider.vue"
+import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
+import type { ViewOptions } from "@/interfaces"
+import useNode from "@/node"
+import type { FlattenedPlanNode } from "@/store"
+import { store } from "@/store"
 import {
   HighlightedNodeIdKey,
   SelectedNodeIdKey,
   SelectNodeKey,
   ViewOptionsKey,
 } from "@/symbols"
-import type { ViewOptions } from "@/interfaces"
-import { EstimateDirection, BufferLocation, Property, Metric } from "../enums"
-import LevelDivider from "@/components/LevelDivider.vue"
-import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
-import IoTable from "@/components/IoTable.vue"
-import useNode from "@/node"
-import { store } from "@/store"
-import type { FlattenedPlanNode } from "@/store"
 
-import { Tippy } from "vue-tippy"
+import { BufferLocation, EstimateDirection, Metric, Property } from "../enums"
 
 interface Props {
   row: FlattenedPlanNode

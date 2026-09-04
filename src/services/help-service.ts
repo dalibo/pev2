@@ -1,6 +1,7 @@
 import _ from "lodash"
-import type { IPlan, Node } from "@/interfaces"
+
 import { Property } from "@/enums"
+import type { IPlan, Node } from "@/interfaces"
 
 export function getNodeTypeDescription(nodeType: string): string | undefined {
   return NODE_DESCRIPTIONS[nodeType.toUpperCase()]

@@ -1,1 +1,2 @@
 .github
+src/services/__tests__/**/*.json

@@ -17,7 +17,8 @@
     "Shared Dirtied Blocks": 0,
     "Plans": [
       {
-        "Node Type": "Hash Semi Join",
+        "Node Type": "Hash Join",
+        "Join Type": "Semi",
         "Startup Cost": 65.61,
         "Total Cost": 24418.81,
         "Plan Rows": 1042,

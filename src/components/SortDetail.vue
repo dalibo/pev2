@@ -1,12 +1,13 @@
 <script lang="ts" setup>
+import { faArrowDownShortWide } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import _ from "lodash"
 import { inject } from "vue"
-import type { Node, ViewOptions } from "@/interfaces"
+
 import { Property } from "@/enums"
+import type { Node, ViewOptions } from "@/interfaces"
 import useNode from "@/node"
 import { ViewOptionsKey } from "@/symbols"
-import _ from "lodash"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { faArrowDownShortWide } from "@fortawesome/free-solid-svg-icons"
 
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
 

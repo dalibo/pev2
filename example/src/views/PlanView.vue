@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { inject } from "vue"
+
 import Plan from "@/components/Plan.vue"
+
 import MainLayout from "../layouts/MainLayout.vue"
 
 const planData = inject("planData")

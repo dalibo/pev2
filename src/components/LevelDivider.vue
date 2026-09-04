@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import type { FlattenedPlanNode } from "@/store"
 import { computed, inject } from "vue"
-import { HighlightedNodeIdKey } from "@/symbols"
+
+import type { FlattenedPlanNode } from "@/store"
 import { store } from "@/store"
+import { HighlightedNodeIdKey } from "@/symbols"
 interface Props {
   row: FlattenedPlanNode
   isSubplan?: boolean

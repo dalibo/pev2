@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { onBeforeMount, reactive, ref } from "vue"
 import _ from "lodash"
-import type { Node } from "@/interfaces"
+import { onBeforeMount, reactive, ref } from "vue"
+
 import { Property } from "@/enums"
-import { shouldShowProp } from "@/services/help-service"
 import { formatProp } from "@/filters"
+import type { Node } from "@/interfaces"
+import { shouldShowProp } from "@/services/help-service"
 const nodeProps = ref<
   {
     key: keyof typeof Property

@@ -1,21 +1,4 @@
 <script lang="ts" setup>
-import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
-import { directive as vTippy } from "vue-tippy"
-import type { Node, ViewOptions } from "@/interfaces"
-import { getNodeTypeDescription } from "@/services/help-service"
-import { EstimateDirection, Property } from "@/enums"
-import useNode from "@/node"
-import { store } from "@/store"
-import IoTable from "@/components/IoTable.vue"
-import WorkersDetail from "@/components/WorkersDetail.vue"
-import MiscDetail from "@/components/MiscDetail.vue"
-import BuffersDetail from "@/components/BuffersDetail.vue"
-import BucketsDetail from "@/components/BucketsDetail.vue"
-import Approximative from "@/components/Approximative.vue"
-import SortDetail from "@/components/SortDetail.vue"
-import { ViewOptionsKey } from "@/symbols"
-import _ from "lodash"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
   faAlignJustify,
   faArrowDown,
@@ -27,6 +10,24 @@ import {
   faInfoCircle,
   faUndo,
 } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import _ from "lodash"
+import { computed, inject, onBeforeMount, reactive, ref, watch } from "vue"
+import { directive as vTippy } from "vue-tippy"
+
+import Approximative from "@/components/Approximative.vue"
+import BucketsDetail from "@/components/BucketsDetail.vue"
+import BuffersDetail from "@/components/BuffersDetail.vue"
+import IoTable from "@/components/IoTable.vue"
+import MiscDetail from "@/components/MiscDetail.vue"
+import SortDetail from "@/components/SortDetail.vue"
+import WorkersDetail from "@/components/WorkersDetail.vue"
+import { EstimateDirection, Property } from "@/enums"
+import type { Node, ViewOptions } from "@/interfaces"
+import useNode from "@/node"
+import { getNodeTypeDescription } from "@/services/help-service"
+import { store } from "@/store"
+import { ViewOptionsKey } from "@/symbols"
 
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
 

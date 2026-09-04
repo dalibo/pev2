@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { IPlanning, Node } from "@/interfaces"
-import { Property, Scope } from "@/enums"
 import NodeIoTimingsRow from "@/components/NodeIoTimingsRow.vue"
 import PlanningIoTimingsRow from "@/components/PlanningIoTimingsRow.vue"
+import { Property, Scope } from "@/enums"
+import type { IPlanning, Node } from "@/interfaces"
 
 interface Props {
   object: Node | IPlanning
