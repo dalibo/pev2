@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { keysToString, formatKilobytes } from "@/filters"
+import { formatKilobytes, keysToString } from "@/filters"
 import type { SortGroups } from "@/interfaces"
 
 interface Props {

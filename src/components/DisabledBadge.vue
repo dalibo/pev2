@@ -1,14 +1,14 @@
 <script lang="ts" setup>
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { inject } from "vue"
 import { Tippy } from "vue-tippy"
-import type { Node, ViewOptions } from "@/interfaces"
-import { ViewOptionsKey } from "@/symbols"
+
 import { Property } from "@/enums"
+import type { Node, ViewOptions } from "@/interfaces"
 import useNode from "@/node"
 import { store } from "@/store"
-
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { faCircleXmark } from "@fortawesome/free-regular-svg-icons"
+import { ViewOptionsKey } from "@/symbols"
 
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
 

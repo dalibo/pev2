@@ -1,10 +1,12 @@
-import _ from "lodash"
-import { createApp } from "vue"
-import { EstimateDirection, Property, SortSpaceType } from "@/enums"
-import SortGroup from "@/components/SortGroup.vue"
-import JitDetails from "@/components/JitDetails.vue"
 import hljs from "highlight.js/lib/core"
 import pgsql from "highlight.js/lib/languages/pgsql"
+import _ from "lodash"
+import { createApp } from "vue"
+
+import JitDetails from "@/components/JitDetails.vue"
+import SortGroup from "@/components/SortGroup.vue"
+import { EstimateDirection, Property, SortSpaceType } from "@/enums"
+import type { GroupingSet } from "@/interfaces"
 hljs.registerLanguage("pgsql", pgsql)
 
 import json from "highlight.js/lib/languages/json"
@@ -220,6 +222,30 @@ function formatSortSpaceType(value: unknown): string {
   }
 }
 
+function formatGroupingSets(value: unknown): string {
+  const items = (value as GroupingSet[]).map((set) => {
+    if (_.has(set, Property.SORT_KEY)) {
+      return `<li>Sort Key: ${set[Property.SORT_KEY]}<br>Group Keys: ${set[Property.GROUP_KEYS]}<br></li>`
+    }
+
+    if (_.has(set, Property.HASH_KEYS)) {
+      const keys = (set[Property.HASH_KEYS] ?? []).map((key) => key.join(", "))
+      return `<li>Hash Keys: ${keys}</li>`
+    }
+
+    if (_.has(set, Property.GROUP_KEYS)) {
+      const keys = (set[Property.GROUP_KEYS] ?? [])
+        .map((key) => `<li>${key.length ? key.join(", ") : "()"}</li>`)
+        .join("")
+      return `<li>Group Keys: <ul>${keys}</ul></li>`
+    }
+
+    return "<li></li>"
+  })
+
+  return `<ul>${items.join("")}</ul>`
+}
+
 type Formatter = (value: unknown) => string
 
 const nodePropFormatters: Partial<Record<Property, Formatter>> = {
@@ -269,6 +295,7 @@ const nodePropFormatters: Partial<Record<Property, Formatter>> = {
   [Property.EXCLUSIVE_TEMP_READ_BLOCKS]: formatBlocksHtml,
   [Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]: formatBlocksHtml,
   [Property.FULL_SORT_GROUPS]: formatSortGroups,
+  [Property.GROUPING_SETS]: formatGroupingSets,
   [Property.HEAP_FETCHES]: formatRows,
   [Property.HASHAGG_BATCHES]: formatNumber,
   [Property.HASH_BATCHES]: formatNumber,

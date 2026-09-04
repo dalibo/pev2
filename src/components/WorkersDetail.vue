@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { inject, reactive } from "vue"
-import _ from "lodash"
-import type { Node, ViewOptions } from "@/interfaces"
-import { Property } from "@/enums"
-import { ViewOptionsKey } from "@/symbols"
-import { getHelpMessage } from "@/services/help-service"
-import useNode from "@/node"
-import { formatProp } from "@/filters"
-import { directive as vTippy } from "vue-tippy"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import _ from "lodash"
+import { inject, reactive } from "vue"
+import { directive as vTippy } from "vue-tippy"
+
+import { Property } from "@/enums"
+import { formatProp } from "@/filters"
+import type { Node, ViewOptions } from "@/interfaces"
+import useNode from "@/node"
+import { getHelpMessage } from "@/services/help-service"
 import { store } from "@/store"
+import { ViewOptionsKey } from "@/symbols"
 
 interface Props {
   node: Node

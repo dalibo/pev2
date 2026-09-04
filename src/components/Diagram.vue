@@ -9,17 +9,19 @@ import {
   ref,
   watch,
 } from "vue"
-import { BufferLocation, Property, Metric } from "../enums"
+import { Tippy } from "vue-tippy"
+
+import DiagramRow from "@/components/DiagramRow.vue"
+import LevelDivider from "@/components/LevelDivider.vue"
+import type { Node } from "@/interfaces"
 import {
   getHelpMessage,
   scrollChildIntoParentView,
 } from "@/services/help-service"
-import type { Node } from "@/interfaces"
-import { SelectNodeKey } from "@/symbols"
-import DiagramRow from "@/components/DiagramRow.vue"
-import LevelDivider from "@/components/LevelDivider.vue"
-import { Tippy } from "vue-tippy"
 import { store } from "@/store"
+import { SelectNodeKey } from "@/symbols"
+
+import { BufferLocation, Metric, Property } from "../enums"
 
 const container = ref(null) // The container element
 

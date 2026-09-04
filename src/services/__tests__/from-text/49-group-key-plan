@@ -1,0 +1,3 @@
+HashAggregate  (cost=5471.00..5721.00 rows=20000 width=53)
+  Group Key: customer_id, status
+  ->  Seq Scan on orders  (cost=0.00..3471.00 rows=200000 width=19)

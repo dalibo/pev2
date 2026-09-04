@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { Property } from "@/enums"
 import { formatBlocks } from "@/filters"
 import type { IPlanning, ISerialization, Node } from "@/interfaces"
-import { Property } from "@/enums"
 
 interface Props {
   object: Node | ISerialization | IPlanning

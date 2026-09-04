@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest"
-import { PlanService } from "@/services/plan-service"
-import type { IPlan, IPlanContent } from "@/interfaces"
 
+import type { IPlan, IPlanContent } from "@/interfaces"
 import { findNodeById } from "@/services/help-service"
+import { PlanService } from "@/services/plan-service"
 
 // In this plan, we have a Bitmap Index Scan node (#12) which doesn't have
 // any information on workers.

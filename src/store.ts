@@ -1,16 +1,17 @@
 import _ from "lodash"
 import { reactive } from "vue"
-import { PlanService } from "@/services/plan-service"
+
 import type {
-  Node,
+  IBlocksStats,
   IPlan,
   IPlanContent,
-  IPlanStats,
-  IBlocksStats,
   IPlanning,
+  IPlanStats,
   ISerialization,
+  Node,
   Settings,
 } from "@/interfaces"
+import { PlanService } from "@/services/plan-service"
 
 type FlattenedNodeMap = Map<number, FlattenedPlanNode>
 

@@ -4,7 +4,6 @@ import type {
   HighlightType,
   SortSpaceMemoryProp,
 } from "@/enums"
-
 import { Property } from "@/enums"
 
 export interface IPlan {
@@ -73,6 +72,22 @@ export type IBlocksStats = {
   [key in BufferLocation]: number
 }
 
+export type GroupingSet = {
+  [Property.HASH_KEYS]?: string[][]
+  [Property.GROUP_KEYS]?: string[][]
+  [Property.SORT_KEY]?: string[]
+}
+
+const STRATEGY_MAP = {
+  Group: "Sorted",
+  Hash: "Hashed",
+  Mixed: "Mixed",
+}
+
+export const REVERSE_STRATEGY_MAP = Object.fromEntries(
+  Object.entries(STRATEGY_MAP).map(([raw, mapped]) => [mapped, raw]),
+)
+
 // Class to create nodes when parsing text
 export class Node {
   nodeId!: number
@@ -84,7 +99,9 @@ export class Node {
   [Property.ACTUAL_ROWS]!: number;
   [Property.ACTUAL_ROWS_REVISED]!: number;
   [Property.ACTUAL_STARTUP_TIME]?: number;
+  [Property.ACTUAL_STARTUP_TIME_REVISED]?: number;
   [Property.ACTUAL_TOTAL_TIME]?: number;
+  [Property.ACTUAL_TOTAL_TIME_REVISED]?: number;
   [Property.ASYNC_CAPABLE]: boolean = false;
   [Property.EXCLUSIVE_COST]!: number;
   [Property.EXCLUSIVE_DURATION]!: number;
@@ -101,6 +118,10 @@ export class Node {
   [Property.EXCLUSIVE_TEMP_READ_BLOCKS]!: number;
   [Property.EXCLUSIVE_TEMP_WRITTEN_BLOCKS]!: number;
   [Property.FILTER]!: string;
+  [Property.HASH_KEY]!: string[];
+  [Property.GROUPING_SETS]!: GroupingSet[];
+  [Property.GROUP_KEY]!: string[];
+  [Property.PLANNED_PARTITIONS]?: number;
   [Property.PLANNER_ESTIMATE_DIRECTION]?: EstimateDirection;
   [Property.PLANNER_ESTIMATE_FACTOR]?: number;
   [Property.INDEX_NAME]?: string;
@@ -157,6 +178,7 @@ export class Node {
     | SortGroups
     | Timing
     | Worker[]
+    | GroupingSet[]
     | boolean
     | number
     | string
@@ -171,12 +193,13 @@ export class Node {
 
     enum ScanAndOperationMatch {
       NodeType = 1,
+      AsyncCapable,
       RelationName,
       Alias,
     }
     // tslint:disable-next-line:max-line-length
     const scanAndOperationsRegex =
-      /^((?:Parallel\s+)?(?:Seq|Tid.*|Bitmap\s+Heap|WorkTable|(?:Async\s+)?Foreign)\s+Scan|Update|Insert|Delete|Merge)\son\s(\S+)(?:\s+(\S+))?$/.exec(
+      /^((?:Parallel\s+)?(?:Seq|Tid.*|Bitmap\s+Heap|WorkTable|(Async\s+)?Foreign)\s+Scan|Update|Insert|Delete|Merge)\son\s(\S+)(?:\s+(\S+))?$/.exec(
         type,
       )
 
@@ -218,14 +241,28 @@ export class Node {
       Alias,
     }
     const subqueryRegex = /^(Subquery\sScan)\son\s(.+)$/.exec(type)
+
+    enum AggregateMatch {
+      PartialMode = 1,
+      Strategy = 2,
+    }
+    const aggregateRegex =
+      /^(Partial|Finalize)*\s*(Group|Hash|Mixed|[A-z]*)*Aggregate$/.exec(type)
+
     if (scanAndOperationsRegex) {
       this[Property.NODE_TYPE] =
         scanAndOperationsRegex[ScanAndOperationMatch.NodeType]
       this[Property.RELATION_NAME] =
         scanAndOperationsRegex[ScanAndOperationMatch.RelationName]
-      if (scanAndOperationsRegex[ScanAndOperationMatch.Alias]) {
-        this[Property.ALIAS] =
-          scanAndOperationsRegex[ScanAndOperationMatch.Alias]
+      this[Property.ALIAS] =
+        scanAndOperationsRegex[ScanAndOperationMatch.Alias] ||
+        this[Property.RELATION_NAME]
+      if (scanAndOperationsRegex[ScanAndOperationMatch.AsyncCapable]) {
+        this[Property.ASYNC_CAPABLE] = true
+        this[Property.NODE_TYPE] = this[Property.NODE_TYPE].replace(
+          /Async\s+/,
+          "",
+        )
       }
     } else if (bitmapRegex) {
       this[Property.NODE_TYPE] = bitmapRegex[BitmapMatch.NodeType]
@@ -255,6 +292,27 @@ export class Node {
     } else if (subqueryRegex) {
       this[Property.NODE_TYPE] = subqueryRegex[SubqueryMatch.NodeType]
       this[Property.ALIAS] = subqueryRegex[SubqueryMatch.Alias]
+    } else if (aggregateRegex) {
+      this[Property.NODE_TYPE] = "Aggregate"
+      this[Property.PARTIAL_MODE] =
+        aggregateRegex[AggregateMatch.PartialMode] || "Simple"
+
+      const rawStrategy = aggregateRegex[AggregateMatch.Strategy]
+      let strategy
+      if (rawStrategy === undefined) {
+        strategy = "Plain"
+      } else if (rawStrategy in STRATEGY_MAP) {
+        strategy = STRATEGY_MAP[rawStrategy as keyof typeof STRATEGY_MAP]
+      } else {
+        strategy = rawStrategy
+        console.error(`Unsupported Aggregate node strategy: ${rawStrategy}`)
+      }
+
+      if (["Hash", "Mixed"].includes(rawStrategy)) {
+        this[Property.PLANNED_PARTITIONS] =
+          this[Property.PLANNED_PARTITIONS] || 0
+      }
+      this[Property.STRATEGY] = strategy
     }
     enum ParallelMatch {
       NodeType = 2,
@@ -278,23 +336,18 @@ export class Node {
 
     enum JoinMatch {
       NodeType = 1,
-    }
-    const joinRegex = /(.*)\sJoin$/.exec(<string>this[Property.NODE_TYPE])
-
-    enum JoinModifierMatch {
-      NodeType = 1,
       JoinType,
     }
-    const joinModifierRegex = /(.*)\s+(Full|Left|Right|Anti)/.exec(
-      <string>this[Property.NODE_TYPE],
-    )
+    const joinRegex =
+      /^(Nested Loop|Hash|Merge)(?:\s+(Right Semi|Right Anti|Left|Right|Full|Semi|Anti))?\s+Join$/.exec(
+        <string>this[Property.NODE_TYPE],
+      )
     if (joinRegex) {
       this[Property.NODE_TYPE] = joinRegex[JoinMatch.NodeType]
-      if (joinModifierRegex) {
-        this[Property.NODE_TYPE] = joinModifierRegex[JoinModifierMatch.NodeType]
-        this[Property.JOIN_TYPE] = joinModifierRegex[JoinModifierMatch.JoinType]
-      }
-      this[Property.NODE_TYPE] += " Join"
+      this[Property.JOIN_TYPE] = joinRegex[JoinMatch.JoinType] || "Inner"
+      // Re-add "Join" suffix to nodes with type != "Nested Loop"
+      this[Property.NODE_TYPE] +=
+        this[Property.NODE_TYPE] == "Nested Loop" ? "" : " Join"
     }
   }
 }

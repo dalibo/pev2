@@ -1,8 +1,9 @@
-import { describe, test } from "vitest"
-import { PlanService } from "@/services/plan-service"
 import * as fs from "fs"
-import { fileURLToPath } from "url"
 import * as path from "path"
+import { fileURLToPath } from "url"
+import { describe, test } from "vitest"
+
+import { PlanService } from "@/services/plan-service"
 
 // Those tests are automatically built from the files in the `from-text`
 // directory.

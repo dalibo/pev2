@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest"
-import { formatProp } from "@/filters"
+
 import { Property } from "@/enums"
+import { formatProp } from "@/filters"
 
 describe("formatNodeProp", () => {
   test("escapes HTML in Output list items", () => {

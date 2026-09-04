@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { inject, reactive } from "vue"
-import { directive as vTippy } from "vue-tippy"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import {
   faClock,
   faDollarSign,
-  faThumbsDown,
-  faFilter,
   faExchangeAlt,
+  faFilter,
+  faThumbsDown,
 } from "@fortawesome/free-solid-svg-icons"
-import useNode from "@/node"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { inject, reactive } from "vue"
+import { directive as vTippy } from "vue-tippy"
+
 import type { Node, ViewOptions } from "@/interfaces"
+import useNode from "@/node"
 import { ViewOptionsKey } from "@/symbols"
 interface Props {
   node: Node

@@ -1,4 +1,5 @@
 import type { InjectionKey, Ref } from "vue"
+
 import type { ViewOptions } from "@/interfaces"
 
 export const SelectedNodeIdKey: InjectionKey<Ref<number>> =

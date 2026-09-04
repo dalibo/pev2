@@ -1,12 +1,12 @@
 // Composable for PlanNode and PlanNodeDetail components
 import _ from "lodash"
 import { computed, onBeforeMount, ref, watch } from "vue"
-import type { Node, Worker, ViewOptions } from "@/interfaces"
+
 import {
   BufferLocation,
-  Property,
   EstimateDirection,
   HighlightType,
+  Property,
 } from "@/enums"
 import {
   formatBlocks,
@@ -16,6 +16,8 @@ import {
   formatProp,
   formatRows,
 } from "@/filters"
+import type { Node, ViewOptions, Worker } from "@/interfaces"
+import { REVERSE_STRATEGY_MAP } from "@/interfaces"
 import { numberToColorHsl } from "@/services/color-service"
 import { store } from "@/store"
 
@@ -84,18 +86,39 @@ export default function useNode(node: Node, viewOptions: ViewOptions) {
   const nodeName = computed((): string => {
     let nodeName = isParallelAware.value ? "Parallel " : ""
     nodeName += node[Property.ASYNC_CAPABLE] ? "Async " : ""
-    nodeName += node[Property.PARTIAL_MODE]
-      ? node[Property.PARTIAL_MODE] + " "
-      : ""
+
     nodeName += node[Property.NODE_TYPE]
+
+    if (node[Property.STRATEGY]) {
+      nodeName =
+        (REVERSE_STRATEGY_MAP[
+          node[Property.STRATEGY] as keyof typeof REVERSE_STRATEGY_MAP
+        ] || "") + nodeName
+    }
+
+    if (
+      node[Property.PARTIAL_MODE] &&
+      node[Property.PARTIAL_MODE] != "Simple"
+    ) {
+      nodeName = `${node[Property.PARTIAL_MODE]} ${nodeName}`
+    }
     if (
       node[Property.SCAN_DIRECTION] &&
       node[Property.SCAN_DIRECTION] !== "Forward"
     ) {
       nodeName += " " + node[Property.SCAN_DIRECTION]
     }
-    if (node[Property.JOIN_TYPE]) {
-      nodeName = nodeName.replace("Join", `${node[Property.JOIN_TYPE]} Join`)
+    if (node[Property.JOIN_TYPE] && node[Property.JOIN_TYPE] != "Inner") {
+      // Add the join type to the node name before the "Join" suffix
+      // Note: in the case of a Nested Loop, "Join" isn't part of the node type
+      // (hence the regexp)
+      nodeName = nodeName.replace(
+        /(\s+Join)*$/,
+        ` ${node[Property.JOIN_TYPE]} Join`,
+      )
+    }
+    if (node[Property.ASYNC_CAPABLE]) {
+      nodeName = `Async ${nodeName}`
     }
     return nodeName
   })

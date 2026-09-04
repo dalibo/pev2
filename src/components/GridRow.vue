@@ -1,31 +1,33 @@
 <script lang="ts" setup>
 import { computed, inject, ref } from "vue"
+import { directive as vTippy, Tippy } from "vue-tippy"
+
 import DisabledBadge from "@/components/DisabledBadge.vue"
-import type { ViewOptions } from "@/interfaces"
+import GridProgressBar from "@/components/GridProgressBar.vue"
+import IoTable from "@/components/IoTable.vue"
+import LevelDivider from "@/components/LevelDivider.vue"
+import MiscDetail from "@/components/MiscDetail.vue"
+import SeverityBullet from "@/components/SeverityBullet.vue"
+import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
+import WorkersDetail from "@/components/WorkersDetail.vue"
 import { EstimateDirection, Property } from "@/enums"
-import { HighlightedNodeIdKey, ViewOptionsKey } from "@/symbols"
 import {
   formatBlocks,
   formatBlocksAsBytes,
   formatCost,
   formatDuration,
   formatFactor,
+  formatNumber,
+  formatTransferRate,
   keysToString,
   sortKeys,
-  formatTransferRate,
 } from "@/filters"
-import LevelDivider from "@/components/LevelDivider.vue"
-import GridProgressBar from "@/components/GridProgressBar.vue"
-import WorkersDetail from "@/components/WorkersDetail.vue"
-import MiscDetail from "@/components/MiscDetail.vue"
-import SeverityBullet from "@/components/SeverityBullet.vue"
-import IoTable from "@/components/IoTable.vue"
-import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
+import type { ViewOptions } from "@/interfaces"
 import useNode from "@/node"
-import { Tippy, directive as vTippy } from "vue-tippy"
 import { getNodeTypeDescription } from "@/services/help-service"
-import { store } from "@/store"
 import type { FlattenedPlanNode } from "@/store"
+import { store } from "@/store"
+import { HighlightedNodeIdKey, ViewOptionsKey } from "@/symbols"
 
 interface Props {
   row: FlattenedPlanNode
@@ -223,7 +225,7 @@ const isHighlighted = computed(
         class="position-relative"
         v-tippy="{ content: rowsTooltip, allowHTML: true }"
       >
-        {{ tilde + node[Property.ACTUAL_ROWS_REVISED]?.toLocaleString() }}
+        {{ tilde + formatNumber(node[Property.ACTUAL_ROWS_REVISED]) }}
       </div>
     </td>
     <td
@@ -299,9 +301,7 @@ const isHighlighted = computed(
     </td>
     <td class="text-end text-nowrap" v-if="columns.includes('loops')">
       <!-- loops -->
-      <span v-if="node[Property.ACTUAL_LOOPS] != 1">
-        {{ node[Property.ACTUAL_LOOPS].toLocaleString() }}
-      </span>
+      {{ formatNumber(node[Property.ACTUAL_LOOPS]) }}
     </td>
     <td
       class="text-end grid-progress-cell text-nowrap"
@@ -388,9 +388,7 @@ const isHighlighted = computed(
           </template>
           <template v-if="node[Property.GROUP_KEY]">
             <span class="text-body-tertiary">by</span>
-            <span
-              v-html="keysToString(node[Property.GROUP_KEY] as string)"
-            ></span>
+            <span v-html="keysToString(node[Property.GROUP_KEY])"></span>
           </template>
           <template v-if="node[Property.SORT_KEY]">
             <span class="text-body-tertiary">by</span>

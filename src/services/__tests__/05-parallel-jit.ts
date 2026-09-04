@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { PlanService } from "@/services/plan-service"
-import type { IPlan, IPlanContent } from "@/interfaces"
-import { Property } from "@/enums"
 
+import { Property } from "@/enums"
+import type { IPlan, IPlanContent } from "@/interfaces"
 import { findNodeById } from "@/services/help-service"
+import { PlanService } from "@/services/plan-service"
 
 // In this plan, we have JIT info in the workers detail
 

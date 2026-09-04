@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { inject } from "vue"
+import { Tippy } from "vue-tippy"
+
 import type { Node, ViewOptions } from "@/interfaces"
 import useNode from "@/node"
 import { ViewOptionsKey } from "@/symbols"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons"
-import { Tippy } from "vue-tippy"
 const viewOptions = inject(ViewOptionsKey) as ViewOptions
 
 interface Props {
