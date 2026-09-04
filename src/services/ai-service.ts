@@ -184,19 +184,28 @@ export function buildProviderRequest(
   }
 }
 
-export function parseProviderResponse(provider: Provider, data: any): string {
-  if (!data) return ""
+export function parseProviderResponse(
+  provider: Provider,
+  data: unknown,
+): string {
+  if (!data || typeof data !== "object") return ""
+  const record = data as Record<string, unknown>
   if (provider === "gemini") {
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || ""
+    const candidates = record.candidates as
+      Array<{ content?: { parts?: Array<{ text?: string }> } }> | undefined
+    return candidates?.[0]?.content?.parts?.[0]?.text || ""
   }
   if (provider === "openai") {
-    return data.choices?.[0]?.message?.content || ""
+    const choices = record.choices as
+      Array<{ message?: { content?: string } }> | undefined
+    return choices?.[0]?.message?.content || ""
   }
   if (provider === "anthropic") {
-    return data.content?.[0]?.text || ""
+    const content = record.content as Array<{ text?: string }> | undefined
+    return content?.[0]?.text || ""
   }
   if (provider === "ollama") {
-    return data.response || ""
+    return (record.response as string) || ""
   }
   return ""
 }

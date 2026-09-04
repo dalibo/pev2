@@ -1,5 +1,6 @@
-import { describe, expect, test, beforeEach, afterEach, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest"
 import { createApp, nextTick } from "vue"
+
 import AiAnalysis from "@/components/AiAnalysis.vue"
 
 describe("AiAnalysis Component Lifecycle & UI Tests", () => {

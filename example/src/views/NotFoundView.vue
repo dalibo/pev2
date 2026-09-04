@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import MainLayout from "../layouts/MainLayout.vue"
 import VLink from "../components/VLink.vue"
+import MainLayout from "../layouts/MainLayout.vue"
 </script>
 
 <template>

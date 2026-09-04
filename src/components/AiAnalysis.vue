@@ -1,36 +1,37 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, computed } from "vue"
 import {
-  hashString,
-  parseMarkdown,
-  formatFileSize,
-  validateFileAttachment,
-  buildAnalysisPrompt,
-  buildProviderRequest,
-  parseProviderResponse,
-  limitHistoryEntries,
-  type AttachedFile,
-  type Provider,
-} from "@/services/ai-service"
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import {
-  faKey,
-  faLock,
-  faRobot,
-  faPlay,
+  faArrowLeft,
+  faCheck,
   faCircleNotch,
   faCopy,
-  faTrash,
   faExclamationCircle,
-  faCheck,
-  faSlidersH,
-  faGlobe,
-  faPaperclip,
   faFileAlt,
   faFileCode,
+  faGlobe,
+  faKey,
+  faLock,
+  faPaperclip,
+  faPlay,
+  faRobot,
+  faSlidersH,
+  faTrash,
   faUpload,
-  faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { computed, onMounted, ref, watch } from "vue"
+
+import {
+  type AttachedFile,
+  buildAnalysisPrompt,
+  buildProviderRequest,
+  formatFileSize,
+  hashString,
+  limitHistoryEntries,
+  parseMarkdown,
+  parseProviderResponse,
+  type Provider,
+  validateFileAttachment,
+} from "@/services/ai-service"
 
 interface Props {
   planSource: string

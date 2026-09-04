@@ -1,14 +1,15 @@
 import { describe, expect, test } from "vitest"
+
 import {
-  hashString,
-  parseMarkdown,
-  formatFileSize,
-  validateFileAttachment,
+  type AttachedFile,
   buildAnalysisPrompt,
   buildProviderRequest,
-  parseProviderResponse,
+  formatFileSize,
+  hashString,
   limitHistoryEntries,
-  type AttachedFile,
+  parseMarkdown,
+  parseProviderResponse,
+  validateFileAttachment,
 } from "../ai-service"
 
 describe("AI Service Helpers", () => {
