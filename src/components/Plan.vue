@@ -66,6 +66,7 @@ const selectedNode = ref<Node | undefined>(undefined)
 const highlightedNodeId = ref<number>(NaN)
 const gridIsNotNew = localStorage.getItem("gridIsNotNew")
 const ready = ref(false)
+const pendingZoom = ref(false)
 
 const viewOptions = reactive({
   showHighlightBar: false,
@@ -119,6 +120,7 @@ onMounted(() => {
 
 function parseAndShow() {
   ready.value = false
+  pendingZoom.value = false
   store.parse(props.planSource, props.planQuery)
   const savedOptions = localStorage.getItem("viewOptions")
   if (savedOptions) {
@@ -142,10 +144,19 @@ function parseAndShow() {
     ctes.value.push(tree)
   })
   nextTick(() => {
-    initZoom()
+    pendingZoom.value = true
     ready.value = true
   })
 }
+
+watch([pendingZoom, activeTab], ([pending, tab]) => {
+  if (pending && tab === "plan") {
+    nextTick(() => {
+      initZoom()
+      pendingZoom.value = false
+    })
+  }
+})
 
 function doLayout() {
   if (tree.value === undefined) {
