@@ -710,6 +710,7 @@ export class PlanService {
       "m",
     )
 
+    let workerAtDepth: [number, Worker] | undefined
     _.each(lines, (line: string) => {
       // Remove any trailing "
       line = line.replace(/"\s*$/, "")
@@ -720,6 +721,9 @@ export class PlanService {
 
       const match = line.match(indentationRegex)
       const depth = match ? match[0].length : 0
+      if (workerAtDepth && depth <= workerAtDepth[0]) {
+        workerAtDepth = undefined
+      }
       // remove indentation
       line = line.replace(indentationRegex, "")
 
@@ -890,6 +894,7 @@ export class PlanService {
           worker = { [Property.WORKER_NUMBER]: workerNumber }
           previousElement.node[Property.WORKERS]?.push(worker)
         }
+        workerAtDepth = [depth, worker]
         if (
           workerMatches[WorkerMatch.ActualTimeFirst] &&
           workerMatches[WorkerMatch.ActualTimeLast]
@@ -911,6 +916,12 @@ export class PlanService {
         }
 
         if (this.parseSort(workerMatches[WorkerMatch.Extra], worker)) {
+          return
+        }
+
+        if (
+          this.parseHashAggBatches(workerMatches[WorkerMatch.Extra], worker)
+        ) {
           return
         }
 
@@ -1024,6 +1035,15 @@ export class PlanService {
         }
 
         if (this.parsePlannedPartitions(extraMatches[2], element as Node)) {
+          return
+        }
+
+        if (
+          this.parseHashAggBatches(
+            extraMatches[2],
+            workerAtDepth ? workerAtDepth[1] : (element as Node),
+          )
+        ) {
           return
         }
 
@@ -1231,6 +1251,22 @@ export class PlanService {
       return true
     }
     return false
+  }
+
+  private parseHashAggBatches(text: string, el: Node | Worker): boolean {
+    const matches =
+      /^\s*Batches:\s+(\d+)\s+Memory Usage:\s+(\d+)kB(?:\s+Disk Usage:\s+(\d+)kB)?\s*$/.exec(
+        text,
+      )
+    if (!matches) {
+      return false
+    }
+    el[Property.HASHAGG_BATCHES] = parseInt(matches[1])
+    el[Property.PEAK_MEMORY_USAGE] = parseInt(matches[2])
+    if (matches[3]) {
+      el[Property.DISK_USAGE] = parseInt(matches[3])
+    }
+    return true
   }
 
   private getWorker(node: Node, workerNumber: number): Worker | undefined {
