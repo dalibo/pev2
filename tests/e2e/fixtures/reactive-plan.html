@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Reactive Plan fixture</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import { createApp, h, ref } from "vue"
+      import Plan from "/src/components/Plan.vue"
+      import "bootstrap/dist/css/bootstrap.min.css"
+
+      createApp({
+        setup() {
+          const plan = ref("Result  (cost=0.00..0.01 rows=1 width=4)")
+          const replacePlan = () => {
+            plan.value =
+              "Seq Scan on synthetic_data  (cost=0.00..10.00 rows=100 width=4)"
+          }
+          return () =>
+            h("div", { class: "d-flex flex-column vh-100" }, [
+              h("button", { onClick: replacePlan }, "Replace plan"),
+              h(Plan, { planSource: plan.value, planQuery: "" }),
+            ])
+        },
+      }).mount("#app")
+    </script>
+  </body>
+</html>
