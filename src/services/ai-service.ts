@@ -203,14 +203,12 @@ export function parseProviderResponse(
   }
   if (provider === "openai") {
     const choices = record.choices as
-      | Array<{ message?: { content?: string } }>
-      | undefined
+      Array<{ message?: { content?: string } }> | undefined
     return choices?.[0]?.message?.content || ""
   }
   if (provider === "anthropic") {
     const content = record.content as
-      | Array<{ type?: string; text?: string }>
-      | undefined
+      Array<{ type?: string; text?: string }> | undefined
     const textBlock =
       content?.find((b) => b.type === "text" || typeof b.text === "string") ||
       content?.[0]
