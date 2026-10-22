@@ -6,7 +6,7 @@
       http-equiv="Content-Security-Policy"
       content="
         default-src 'self' 'unsafe-inline' data:;
-        connect-src 'self' https://api.github.com;
+        connect-src 'self' https://api.github.com https://generativelanguage.googleapis.com https://api.openai.com https://api.anthropic.com http://localhost:11434;
       "
     />
     <link
@@ -16,6 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Postgres EXPLAIN Visualizer 2 (pev2)</title>
   </head>
+
   <body>
     <div id="app"></div>
     <script type="module" src="/example/src/main.ts"></script>
