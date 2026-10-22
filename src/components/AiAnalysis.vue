@@ -276,6 +276,8 @@ function loadStoredConfig() {
   const storedKey = localStorage.getItem("pev2_ai_key")
   const storedEndpoint = localStorage.getItem("pev2_ai_endpoint")
   const storedModel = localStorage.getItem("pev2_ai_model")
+  const isCustomModel =
+    localStorage.getItem("pev2_ai_is_custom_model") === "true"
 
   isRestoringConfig = true
   try {
@@ -284,17 +286,24 @@ function loadStoredConfig() {
       apiKey.value = storedKey || ""
       endpointUrl.value = storedEndpoint || ""
 
-      // Check if the stored model is a default model or custom
-      const defaults = providerModels[storedProvider]?.map((m) => m.value) || []
-      if (storedModel && defaults.includes(storedModel)) {
-        selectedModel.value = storedModel
-        customModel.value = ""
-      } else if (storedModel) {
+      const defaults =
+        providerModels[storedProvider]
+          ?.map((m) => m.value)
+          .filter((v) => v !== "custom") || []
+      const recommendedModel = providerModels[storedProvider]?.[0]?.value || ""
+
+      if (isCustomModel && storedModel && storedModel !== "custom") {
         selectedModel.value = "custom"
         customModel.value = storedModel
-      } else {
-        selectedModel.value = providerModels[storedProvider]?.[0]?.value || ""
+      } else if (storedModel && defaults.includes(storedModel)) {
+        selectedModel.value = storedModel
         customModel.value = ""
+      } else {
+        selectedModel.value = recommendedModel
+        customModel.value = ""
+        if (storedModel) {
+          localStorage.setItem("pev2_ai_model", recommendedModel)
+        }
       }
 
       savedConfigExists.value = true
@@ -342,11 +351,23 @@ function saveConfig() {
   localStorage.setItem("pev2_ai_key", apiKey.value.trim())
   localStorage.setItem("pev2_ai_endpoint", endpointUrl.value.trim())
 
-  const modelToSave =
-    selectedModel.value === "custom"
-      ? customModel.value.trim()
-      : selectedModel.value
+  const isCustom =
+    selectedModel.value === "custom" && Boolean(customModel.value.trim())
+  const recommendedModel = providerModels[provider.value]?.[0]?.value || ""
+  const modelToSave = isCustom
+    ? customModel.value.trim()
+    : selectedModel.value && selectedModel.value !== "custom"
+      ? selectedModel.value
+      : recommendedModel
+
   localStorage.setItem("pev2_ai_model", modelToSave)
+  if (isCustom) {
+    localStorage.setItem("pev2_ai_is_custom_model", "true")
+  } else {
+    localStorage.removeItem("pev2_ai_is_custom_model")
+    selectedModel.value = modelToSave
+    customModel.value = ""
+  }
 
   savedConfigExists.value = true
   isEditingConfig.value = false
@@ -358,6 +379,7 @@ function clearConfig() {
   localStorage.removeItem("pev2_ai_key")
   localStorage.removeItem("pev2_ai_endpoint")
   localStorage.removeItem("pev2_ai_model")
+  localStorage.removeItem("pev2_ai_is_custom_model")
 
   provider.value = "gemini"
   apiKey.value = ""
@@ -643,6 +665,7 @@ function copyToClipboard() {
               >
               <select
                 id="modelSelect"
+                :key="provider"
                 class="form-select"
                 v-model="selectedModel"
               >

@@ -254,28 +254,30 @@ describe("AiAnalysis Component Lifecycle & UI Tests", () => {
     const providerSelect = el.querySelector(
       "#providerSelect",
     ) as HTMLSelectElement
-    const modelSelect = el.querySelector("#modelSelect") as HTMLSelectElement
+    const getModelSelect = () =>
+      el.querySelector("#modelSelect") as HTMLSelectElement
 
     expect(providerSelect.value).toBe("gemini")
-    expect(modelSelect.value).toBe("gemini-3.8-flash")
+    expect(getModelSelect().value).toBe("gemini-3.8-flash")
+    expect(el.querySelector("#customModelInput")).toBeNull()
 
     // Switch to OpenAI in initial setup
     providerSelect.value = "openai"
     providerSelect.dispatchEvent(new Event("change"))
     await nextTick()
-    expect(modelSelect.value).toBe("gpt-6.1-sol")
+    expect(getModelSelect().value).toBe("gpt-6.1-sol")
 
     // Switch to Anthropic in initial setup
     providerSelect.value = "anthropic"
     providerSelect.dispatchEvent(new Event("change"))
     await nextTick()
-    expect(modelSelect.value).toBe("claude-sonnet-5-5")
+    expect(getModelSelect().value).toBe("claude-sonnet-5-5")
 
     // Switch to Ollama in initial setup
     providerSelect.value = "ollama"
     providerSelect.dispatchEvent(new Event("change"))
     await nextTick()
-    expect(modelSelect.value).toBe("llama3.3")
+    expect(getModelSelect().value).toBe("llama3.3")
 
     // Save Ollama configuration
     const saveBtn = Array.from(el.querySelectorAll("button")).find((b) =>
@@ -294,16 +296,36 @@ describe("AiAnalysis Component Lifecycle & UI Tests", () => {
     const editProviderSelect = el.querySelector(
       "#providerSelect",
     ) as HTMLSelectElement
-    const editModelSelect = el.querySelector(
-      "#modelSelect",
-    ) as HTMLSelectElement
     expect(editProviderSelect.value).toBe("ollama")
-    expect(editModelSelect.value).toBe("llama3.3")
+    expect(getModelSelect().value).toBe("llama3.3")
 
     // Switch provider while editing existing saved config
-    editProviderSelect.value = "openai"
+    editProviderSelect.value = "gemini"
     editProviderSelect.dispatchEvent(new Event("change"))
     await nextTick()
-    expect(editModelSelect.value).toBe("gpt-6.1-sol")
+    expect(getModelSelect().value).toBe("gemini-3.8-flash")
+    expect(el.querySelector("#customModelInput")).toBeNull()
+  })
+
+  test("defaults to recommended Gemini model and hides custom input when retired model is stored in localStorage", async () => {
+    localStorage.setItem("pev2_ai_provider", "gemini")
+    localStorage.setItem("pev2_ai_key", "test-gemini-key")
+    localStorage.setItem("pev2_ai_model", "gemini-2.0-flash")
+
+    const el = mountComponent()
+    await nextTick()
+
+    expect(getNormalizedText(el)).toContain("Using Gemini (gemini-3.8-flash)")
+
+    const settingsBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Settings"),
+    )
+    settingsBtn?.click()
+    await nextTick()
+
+    const modelSelect = el.querySelector("#modelSelect") as HTMLSelectElement
+    expect(modelSelect.value).toBe("gemini-3.8-flash")
+    expect(el.querySelector("#customModelInput")).toBeNull()
   })
 })
+
