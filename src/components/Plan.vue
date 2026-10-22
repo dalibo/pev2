@@ -52,6 +52,7 @@ import {
 interface Props {
   planSource: string
   planQuery: string
+  planComment?: string
 }
 const props = defineProps<Props>()
 
@@ -67,6 +68,7 @@ const highlightedNodeId = ref<number>(NaN)
 const gridIsNotNew = localStorage.getItem("gridIsNotNew")
 const aiIsNotNew = localStorage.getItem("aiIsNotNew")
 const ready = ref(false)
+const pendingZoom = ref(false)
 
 const viewOptions = reactive({
   showHighlightBar: false,
@@ -120,6 +122,7 @@ onMounted(() => {
 
 function parseAndShow() {
   ready.value = false
+  pendingZoom.value = false
   store.parse(props.planSource, props.planQuery)
   const savedOptions = localStorage.getItem("viewOptions")
   if (savedOptions) {
@@ -143,10 +146,19 @@ function parseAndShow() {
     ctes.value.push(tree)
   })
   nextTick(() => {
-    initZoom()
+    pendingZoom.value = true
     ready.value = true
   })
 }
+
+watch([pendingZoom, activeTab], ([pending, tab]) => {
+  if (pending && tab === "plan") {
+    nextTick(() => {
+      initZoom()
+      pendingZoom.value = false
+    })
+  }
+})
 
 function doLayout() {
   if (tree.value === undefined) {
@@ -495,6 +507,14 @@ function updateNodeSize(node: Node, size: [number, number]) {
             >Query</a
           >
         </li>
+        <li class="nav-item p-1" v-if="planComment">
+          <a
+            class="nav-link px-2 py-0"
+            :class="{ active: activeTab === 'comment' }"
+            href="#comment"
+            >Comment</a
+          >
+        </li>
         <li class="nav-item p-1">
           <a
             class="nav-link px-2 py-0"
@@ -716,40 +736,43 @@ function updateNodeSize(node: Node, size: [number, number]) {
       </div>
       <div
         class="tab-pane flex-grow-1 overflow-hidden position-relative"
-        :class="{ 'show active': activeTab === 'grid' }"
+        :class="{ 'show active d-flex flex-column': activeTab === 'grid' }"
         v-if="activeTab === 'grid'"
       >
-        <div class="overflow-hidden d-flex w-100 h-100 flex-column">
+        <div class="overflow-hidden d-flex flex-column">
           <PlanStats />
           <Grid class="flex-grow-1 overflow-auto plan-grid" />
         </div>
       </div>
       <div
         class="tab-pane flex-grow-1 overflow-hidden position-relative"
-        :class="{ 'show active': activeTab === 'raw' }"
+        :class="{ 'show active d-flex flex-column': activeTab === 'raw' }"
       >
-        <div class="overflow-hidden d-flex w-100 h-100">
-          <div class="overflow-auto flex-grow-1">
-            <pre
-              class="small p-2 mb-0"
-            ><code v-html="json_(planSource)"></code></pre>
-          </div>
-          <Copy :content="planSource" />
+        <div class="overflow-auto flex-grow-1">
+          <pre
+            class="small p-2 mb-0"
+          ><code v-html="json_(planSource)"></code></pre>
         </div>
+        <Copy :content="planSource" />
       </div>
       <div
         class="tab-pane flex-grow-1 overflow-hidden position-relative"
-        :class="{ 'show active': activeTab === 'query' }"
+        :class="{ 'show active d-flex flex-column': activeTab === 'query' }"
         v-if="store.query"
       >
-        <div class="overflow-hidden d-flex w-100 h-100">
-          <div class="overflow-auto flex-grow-1">
-            <pre
-              class="small p-2 mb-0"
-            ><code v-html="pgsql_(store.query)"></code></pre>
-          </div>
+        <div class="overflow-auto">
+          <pre
+            class="small p-2 mb-0"
+          ><code v-html="pgsql_(store.query)"></code></pre>
         </div>
         <Copy :content="store.query" />
+      </div>
+      <div
+        class="tab-pane flex-grow-1 overflow-auto"
+        :class="{ 'show active': activeTab === 'comment' }"
+        v-if="planComment"
+      >
+        <div class="small p-2 text-break plan-comment">{{ planComment }}</div>
       </div>
       <div
         class="tab-pane flex-grow-1 overflow-auto"
@@ -776,5 +799,9 @@ function updateNodeSize(node: Node, size: [number, number]) {
   foreignObject {
     transition: all 0.2s ease-in-out;
   }
+}
+
+.plan-comment {
+  white-space: pre-wrap;
 }
 </style>
