@@ -1,6 +1,6 @@
 {
   "name": "pev2",
-  "version": "1.24.0",
+  "version": "1.25.0",
   "homepage": "https://github.com/dalibo/pev2",
   "license": "PostgreSQL license",
   "type": "module",
@@ -45,7 +45,7 @@
     "lodash": "^4.18.1",
     "motion": "^12.29.2",
     "splitpanes": "^4.1.2",
-    "vue": "^3.5.28",
+    "vue": "^3.5.44",
     "vue-clipboard3": "^2.0.0",
     "vue-tippy": "^6.7.1"
   },
@@ -73,7 +73,7 @@
     "vite": "^8.1.5",
     "vite-plugin-dts": "^5.0.3",
     "vite-plugin-singlefile": "^2.3.3",
-    "vitest": "^4.1.0",
+    "vitest": "^4.1.11",
     "vue-tsc": "^3.3.8"
   },
   "lint-staged": {

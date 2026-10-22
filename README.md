@@ -71,7 +71,7 @@ open it in your favorite internet browser.
 <link rel="stylesheet" href="https://unpkg.com/pev2/dist/pev2.css" />
 
 <div id="app" class="d-flex flex-column vh-100">
-  <pev2 :plan-source="plan" plan-query="" />
+  <pev2 :plan-source="plan" plan-query="" :plan-comment="comment" />
 </div>
 
 <script>
@@ -86,6 +86,7 @@ open it in your favorite internet browser.
     data() {
       return {
         plan: plan,
+        comment: "Uses the production work_mem setting",
       }
     },
   })
@@ -120,6 +121,7 @@ export default {
   data() {
     return {
       plan: plan,
+      comment: "Uses the production work_mem setting",
       query: query,
     }
   },
@@ -130,7 +132,7 @@ Then add the `PEV2` component to your template:
 
 ```html
 <div id="app">
-  <pev2 :plan-source="plan" :plan-query="query"></pev2>
+  <pev2 :plan-source="plan" :plan-query="query" :plan-comment="comment"></pev2>
 </div>
 ```
 
