@@ -246,4 +246,64 @@ describe("AiAnalysis Component Lifecycle & UI Tests", () => {
 
     expect(getNormalizedText(el)).toContain("API key not valid")
   })
+
+  test("auto-populates recommended model when switching providers in setup and settings views", async () => {
+    const el = mountComponent()
+    await nextTick()
+
+    const providerSelect = el.querySelector(
+      "#providerSelect",
+    ) as HTMLSelectElement
+    const modelSelect = el.querySelector("#modelSelect") as HTMLSelectElement
+
+    expect(providerSelect.value).toBe("gemini")
+    expect(modelSelect.value).toBe("gemini-3.8-flash")
+
+    // Switch to OpenAI in initial setup
+    providerSelect.value = "openai"
+    providerSelect.dispatchEvent(new Event("change"))
+    await nextTick()
+    expect(modelSelect.value).toBe("gpt-6.1-sol")
+
+    // Switch to Anthropic in initial setup
+    providerSelect.value = "anthropic"
+    providerSelect.dispatchEvent(new Event("change"))
+    await nextTick()
+    expect(modelSelect.value).toBe("claude-sonnet-5-5")
+
+    // Switch to Ollama in initial setup
+    providerSelect.value = "ollama"
+    providerSelect.dispatchEvent(new Event("change"))
+    await nextTick()
+    expect(modelSelect.value).toBe("llama3.3")
+
+    // Save Ollama configuration
+    const saveBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Save Configuration"),
+    )
+    saveBtn?.click()
+    await nextTick()
+
+    // Open Settings when savedConfigExists is true
+    const settingsBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Settings"),
+    )
+    settingsBtn?.click()
+    await nextTick()
+
+    const editProviderSelect = el.querySelector(
+      "#providerSelect",
+    ) as HTMLSelectElement
+    const editModelSelect = el.querySelector(
+      "#modelSelect",
+    ) as HTMLSelectElement
+    expect(editProviderSelect.value).toBe("ollama")
+    expect(editModelSelect.value).toBe("llama3.3")
+
+    // Switch provider while editing existing saved config
+    editProviderSelect.value = "openai"
+    editProviderSelect.dispatchEvent(new Event("change"))
+    await nextTick()
+    expect(editModelSelect.value).toBe("gpt-6.1-sol")
+  })
 })

@@ -42,7 +42,7 @@ const props = defineProps<Props>()
 const provider = ref<Provider>("gemini")
 const apiKey = ref<string>("")
 const endpointUrl = ref<string>("")
-const selectedModel = ref<string>("")
+const selectedModel = ref<string>("gemini-3.8-flash")
 const customModel = ref<string>("")
 const savedConfigExists = ref<boolean>(false)
 const isEditingConfig = ref<boolean>(false)
@@ -242,24 +242,32 @@ const providerModels: Record<Provider, { name: string; value: string }[]> = {
   ],
 }
 
-// Watch provider to reset default endpoints/models when changed in setup view
-watch(provider, (newProvider) => {
-  if (!savedConfigExists.value) {
-    if (newProvider === "gemini") {
-      selectedModel.value = "gemini-3.8-flash"
-      endpointUrl.value = ""
-    } else if (newProvider === "openai") {
-      selectedModel.value = "gpt-6.1-sol"
-      endpointUrl.value = "https://api.openai.com/v1/chat/completions"
-    } else if (newProvider === "ollama") {
-      selectedModel.value = "llama3.3"
-      endpointUrl.value = "http://localhost:11434"
-    } else if (newProvider === "anthropic") {
-      selectedModel.value = "claude-sonnet-5-5"
-      endpointUrl.value = "https://api.anthropic.com/v1/messages"
-    }
+let isRestoringConfig = false
+
+function applyProviderDefaults(targetProvider: Provider) {
+  selectedModel.value = providerModels[targetProvider]?.[0]?.value || ""
+  customModel.value = ""
+  if (targetProvider === "gemini") {
+    endpointUrl.value = ""
+  } else if (targetProvider === "openai") {
+    endpointUrl.value = "https://api.openai.com/v1/chat/completions"
+  } else if (targetProvider === "ollama") {
+    endpointUrl.value = "http://localhost:11434"
+  } else if (targetProvider === "anthropic") {
+    endpointUrl.value = "https://api.anthropic.com/v1/messages"
   }
-})
+}
+
+// Watch provider to reset default endpoints/models when changed in setup or settings view
+watch(
+  provider,
+  (newProvider) => {
+    if (!isRestoringConfig) {
+      applyProviderDefaults(newProvider)
+    }
+  },
+  { flush: "sync" },
+)
 
 function loadStoredConfig() {
   const storedProvider = localStorage.getItem(
@@ -269,30 +277,36 @@ function loadStoredConfig() {
   const storedEndpoint = localStorage.getItem("pev2_ai_endpoint")
   const storedModel = localStorage.getItem("pev2_ai_model")
 
-  if (storedProvider) {
-    provider.value = storedProvider
-    apiKey.value = storedKey || ""
-    endpointUrl.value = storedEndpoint || ""
+  isRestoringConfig = true
+  try {
+    if (storedProvider && providerModels[storedProvider]) {
+      provider.value = storedProvider
+      apiKey.value = storedKey || ""
+      endpointUrl.value = storedEndpoint || ""
 
-    // Check if the stored model is a default model or custom
-    const defaults = providerModels[storedProvider]?.map((m) => m.value) || []
-    if (storedModel && defaults.includes(storedModel)) {
-      selectedModel.value = storedModel
-      customModel.value = ""
-    } else if (storedModel) {
-      selectedModel.value = "custom"
-      customModel.value = storedModel
+      // Check if the stored model is a default model or custom
+      const defaults = providerModels[storedProvider]?.map((m) => m.value) || []
+      if (storedModel && defaults.includes(storedModel)) {
+        selectedModel.value = storedModel
+        customModel.value = ""
+      } else if (storedModel) {
+        selectedModel.value = "custom"
+        customModel.value = storedModel
+      } else {
+        selectedModel.value = providerModels[storedProvider]?.[0]?.value || ""
+        customModel.value = ""
+      }
+
+      savedConfigExists.value = true
+    } else {
+      // Default values
+      provider.value = "gemini"
+      apiKey.value = ""
+      applyProviderDefaults("gemini")
+      savedConfigExists.value = false
     }
-
-    savedConfigExists.value = true
-  } else {
-    // Default values
-    provider.value = "gemini"
-    apiKey.value = ""
-    endpointUrl.value = ""
-    selectedModel.value = "gemini-3.8-flash"
-    customModel.value = ""
-    savedConfigExists.value = false
+  } finally {
+    isRestoringConfig = false
   }
 }
 
