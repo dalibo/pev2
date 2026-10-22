@@ -186,28 +186,58 @@ const needsApiKey = computed(() => {
 
 const providerModels: Record<Provider, { name: string; value: string }[]> = {
   gemini: [
-    { name: "Gemini 3.7 Flash (Recommended)", value: "gemini-3.7-flash" },
-    { name: "Gemini 3.1 Pro", value: "gemini-3.1-pro" },
-    { name: "Gemini 3.5 Flash", value: "gemini-3.5-flash" },
-    { name: "Gemini 2.5 Flash", value: "gemini-2.5-flash" },
+    { name: "Gemini 3.8 Flash (Recommended)", value: "gemini-3.8-flash" },
+    { name: "Gemini 4 Argon", value: "gemini-4-argon" },
+    { name: "Gemini 3.6 Flash", value: "gemini-3.6-flash" },
+    { name: "Gemini 3.5 Flash-Lite", value: "gemini-3.5-flash-lite" },
+    { name: "Gemini 3.1 Pro (Preview)", value: "gemini-3.1-pro-preview" },
+    { name: "Gemini 3.1 Flash-Lite", value: "gemini-3.1-flash-lite" },
     { name: "Gemini 2.5 Pro", value: "gemini-2.5-pro" },
+    { name: "Gemini 2.5 Flash", value: "gemini-2.5-flash" },
     { name: "Gemini 2.5 Flash-Lite", value: "gemini-2.5-flash-lite" },
     { name: "Custom...", value: "custom" },
   ],
   openai: [
-    { name: "GPT-4o Mini", value: "gpt-4o-mini" },
+    { name: "GPT-6.1 Sol (Recommended)", value: "gpt-6.1-sol" },
+    { name: "GPT-6 Astra", value: "gpt-6-astra" },
+    { name: "GPT-6 Luna", value: "gpt-6-luna" },
+    { name: "GPT-5", value: "gpt-5" },
+    { name: "GPT-5 Mini", value: "gpt-5-mini" },
+    { name: "GPT-5 Nano", value: "gpt-5-nano" },
+    { name: "GPT-4.1", value: "gpt-4.1" },
+    { name: "GPT-4.1 Mini", value: "gpt-4.1-mini" },
     { name: "GPT-4o", value: "gpt-4o" },
+    { name: "GPT-4o Mini", value: "gpt-4o-mini" },
     { name: "Custom...", value: "custom" },
   ],
   ollama: [
-    { name: "Llama 3", value: "llama3" },
+    { name: "Llama 3.3 (Recommended)", value: "llama3.3" },
+    { name: "Llama 3.2", value: "llama3.2" },
+    { name: "Llama 3.1", value: "llama3.1" },
+    { name: "Qwen 3.8", value: "qwen3.8" },
+    { name: "Qwen 3 Coder", value: "qwen3-coder" },
+    { name: "Qwen 3", value: "qwen3" },
+    { name: "Qwen 2.5 Coder", value: "qwen2.5-coder" },
+    { name: "DeepSeek R1", value: "deepseek-r1" },
+    { name: "DeepSeek V3", value: "deepseek-v3" },
+    { name: "Gemma 4", value: "gemma4" },
+    { name: "Gemma 3", value: "gemma3" },
     { name: "Mistral", value: "mistral" },
-    { name: "Codegemma", value: "codegemma" },
+    { name: "Mistral Small", value: "mistral-small" },
+    { name: "Phi-4", value: "phi4" },
+    { name: "Llama 3", value: "llama3" },
+    { name: "CodeGemma", value: "codegemma" },
     { name: "Custom...", value: "custom" },
   ],
   anthropic: [
-    { name: "Claude 3.5 Sonnet", value: "claude-3-5-sonnet-latest" },
-    { name: "Claude 3.5 Haiku", value: "claude-3-5-haiku-latest" },
+    { name: "Claude Sonnet 5.5 (Recommended)", value: "claude-sonnet-5-5" },
+    { name: "Claude Opus 5.5", value: "claude-opus-5-5" },
+    { name: "Claude Fable 5.1", value: "claude-fable-5-1" },
+    { name: "Claude Haiku 5.5", value: "claude-haiku-5-5" },
+    { name: "Claude Sonnet 5", value: "claude-sonnet-5" },
+    { name: "Claude Opus 5", value: "claude-opus-5" },
+    { name: "Claude Sonnet 4.6", value: "claude-sonnet-4-6" },
+    { name: "Claude Haiku 4.5", value: "claude-haiku-4-5" },
     { name: "Custom...", value: "custom" },
   ],
 }
@@ -216,16 +246,16 @@ const providerModels: Record<Provider, { name: string; value: string }[]> = {
 watch(provider, (newProvider) => {
   if (!savedConfigExists.value) {
     if (newProvider === "gemini") {
-      selectedModel.value = "gemini-3.7-flash"
+      selectedModel.value = "gemini-3.8-flash"
       endpointUrl.value = ""
     } else if (newProvider === "openai") {
-      selectedModel.value = "gpt-4o-mini"
+      selectedModel.value = "gpt-6.1-sol"
       endpointUrl.value = "https://api.openai.com/v1/chat/completions"
     } else if (newProvider === "ollama") {
-      selectedModel.value = "llama3"
+      selectedModel.value = "llama3.3"
       endpointUrl.value = "http://localhost:11434"
     } else if (newProvider === "anthropic") {
-      selectedModel.value = "claude-3-5-sonnet-latest"
+      selectedModel.value = "claude-sonnet-5-5"
       endpointUrl.value = "https://api.anthropic.com/v1/messages"
     }
   }
@@ -260,7 +290,7 @@ function loadStoredConfig() {
     provider.value = "gemini"
     apiKey.value = ""
     endpointUrl.value = ""
-    selectedModel.value = "gemini-3.7-flash"
+    selectedModel.value = "gemini-3.8-flash"
     customModel.value = ""
     savedConfigExists.value = false
   }
@@ -318,7 +348,7 @@ function clearConfig() {
   provider.value = "gemini"
   apiKey.value = ""
   endpointUrl.value = ""
-  selectedModel.value = "gemini-3.7-flash"
+  selectedModel.value = "gemini-3.8-flash"
   customModel.value = ""
   savedConfigExists.value = false
   isEditingConfig.value = false

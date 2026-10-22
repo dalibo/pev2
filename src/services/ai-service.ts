@@ -192,8 +192,14 @@ export function parseProviderResponse(
   const record = data as Record<string, unknown>
   if (provider === "gemini") {
     const candidates = record.candidates as
-      Array<{ content?: { parts?: Array<{ text?: string }> } }> | undefined
-    return candidates?.[0]?.content?.parts?.[0]?.text || ""
+      | Array<{
+          content?: { parts?: Array<{ text?: string; thought?: boolean }> }
+        }>
+      | undefined
+    const parts = candidates?.[0]?.content?.parts
+    const textPart =
+      parts?.find((p) => !p.thought && typeof p.text === "string") || parts?.[0]
+    return textPart?.text || ""
   }
   if (provider === "openai") {
     const choices = record.choices as
@@ -201,8 +207,12 @@ export function parseProviderResponse(
     return choices?.[0]?.message?.content || ""
   }
   if (provider === "anthropic") {
-    const content = record.content as Array<{ text?: string }> | undefined
-    return content?.[0]?.text || ""
+    const content = record.content as
+      Array<{ type?: string; text?: string }> | undefined
+    const textBlock =
+      content?.find((b) => b.type === "text" || typeof b.text === "string") ||
+      content?.[0]
+    return textBlock?.text || ""
   }
   if (provider === "ollama") {
     return (record.response as string) || ""
