@@ -3,6 +3,7 @@ import {
   faArrowLeft,
   faCheck,
   faCircleNotch,
+  faComments,
   faCopy,
   faExclamationCircle,
   faFileAlt,
@@ -11,19 +12,23 @@ import {
   faKey,
   faLock,
   faPaperclip,
+  faPaperPlane,
   faPlay,
   faRobot,
   faSlidersH,
+  faTimes,
   faTrash,
   faUpload,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { computed, onMounted, ref, watch } from "vue"
+import { computed, nextTick, onMounted, ref, watch } from "vue"
 
 import {
   type AttachedFile,
   buildAnalysisPrompt,
+  buildFollowUpPrompt,
   buildProviderRequest,
+  type ChatMessage,
   formatFileSize,
   hashString,
   limitHistoryEntries,
@@ -51,6 +56,20 @@ const analysisResult = ref<string>("")
 const errorMsg = ref<string>("")
 const showKey = ref<boolean>(false)
 const copySuccess = ref<boolean>(false)
+
+const showChatPanel = ref<boolean>(true)
+const chatMessages = ref<ChatMessage[]>([])
+const chatInput = ref<string>("")
+const isChatLoading = ref<boolean>(false)
+const chatErrorMsg = ref<string>("")
+const chatScrollContainer = ref<HTMLElement | null>(null)
+
+const suggestedQuestions = [
+  "Provide the exact CREATE INDEX statements recommended",
+  "How can I rewrite this query to perform better?",
+  "Explain the most expensive node in detail",
+  "What Postgres configuration parameters could help?",
+]
 
 const attachedFiles = ref<AttachedFile[]>([])
 const fileInputRef = ref<HTMLInputElement | null>(null)
@@ -130,6 +149,7 @@ interface HistoryEntry {
   result: string
   attachedFilesCount?: number
   attachedFileNames?: string[]
+  chatMessages?: ChatMessage[]
 }
 
 const historyList = ref<HistoryEntry[]>([])
@@ -151,6 +171,7 @@ watch(
     ) {
       activeHistoryId.value = newHistory[0].id
       analysisResult.value = newHistory[0].result
+      chatMessages.value = [...(newHistory[0].chatMessages || [])]
     }
   },
   { immediate: true },
@@ -161,6 +182,8 @@ function selectHistoryEntry(id: string) {
   const found = historyList.value.find((h) => h.id === id)
   if (found) {
     analysisResult.value = found.result
+    chatMessages.value = [...(found.chatMessages || [])]
+    chatErrorMsg.value = ""
   }
 }
 
@@ -174,6 +197,8 @@ function deleteHistoryEntry(id: string) {
     } else {
       activeHistoryId.value = ""
       analysisResult.value = ""
+      chatMessages.value = []
+      chatErrorMsg.value = ""
     }
   }
 }
@@ -389,6 +414,32 @@ function clearConfig() {
   savedConfigExists.value = false
   isEditingConfig.value = false
   analysisResult.value = ""
+  chatMessages.value = []
+  chatErrorMsg.value = ""
+}
+
+function persistChatMessages() {
+  if (!activeHistoryId.value) return
+  const index = historyList.value.findIndex(
+    (h) => h.id === activeHistoryId.value,
+  )
+  if (index !== -1) {
+    historyList.value[index].chatMessages = [...chatMessages.value]
+    localStorage.setItem("pev2_ai_history", JSON.stringify(historyList.value))
+  }
+}
+
+async function scrollChatToBottom() {
+  await nextTick()
+  if (chatScrollContainer.value) {
+    chatScrollContainer.value.scrollTop = chatScrollContainer.value.scrollHeight
+  }
+}
+
+function clearChatHistory() {
+  chatMessages.value = []
+  chatErrorMsg.value = ""
+  persistChatMessages()
 }
 
 async function runAnalysis() {
@@ -409,6 +460,8 @@ async function runAnalysis() {
   isAnalyzing.value = true
   errorMsg.value = ""
   analysisResult.value = ""
+  chatMessages.value = []
+  chatErrorMsg.value = ""
 
   try {
     const prompt = buildAnalysisPrompt(
@@ -453,6 +506,7 @@ async function runAnalysis() {
         result: text,
         attachedFilesCount: attachedFiles.value.length,
         attachedFileNames: attachedFiles.value.map((f) => f.name),
+        chatMessages: [],
       }
       historyList.value = limitHistoryEntries(
         [newEntry, ...historyList.value],
@@ -461,6 +515,7 @@ async function runAnalysis() {
       localStorage.setItem("pev2_ai_history", JSON.stringify(historyList.value))
       activeHistoryId.value = newEntry.id
       analysisResult.value = text
+      showChatPanel.value = true
     } else {
       throw new Error("No analysis response returned from the AI model.")
     }
@@ -471,6 +526,108 @@ async function runAnalysis() {
         : "An unexpected error occurred during analysis."
   } finally {
     isAnalyzing.value = false
+  }
+}
+
+async function sendChatMessage(presetQuestion?: string) {
+  const question = (presetQuestion ?? chatInput.value).trim()
+  if (!question || isChatLoading.value || !analysisResult.value) {
+    return
+  }
+
+  const modelName =
+    selectedModel.value === "custom"
+      ? customModel.value.trim()
+      : selectedModel.value
+  if (!modelName) {
+    chatErrorMsg.value = "Model name is required."
+    return
+  }
+
+  if (needsApiKey.value && !apiKey.value.trim()) {
+    chatErrorMsg.value = "API Key is required."
+    return
+  }
+
+  const priorMessages = [...chatMessages.value]
+  const userMessage: ChatMessage = {
+    id: `user-${Date.now()}`,
+    role: "user",
+    content: question,
+    timestamp: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  }
+
+  chatMessages.value.push(userMessage)
+  if (!presetQuestion) {
+    chatInput.value = ""
+  }
+  chatErrorMsg.value = ""
+  isChatLoading.value = true
+  persistChatMessages()
+  await scrollChatToBottom()
+
+  try {
+    const prompt = buildFollowUpPrompt(
+      props.planQuery,
+      props.planSource,
+      attachedFiles.value,
+      analysisResult.value,
+      priorMessages,
+      question,
+    )
+
+    const requestConfig = buildProviderRequest(
+      provider.value,
+      modelName,
+      apiKey.value,
+      endpointUrl.value,
+      prompt,
+    )
+
+    const response = await fetch(requestConfig.url, {
+      method: requestConfig.method,
+      headers: requestConfig.headers,
+      body: requestConfig.body,
+    })
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}))
+      const msg =
+        errData.error?.message ||
+        errData.error ||
+        `HTTP error! Status: ${response.status}`
+      throw new Error(msg)
+    }
+
+    const data = await response.json()
+    const replyText = parseProviderResponse(provider.value, data)
+
+    if (replyText) {
+      const assistantMessage: ChatMessage = {
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        content: replyText,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      }
+      chatMessages.value.push(assistantMessage)
+      persistChatMessages()
+      await scrollChatToBottom()
+    } else {
+      throw new Error("No response returned from the AI model.")
+    }
+  } catch (err) {
+    chatErrorMsg.value =
+      err instanceof Error
+        ? err.message
+        : "An unexpected error occurred during follow-up chat."
+  } finally {
+    isChatLoading.value = false
   }
 }
 
@@ -980,16 +1137,28 @@ function copyToClipboard() {
                 {{ entry.timestamp }}
               </div>
               <div
-                v-if="entry.attachedFilesCount"
-                class="text-primary small mt-1 d-flex align-items-center gap-1 font-monospace"
+                v-if="entry.attachedFilesCount || entry.chatMessages?.length"
+                class="d-flex flex-wrap align-items-center gap-2 mt-1 font-monospace"
                 style="font-size: 0.8em"
               >
-                <FontAwesomeIcon :icon="faPaperclip" />
                 <span
-                  >{{ entry.attachedFilesCount }} context file{{
-                    entry.attachedFilesCount === 1 ? "" : "s"
-                  }}</span
+                  v-if="entry.attachedFilesCount"
+                  class="text-primary small d-flex align-items-center gap-1"
                 >
+                  <FontAwesomeIcon :icon="faPaperclip" />
+                  <span
+                    >{{ entry.attachedFilesCount }} file{{
+                      entry.attachedFilesCount === 1 ? "" : "s"
+                    }}</span
+                  >
+                </span>
+                <span
+                  v-if="entry.chatMessages?.length"
+                  class="text-secondary small d-flex align-items-center gap-1"
+                >
+                  <FontAwesomeIcon :icon="faComments" />
+                  <span>{{ entry.chatMessages.length }}</span>
+                </span>
               </div>
             </div>
           </div>
@@ -1075,21 +1244,211 @@ function copyToClipboard() {
                     >Optimization Report</span
                   >
                 </div>
-                <button
-                  class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1.5"
-                  @click="copyToClipboard"
-                >
-                  <FontAwesomeIcon
-                    :icon="copySuccess ? faCheck : faCopy"
-                    :class="{ 'text-success': copySuccess }"
-                  />
-                  {{ copySuccess ? "Copied!" : "Copy Report" }}
-                </button>
+                <div class="d-flex align-items-center gap-2">
+                  <button
+                    class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1.5"
+                    @click="copyToClipboard"
+                  >
+                    <FontAwesomeIcon
+                      :icon="copySuccess ? faCheck : faCopy"
+                      :class="{ 'text-success': copySuccess }"
+                    />
+                    {{ copySuccess ? "Copied!" : "Copy Report" }}
+                  </button>
+                  <button
+                    id="toggleChatBtn"
+                    class="btn btn-sm d-flex align-items-center gap-1.5"
+                    :class="
+                      showChatPanel ? 'btn-primary' : 'btn-outline-primary'
+                    "
+                    @click="showChatPanel = !showChatPanel"
+                    title="Toggle Follow-Up Chat Side Panel"
+                  >
+                    <FontAwesomeIcon :icon="faComments" />
+                    <span>Ask AI</span>
+                    <span
+                      v-if="chatMessages.length > 0"
+                      class="badge rounded-pill ms-1"
+                      :class="
+                        showChatPanel
+                          ? 'bg-white text-primary'
+                          : 'bg-primary text-white'
+                      "
+                      style="font-size: 0.7rem"
+                    >
+                      {{ chatMessages.length }}
+                    </span>
+                  </button>
+                </div>
               </div>
               <div
                 class="card-body p-4 overflow-auto markdown-body"
                 v-html="parseMarkdown(analysisResult)"
               ></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side Panel: Interactive Follow-Up Chat -->
+        <div
+          v-if="analysisResult && !isAnalyzing && showChatPanel"
+          id="aiChatSidePanel"
+          class="chat-side-panel flex-shrink-0 card border-0 shadow-sm bg-body d-flex flex-column overflow-hidden"
+        >
+          <!-- Chat Header -->
+          <div
+            class="card-header bg-body border-bottom py-2.5 px-3 d-flex align-items-center justify-content-between"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <FontAwesomeIcon :icon="faComments" class="text-primary" />
+              <span class="fw-bold small">Follow-Up Chat</span>
+              <span
+                v-if="chatMessages.length > 0"
+                class="badge bg-primary-subtle text-primary rounded-pill"
+                style="font-size: 0.7rem"
+              >
+                {{ chatMessages.length }}
+              </span>
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <button
+                v-if="chatMessages.length > 0"
+                type="button"
+                class="btn btn-link btn-sm text-secondary text-decoration-none p-1"
+                @click="clearChatHistory"
+                :disabled="isChatLoading"
+                title="Clear conversation history"
+              >
+                <FontAwesomeIcon :icon="faTrash" class="small" />
+              </button>
+              <button
+                type="button"
+                class="btn btn-link btn-sm text-secondary text-decoration-none p-1"
+                @click="showChatPanel = false"
+                title="Hide chat panel"
+              >
+                <FontAwesomeIcon :icon="faTimes" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Chat Messages Area -->
+          <div
+            ref="chatScrollContainer"
+            class="card-body p-3 overflow-auto flex-grow-1 d-flex flex-column gap-3 bg-body-tertiary"
+          >
+            <!-- Empty State + Suggested Prompts -->
+            <div
+              v-if="chatMessages.length === 0 && !isChatLoading"
+              class="my-auto text-center px-2"
+            >
+              <div class="text-primary mb-2 opacity-50">
+                <FontAwesomeIcon :icon="faComments" class="fs-2" />
+              </div>
+              <h6 class="fw-semibold small mb-1">
+                Ask About These Analysis Results
+              </h6>
+              <p class="text-body-secondary small mb-3" style="font-size: 12px">
+                Have questions about a specific plan node, index suggestion, or
+                query rewrite? Ask a follow-up question below.
+              </p>
+              <div class="d-flex flex-column gap-1.5 text-start">
+                <button
+                  v-for="suggestion in suggestedQuestions"
+                  :key="suggestion"
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm text-start py-1.5 px-2.5 rounded-3 suggestion-chip"
+                  @click="sendChatMessage(suggestion)"
+                >
+                  {{ suggestion }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Message Thread -->
+            <div
+              v-for="msg in chatMessages"
+              :key="msg.id"
+              class="d-flex flex-column"
+              :class="
+                msg.role === 'user' ? 'align-items-end' : 'align-items-start'
+              "
+            >
+              <div
+                class="chat-bubble rounded-3 px-3 py-2 shadow-xs"
+                :class="
+                  msg.role === 'user'
+                    ? 'bg-primary text-white chat-bubble-user'
+                    : 'bg-body border chat-bubble-assistant markdown-body'
+                "
+              >
+                <template v-if="msg.role === 'user'">
+                  <div class="small" style="white-space: pre-wrap">
+                    {{ msg.content }}
+                  </div>
+                </template>
+                <template v-else>
+                  <div v-html="parseMarkdown(msg.content)"></div>
+                </template>
+              </div>
+              <span
+                class="text-body-secondary mt-1 px-1"
+                style="font-size: 0.7rem"
+              >
+                {{ msg.role === "user" ? "You" : "AI Assistant" }} •
+                {{ msg.timestamp }}
+              </span>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div
+              v-if="isChatLoading"
+              class="d-flex align-items-center gap-2 text-body-secondary small bg-body border rounded-3 px-3 py-2 align-self-start"
+            >
+              <FontAwesomeIcon
+                :icon="faCircleNotch"
+                class="text-primary"
+                spin
+              />
+              <span>Thinking...</span>
+            </div>
+
+            <!-- Chat Error Alert -->
+            <div
+              v-if="chatErrorMsg"
+              class="alert alert-danger py-2 px-3 mb-0 small d-flex align-items-center gap-2"
+              role="alert"
+            >
+              <FontAwesomeIcon :icon="faExclamationCircle" />
+              <span>{{ chatErrorMsg }}</span>
+            </div>
+          </div>
+
+          <!-- Chat Input Footer -->
+          <div class="card-footer bg-body border-top p-2.5">
+            <div class="input-group">
+              <textarea
+                id="chatInput"
+                v-model="chatInput"
+                class="form-control form-control-sm chat-textarea"
+                rows="2"
+                placeholder="Ask a follow-up question... (Enter to send)"
+                :disabled="isChatLoading"
+                @keydown.enter.exact.prevent="sendChatMessage()"
+              ></textarea>
+              <button
+                id="sendChatBtn"
+                type="button"
+                class="btn btn-primary px-3 d-flex align-items-center justify-content-center"
+                :disabled="isChatLoading || !chatInput.trim()"
+                @click="sendChatMessage()"
+                title="Send message"
+              >
+                <FontAwesomeIcon
+                  :icon="isChatLoading ? faCircleNotch : faPaperPlane"
+                  :spin="isChatLoading"
+                />
+              </button>
             </div>
           </div>
         </div>
@@ -1208,5 +1567,38 @@ function copyToClipboard() {
   &:hover {
     opacity: 1 !important;
   }
+}
+
+.chat-side-panel {
+  width: 380px;
+  min-width: 300px;
+  max-width: 45%;
+}
+
+.chat-bubble {
+  max-width: 92%;
+  word-break: break-word;
+
+  &.chat-bubble-assistant {
+    :deep(p:last-child) {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.suggestion-chip {
+  font-size: 12px;
+  background-color: var(--bs-body-bg);
+
+  &:hover {
+    border-color: var(--bs-primary);
+    color: var(--bs-primary);
+    background-color: var(--bs-primary-bg-subtle);
+  }
+}
+
+.chat-textarea {
+  resize: none;
+  font-size: 13px;
 }
 </style>

@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest"
 import {
   type AttachedFile,
   buildAnalysisPrompt,
+  buildFollowUpPrompt,
   buildProviderRequest,
   formatFileSize,
   hashString,
@@ -154,6 +155,44 @@ describe("AI Service Helpers", () => {
       )
       expect(prompt).toContain(
         "#### File: postgresql.conf\n```\nwork_mem = 64MB\n```",
+      )
+    })
+  })
+
+  describe("buildFollowUpPrompt", () => {
+    const planSource = "Seq Scan on users  (cost=0.00..35.50 rows=2550 width=8)"
+
+    test("builds follow-up prompt with initial report, chat history, and new question", () => {
+      const prompt = buildFollowUpPrompt(
+        "SELECT * FROM users WHERE email = 'a@b.com';",
+        planSource,
+        [],
+        "Add an index on users(email).",
+        [
+          {
+            id: "1",
+            role: "user",
+            content: "Should it be a unique index?",
+            timestamp: "10:00 AM",
+          },
+          {
+            id: "2",
+            role: "assistant",
+            content: "Yes, if email is unique.",
+            timestamp: "10:00 AM",
+          },
+        ],
+        "Can I create it concurrently?",
+      )
+
+      expect(prompt).toContain(
+        "### INITIAL ANALYSIS REPORT\nAdd an index on users(email).",
+      )
+      expect(prompt).toContain("### PREVIOUS FOLLOW-UP CONVERSATION")
+      expect(prompt).toContain("**User:**\nShould it be a unique index?")
+      expect(prompt).toContain("**Assistant:**\nYes, if email is unique.")
+      expect(prompt).toContain(
+        "### USER FOLLOW-UP QUESTION\nCan I create it concurrently?",
       )
     })
   })
@@ -416,6 +455,34 @@ describe("AI Service Helpers", () => {
       const output = parseMarkdown(input)
       expect(output).toContain('<p class="mb-3 lead-sm">First paragraph.</p>')
       expect(output).toContain('<p class="mb-3 lead-sm">Second paragraph.</p>')
+    })
+
+    test("formats indented and multiple fenced SQL code blocks inside list items without leaving stray backticks", () => {
+      const input = `4. Handling Failures (\`INVALID\` Indexes):
+   If the build is canceled or fails, it leaves behind an unusable, invalid index. You can check for invalid indexes with:
+   \`\`\`sql
+   SELECT relname, indisvalid
+   FROM pg_index i
+   JOIN pg_class c ON c.oid = i.indexrelid
+   WHERE NOT indisvalid;
+   \`\`\`
+   If an index is listed as \`indisvalid = false\`, simply drop it concurrently and try again:
+   \`\`\`sql
+   DROP INDEX CONCURRENTLY idx_name;
+   \`\`\``
+
+      const output = parseMarkdown(input)
+      expect(output).not.toContain("``sql")
+      expect(output).not.toContain("`sql")
+      expect(output).toContain(
+        '<pre class="bg-dark text-light p-3 rounded my-3 position-relative"><code class="language-sql">SELECT relname, indisvalid\nFROM pg_index i\nJOIN pg_class c ON c.oid = i.indexrelid\nWHERE NOT indisvalid;</code></pre>',
+      )
+      expect(output).toContain(
+        '<pre class="bg-dark text-light p-3 rounded my-3 position-relative"><code class="language-sql">DROP INDEX CONCURRENTLY idx_name;</code></pre>',
+      )
+      expect(output).toContain(
+        '<code class="bg-body-secondary px-1 py-0.5 rounded text-danger font-monospace">indisvalid = false</code>',
+      )
     })
   })
 })

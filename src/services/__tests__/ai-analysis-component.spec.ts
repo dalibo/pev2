@@ -327,4 +327,90 @@ describe("AiAnalysis Component Lifecycle & UI Tests", () => {
     expect(modelSelect.value).toBe("gemini-3.8-flash")
     expect(el.querySelector("#customModelInput")).toBeNull()
   })
+
+  test("renders interactive follow-up chat side panel after analysis and sends follow-up questions", async () => {
+    localStorage.setItem("pev2_ai_provider", "gemini")
+    localStorage.setItem("pev2_ai_key", "test-api-key")
+    localStorage.setItem("pev2_ai_model", "gemini-3.8-flash")
+
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          candidates: [
+            {
+              content: {
+                parts: [{ text: "### Initial Report\nSeq Scan detected." }],
+              },
+            },
+          ],
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          candidates: [
+            {
+              content: {
+                parts: [
+                  {
+                    text: "Run `CREATE INDEX CONCURRENTLY idx_users_id ON users(id);`",
+                  },
+                ],
+              },
+            },
+          ],
+        }),
+      } as Response)
+
+    const el = mountComponent()
+    await nextTick()
+
+    // Trigger initial analysis
+    const analyzeBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Analyze Plan"),
+    )
+    analyzeBtn?.click()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    await nextTick()
+
+    // Chat side panel should now be visible
+    const chatPanel = el.querySelector("#aiChatSidePanel")
+    expect(chatPanel).not.toBeNull()
+    expect(getNormalizedText(el)).toContain("Follow-Up Chat")
+
+    // Type a follow-up question and send it
+    const chatInput = el.querySelector("#chatInput") as HTMLTextAreaElement
+    const sendChatBtn = el.querySelector("#sendChatBtn") as HTMLButtonElement
+    expect(chatInput).not.toBeNull()
+    expect(sendChatBtn).not.toBeNull()
+
+    chatInput.value = "How do I create that index without locking?"
+    chatInput.dispatchEvent(new Event("input"))
+    await nextTick()
+
+    sendChatBtn.click()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    await nextTick()
+
+    expect(global.fetch).toHaveBeenCalledTimes(2)
+    const text = getNormalizedText(el)
+    expect(text).toContain("How do I create that index without locking?")
+    expect(text).toContain(
+      "CREATE INDEX CONCURRENTLY idx_users_id ON users(id);",
+    )
+
+    // Toggle chat panel closed and open again
+    const toggleChatBtn = el.querySelector(
+      "#toggleChatBtn",
+    ) as HTMLButtonElement
+    toggleChatBtn.click()
+    await nextTick()
+    expect(el.querySelector("#aiChatSidePanel")).toBeNull()
+
+    toggleChatBtn.click()
+    await nextTick()
+    expect(el.querySelector("#aiChatSidePanel")).not.toBeNull()
+  })
 })
