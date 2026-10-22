@@ -165,14 +165,14 @@ describe("AI Service Helpers", () => {
       test("constructs default Google Gemini request with API key in query param", () => {
         const req = buildProviderRequest(
           "gemini",
-          "gemini-3.7-flash",
+          "gemini-3.8-flash",
           "AIzaSyTestKey123",
           "",
           prompt,
         )
 
         expect(req.url).toBe(
-          "https://generativelanguage.googleapis.com/v1/models/gemini-3.7-flash:generateContent?key=AIzaSyTestKey123",
+          "https://generativelanguage.googleapis.com/v1/models/gemini-3.8-flash:generateContent?key=AIzaSyTestKey123",
         )
         expect(req.method).toBe("POST")
         expect(req.headers["Content-Type"]).toBe("application/json")
@@ -183,7 +183,7 @@ describe("AI Service Helpers", () => {
       test("constructs Gemini request with custom endpoint and auth headers", () => {
         const req = buildProviderRequest(
           "gemini",
-          "gemini-3.7-flash",
+          "gemini-3.8-flash",
           "AIzaSyTestKey123",
           "https://custom-proxy.internal/gemini",
           prompt,
@@ -199,7 +199,7 @@ describe("AI Service Helpers", () => {
       test("constructs OpenAI request with Bearer authorization header", () => {
         const req = buildProviderRequest(
           "openai",
-          "gpt-4o-mini",
+          "gpt-6.1-sol",
           "sk-test-key-456",
           "",
           prompt,
@@ -209,7 +209,7 @@ describe("AI Service Helpers", () => {
         expect(req.method).toBe("POST")
         expect(req.headers["Authorization"]).toBe("Bearer sk-test-key-456")
         const parsed = JSON.parse(req.body)
-        expect(parsed.model).toBe("gpt-4o-mini")
+        expect(parsed.model).toBe("gpt-6.1-sol")
         expect(parsed.messages).toEqual([{ role: "user", content: prompt }])
       })
 
@@ -232,7 +232,7 @@ describe("AI Service Helpers", () => {
       test("constructs Anthropic Claude request with required headers", () => {
         const req = buildProviderRequest(
           "anthropic",
-          "claude-3-5-sonnet-latest",
+          "claude-sonnet-5-5",
           "sk-ant-key789",
           "",
           prompt,
@@ -243,7 +243,7 @@ describe("AI Service Helpers", () => {
         expect(req.headers["anthropic-version"]).toBe("2023-06-01")
         expect(req.headers["dangerously-allow-browser"]).toBe("true")
         const parsed = JSON.parse(req.body)
-        expect(parsed.model).toBe("claude-3-5-sonnet-latest")
+        expect(parsed.model).toBe("claude-sonnet-5-5")
         expect(parsed.max_tokens).toBe(4096)
         expect(parsed.messages).toEqual([{ role: "user", content: prompt }])
       })
@@ -251,12 +251,12 @@ describe("AI Service Helpers", () => {
 
     describe("Ollama", () => {
       test("constructs Ollama request to default local host without API key", () => {
-        const req = buildProviderRequest("ollama", "llama3", "", "", prompt)
+        const req = buildProviderRequest("ollama", "llama3.3", "", "", prompt)
 
         expect(req.url).toBe("http://localhost:11434/api/generate")
         expect(req.headers["Authorization"]).toBeUndefined()
         const parsed = JSON.parse(req.body)
-        expect(parsed.model).toBe("llama3")
+        expect(parsed.model).toBe("llama3.3")
         expect(parsed.prompt).toBe(prompt)
         expect(parsed.stream).toBe(false)
       })

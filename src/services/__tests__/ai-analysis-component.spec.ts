@@ -52,14 +52,14 @@ describe("AiAnalysis Component Lifecycle & UI Tests", () => {
   test("loads saved configuration and displays analyzer dashboard on mount", async () => {
     localStorage.setItem("pev2_ai_provider", "gemini")
     localStorage.setItem("pev2_ai_key", "test-gemini-key")
-    localStorage.setItem("pev2_ai_model", "gemini-3.7-flash")
+    localStorage.setItem("pev2_ai_model", "gemini-3.8-flash")
 
     const el = mountComponent()
     await nextTick()
 
     const text = getNormalizedText(el)
     expect(text).toContain("AI Plan Analyzer")
-    expect(text).toContain("Using Gemini (gemini-3.7-flash)")
+    expect(text).toContain("Using Gemini (gemini-3.8-flash)")
     expect(text).toContain("Analyze Plan")
     expect(text).toContain("Settings")
   })
@@ -115,7 +115,7 @@ describe("AiAnalysis Component Lifecycle & UI Tests", () => {
   test("saves updated configuration and updates dashboard", async () => {
     localStorage.setItem("pev2_ai_provider", "gemini")
     localStorage.setItem("pev2_ai_key", "old-key")
-    localStorage.setItem("pev2_ai_model", "gemini-3.7-flash")
+    localStorage.setItem("pev2_ai_model", "gemini-3.8-flash")
 
     const el = mountComponent()
     await nextTick()
@@ -147,7 +147,7 @@ describe("AiAnalysis Component Lifecycle & UI Tests", () => {
   test("resets and clears credentials when user clicks reset button", async () => {
     localStorage.setItem("pev2_ai_provider", "gemini")
     localStorage.setItem("pev2_ai_key", "key-to-wipe")
-    localStorage.setItem("pev2_ai_model", "gemini-3.7-flash")
+    localStorage.setItem("pev2_ai_model", "gemini-3.8-flash")
 
     const el = mountComponent()
     await nextTick()
@@ -175,7 +175,7 @@ describe("AiAnalysis Component Lifecycle & UI Tests", () => {
   test("runs analysis with mocked fetch and renders markdown result", async () => {
     localStorage.setItem("pev2_ai_provider", "gemini")
     localStorage.setItem("pev2_ai_key", "test-api-key")
-    localStorage.setItem("pev2_ai_model", "gemini-3.7-flash")
+    localStorage.setItem("pev2_ai_model", "gemini-3.8-flash")
 
     const mockApiResponse = {
       candidates: [
@@ -223,7 +223,7 @@ describe("AiAnalysis Component Lifecycle & UI Tests", () => {
   test("handles API error responses gracefully", async () => {
     localStorage.setItem("pev2_ai_provider", "gemini")
     localStorage.setItem("pev2_ai_key", "invalid-key")
-    localStorage.setItem("pev2_ai_model", "gemini-3.7-flash")
+    localStorage.setItem("pev2_ai_model", "gemini-3.8-flash")
 
     global.fetch = vi.fn().mockResolvedValue({
       ok: false,
