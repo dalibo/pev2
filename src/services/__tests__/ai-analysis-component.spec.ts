@@ -328,4 +328,3 @@ describe("AiAnalysis Component Lifecycle & UI Tests", () => {
     expect(el.querySelector("#customModelInput")).toBeNull()
   })
 })
-
