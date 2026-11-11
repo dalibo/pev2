@@ -12,6 +12,7 @@ import { durationClass, formatDuration, formatKilobytes } from "@/filters"
 import { formatProp } from "@/filters"
 import type { IPlanning, ISerialization, ITrigger, Node } from "@/interfaces"
 import { getHelpMessage } from "@/services/help-service"
+import { getUnaccountedTime } from "@/services/unaccounted-time"
 import { store } from "@/store"
 
 import { Property } from "../enums"
@@ -79,6 +80,19 @@ function hasParallelChildren(node: Node) {
     return Array.isArray(a.Plans) && a.Plans.some(iter)
   })
 }
+
+const unaccountedTime = computed(() =>
+  getUnaccountedTime(store.stats, store.plan?.content.Plan),
+)
+
+const unaccountedTimeHint = computed((): string | undefined => {
+  if (!unaccountedTime.value) {
+    return undefined
+  }
+  return `${getHelpMessage("unaccounted time")}<br/>
+    <b>${formatDuration(unaccountedTime.value.time)}</b>
+    (${_.round(unaccountedTime.value.percent)}% of the execution time)`
+})
 
 const hasPlanningDetails = computed(
   (): boolean => store.stats.planning !== undefined,
@@ -155,6 +169,12 @@ const shouldShowSerializationBuffers = computed((): boolean => {
           class="stat-value"
           v-html="formatDuration(store.stats.executionTime)"
         ></span>
+        <FontAwesomeIcon
+          v-if="unaccountedTimeHint"
+          :icon="faInfoCircle"
+          class="cursor-help text-warning ms-1"
+          v-tippy="{ content: unaccountedTimeHint, allowHTML: true }"
+        ></FontAwesomeIcon>
       </template>
     </div>
     <div class="d-inline-block border-start px-2 position-relative">

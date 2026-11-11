@@ -52,6 +52,8 @@ Consider modifying max_parallel_workers or max_parallel_workers_per_gather.`,
   "WORKERS DETAILED INFO MISSING": `Consider using EXPLAIN (ANALYZE, VERBOSE)`,
   "FUZZY NEEDS VERBOSE": `Information may not be accurate. Use EXPLAIN VERBOSE mode.`,
   "HINT TRACK_IO_TIMING": `HINT: activate <em><b>track_io_timing</b></em> to have details on time spent outside the PG cache.`,
+  "UNACCOUNTED TIME": `A significant part of the execution time was spent outside of the plan nodes.
+    This can be caused by waiting for locks, for example.`,
   "IO TIMINGS PARALLEL": "Distributed among parallel workers",
   "MULTIPLE HASH BATCHES":
     "Several batches were required to process the hash buckets with the available memory. Spilling data to temporary disk, yet generating some operation on disk (I/O).<br/> <b>Hint</b>: consider increasing <code>work_mem</code> or decreasing <code>hash_mem_multiplier</code> so that only one batch is used to possibly improve performance.",
