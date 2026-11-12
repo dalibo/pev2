@@ -313,6 +313,7 @@ const nodePropFormatters: Partial<Record<Property, Formatter>> = {
   [Property.ORIGINAL_HASH_BUCKETS]: formatNumber,
   [Property.OUTPUT]: formatList,
   [Property.PARALLEL_AWARE]: formatBoolean,
+  [Property.SINGLE_COPY]: formatBoolean,
   [Property.PEAK_MEMORY_USAGE]: formatKilobytes,
   [Property.PLANNED_PARTITIONS]: formatNumber,
   [Property.PLANNER_ESTIMATE_DIRECTION]: formatEstimateDirection,

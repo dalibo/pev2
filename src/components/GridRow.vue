@@ -8,6 +8,7 @@ import IoTable from "@/components/IoTable.vue"
 import LevelDivider from "@/components/LevelDivider.vue"
 import MiscDetail from "@/components/MiscDetail.vue"
 import SeverityBullet from "@/components/SeverityBullet.vue"
+import SingleCopyBadge from "@/components/SingleCopyBadge.vue"
 import TimeTooltip from "@/components/tooltip/TimeTooltip.vue"
 import WorkersDetail from "@/components/WorkersDetail.vue"
 import { EstimateDirection, Property } from "@/enums"
@@ -367,6 +368,7 @@ const isHighlighted = computed(
           {{ nodeName }}
         </b>
         <DisabledBadge :node="node" />
+        <SingleCopyBadge :node="node" />
 
         <span class="text-body-secondary">
           <template
