@@ -10,6 +10,7 @@ import { inject, nextTick, onMounted, provide, reactive, ref, watch } from "vue"
 import DisabledBadge from "@/components/DisabledBadge.vue"
 import NodeBadges from "@/components/NodeBadges.vue"
 import PlanNodeDetail from "@/components/PlanNodeDetail.vue"
+import SingleCopyBadge from "@/components/SingleCopyBadge.vue"
 import { HighlightType, Property } from "@/enums"
 import { keysToString, sortKeys } from "@/filters"
 import type { IPlan, Node, ViewOptions } from "@/interfaces"
@@ -161,6 +162,7 @@ function centerCte() {
               </span>
               {{ nodeName }}
               <DisabledBadge :node="node" />
+              <SingleCopyBadge :node="node" />
             </h4>
             <div class="text-nowrap">
               <NodeBadges :node="node" />

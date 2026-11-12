@@ -398,6 +398,7 @@ const notMiscProperties: string[] = [
   Property.SCAN_DIRECTION,
   Property.ACTUAL_ROWS_FRACTIONAL,
   Property.DISABLED,
+  Property.SINGLE_COPY,
   Property.WORKER_NUMBER,
   Property.ASYNC_CAPABLE,
 ]
