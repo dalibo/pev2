@@ -159,7 +159,12 @@ export function formatList(value: unknown): string {
   if (value == undefined) {
     return ""
   }
-  const lines = typeof value === "string" ? value.split(/\s*,\s*/) : value
+  const lines =
+    typeof value === "string"
+      ? value.split(/\s*,\s*/)
+      : typeof value === "number"
+        ? [value]
+        : value
 
   if (!Array.isArray(lines)) {
     throw new Error(`Expected string or array of strings, got ${typeof value}`)
