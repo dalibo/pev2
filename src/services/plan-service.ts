@@ -76,6 +76,7 @@ export class PlanService {
     })
 
     this.fixCteScansDuration(plan)
+    this.fixCteScansIoAndBuffers(plan)
     this.fixInitPlanUsageDuration(plan)
     this.calculateMaximums(plan)
     return plan
@@ -329,6 +330,91 @@ export class PlanService {
         )
       })
     })
+  }
+
+  public fixCteScansIoAndBuffers(plan: IPlan) {
+    /**
+     * Subtract blocks and IO time from underlying CTE for CTE Scans nodes
+     */
+
+    // No need for fix if plan is not analyzed
+    if (!plan.isAnalyze) {
+      return
+    }
+
+    // Iterate over the CTEs
+    _.each(plan.ctes, (cte) => {
+      // Nodes that use this CTE data
+      const cteScans = this.findCteScansByName(
+        cte[Property.SUBPLAN_NAME] as string,
+      )
+
+      // No cte scan for this CTE, exit
+      if (_.isEmpty(cteScans)) {
+        return
+      }
+
+      const properties: Array<keyof typeof Property> = [
+        "SHARED_HIT_BLOCKS",
+        "SHARED_READ_BLOCKS",
+        "SHARED_DIRTIED_BLOCKS",
+        "SHARED_WRITTEN_BLOCKS",
+        "TEMP_READ_BLOCKS",
+        "TEMP_WRITTEN_BLOCKS",
+        "LOCAL_HIT_BLOCKS",
+        "LOCAL_READ_BLOCKS",
+        "LOCAL_DIRTIED_BLOCKS",
+        "LOCAL_WRITTEN_BLOCKS",
+        "IO_READ_TIME",
+        "IO_WRITE_TIME",
+        "SHARED_IO_READ_TIME",
+        "SHARED_IO_WRITE_TIME",
+        "LOCAL_IO_READ_TIME",
+        "LOCAL_IO_WRITE_TIME",
+        "TEMP_IO_READ_TIME",
+        "TEMP_IO_WRITE_TIME",
+      ]
+      _.each(properties, (p) => {
+        // Value for the property for the CTE itself
+        const cteValue = (cte[Property[p]] as number) || 0
+        const exclusiveProp = Property[
+          ("EXCLUSIVE_" + p) as keyof typeof Property
+        ] as unknown as keyof typeof Node
+
+        // Sum of exclusive values for the CTE Scans
+        const sumScans = _.sumBy(
+          cteScans,
+          (node) => (node[exclusiveProp] as number) || 0,
+        )
+        if (!cteValue || !sumScans) {
+          return
+        }
+
+        // Subtract the CTE value proportionally
+        _.each(cteScans, (node) => {
+          const value = node[exclusiveProp] as number
+          if (!value) {
+            return
+          }
+          node[exclusiveProp] = Number(
+            Math.max(0, value - (cteValue * value) / sumScans).toFixed(3),
+          )
+        })
+      })
+
+      // Update the exclusive sums and speeds
+      _.each(cteScans, (node) => {
+        this.calculateIoTimingsAverage(node as unknown as IOBuffers)
+      })
+    })
+  }
+
+  private findCteScansByName(name: string): Node[] {
+    // Find all nodes that are "CTE Scan" for the given CTE
+    return _.filter(
+      this.flat,
+      (node) => `CTE ${node[Property.CTE_NAME]}` == name,
+    )
   }
 
   public fixInitPlanUsageDuration(plan: IPlan) {
