@@ -59,3 +59,28 @@ npm run test:visual:update
 ```
 
 Visual testing via snapshots is supported by Playwright. To update or create new snapshots, run this command.
+
+## How to release
+
+### Build library and tag version
+
+```sh
+npm version minor
+git push origin master
+git push --tags
+```
+
+Wait for the automatic build to finish. Edit the release changelog on Github.
+
+An index.html file should be added automatically to release assets by Github Actions.
+
+## Publish to npm
+
+> **_NOTE:_** These actions may require special privileges.
+
+```sh
+npm run build-lib
+npm publish
+```
+
+Update the codesandboxes demos at https://stackblitz.com/edit/pev2-vanilla and https://stackblitz.com/edit/pev2-vite.
