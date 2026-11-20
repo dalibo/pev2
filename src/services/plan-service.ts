@@ -28,6 +28,27 @@ interface JitElement {
 
 type recurseItemType = Array<[Node, recurseItemType]>
 
+const BUFFERS_IO_PROPERTIES: Array<keyof typeof Property> = [
+  "SHARED_HIT_BLOCKS",
+  "SHARED_READ_BLOCKS",
+  "SHARED_DIRTIED_BLOCKS",
+  "SHARED_WRITTEN_BLOCKS",
+  "TEMP_READ_BLOCKS",
+  "TEMP_WRITTEN_BLOCKS",
+  "LOCAL_HIT_BLOCKS",
+  "LOCAL_READ_BLOCKS",
+  "LOCAL_DIRTIED_BLOCKS",
+  "LOCAL_WRITTEN_BLOCKS",
+  "IO_READ_TIME",
+  "IO_WRITE_TIME",
+  "SHARED_IO_READ_TIME",
+  "SHARED_IO_WRITE_TIME",
+  "LOCAL_IO_READ_TIME",
+  "LOCAL_IO_WRITE_TIME",
+  "TEMP_IO_READ_TIME",
+  "TEMP_IO_WRITE_TIME",
+]
+
 export class PlanService {
   private nodeId = 0
   private flat: Node[] = []
@@ -76,6 +97,7 @@ export class PlanService {
     })
 
     this.fixCteScansDuration(plan)
+    this.fixCteScansBuffersIO(plan)
     this.fixInitPlanUsageDuration(plan)
     this.calculateMaximums(plan)
     return plan
@@ -327,6 +349,50 @@ export class PlanService {
             (cteDuration * (node[Property.ACTUAL_TOTAL_TIME_REVISED] || 0)) /
               sumScansDuration,
         )
+      })
+    })
+  }
+
+  public fixCteScansBuffersIO(plan: IPlan) {
+    _.each(plan.ctes, (cte) => {
+      // Find all nodes that are "CTE Scan" for the given CTE
+      const cteScans = _.filter(
+        this.flat,
+        (node) =>
+          `CTE ${node[Property.CTE_NAME]}` == cte[Property.SUBPLAN_NAME],
+      )
+
+      _.each(BUFFERS_IO_PROPERTIES, (p) => {
+        // Buffers and IO of the CTE itself
+        const cteValue = (cte[Property[p]] as number) || 0
+        const exclusiveProp = Property[
+          ("EXCLUSIVE_" + p) as keyof typeof Property
+        ] as unknown as keyof typeof Node
+
+        // Sum of exclusive values for the CTE Scans
+        const sumScans = _.sumBy(
+          cteScans,
+          (node) => (node[exclusiveProp] as number) || 0,
+        )
+        if (!cteValue || !sumScans) {
+          return
+        }
+
+        // Subtract the CTE value proportionally
+        _.each(cteScans, (node) => {
+          const value = node[exclusiveProp] as number
+          if (!value) {
+            return
+          }
+          node[exclusiveProp] = Number(
+            Math.max(0, value - (cteValue * value) / sumScans).toFixed(3),
+          )
+        })
+      })
+
+      // Update the exclusive sums and speeds
+      _.each(cteScans, (node) => {
+        this.calculateIoTimingsAverage(node as unknown as IOBuffers)
       })
     })
   }
@@ -1638,27 +1704,7 @@ export class PlanService {
 
   private calculateBuffersIOExclusives(node: Node) {
     // Caculate inclusive value for the current node for the given property
-    const properties: Array<keyof typeof Property> = [
-      "SHARED_HIT_BLOCKS",
-      "SHARED_READ_BLOCKS",
-      "SHARED_DIRTIED_BLOCKS",
-      "SHARED_WRITTEN_BLOCKS",
-      "TEMP_READ_BLOCKS",
-      "TEMP_WRITTEN_BLOCKS",
-      "LOCAL_HIT_BLOCKS",
-      "LOCAL_READ_BLOCKS",
-      "LOCAL_DIRTIED_BLOCKS",
-      "LOCAL_WRITTEN_BLOCKS",
-      "IO_READ_TIME",
-      "IO_WRITE_TIME",
-      "SHARED_IO_READ_TIME",
-      "SHARED_IO_WRITE_TIME",
-      "LOCAL_IO_READ_TIME",
-      "LOCAL_IO_WRITE_TIME",
-      "TEMP_IO_READ_TIME",
-      "TEMP_IO_WRITE_TIME",
-    ]
-    _.each(properties, (p) => {
+    _.each(BUFFERS_IO_PROPERTIES, (p) => {
       const sum = Number(
         _.sumBy(
           // Don't take subplans into account (InitPlan)
