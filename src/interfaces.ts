@@ -172,6 +172,7 @@ export class Node {
   [Property.PARTIAL_MODE]!: string;
   [Property.SCAN_DIRECTION]!: string;
   [Property.DISABLED]: boolean = false;
+  [Property.SINGLE_COPY]: boolean = false;
   [k: string]:
     | Node[]
     | Options

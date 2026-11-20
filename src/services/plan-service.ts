@@ -1079,6 +1079,10 @@ export class PlanService {
           return
         }
 
+        if (this.parseSingleCopy(extraMatches[2], element as Node)) {
+          return
+        }
+
         if (
           this.parseMemory(extraMatches[2], element as unknown as IPlanning)
         ) {
@@ -1512,6 +1516,18 @@ export class PlanService {
 
     if (matches) {
       el[Property.DISABLED] = true
+      return true
+    }
+    return false
+  }
+
+  private parseSingleCopy(text: string, el: Node): boolean {
+    // Parse Single Copy value (Gather nodes) into boolean
+    const booleanRegex = /^\s*(Single Copy)\s*:\s*(true|false)\s*$/
+    const matches = booleanRegex.exec(text)
+
+    if (matches) {
+      el[Property.SINGLE_COPY] = matches[2] === "true"
       return true
     }
     return false

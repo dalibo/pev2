@@ -181,6 +181,7 @@ export enum Property {
   SHARED_IO_WRITE_TIME = "Shared I/O Write Time",
   SHARED_READ_BLOCKS = "Shared Read Blocks",
   SHARED_WRITTEN_BLOCKS = "Shared Written Blocks",
+  SINGLE_COPY = "Single Copy",
   SORT_KEY = "Sort Key",
   SORT_METHOD = "Sort Method",
   SORT_METHODS_USED = "Sort Methods Used",
