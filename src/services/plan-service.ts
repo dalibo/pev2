@@ -28,6 +28,39 @@ interface JitElement {
 
 type recurseItemType = Array<[Node, recurseItemType]>
 
+// Drop quotes that wrap a whole copied line, and a single unmatched trailing
+// ". Keep a closing quote that belongs to an identifier.
+function normalizeTextPlanLine(line: string): string {
+  const wrapped = /^(\s*)(["'])(.*)\2\s*$/.exec(line)
+  if (wrapped) {
+    return wrapped[3]
+  }
+  if (hasDanglingTrailingQuote(line)) {
+    line = line.replace(/"\s*$/, "")
+  }
+  return line.replace(/^\s*"/, "")
+}
+
+function hasDanglingTrailingQuote(line: string): boolean {
+  const trimmed = line.replace(/\s*$/, "")
+  if (!trimmed.endsWith('"')) {
+    return false
+  }
+  let inQuote = false
+  for (let i = 0; i < trimmed.length; i++) {
+    if (trimmed[i] !== '"') {
+      continue
+    }
+    // "" inside a quoted identifier is an escaped quote, not a closer.
+    if (inQuote && trimmed[i + 1] === '"') {
+      i++
+      continue
+    }
+    inQuote = !inQuote
+  }
+  return inQuote
+}
+
 export class PlanService {
   private nodeId = 0
   private flat: Node[] = []
@@ -712,10 +745,7 @@ export class PlanService {
 
     let workerAtDepth: [number, Worker] | undefined
     _.each(lines, (line: string) => {
-      // Remove any trailing "
-      line = line.replace(/"\s*$/, "")
-      // Remove any begining "
-      line = line.replace(/^\s*"/, "")
+      line = normalizeTextPlanLine(line)
       // Replace tabs with 4 spaces
       line = line.replace(/\t/gm, "    ")
 

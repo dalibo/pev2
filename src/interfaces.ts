@@ -197,17 +197,27 @@ export class Node {
       RelationName,
       Alias,
     }
+    // Optionally schema-qualified name. Quoted identifiers may contain
+    // spaces; "" inside quotes is an escaped quote.
+    const ident = '(?:"(?:[^"]|"")*"|[^\\s".]+)'
+    const name = `${ident}(?:\\.${ident})*`
+
     // tslint:disable-next-line:max-line-length
-    const scanAndOperationsRegex =
-      /^((?:Parallel\s+)?(?:Seq|Tid.*|Bitmap\s+Heap|WorkTable|(Async\s+)?Foreign)\s+Scan|Update|Insert|Delete|Merge)\son\s(\S+)(?:\s+(\S+))?$/.exec(
-        type,
-      )
+    const scanAndOperationsRegex = new RegExp(
+      "^((?:Parallel\\s+)?(?:Seq|Sample|Values|Table\\s+Function|Tid.*|Bitmap\\s+Heap|WorkTable|(Async\\s+)?Foreign)\\s+Scan|Update|Insert|Delete|Merge)\\son\\s(" +
+        name +
+        ")(?:\\s+(" +
+        name +
+        "))?$",
+    ).exec(type)
 
     enum BitmapMatch {
       NodeType = 1,
       IndexName,
     }
-    const bitmapRegex = /^(Bitmap\s+Index\s+Scan)\son\s(\S+)$/.exec(type)
+    const bitmapRegex = new RegExp(
+      "^(Bitmap\\s+Index\\s+Scan)\\son\\s(" + name + ")$",
+    ).exec(type)
     enum IndexMatch {
       NodeType = 1,
       ScanDirection,
@@ -216,26 +226,33 @@ export class Node {
       Alias,
     }
     // tslint:disable-next-line:max-line-length
-    const indexRegex =
-      /^((?:Parallel\s+)?Index(?:\sOnly)?\sScan)(\sBackward)?\susing\s(\S+)\son\s(\S+)(?:\s+(\S+))?$/.exec(
-        type,
-      )
+    const indexRegex = new RegExp(
+      "^((?:Parallel\\s+)?Index(?:\\sOnly)?\\sScan)(\\sBackward)?\\susing\\s(" +
+        name +
+        ")\\son\\s(" +
+        name +
+        ")(?:\\s+(" +
+        name +
+        "))?$",
+    ).exec(type)
 
     enum CteMatch {
       NodeType = 1,
       CteName,
       Alias,
     }
-    const cteRegex = /^(CTE\sScan)\son\s(\S+)(?:\s+(\S+))?$/.exec(type)
+    const cteRegex = new RegExp(
+      "^(CTE\\sScan)\\son\\s(" + name + ")(?:\\s+(" + name + "))?$",
+    ).exec(type)
 
     enum FunctionMatch {
       NodeType = 1,
       FunctionName,
       Alias,
     }
-    const functionRegex = /^(Function\sScan)\son\s(\S+)(?:\s+(\S+))?$/.exec(
-      type,
-    )
+    const functionRegex = new RegExp(
+      "^(Function\\sScan)\\son\\s(" + name + ")(?:\\s+(" + name + "))?$",
+    ).exec(type)
     enum SubqueryMatch {
       NodeType = 1,
       Alias,
